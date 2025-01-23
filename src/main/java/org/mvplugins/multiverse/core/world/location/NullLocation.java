@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world.config;
+package org.mvplugins.multiverse.core.world.location;
 
 import java.util.Collections;
 import java.util.Map;

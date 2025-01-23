@@ -5,7 +5,7 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package org.mvplugins.multiverse.core.world.config;
+package org.mvplugins.multiverse.core.world;
 
 import org.bukkit.PortalType;
 

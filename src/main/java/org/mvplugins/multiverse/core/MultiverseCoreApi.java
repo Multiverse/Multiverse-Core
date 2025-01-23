@@ -20,12 +20,10 @@ public class MultiverseCoreApi {
 
     private static MultiverseCoreApi instance;
 
-    @ApiStatus.Internal
     static void init(PluginServiceLocator serviceProvider) {
         instance = new MultiverseCoreApi(serviceProvider);
     }
 
-    @ApiStatus.Internal
     static void shutdown() {
         instance = null;
     }

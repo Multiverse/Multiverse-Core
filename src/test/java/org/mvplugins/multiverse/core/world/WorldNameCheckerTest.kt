@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world
 
 import org.bukkit.Bukkit
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker
 import java.io.File
 import kotlin.test.BeforeTest
 import kotlin.test.Test

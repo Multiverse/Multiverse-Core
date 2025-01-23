@@ -20,7 +20,7 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagsManager;
 import org.mvplugins.multiverse.core.commandtools.queue.CommandQueueManager;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
 import org.mvplugins.multiverse.core.world.WorldManager;
-import org.mvplugins.multiverse.core.world.WorldNameChecker;
+import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 
 /**
  * Main class to manage permissions.

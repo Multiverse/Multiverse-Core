@@ -36,12 +36,9 @@ import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
-import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
-import org.mvplugins.multiverse.core.utils.TestingMode;
-import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator;
 import org.mvplugins.multiverse.core.world.WorldManager;
-import org.mvplugins.multiverse.core.world.config.NullLocation;
-import org.mvplugins.multiverse.core.world.config.SpawnLocation;
+import org.mvplugins.multiverse.core.world.location.NullLocation;
+import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
@@ -64,7 +61,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Inject
     private Provider<DestinationsProvider> destinationsProviderProvider;
     @Inject
-    private Provider<MetricsConfigurator> metricsConfiguratorProvider;
+    private Provider<BstatsMetricsConfigurator> metricsConfiguratorProvider;
     @Inject
     private Provider<MVEconomist> economistProvider;
 
@@ -286,7 +283,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void loadPlaceholderApiIntegration() {
         if (configProvider.get().isRegisterPapiHook()
                 && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            Try.run(() -> serviceLocator.getService(MultiverseCorePlaceholders.class))
+            Try.run(() -> serviceLocator.getService(PlaceholderExpansionHook.class))
                     .onFailure(e -> {
                         Logging.severe("Failed to load PlaceholderAPI integration.");
                         e.printStackTrace();

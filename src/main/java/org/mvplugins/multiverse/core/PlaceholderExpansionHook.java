@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.placeholders;
+package org.mvplugins.multiverse.core;
 
 import io.vavr.control.Option;
 import jakarta.annotation.PostConstruct;
@@ -11,20 +11,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-public final class MultiverseCorePlaceholders extends PlaceholderExpansion {
+final class PlaceholderExpansionHook extends PlaceholderExpansion {
 
     private final MultiverseCore plugin;
     private final WorldManager worldManager;
     private final MVEconomist economist;
 
     @Inject
-    public MultiverseCorePlaceholders(MultiverseCore plugin, WorldManager worldManager, MVEconomist economist) {
+    public PlaceholderExpansionHook(MultiverseCore plugin, WorldManager worldManager, MVEconomist economist) {
         this.plugin = plugin;
         this.worldManager = worldManager;
         this.economist = economist;

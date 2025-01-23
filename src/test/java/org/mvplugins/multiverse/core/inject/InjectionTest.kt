@@ -7,17 +7,15 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandManager
 import org.mvplugins.multiverse.core.config.MVCoreConfig
 import org.mvplugins.multiverse.core.destination.Destination
 import org.mvplugins.multiverse.core.economy.MVEconomist
-import org.mvplugins.multiverse.core.listeners.*
+import org.mvplugins.multiverse.core.listeners.CoreListener
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter
 import org.mvplugins.multiverse.core.teleportation.BlockSafety
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue
-import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator
 import org.mvplugins.multiverse.core.world.WorldManager
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 
 class InjectionTest : TestWithMockBukkit() {
 
@@ -86,11 +84,5 @@ class InjectionTest : TestWithMockBukkit() {
     fun `Destinations are available as services`() {
         val destinations = serviceLocator.getAllActiveServices(Destination::class.java)
         assertEquals(6, destinations.size)
-    }
-
-    @Test
-    fun `MetricsConfigurator is not available as a service`() {
-        // Also making sure this is not loaded automatically since it's supposed to be disabled during tests
-        assertNull(serviceLocator.getActiveService(MetricsConfigurator::class.java))
     }
 }

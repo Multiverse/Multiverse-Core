@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world.config;
+package org.mvplugins.multiverse.core.world;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
  * Manages the worlds.yml file.
  */
 @Service
-public final class WorldsConfigManager {
+final class WorldsConfigManager {
     private static final String CONFIG_FILENAME = "worlds.yml";
 
     private final SortedMap<String, WorldConfig> worldConfigMap;

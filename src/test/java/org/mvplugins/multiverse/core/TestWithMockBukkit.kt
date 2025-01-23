@@ -7,8 +7,6 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.mockbukkit.mockbukkit.MockBukkit
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator
 import org.mvplugins.multiverse.core.mock.MVServerMock
-import org.mvplugins.multiverse.core.utils.TestingMode
-import java.io.File
 import kotlin.test.*
 
 /**

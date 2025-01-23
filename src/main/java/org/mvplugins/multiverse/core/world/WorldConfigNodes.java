@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world.config;
+package org.mvplugins.multiverse.core.world;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,15 +16,16 @@ import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.configuration.functions.NodeSerializer;
 import org.mvplugins.multiverse.core.event.MVWorldPropertyChangeEvent;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.ListConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.utils.MaterialConverter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
+import org.mvplugins.multiverse.core.world.location.NullLocation;
+import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
  * Represents nodes in a world configuration.
@@ -115,7 +116,33 @@ final class WorldConfigNodes {
     final ConfigNode<Biome> BIOME = node(ConfigNode.builder("biome", Biome.class)
             .defaultValue(Biome.CUSTOM)
             .name(null)
-            .serializer(new BiomeSerializer()));
+            .serializer(new NodeSerializer<>() {
+                private static final String VANILLA_BIOME_BEHAVIOUR = "@vanilla";
+
+                @Override
+                public Biome deserialize(Object object, Class<Biome> type) {
+                    if (object instanceof Biome) {
+                        return (Biome) object;
+                    }
+                    try {
+                        String biomeStr = String.valueOf(object);
+                        if (biomeStr.equalsIgnoreCase(VANILLA_BIOME_BEHAVIOUR)) {
+                            return null;
+                        }
+                        return Biome.valueOf(biomeStr.toUpperCase());
+                    } catch (IllegalArgumentException e) {
+                        return null;
+                    }
+                }
+
+                @Override
+                public Object serialize(Biome biome, Class<Biome> type) {
+                    if (biome == null || biome == Biome.CUSTOM) {
+                        return VANILLA_BIOME_BEHAVIOUR;
+                    }
+                    return biome.name().toLowerCase();
+                }
+            }));
 
     final ConfigNode<Difficulty> DIFFICULTY = node(ConfigNode.builder("difficulty", Difficulty.class)
             .defaultValue(Difficulty.NORMAL)
@@ -135,7 +162,29 @@ final class WorldConfigNodes {
     final ConfigNode<Material> ENTRY_FEE_CURRENCY = node(ConfigNode.builder("entry-fee.currency", Material.class)
             .defaultValue(MVEconomist.VAULT_ECONOMY_MATERIAL)
             .name("entryfee-currency")
-            .serializer(new CurrencySerializer()));
+            .serializer(new NodeSerializer<>() {
+                @Override
+                public Material deserialize(Object object, Class<Material> type) {
+                    return Option.of(object)
+                            .map(String::valueOf)
+                            .map(materialStr -> {
+                                if (materialStr.equalsIgnoreCase(MVEconomist.VAULT_ECONOMY_CODE)) {
+                                    return MVEconomist.VAULT_ECONOMY_MATERIAL;
+                                }
+                                return MaterialConverter.stringToMaterial(materialStr);
+                            })
+                            .getOrElse(MVEconomist.VAULT_ECONOMY_MATERIAL);
+                }
+
+                @Override
+                public Object serialize(Material object, Class<Material> type) {
+                    return Option.of(object)
+                            .map(material -> material == MVEconomist.VAULT_ECONOMY_MATERIAL
+                                    ? MVEconomist.VAULT_ECONOMY_CODE
+                                    : material.name())
+                            .getOrElse(MVEconomist.VAULT_ECONOMY_CODE);
+                }
+            }));
 
     final ConfigNode<World.Environment> ENVIRONMENT = node(ConfigNode
             .builder("environment", World.Environment.class)

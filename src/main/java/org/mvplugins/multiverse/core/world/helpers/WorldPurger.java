@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world;
+package org.mvplugins.multiverse.core.world.helpers;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,6 +23,8 @@ import org.bukkit.entity.Squid;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * Used to remove animals from worlds that don't belong there.

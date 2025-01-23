@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world;
+package org.mvplugins.multiverse.core.world.helpers;
 
 import java.io.File;
 import java.util.Set;

@@ -4,4 +4,6 @@ import org.bukkit.event.Listener;
 import org.jvnet.hk2.annotations.Contract;
 
 @Contract
-public interface CoreListener extends Listener { }
+public sealed interface CoreListener extends Listener permits MVChatListener, MVEntityListener, MVLocalesListener,
+        MVPlayerListener, MVPortalListener, MVWeatherListener, MVWorldListener {
+}

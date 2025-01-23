@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world.config;
+package org.mvplugins.multiverse.core.world.location;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * or just a weak reference and it implements {@link ConfigurationSerializable}.
  */
 @SerializableAs("MVSpawnLocation")
-public sealed class SpawnLocation extends Location implements ConfigurationSerializable permits NullLocation {
+public class SpawnLocation extends Location implements ConfigurationSerializable {
     private Reference<World> worldRef;
 
     /**

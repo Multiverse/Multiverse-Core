@@ -9,7 +9,7 @@ import co.aikar.commands.ConditionFailedException;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.world.WorldManager;
-import org.mvplugins.multiverse.core.world.WorldNameChecker;
+import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 
 public class MVCommandConditions {
     static void load(

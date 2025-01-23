@@ -1,5 +1,6 @@
-package org.mvplugins.multiverse.core.utils.metrics;
+package org.mvplugins.multiverse.core;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -8,15 +9,16 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.WordUtils;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.AdvancedPie;
+import org.bstats.charts.MultiLineChart;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-public final class MetricsConfigurator {
+final class BstatsMetricsConfigurator {
 
     private static final int PLUGIN_ID = 7765;
     private static final String NO_GENERATOR_NAME = "N/A";
@@ -25,7 +27,7 @@ public final class MetricsConfigurator {
     private final Metrics metrics;
 
     @Inject
-    private MetricsConfigurator(MultiverseCore plugin, WorldManager worldManager) {
+    private BstatsMetricsConfigurator(MultiverseCore plugin, WorldManager worldManager) {
         this.worldManager = worldManager;
         this.metrics = new Metrics(plugin, PLUGIN_ID);
     }
@@ -47,7 +49,7 @@ public final class MetricsConfigurator {
     private void addCustomGeneratorsMetric() {
         addAdvancedPieMetric("custom_generators", map -> {
             for (MultiverseWorld w : worldManager.getLoadedWorlds()) {
-                MetricsHelper.incrementCount(map, getGeneratorName(w));
+                incrementCount(map, getGeneratorName(w));
             }
         });
     }
@@ -60,7 +62,7 @@ public final class MetricsConfigurator {
     private void addEnvironmentsMetric() {
         addAdvancedPieMetric("environments", map -> {
             for (MultiverseWorld w : worldManager.getLoadedWorlds()) {
-                MetricsHelper.incrementCount(map, titleCaseEnv(w.getEnvironment()));
+                incrementCount(map, titleCaseEnv(w.getEnvironment()));
             }
         });
     }
@@ -78,10 +80,27 @@ public final class MetricsConfigurator {
     }
 
     private void addAdvancedPieMetric(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
-        metrics.addCustomChart(MetricsHelper.createAdvancedPieChart(chartId, metricsFunc));
+        metrics.addCustomChart(createAdvancedPieChart(chartId, metricsFunc));
     }
 
     private void addMultiLineMetric(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
-        metrics.addCustomChart(MetricsHelper.createMultiLineChart(chartId, metricsFunc));
+        metrics.addCustomChart(createMultiLineChart(chartId, metricsFunc));
+    }
+
+    private void incrementCount(Map<String, Integer> map, String key) {
+        Integer count = map.getOrDefault(key, 0);
+        map.put(key, count + 1);
+    }
+
+    private AdvancedPie createAdvancedPieChart(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
+        Map<String, Integer> map = new HashMap<>();
+        metricsFunc.accept(map);
+        return new AdvancedPie(chartId, () -> map);
+    }
+
+    private MultiLineChart createMultiLineChart(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
+        Map<String, Integer> map = new HashMap<>();
+        metricsFunc.accept(map);
+        return new MultiLineChart(chartId, () -> map);
     }
 }

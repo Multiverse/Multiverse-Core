@@ -1,9 +1,11 @@
-package org.mvplugins.multiverse.core.world.config;
+package org.mvplugins.multiverse.core.world;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
+import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -22,16 +24,17 @@ import org.mvplugins.multiverse.core.configuration.migration.DeleteMigratorActio
 import org.mvplugins.multiverse.core.configuration.migration.DoubleMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.IntegerMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.LongMigratorAction;
+import org.mvplugins.multiverse.core.configuration.migration.MigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.MoveMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.NullStringMigratorAction;
 import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
  * Represents a world configuration.
  */
-public final class WorldConfig {
+final class WorldConfig {
 
     private final String worldName;
     private final WorldConfigNodes configNodes;
@@ -110,298 +113,398 @@ public final class WorldConfig {
                 .build();
     }
 
-    public Try<Void> load() {
+    Try<Void> load() {
         return configHandle.load();
     }
 
-    public Try<Void> load(ConfigurationSection section) {
+    Try<Void> load(ConfigurationSection section) {
         return configHandle.load(section);
     }
 
-    public StringPropertyHandle getStringPropertyHandle() {
+    StringPropertyHandle getStringPropertyHandle() {
         return stringPropertyHandle;
     }
 
-    public String getWorldName() {
+    String getWorldName() {
         return worldName;
     }
 
-    public boolean getAdjustSpawn() {
+    boolean getAdjustSpawn() {
         return configHandle.get(configNodes.ADJUST_SPAWN);
     }
 
-    public Try<Void> setAdjustSpawn(boolean adjustSpawn) {
+    Try<Void> setAdjustSpawn(boolean adjustSpawn) {
         return configHandle.set(configNodes.ADJUST_SPAWN, adjustSpawn);
     }
 
-    public @Nullable String getAlias() {
+    @Nullable String getAlias() {
         return configHandle.get(configNodes.ALIAS);
     }
 
-    public Try<Void> setAlias(String alias) {
+    Try<Void> setAlias(String alias) {
         return configHandle.set(configNodes.ALIAS, alias);
     }
 
-    public boolean getAllowFlight() {
+    boolean getAllowFlight() {
         return configHandle.get(configNodes.ALLOW_FLIGHT);
     }
 
-    public Try<Void> setAllowFlight(boolean allowFlight) {
+    Try<Void> setAllowFlight(boolean allowFlight) {
         return configHandle.set(configNodes.ALLOW_FLIGHT, allowFlight);
     }
 
-    public boolean getAllowWeather() {
+    boolean getAllowWeather() {
         return configHandle.get(configNodes.ALLOW_WEATHER);
     }
 
-    public Try<Void> setAllowWeather(boolean allowWeather) {
+    Try<Void> setAllowWeather(boolean allowWeather) {
         return configHandle.set(configNodes.ALLOW_WEATHER, allowWeather);
     }
-    public boolean getAnchorRespawn() {
+    boolean getAnchorRespawn() {
         return configHandle.get(configNodes.ANCHOR_RESPAWN);
     }
 
-    public Try<Void> setAnchorSpawn(boolean anchorSpawn) {
+    Try<Void> setAnchorSpawn(boolean anchorSpawn) {
         return configHandle.set(configNodes.ANCHOR_RESPAWN, anchorSpawn);
     }
 
-    public boolean getAutoHeal() {
+    boolean getAutoHeal() {
         return configHandle.get(configNodes.AUTO_HEAL);
     }
 
-    public Try<Void> setAutoHeal(boolean autoHeal) {
+    Try<Void> setAutoHeal(boolean autoHeal) {
         return configHandle.set(configNodes.AUTO_HEAL, autoHeal);
     }
 
-    public boolean getAutoLoad() {
+    boolean getAutoLoad() {
         return configHandle.get(configNodes.AUTO_LOAD);
     }
 
-    public Try<Void> setAutoLoad(boolean autoLoad) {
+    Try<Void> setAutoLoad(boolean autoLoad) {
         return configHandle.set(configNodes.AUTO_LOAD, autoLoad);
     }
 
-    public Biome getBiome() {
+    Biome getBiome() {
         return configHandle.get(configNodes.BIOME);
     }
 
-    public Try<Void> setBiome(Biome biome) {
+    Try<Void> setBiome(Biome biome) {
         return configHandle.set(configNodes.BIOME, biome);
     }
 
-    public boolean getBedRespawn() {
+    boolean getBedRespawn() {
         return configHandle.get(configNodes.BED_RESPAWN);
     }
 
-    public Try<Void> setBedRespawn(boolean bedRespawn) {
+    Try<Void> setBedRespawn(boolean bedRespawn) {
         return configHandle.set(configNodes.BED_RESPAWN, bedRespawn);
     }
 
-    public Difficulty getDifficulty() {
+    Difficulty getDifficulty() {
         return configHandle.get(configNodes.DIFFICULTY);
     }
 
-    public Try<Void> setDifficulty(Difficulty difficulty) {
+    Try<Void> setDifficulty(Difficulty difficulty) {
         return configHandle.set(configNodes.DIFFICULTY, difficulty);
     }
 
-    public boolean isEntryFeeEnabled() {
+    boolean isEntryFeeEnabled() {
         return configHandle.get(configNodes.ENTRY_FEE_ENABLED);
     }
 
-    public Try<Void> setEntryFeeEnabled(boolean entryFeeEnabled) {
+    Try<Void> setEntryFeeEnabled(boolean entryFeeEnabled) {
         return configHandle.set(configNodes.ENTRY_FEE_ENABLED, entryFeeEnabled);
     }
 
-    public double getEntryFeeAmount() {
+    double getEntryFeeAmount() {
         return configHandle.get(configNodes.ENTRY_FEE_AMOUNT);
     }
 
-    public Try<Void> setEntryFeeAmount(double entryFeeAmount) {
+    Try<Void> setEntryFeeAmount(double entryFeeAmount) {
         return configHandle.set(configNodes.ENTRY_FEE_AMOUNT, entryFeeAmount);
     }
 
-    public Material getEntryFeeCurrency() {
+    Material getEntryFeeCurrency() {
         return configHandle.get(configNodes.ENTRY_FEE_CURRENCY);
     }
 
-    public Try<Void> setEntryFeeCurrency(Material entryFeeCurrency) {
+    Try<Void> setEntryFeeCurrency(Material entryFeeCurrency) {
         return configHandle.set(configNodes.ENTRY_FEE_CURRENCY, entryFeeCurrency);
     }
 
-    public World.Environment getEnvironment() {
+    World.Environment getEnvironment() {
         return configHandle.get(configNodes.ENVIRONMENT);
     }
 
-    public Try<Void> setEnvironment(World.Environment environment) {
+    Try<Void> setEnvironment(World.Environment environment) {
         return configHandle.set(configNodes.ENVIRONMENT, environment);
     }
 
-    public GameMode getGameMode() {
+    GameMode getGameMode() {
         return configHandle.get(configNodes.GAMEMODE);
     }
 
-    public Try<Void> setGameMode(GameMode gamemode) {
+    Try<Void> setGameMode(GameMode gamemode) {
         return configHandle.set(configNodes.GAMEMODE, gamemode);
     }
 
-    public @Nullable String getGenerator() {
+    @Nullable String getGenerator() {
         return configHandle.get(configNodes.GENERATOR);
     }
 
-    public Try<Void> setGenerator(String generator) {
+    Try<Void> setGenerator(String generator) {
         return configHandle.set(configNodes.GENERATOR, generator);
     }
 
-    public boolean isHidden() {
+    boolean isHidden() {
         return configHandle.get(configNodes.HIDDEN);
     }
 
-    public Try<Void> setHidden(boolean hidden) {
+    Try<Void> setHidden(boolean hidden) {
         return configHandle.set(configNodes.HIDDEN, hidden);
     }
 
-    public boolean getHunger() {
+    boolean getHunger() {
         return configHandle.get(configNodes.HUNGER);
     }
 
-    public Try<Void> setHunger(boolean hunger) {
+    Try<Void> setHunger(boolean hunger) {
         return configHandle.set(configNodes.HUNGER, hunger);
     }
 
-    public boolean getKeepSpawnInMemory() {
+    boolean getKeepSpawnInMemory() {
         return configHandle.get(configNodes.KEEP_SPAWN_IN_MEMORY);
     }
 
-    public Try<Void> setKeepSpawnInMemory(boolean keepSpawnInMemory) {
+    Try<Void> setKeepSpawnInMemory(boolean keepSpawnInMemory) {
         return configHandle.set(configNodes.KEEP_SPAWN_IN_MEMORY, keepSpawnInMemory);
     }
 
-    public int getPlayerLimit() {
+    int getPlayerLimit() {
         return configHandle.get(configNodes.PLAYER_LIMIT);
     }
 
-    public Try<Void> setPlayerLimit(int playerLimit) {
+    Try<Void> setPlayerLimit(int playerLimit) {
         return configHandle.set(configNodes.PLAYER_LIMIT, playerLimit);
     }
 
-    public AllowedPortalType getPortalForm() {
+    AllowedPortalType getPortalForm() {
         return configHandle.get(configNodes.PORTAL_FORM);
     }
 
-    public Try<Void> setPortalForm(AllowedPortalType portalForm) {
+    Try<Void> setPortalForm(AllowedPortalType portalForm) {
         return configHandle.set(configNodes.PORTAL_FORM, portalForm);
     }
 
-    public boolean getPvp() {
+    boolean getPvp() {
         return configHandle.get(configNodes.PVP);
     }
 
-    public Try<Void> setPvp(boolean pvp) {
+    Try<Void> setPvp(boolean pvp) {
         return configHandle.set(configNodes.PVP, pvp);
     }
 
-    public String getRespawnWorld() {
+    String getRespawnWorld() {
         return configHandle.get(configNodes.RESPAWN_WORLD);
     }
 
-    public Try<Void> setRespawnWorld(String respawnWorld) {
+    Try<Void> setRespawnWorld(String respawnWorld) {
         return configHandle.set(configNodes.RESPAWN_WORLD, respawnWorld);
     }
 
-    public double getScale() {
+    double getScale() {
         return configHandle.get(configNodes.SCALE);
     }
 
-    public Try<Void> setScale(double scale) {
+    Try<Void> setScale(double scale) {
         return configHandle.set(configNodes.SCALE, scale);
     }
 
-    public long getSeed() {
+    long getSeed() {
         return configHandle.get(configNodes.SEED);
     }
 
-    public Try<Void> setSeed(long seed) {
+    Try<Void> setSeed(long seed) {
         return configHandle.set(configNodes.SEED, seed);
     }
 
-    public SpawnLocation getSpawnLocation() {
+    SpawnLocation getSpawnLocation() {
         return configHandle.get(configNodes.SPAWN_LOCATION);
     }
 
-    public Try<Void> setSpawnLocation(SpawnLocation spawnLocation) {
+    Try<Void> setSpawnLocation(SpawnLocation spawnLocation) {
         return configHandle.set(configNodes.SPAWN_LOCATION, spawnLocation);
     }
 
-    public boolean getSpawningAnimals() {
+    boolean getSpawningAnimals() {
         return configHandle.get(configNodes.SPAWNING_ANIMALS);
     }
 
-    public Try<Void> setSpawningAnimals(boolean spawningAnimals) {
+    Try<Void> setSpawningAnimals(boolean spawningAnimals) {
         return configHandle.set(configNodes.SPAWNING_ANIMALS, spawningAnimals);
     }
 
-    public int getSpawningAnimalsTicks() {
+    int getSpawningAnimalsTicks() {
         return configHandle.get(configNodes.SPAWNING_ANIMALS_TICKS);
     }
 
-    public Try<Void> setSpawningAnimalsTicks(int spawningAnimalsAmount) {
+    Try<Void> setSpawningAnimalsTicks(int spawningAnimalsAmount) {
         return configHandle.set(configNodes.SPAWNING_ANIMALS_TICKS, spawningAnimalsAmount);
     }
 
-    public List<String> getSpawningAnimalsExceptions() {
+    List<String> getSpawningAnimalsExceptions() {
         return configHandle.get(configNodes.SPAWNING_ANIMALS_EXCEPTIONS);
     }
 
-    public Try<Void> setSpawningAnimalsExceptions(List<String> spawningAnimalsExceptions) {
+    Try<Void> setSpawningAnimalsExceptions(List<String> spawningAnimalsExceptions) {
         return configHandle.set(configNodes.SPAWNING_ANIMALS_EXCEPTIONS, spawningAnimalsExceptions);
     }
 
-    public boolean getSpawningMonsters() {
+    boolean getSpawningMonsters() {
         return configHandle.get(configNodes.SPAWNING_MONSTERS);
     }
 
-    public Try<Void> setSpawningMonsters(boolean spawningMonsters) {
+    Try<Void> setSpawningMonsters(boolean spawningMonsters) {
         return configHandle.set(configNodes.SPAWNING_MONSTERS, spawningMonsters);
     }
 
-    public int getSpawningMonstersTicks() {
+    int getSpawningMonstersTicks() {
         return configHandle.get(configNodes.SPAWNING_MONSTERS_TICKS);
     }
 
-    public Try<Void> setSpawningMonstersTicks(int spawningMonstersAmount) {
+    Try<Void> setSpawningMonstersTicks(int spawningMonstersAmount) {
         return configHandle.set(configNodes.SPAWNING_MONSTERS_TICKS, spawningMonstersAmount);
     }
 
-    public List<String> getSpawningMonstersExceptions() {
+    List<String> getSpawningMonstersExceptions() {
         return configHandle.get(configNodes.SPAWNING_MONSTERS_EXCEPTIONS);
     }
 
-    public Try<Void> setSpawningMonstersExceptions(List<String> spawningMonstersExceptions) {
+    Try<Void> setSpawningMonstersExceptions(List<String> spawningMonstersExceptions) {
         return configHandle.set(configNodes.SPAWNING_MONSTERS_EXCEPTIONS, spawningMonstersExceptions);
     }
 
-    public List<String> getWorldBlacklist() {
+    List<String> getWorldBlacklist() {
         return configHandle.get(configNodes.WORLD_BLACKLIST);
     }
 
-    public Try<Void> setWorldBlacklist(List<String> worldBlacklist) {
+    Try<Void> setWorldBlacklist(List<String> worldBlacklist) {
         return configHandle.set(configNodes.WORLD_BLACKLIST, worldBlacklist);
     }
 
-    public void setMVWorld(@NotNull MultiverseWorld world) {
+    void setMVWorld(@NotNull MultiverseWorld world) {
         configNodes.setWorld(world);
     }
 
-    public boolean isLoadedWorld() {
+    boolean isLoadedWorld() {
         return configNodes.getWorld() instanceof LoadedMultiverseWorld;
     }
 
-    public void deferenceMVWorld() {
+    void deferenceMVWorld() {
         configNodes.setWorld(null);
     }
 
     ConfigurationSection getConfigurationSection() {
         return configHandle.getConfig();
+    }
+
+    /**
+     * Migrates the entry fee settings. Assumes entry fee is disabled if currency is not set.
+     */
+    static final class EntryFeeMigrator implements MigratorAction {
+        @Override
+        public void migrate(ConfigurationSection config) {
+            String currency = config.getString("entry-fee.currency", "");
+            Logging.info("Entry fee currency: %s", currency);
+            if (currency.isEmpty()) {
+                config.set("entry-fee.enabled", false);
+                config.set("entry-fee.currency", MVEconomist.VAULT_ECONOMY_CODE);
+            } else {
+                config.set("entry-fee.enabled", true);
+            }
+        }
+    }
+
+    /**
+     * Migrates the alias settings.
+     */
+    private static final class LegacyAliasMigrator implements MigratorAction {
+        @Override
+        public void migrate(ConfigurationSection config) {
+            AtomicReference<String> alias = new AtomicReference<>(config.getString("alias", ""));
+            String color = config.getString("color", "");
+            String style = config.getString("style", "");
+            config.set("color", null);
+            config.set("style", null);
+
+            if (alias.get().isEmpty()) return;
+
+            Try.of(() -> Enum.valueOf(EnglishChatColor.class, color.toUpperCase()))
+                    .map(c -> c.color)
+                    .onSuccess(c -> {
+                        if (c != ChatColor.WHITE) {
+                            alias.set("&" + c.getChar() + alias.get());
+                        }
+                    });
+
+            Try.of(() -> Enum.valueOf(EnglishChatStyle.class, style.toUpperCase()))
+                    .map(c -> c.color)
+                    .onSuccess(s -> {
+                        if (s != null) {
+                            alias.set("&" + s.getChar() + alias.get());
+                        }
+                    });
+
+            config.set("alias", alias.get());
+        }
+
+        private enum EnglishChatColor {
+            // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
+            AQUA(ChatColor.AQUA),
+            BLACK(ChatColor.BLACK),
+            BLUE(ChatColor.BLUE),
+            DARKAQUA(ChatColor.DARK_AQUA),
+            DARKBLUE(ChatColor.DARK_BLUE),
+            DARKGRAY(ChatColor.DARK_GRAY),
+            DARKGREEN(ChatColor.DARK_GREEN),
+            DARKPURPLE(ChatColor.DARK_PURPLE),
+            DARKRED(ChatColor.DARK_RED),
+            GOLD(ChatColor.GOLD),
+            GRAY(ChatColor.GRAY),
+            GREEN(ChatColor.GREEN),
+            LIGHTPURPLE(ChatColor.LIGHT_PURPLE),
+            RED(ChatColor.RED),
+            YELLOW(ChatColor.YELLOW),
+            WHITE(ChatColor.WHITE);
+            // END CHECKSTYLE-SUPPRESSION: JavadocVariable
+
+            private final ChatColor color;
+            //private final String text;
+
+            EnglishChatColor(ChatColor color) {
+                this.color = color;
+            }
+        }
+
+        private enum EnglishChatStyle {
+            // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
+            /**
+             * No style.
+             */
+            NORMAL(null),
+            MAGIC(ChatColor.MAGIC),
+            BOLD(ChatColor.BOLD),
+            STRIKETHROUGH(ChatColor.STRIKETHROUGH),
+            UNDERLINE(ChatColor.UNDERLINE),
+            ITALIC(ChatColor.ITALIC);
+            // END CHECKSTYLE-SUPPRESSION: JavadocVariable
+
+            private final ChatColor color;
+
+            EnglishChatStyle(ChatColor color) {
+                this.color = color;
+            }
+
+        }
     }
 }

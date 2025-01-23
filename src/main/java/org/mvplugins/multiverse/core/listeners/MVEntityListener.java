@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.world.WorldManager;
-import org.mvplugins.multiverse.core.world.WorldPurger;
+import org.mvplugins.multiverse.core.world.helpers.WorldPurger;
 
 /**
  * Multiverse's Entity {@link Listener}.

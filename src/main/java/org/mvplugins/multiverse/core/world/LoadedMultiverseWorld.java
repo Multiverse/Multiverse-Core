@@ -15,9 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
-import org.mvplugins.multiverse.core.world.config.NullLocation;
-import org.mvplugins.multiverse.core.world.config.SpawnLocation;
-import org.mvplugins.multiverse.core.world.config.WorldConfig;
+import org.mvplugins.multiverse.core.world.location.NullLocation;
+import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
  * Extension of {@link MultiverseWorld} that represents a world that is currently loaded with bukkit world object.

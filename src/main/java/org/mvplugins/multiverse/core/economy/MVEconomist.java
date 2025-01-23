@@ -15,6 +15,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
  */
 @Service
 public final class MVEconomist {
+    public static final String VAULT_ECONOMY_CODE = "@vault-economy";
     public static final Material VAULT_ECONOMY_MATERIAL = Material.AIR;
 
     private final VaultHandler vaultHandler;
