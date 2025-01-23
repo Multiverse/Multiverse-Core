@@ -10,22 +10,22 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporter;
-import org.mvplugins.multiverse.core.api.teleportation.TeleportFailureReason;
-import org.mvplugins.multiverse.core.api.result.Async;
-import org.mvplugins.multiverse.core.api.result.Attempt;
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
+import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
+import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * Handles all player actions that need to be done when a change in world related activity occurs.
  */
 @Service
-public class PlayerWorldTeleporter {
-    private final SafetyTeleporter safetyTeleporter;
+public final class PlayerWorldTeleporter {
+    private final AsyncSafetyTeleporter safetyTeleporter;
 
     @Inject
-    PlayerWorldTeleporter(@NotNull SafetyTeleporter safetyTeleporter) {
+    PlayerWorldTeleporter(@NotNull AsyncSafetyTeleporter safetyTeleporter) {
         this.safetyTeleporter = safetyTeleporter;
     }
 

@@ -5,7 +5,6 @@ import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mvplugins.multiverse.core.api.world.generators.GeneratorPlugin;
 
 /**
  * A default implementation of {@link GeneratorPlugin} for those generator plugins that do not provide their own

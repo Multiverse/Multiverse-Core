@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
@@ -28,10 +27,11 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
+import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
 @Service
 @CommandAlias("mv")
-class AnchorListCommand extends CoreCommand {
+final class AnchorListCommand extends CoreCommand {
 
     private final AnchorManager anchorManager;
     private final LocationManipulation locationManipulation;

@@ -17,7 +17,7 @@ import org.jvnet.hk2.annotations.Service;
  * 100% determine that a world name can be created, loaded or imported.</p>
  */
 @Service
-public class WorldNameChecker {
+public final class WorldNameChecker {
 
     private static final Pattern WORLD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
     private static final Set<String> BLACKLIST_NAMES = Set.of(

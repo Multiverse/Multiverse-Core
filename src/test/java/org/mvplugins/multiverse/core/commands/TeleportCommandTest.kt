@@ -1,7 +1,7 @@
 package org.mvplugins.multiverse.core.commands
 
 import org.bukkit.Bukkit
-import org.mvplugins.multiverse.core.api.world.options.CreateWorldOptions
+import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertTrue

@@ -26,14 +26,14 @@ import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
 /**
  * Manages anchors.
  */
 @Service
-public class AnchorManager {
+public final class AnchorManager {
     private Map<String, Location> anchors;
     private FileConfiguration anchorConfig;
 

@@ -1,7 +1,7 @@
 package org.mvplugins.multiverse.core.config
 
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.api.commandtools.ConfirmMode
+import org.mvplugins.multiverse.core.commandtools.ConfirmMode
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
@@ -9,7 +9,7 @@ import kotlin.test.*
 
 class ConfigTest : TestWithMockBukkit() {
 
-    private lateinit var config : SimpleMVCoreConfig
+    private lateinit var config : MVCoreConfig
     private lateinit var configFile : File
 
     @BeforeTest
@@ -17,7 +17,7 @@ class ConfigTest : TestWithMockBukkit() {
         configFile = File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString())
         if (configFile.exists()) configFile.delete()
 
-        config = serviceLocator.getActiveService(SimpleMVCoreConfig::class.java).takeIf { it != null } ?: run {
+        config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
 
         assertTrue(config.load().isSuccess)

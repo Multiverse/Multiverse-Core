@@ -7,25 +7,28 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.api.destination.Destination;
-import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.api.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.concatPermission;
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.hasPermission;
 
 @Service
-public class CorePermissionsChecker {
+public final class CorePermissionsChecker {
 
     private final MVCoreConfig config;
     private final DestinationsProvider destinationsProvider;
     private final WorldManager worldManager;
 
     @Inject
-    CorePermissionsChecker(@NotNull MVCoreConfig config, @NotNull DestinationsProvider destinationsProvider, @NotNull WorldManager worldManager) {
+    CorePermissionsChecker(
+            @NotNull MVCoreConfig config,
+            @NotNull DestinationsProvider destinationsProvider,
+            @NotNull WorldManager worldManager) {
         this.config = config;
         this.destinationsProvider = destinationsProvider;
         this.worldManager = worldManager;

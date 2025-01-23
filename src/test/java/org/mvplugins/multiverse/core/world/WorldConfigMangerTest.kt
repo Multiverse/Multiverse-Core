@@ -5,7 +5,7 @@ import org.bukkit.Material
 import org.bukkit.World.Environment
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.economy.MVEconomist
-import org.mvplugins.multiverse.core.api.world.config.SpawnLocation
+import org.mvplugins.multiverse.core.world.config.SpawnLocation
 import org.mvplugins.multiverse.core.world.config.WorldsConfigManager
 import java.io.File
 import java.nio.file.Path

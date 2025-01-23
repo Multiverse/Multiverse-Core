@@ -30,19 +30,19 @@ import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.api.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.api.teleportation.BlockSafety;
-import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporter;
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
-import org.mvplugins.multiverse.core.api.event.MVRespawnEvent;
+import org.mvplugins.multiverse.core.event.MVRespawnEvent;
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
+import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.EntryFeeResult;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
@@ -52,12 +52,12 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
  * Multiverse's Listener for players.
  */
 @Service
-public class MVPlayerListener implements CoreListener {
+final class MVPlayerListener implements CoreListener {
     private final Plugin plugin;
     private final MVCoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
     private final BlockSafety blockSafety;
-    private final SafetyTeleporter safetyTeleporter;
+    private final AsyncSafetyTeleporter safetyTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
     private final MVEconomist economist;
@@ -74,7 +74,7 @@ public class MVPlayerListener implements CoreListener {
             MVCoreConfig config,
             Provider<WorldManager> worldManagerProvider,
             BlockSafety blockSafety,
-            SafetyTeleporter safetyTeleporter,
+            AsyncSafetyTeleporter safetyTeleporter,
             Server server,
             TeleportQueue teleportQueue,
             MVEconomist economist,

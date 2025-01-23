@@ -1,11 +1,11 @@
 package org.mvplugins.multiverse.core.commands
 
 import org.bukkit.Bukkit
-import org.mvplugins.multiverse.core.api.commandtools.ConfirmMode
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld
-import org.mvplugins.multiverse.core.config.SimpleMVCoreConfig
-import org.mvplugins.multiverse.core.api.world.options.CreateWorldOptions
-import org.mvplugins.multiverse.core.api.world.options.UnloadWorldOptions
+import org.mvplugins.multiverse.core.commandtools.ConfirmMode
+import org.mvplugins.multiverse.core.config.MVCoreConfig
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld
+import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
+import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -18,7 +18,7 @@ class DeleteCommandTest : AbstractCommandTest() {
     @BeforeTest
     fun setUp() {
         // Disable confirmation to make tests easier
-        val config = serviceLocator.getActiveService(SimpleMVCoreConfig::class.java).takeIf { it != null } ?: run {
+        val config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
         config.confirmMode = ConfirmMode.DISABLE
 

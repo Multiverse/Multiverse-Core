@@ -16,23 +16,20 @@ import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.api.event.MVWorldPropertyChangeEvent;
-import org.mvplugins.multiverse.core.api.world.config.AllowedPortalType;
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
+import org.mvplugins.multiverse.core.event.MVWorldPropertyChangeEvent;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.ListConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.world.SimpleWorldManager;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 
 /**
  * Represents nodes in a world configuration.
  */
-public class WorldConfigNodes {
+final class WorldConfigNodes {
     private static final double CONFIG_VERSION = 1.0;
 
     private final NodeGroup nodes = new NodeGroup();
@@ -41,7 +38,7 @@ public class WorldConfigNodes {
     private MultiverseWorld world = null;
 
     WorldConfigNodes(@NotNull MultiverseCore multiverseCore) {
-        this.worldManager = multiverseCore.getServiceLocator().getService(SimpleWorldManager.class);
+        this.worldManager = multiverseCore.getServiceLocator().getService(WorldManager.class);
         this.enforcementHandler = multiverseCore.getServiceLocator().getService(EnforcementHandler.class);
     }
 
@@ -53,7 +50,7 @@ public class WorldConfigNodes {
         this.world = world;
     }
 
-    public NodeGroup getNodes() {
+    NodeGroup getNodes() {
         return nodes;
     }
 

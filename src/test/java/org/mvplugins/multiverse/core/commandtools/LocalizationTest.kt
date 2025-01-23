@@ -12,10 +12,11 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.config.SimpleMVCoreConfig
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n
-import org.mvplugins.multiverse.core.api.locale.message.Message
-import org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace
+import org.mvplugins.multiverse.core.config.MVCoreConfig
+import org.mvplugins.multiverse.core.locale.MVCorei18n
+import org.mvplugins.multiverse.core.locale.PluginLocales
+import org.mvplugins.multiverse.core.locale.message.Message
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace
 import java.util.Locale
 import kotlin.test.*
 
@@ -314,13 +315,13 @@ class LocalizationTest : TestWithMockBukkit() {
 
     @Nested
     inner class LocaleConfiguration {
-        private lateinit var config: SimpleMVCoreConfig
+        private lateinit var config: MVCoreConfig
         private lateinit var player: PlayerMock
         private lateinit var issuer: MVCommandIssuer
 
         @BeforeTest
         fun setUp() {
-            config = assertNotNull(serviceLocator.getActiveService(SimpleMVCoreConfig::class.java))
+            config = assertNotNull(serviceLocator.getActiveService(MVCoreConfig::class.java))
             player = server.addPlayer("benji_0224")
             issuer = commandManager.getCommandIssuer(player)
         }

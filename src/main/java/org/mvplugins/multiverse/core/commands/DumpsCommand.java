@@ -28,18 +28,18 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.api.event.MVDumpsDebugInfoEvent;
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.utils.file.FileUtils;
+import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.FileUtils;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteFailedException;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteService;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceFactory;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceType;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
-class DumpsCommand extends CoreCommand {
+final class DumpsCommand extends CoreCommand {
 
     private final MultiverseCore plugin;
     private final WorldManager worldManager;

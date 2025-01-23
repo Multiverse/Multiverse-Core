@@ -3,9 +3,9 @@ package org.mvplugins.multiverse.core.commands
 import co.aikar.commands.MessageKeys
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n
-import org.mvplugins.multiverse.core.api.locale.message.Message
-import org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace
+import org.mvplugins.multiverse.core.locale.MVCorei18n
+import org.mvplugins.multiverse.core.locale.message.Message
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

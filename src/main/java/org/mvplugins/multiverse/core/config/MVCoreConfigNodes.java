@@ -7,18 +7,18 @@ import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.api.commandtools.ConfirmMode;
+import org.mvplugins.multiverse.core.commandtools.ConfirmMode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
-import org.mvplugins.multiverse.core.api.event.MVDebugModeEvent;
-import org.mvplugins.multiverse.core.api.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
+import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
 
 import java.util.Locale;
 
-class MVCoreConfigNodes {
+final class MVCoreConfigNodes {
 
     private final NodeGroup nodes = new NodeGroup();
     private PluginManager pluginManager;
@@ -29,7 +29,7 @@ class MVCoreConfigNodes {
         this.commandManager = commandManager;
     }
 
-    public NodeGroup getNodes() {
+    NodeGroup getNodes() {
         return nodes;
     }
 

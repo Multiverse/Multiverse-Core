@@ -10,8 +10,8 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.api.destination.Destination;
-import org.mvplugins.multiverse.core.api.destination.DestinationSuggestionPacket;
+import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 
 /**
  * {@link Destination} implementation for anchors.

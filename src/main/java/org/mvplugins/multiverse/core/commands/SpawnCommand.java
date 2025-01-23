@@ -7,17 +7,17 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporter;
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
-import org.mvplugins.multiverse.core.api.teleportation.TeleportFailureReason;
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.api.locale.message.Message;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
+import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,14 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace;
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
-class SpawnCommand extends CoreCommand {
+final class SpawnCommand extends CoreCommand {
 
     private final WorldManager worldManager;
-    private final SafetyTeleporter safetyTeleporter;
+    private final AsyncSafetyTeleporter safetyTeleporter;
     private final CorePermissionsChecker permissionsChecker;
 
     private final CommandFlag UNSAFE_FLAG = flag(CommandFlag.builder("--unsafe")
@@ -42,7 +42,7 @@ class SpawnCommand extends CoreCommand {
     @Inject
     SpawnCommand(@NotNull MVCommandManager commandManager,
                  @NotNull WorldManager worldManager,
-                 @NotNull SafetyTeleporter safetyTeleporter,
+                 @NotNull AsyncSafetyTeleporter safetyTeleporter,
                  @NotNull CorePermissionsChecker permissionsChecker) {
         super(commandManager);
         this.worldManager = worldManager;

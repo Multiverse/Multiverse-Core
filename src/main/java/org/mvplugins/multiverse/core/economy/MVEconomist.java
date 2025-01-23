@@ -4,18 +4,17 @@ import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * Multiverse's Friendly Economist. This is used to deal with external economies and also item costs for stuff in MV.
  */
 @Service
-public class MVEconomist {
+public final class MVEconomist {
     public static final Material VAULT_ECONOMY_MATERIAL = Material.AIR;
 
     private final VaultHandler vaultHandler;

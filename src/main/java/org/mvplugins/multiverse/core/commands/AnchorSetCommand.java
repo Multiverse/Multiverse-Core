@@ -15,13 +15,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
+import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
 @Service
 @CommandAlias("mv")
-class AnchorSetCommand extends CoreCommand {
+final class AnchorSetCommand extends CoreCommand {
 
     private final AnchorManager anchorManager;
     private final LocationManipulation locationManipulation;

@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
@@ -25,7 +24,8 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,9 +35,7 @@ import java.util.stream.Collectors;
 
 @Service
 @CommandAlias("mv")
-public class WhoCommand extends CoreCommand {
-
-    private final WorldManager worldManager;
+final public class WhoCommand extends CoreCommand {
 
     private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
             .builder("--page", Integer.class)
@@ -62,6 +60,8 @@ public class WhoCommand extends CoreCommand {
                 }
             })
             .build());
+
+    private final WorldManager worldManager;
 
     @Inject
     WhoCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {

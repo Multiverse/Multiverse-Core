@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @param <T>   The type of the object to transfer data from and to.
  */
-public class DataTransfer<T> {
+public final class DataTransfer<T> {
     private final List<DataStore<T>> dataStores;
 
     /**

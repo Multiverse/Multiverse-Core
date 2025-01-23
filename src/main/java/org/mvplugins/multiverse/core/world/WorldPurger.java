@@ -23,8 +23,6 @@ import org.bukkit.entity.Squid;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 
 /**
  * Used to remove animals from worlds that don't belong there.
@@ -33,7 +31,7 @@ import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
  */
 @Deprecated
 @Service
-public class WorldPurger {
+public final class WorldPurger {
 
     /**
      * Synchronizes the given worlds with their settings.

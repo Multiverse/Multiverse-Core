@@ -1,18 +1,21 @@
 package org.mvplugins.multiverse.core.inject;
 
 import io.vavr.control.Try;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.glassfish.hk2.api.DynamicConfigurationService;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.internal.ServiceLocatorFactoryImpl;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.inject.binder.PluginBinder;
-import org.mvplugins.multiverse.core.inject.binder.ServerBinder;
 
-public class PluginServiceLocatorFactory {
+public final class PluginServiceLocatorFactory {
 
     private final ServiceLocatorFactory serviceLocatorFactory;
     private ServiceLocator baseServiceLocator;
@@ -71,5 +74,13 @@ public class PluginServiceLocatorFactory {
         return Try.of(() -> new PluginServiceLocator(
                 pluginBinder,
                 serviceLocatorFactory.create(pluginBinder.getPlugin().getName(), parentServiceLocator)));
+    }
+
+    private static final class ServerBinder extends AbstractBinder {
+        @Override
+        protected void configure() {
+            bind(Bukkit.getServer()).to(Server.class);
+            bind(Bukkit.getPluginManager()).to(PluginManager.class);
+        }
     }
 }

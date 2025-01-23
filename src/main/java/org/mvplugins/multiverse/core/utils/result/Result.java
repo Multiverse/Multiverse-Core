@@ -5,9 +5,8 @@ import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
 
-import org.mvplugins.multiverse.core.api.locale.message.Message;
-import org.mvplugins.multiverse.core.api.locale.message.MessageReplacement;
-import org.mvplugins.multiverse.core.api.result.FailureReason;
+import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
 /**
  * Represents result of an operation with a reason for success or failure that has localized messages.

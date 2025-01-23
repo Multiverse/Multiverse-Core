@@ -10,7 +10,7 @@ import org.mvplugins.multiverse.core.utils.MaterialConverter;
  * Converts the material name to/from a {@link Material} enum, with the special case of "vault-economy"
  * for world configuration.
  */
-public class CurrencySerializer implements NodeSerializer<Material> {
+final class CurrencySerializer implements NodeSerializer<Material> {
 
     static final String VAULT_ECONOMY_CODE = "@vault-economy";
 

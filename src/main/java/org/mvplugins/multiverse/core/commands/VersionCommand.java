@@ -11,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
-class VersionCommand extends CoreCommand {
+final class VersionCommand extends CoreCommand {
 
     private final MultiverseCore plugin;
 

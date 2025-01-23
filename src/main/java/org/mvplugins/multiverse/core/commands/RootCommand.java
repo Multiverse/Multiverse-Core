@@ -10,10 +10,10 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 
 @Service
-class RootCommand extends CoreCommand {
+final class RootCommand extends CoreCommand {
 
     private final Plugin plugin;
 

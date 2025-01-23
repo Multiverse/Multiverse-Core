@@ -12,11 +12,11 @@ import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-public class MetricsConfigurator {
+public final class MetricsConfigurator {
 
     private static final int PLUGIN_ID = 7765;
     private static final String NO_GENERATOR_NAME = "N/A";

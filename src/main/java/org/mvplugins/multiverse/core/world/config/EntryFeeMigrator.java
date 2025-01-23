@@ -7,7 +7,7 @@ import org.mvplugins.multiverse.core.configuration.migration.MigratorAction;
 /**
  * Migrates the entry fee settings. Assumes entry fee is disabled if currency is not set.
  */
-public class EntryFeeMigrator implements MigratorAction {
+final class EntryFeeMigrator implements MigratorAction {
     @Override
     public void migrate(ConfigurationSection config) {
         String currency = config.getString("entry-fee.currency", "");

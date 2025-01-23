@@ -8,7 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import org.mvplugins.multiverse.core.configuration.migration.MigratorAction;
 
-class LegacyAliasMigrator implements MigratorAction {
+final class LegacyAliasMigrator implements MigratorAction {
     @Override
     public void migrate(ConfigurationSection config) {
         AtomicReference<String> alias = new AtomicReference<>(config.getString("alias", ""));
