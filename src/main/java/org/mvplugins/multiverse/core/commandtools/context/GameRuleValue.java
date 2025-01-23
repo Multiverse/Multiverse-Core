@@ -1,6 +1,9 @@
 package org.mvplugins.multiverse.core.commandtools.context;
 
-public class GameRuleValue {
+/**
+ * Simple wrapper for game rule value, as they may be different types.
+ */
+public final class GameRuleValue {
     private final Object value;
 
     public GameRuleValue(Object value) {

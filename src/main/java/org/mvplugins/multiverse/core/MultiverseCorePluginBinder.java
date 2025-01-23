@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.submodules.MVCore;
 import org.mvplugins.multiverse.core.inject.binder.JavaPluginBinder;
 
-class MultiverseCorePluginBinder extends JavaPluginBinder<MultiverseCore> {
+final class MultiverseCorePluginBinder extends JavaPluginBinder<MultiverseCore> {
 
-    protected MultiverseCorePluginBinder(@NotNull MultiverseCore plugin) {
+    MultiverseCorePluginBinder(@NotNull MultiverseCore plugin) {
         super(plugin);
     }
 

@@ -7,8 +7,8 @@ import co.aikar.locales.MessageKeyProvider;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-import org.mvplugins.multiverse.core.api.locale.message.Message;
-import org.mvplugins.multiverse.core.api.locale.message.MessageReplacement;
+import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
 public class MVCommandIssuer extends OpenBukkitCommandIssuer {
 

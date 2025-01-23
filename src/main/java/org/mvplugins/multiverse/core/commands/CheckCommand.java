@@ -11,19 +11,19 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.api.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
-import static org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace;
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
-class CheckCommand extends CoreCommand {
+final class CheckCommand extends CoreCommand {
 
     private final CorePermissionsChecker corePermissionsChecker;
     private final LocationManipulation locationManipulation;

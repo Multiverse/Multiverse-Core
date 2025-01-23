@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
-public class TeleportQueue {
+public final class TeleportQueue {
 
     private final Map<String, String> teleportQueue;
 

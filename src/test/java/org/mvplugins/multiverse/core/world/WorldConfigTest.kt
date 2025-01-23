@@ -2,8 +2,6 @@ package org.mvplugins.multiverse.core.world
 
 import org.bukkit.Material
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.world.config.WorldConfig
-import org.mvplugins.multiverse.core.world.config.WorldsConfigManager
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString

@@ -17,7 +17,7 @@ import org.mvplugins.multiverse.core.commandtools.MultiverseCommand;
 
 @Service
 @CommandAlias("mv")
-class UsageCommand extends CoreCommand {
+final class UsageCommand extends CoreCommand {
 
     @Inject
     UsageCommand(@NotNull MVCommandManager commandManager) {

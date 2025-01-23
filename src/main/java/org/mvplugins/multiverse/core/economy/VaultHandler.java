@@ -13,7 +13,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 /**
  * A class we use to interface with Vault when it is present.
  */
-class VaultHandler implements Listener {
+final class VaultHandler implements Listener {
 
     private Economy economy;
 

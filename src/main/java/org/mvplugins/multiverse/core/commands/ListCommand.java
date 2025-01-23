@@ -27,14 +27,14 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryChecker;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
 @Service
 @CommandAlias("mv")
-class ListCommand extends CoreCommand {
+final class ListCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;

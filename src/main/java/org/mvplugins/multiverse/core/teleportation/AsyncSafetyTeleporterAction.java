@@ -11,18 +11,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mvplugins.multiverse.core.api.teleportation.BlockSafety;
-import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporterAction;
-import org.mvplugins.multiverse.core.api.teleportation.TeleportFailureReason;
-import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.api.event.MVTeleportDestinationEvent;
-import org.mvplugins.multiverse.core.api.result.Async;
-import org.mvplugins.multiverse.core.api.result.AsyncAttempt;
-import org.mvplugins.multiverse.core.api.result.Attempt;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.event.MVTeleportDestinationEvent;
+import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
 
 import java.util.List;
 
-public class AsyncSafetyTeleporterAction implements SafetyTeleporterAction {
+/**
+ * Teleports one or more entity safely to a location.
+ */
+public final class AsyncSafetyTeleporterAction {
 
     private final BlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
@@ -47,29 +47,55 @@ public class AsyncSafetyTeleporterAction implements SafetyTeleporterAction {
         );
     }
 
-    @Override
-    public SafetyTeleporterAction checkSafety(boolean checkSafety) {
+    /**
+     * Sets whether to check for safe location before teleport.
+     *
+     * @param checkSafety Whether to check for safe location
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
+    public AsyncSafetyTeleporterAction checkSafety(boolean checkSafety) {
         this.checkSafety = checkSafety;
         return this;
     }
 
-    @Override
-    public SafetyTeleporterAction by(@NotNull BukkitCommandIssuer issuer) {
+    /**
+     * Sets the teleporter.
+     *
+     * @param issuer The issuer
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
+    public AsyncSafetyTeleporterAction by(@NotNull BukkitCommandIssuer issuer) {
         return by(issuer.getIssuer());
     }
 
-    @Override
-    public SafetyTeleporterAction by(@NotNull CommandSender teleporter) {
+    /**
+     * Sets the teleporter.
+     *
+     * @param teleporter The teleporter
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
+    public AsyncSafetyTeleporterAction by(@NotNull CommandSender teleporter) {
         this.teleporter = teleporter;
         return this;
     }
 
-    @Override
+    /**
+     * Teleport multiple entities
+     *
+     * @param teleportees The entities to teleport
+     * @param <T>
+     * @return A list of async futures that represent the teleportation result of each entity
+     */
     public <T extends Entity> Async<List<Attempt<Void, TeleportFailureReason>>> teleport(@NotNull List<T> teleportees) {
         return AsyncAttempt.allOf(teleportees.stream().map(this::teleport).toList());
     }
 
-    @Override
+    /**
+     * Teleports one entity
+     *
+     * @param teleportee The entity to teleport
+     * @return An async future that represents the teleportation result
+     */
     public AsyncAttempt<Void, TeleportFailureReason> teleport(@NotNull Entity teleportee) {
         var localTeleporter = this.teleporter == null ? teleportee : this.teleporter;
         return AsyncAttempt.fromAttempt(getLocation(teleportee).mapAttempt(this::doSafetyCheck))

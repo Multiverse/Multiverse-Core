@@ -3,14 +3,14 @@ package org.mvplugins.multiverse.core.world.entrycheck;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.api.result.FailureReason;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.result.SuccessReason;
 
 /**
  * Result of a world player limit check.
  */
-public class PlayerLimitResult {
+public final class PlayerLimitResult {
     /**
      * Success reasons for a player limit check.
      */

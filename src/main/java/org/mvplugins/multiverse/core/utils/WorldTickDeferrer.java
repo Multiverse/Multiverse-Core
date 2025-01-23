@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 @Service
-public class WorldTickDeferrer {
+public final class WorldTickDeferrer {
 
     private final MultiverseCore plugin;
 

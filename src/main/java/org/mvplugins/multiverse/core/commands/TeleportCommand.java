@@ -19,27 +19,27 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporter;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
-import org.mvplugins.multiverse.core.api.teleportation.TeleportFailureReason;
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.api.locale.message.Message;
+import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
+import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 
-import static org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace;
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
-class TeleportCommand extends CoreCommand {
+final class TeleportCommand extends CoreCommand {
 
     private final MVCoreConfig config;
     private final CorePermissionsChecker permissionsChecker;
-    private final SafetyTeleporter safetyTeleporter;
+    private final AsyncSafetyTeleporter safetyTeleporter;
 
     private final CommandFlag UNSAFE_FLAG = flag(CommandFlag.builder("--unsafe")
             .addAlias("-u")
@@ -50,7 +50,7 @@ class TeleportCommand extends CoreCommand {
             @NotNull MVCommandManager commandManager,
             @NotNull MVCoreConfig config,
             @NotNull CorePermissionsChecker permissionsChecker,
-            @NotNull SafetyTeleporter safetyTeleporter) {
+            @NotNull AsyncSafetyTeleporter safetyTeleporter) {
         super(commandManager);
         this.config = config;
         this.permissionsChecker = permissionsChecker;

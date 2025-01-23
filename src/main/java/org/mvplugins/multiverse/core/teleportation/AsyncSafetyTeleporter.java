@@ -8,13 +8,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.teleportation.BlockSafety;
-import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporter;
-import org.mvplugins.multiverse.core.api.teleportation.SafetyTeleporterAction;
-import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 
+/**
+ * Teleports entities safely and asynchronously. Provider for the {@link AsyncSafetyTeleporter}.
+ */
 @Service
-public class AsyncSafetyTeleporter implements SafetyTeleporter {
+public final class AsyncSafetyTeleporter {
     private final BlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
     private final PluginManager pluginManager;
@@ -30,10 +30,12 @@ public class AsyncSafetyTeleporter implements SafetyTeleporter {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SafetyTeleporterAction to(@Nullable Location location) {
+         * Sets the location to teleport to.
+         *
+         * @param location The location
+         * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+         */
+    public AsyncSafetyTeleporterAction to(@Nullable Location location) {
         return new AsyncSafetyTeleporterAction(
                 blockSafety,
                 teleportQueue,
@@ -43,10 +45,12 @@ public class AsyncSafetyTeleporter implements SafetyTeleporter {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
+         * Sets the destination to teleport to.
+         *
+         * @param destination The destination
+         * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+         */
+    public AsyncSafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
         return new AsyncSafetyTeleporterAction(
                 blockSafety,
                 teleportQueue,

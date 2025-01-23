@@ -13,11 +13,11 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
-public class SetSpawnCommand extends CoreCommand {
+final public class SetSpawnCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 

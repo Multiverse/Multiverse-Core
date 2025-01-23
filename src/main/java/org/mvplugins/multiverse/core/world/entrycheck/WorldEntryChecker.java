@@ -11,20 +11,20 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.utils.result.Result;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
-import static org.mvplugins.multiverse.core.api.locale.message.MessageReplacement.replace;
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Checks if a player can enter a world.
  */
-public class WorldEntryChecker {
+public final class WorldEntryChecker {
     private final @NotNull MVCoreConfig config;
     private final @NotNull MVEconomist economist;
     private final @NotNull CorePermissionsChecker permissionsChecker;

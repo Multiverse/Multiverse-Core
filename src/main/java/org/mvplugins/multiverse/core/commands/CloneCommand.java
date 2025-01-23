@@ -12,18 +12,18 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
-import org.mvplugins.multiverse.core.api.world.options.CloneWorldOptions;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 
 @Service
 @CommandAlias("mv")
-class CloneCommand extends CoreCommand {
+final class CloneCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 

@@ -8,9 +8,8 @@ import io.vavr.control.Try;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
-
-import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
  * A data store for storing and restoring data from an object.

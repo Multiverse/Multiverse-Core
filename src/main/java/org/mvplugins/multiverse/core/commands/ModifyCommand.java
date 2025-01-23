@@ -15,16 +15,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.configuration.StringPropertyHandle;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.api.configuration.PropertyModifyAction;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
+import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
-class ModifyCommand extends CoreCommand {
+final class ModifyCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 

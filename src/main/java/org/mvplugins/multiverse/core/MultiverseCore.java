@@ -19,7 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -27,24 +26,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.api.MultiverseCoreApi;
-import org.mvplugins.multiverse.core.api.destination.Destination;
-import org.mvplugins.multiverse.core.api.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.submodules.MVCore;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.config.SimpleMVCoreConfig;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
-import org.mvplugins.multiverse.core.placeholders.MultiverseCorePlaceholders;
-import org.mvplugins.multiverse.core.utils.ApiRegistrationUtil;
-import org.mvplugins.multiverse.core.utils.TestingMode;
-import org.mvplugins.multiverse.core.utils.metrics.MetricsConfigurator;
-import org.mvplugins.multiverse.core.world.SimpleWorldManager;
-import org.mvplugins.multiverse.core.world.config.NullLocation;
-import org.mvplugins.multiverse.core.api.world.config.SpawnLocation;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.location.NullLocation;
+import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
  * The implementation of the Multiverse-{@link MVCore}.
@@ -57,9 +51,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private PluginServiceLocator serviceLocator;
 
     @Inject
-    private Provider<SimpleMVCoreConfig> configProvider;
+    private Provider<MVCoreConfig> configProvider;
     @Inject
-    private Provider<SimpleWorldManager> worldManagerProvider;
+    private Provider<WorldManager> worldManagerProvider;
     @Inject
     private Provider<AnchorManager> anchorManagerProvider;
     @Inject
@@ -67,7 +61,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Inject
     private Provider<DestinationsProvider> destinationsProviderProvider;
     @Inject
-    private Provider<MetricsConfigurator> metricsConfiguratorProvider;
+    private Provider<BstatsMetricsConfigurator> metricsConfiguratorProvider;
     @Inject
     private Provider<MVEconomist> economistProvider;
 
@@ -144,7 +138,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onDisable() {
-        ApiRegistrationUtil.shutdown();
+        MultiverseCoreApi.shutdown();
         saveAllConfigs();
         shutdownDependencyInjection();
         Logging.shutdown();
@@ -268,7 +262,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     private void loadApiService() {
-        ApiRegistrationUtil.init(this);
+        MultiverseCoreApi.init(serviceLocator);
         Bukkit.getServicesManager().register(
                 MultiverseCoreApi.class, MultiverseCoreApi.get(), this, ServicePriority.Normal);
         Logging.fine("api service loaded");
@@ -289,7 +283,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private void loadPlaceholderApiIntegration() {
         if (configProvider.get().isRegisterPapiHook()
                 && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            Try.run(() -> serviceLocator.getService(MultiverseCorePlaceholders.class))
+            Try.run(() -> serviceLocator.getService(PlaceholderExpansionHook.class))
                     .onFailure(e -> {
                         Logging.severe("Failed to load PlaceholderAPI integration.");
                         e.printStackTrace();
@@ -388,7 +382,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public @NotNull FileConfiguration getConfig() {
-        SimpleMVCoreConfig mvCoreConfig = this.configProvider.get();
+        MVCoreConfig mvCoreConfig = this.configProvider.get();
         var config = mvCoreConfig.getConfig();
         if (config != null && mvCoreConfig.isLoaded()) {
             return config;

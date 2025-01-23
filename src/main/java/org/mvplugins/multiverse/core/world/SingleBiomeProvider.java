@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Helps create a world with only 1 type of Biome specified. Used in {@link WorldCreator#biomeProvider(BiomeProvider)}
  */
-public class SingleBiomeProvider extends BiomeProvider {
+final class SingleBiomeProvider extends BiomeProvider {
 
     private final Biome biome;
     private final List<Biome> biomes;

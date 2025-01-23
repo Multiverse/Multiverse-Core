@@ -13,14 +13,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.jvnet.hk2.annotations.Service;
-
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
  * Multiverse's Weather Listener.
  */
 @Service
-public class MVWeatherListener implements CoreListener {
+final class MVWeatherListener implements CoreListener {
 
     private final WorldManager worldManager;
 

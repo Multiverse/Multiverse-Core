@@ -11,14 +11,14 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.teleportation.LocationManipulation;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.api.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 @Service
 @CommandAlias("mv")
-class CoordinatesCommand extends CoreCommand {
+final class CoordinatesCommand extends CoreCommand {
 
     private final LocationManipulation locationManipulation;
 

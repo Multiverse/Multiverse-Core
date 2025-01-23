@@ -8,12 +8,12 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-public class EnforcementHandler {
+public final class EnforcementHandler {
 
     private final CorePermissionsChecker permissionsChecker;
     private final Provider<WorldManager> worldManagerProvider;

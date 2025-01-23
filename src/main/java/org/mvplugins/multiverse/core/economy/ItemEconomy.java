@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jvnet.hk2.annotations.Service;
 
 @Service
-class ItemEconomy {
+final class ItemEconomy {
 
     private static final String ECONOMY_NAME = "Simple Item Economy";
 

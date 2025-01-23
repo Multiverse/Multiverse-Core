@@ -5,15 +5,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jvnet.hk2.annotations.Service;
-
-import org.mvplugins.multiverse.core.api.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.api.world.WorldManager;
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
  * Multiverse's Listener for players.
  */
 @Service
-public class MVChatListener implements CoreListener {
+final class MVChatListener implements CoreListener {
     private final MVCoreConfig config;
     private final WorldManager worldManager;
     private final MVPlayerListener playerListener;

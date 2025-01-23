@@ -7,8 +7,8 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
-import org.mvplugins.multiverse.core.api.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * Destination instance implementation for the {@link WorldDestination}.

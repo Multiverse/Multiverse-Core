@@ -15,16 +15,16 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.api.world.WorldManager;
-import org.mvplugins.multiverse.core.api.world.options.UnloadWorldOptions;
-import org.mvplugins.multiverse.core.api.world.reasons.LoadFailureReason;
-import org.mvplugins.multiverse.core.api.world.reasons.UnloadFailureReason;
+import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
+import org.mvplugins.multiverse.core.world.reasons.LoadFailureReason;
+import org.mvplugins.multiverse.core.world.reasons.UnloadFailureReason;
 
 /**
  * Multiverse's World Listener.
  */
 @Service
-public class MVWorldListener implements CoreListener {
+final class MVWorldListener implements CoreListener {
 
     private final WorldManager worldManager;
 

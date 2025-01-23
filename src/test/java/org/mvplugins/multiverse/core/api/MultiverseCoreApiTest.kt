@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.api
 
+import org.mvplugins.multiverse.core.MultiverseCoreApi
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import kotlin.test.Test
 import kotlin.test.assertNotNull

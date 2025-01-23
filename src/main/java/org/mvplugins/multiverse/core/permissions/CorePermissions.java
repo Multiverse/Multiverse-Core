@@ -7,8 +7,8 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.api.destination.Destination;
-import org.mvplugins.multiverse.core.api.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import static org.mvplugins.multiverse.core.permissions.PermissionUtils.concatPermission;
 

@@ -13,7 +13,7 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import java.util.Locale;
 
 @Service
-public class MVLocalesListener implements CoreListener {
+final class MVLocalesListener implements CoreListener {
 
     private final MVCommandManager commandManager;
 

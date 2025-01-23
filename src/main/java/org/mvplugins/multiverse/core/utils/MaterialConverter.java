@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * A tool for converting values which may be an old type ID to a Material.
  */
-public class MaterialConverter {
+public final class MaterialConverter {
 
     /**
      * Converts a string representing a numeric id or flattened material name to a Material.

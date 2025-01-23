@@ -4,27 +4,27 @@ import org.bukkit.Location
 import org.mockbukkit.mockbukkit.entity.PlayerMock
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter
-import org.mvplugins.multiverse.core.world.SimpleWorldManager
-import org.mvplugins.multiverse.core.api.world.options.CreateWorldOptions
+import org.mvplugins.multiverse.core.world.WorldManager
+import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import java.lang.AssertionError
 import kotlin.test.*
 
 class ConfigTeleportInterceptTest : TestWithMockBukkit() {
 
-    private lateinit var config: SimpleMVCoreConfig
+    private lateinit var config: MVCoreConfig
     private lateinit var safetyTeleporter: AsyncSafetyTeleporter
     private lateinit var player: PlayerMock
     private lateinit var location: Location
 
     @BeforeTest
     fun setUp() {
-        config = serviceLocator.getActiveService(SimpleMVCoreConfig::class.java).takeIf { it != null } ?: run {
+        config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("MVCoreConfig is not available as a service") }
 
         safetyTeleporter = serviceLocator.getActiveService(AsyncSafetyTeleporter::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("AsyncSafetyTeleporter is not available as a service") }
 
-        val worldManager = serviceLocator.getActiveService(SimpleWorldManager::class.java).takeIf { it != null } ?: run {
+        val worldManager = serviceLocator.getActiveService(WorldManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("WorldManager is not available as a service") }
 
         player = server.addPlayer()
