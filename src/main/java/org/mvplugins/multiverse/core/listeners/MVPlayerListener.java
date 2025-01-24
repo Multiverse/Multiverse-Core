@@ -359,17 +359,6 @@ final class MVPlayerListener implements CoreListener {
         Logging.fine("Teleport result: %s", entryResult);
     }
 
-    private void sendPlayerToDefaultWorld(final Player player, DestinationInstance<?, ?> parsedDestination) {
-        // Remove the player 1 tick after the login. I'm sure there's GOT to be a better way to do this...
-        this.server.getScheduler().scheduleSyncDelayedTask(this.plugin,
-            new Runnable() {
-                @Override
-                public void run() {
-                    safetyTeleporter.to(parsedDestination).teleport(player);
-                }
-            }, 1L);
-    }
-
     /**
      * Handles the gamemode for the specified {@link Player}.
      *
