@@ -12,10 +12,10 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public final class TeleportQueue {
 
-    private final Map<String, String> teleportQueue;
+    private final Map<String, String> teleportQueueMap;
 
     TeleportQueue() {
-        teleportQueue = new HashMap<>();
+        teleportQueueMap = new HashMap<>();
     }
 
     /**
@@ -36,7 +36,7 @@ public final class TeleportQueue {
      */
     public void addToQueue(String teleporter, String teleportee) {
         Logging.finest("Adding mapping '%s' => '%s' to teleport queue", teleporter, teleportee);
-        teleportQueue.put(teleportee, teleporter);
+        teleportQueueMap.put(teleportee, teleporter);
     }
 
     /**
@@ -45,9 +45,9 @@ public final class TeleportQueue {
      * @return The player that teleported the other one (the teleporter).
      */
     public Option<String> popFromQueue(String playerName) {
-        if (teleportQueue.containsKey(playerName)) {
-            String teleportee = teleportQueue.get(playerName);
-            teleportQueue.remove(playerName);
+        if (teleportQueueMap.containsKey(playerName)) {
+            String teleportee = teleportQueueMap.get(playerName);
+            teleportQueueMap.remove(playerName);
             return Option.of(teleportee);
         }
         return Option.none();

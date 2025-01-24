@@ -230,8 +230,8 @@ public class CommandValueFlag<T> extends CommandFlag {
 
         private void setEnumCompletion() {
             List<String> types = Arrays.stream(type.getEnumConstants())
-                    .map(type -> type.name().toLowerCase())
-                    .collect(Collectors.toList());
+                    .map(typeClass -> typeClass.name().toLowerCase())
+                    .toList();
 
             this.completion = (input) -> types;
         }

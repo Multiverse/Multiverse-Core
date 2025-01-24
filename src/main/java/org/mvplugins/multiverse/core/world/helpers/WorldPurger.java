@@ -30,6 +30,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
  * Used to remove animals from worlds that don't belong there.
  *
  * @deprecated this class needs a refactor
+ * @since 5.0
  */
 @Deprecated
 @Service

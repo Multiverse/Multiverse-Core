@@ -114,13 +114,12 @@ public final class AsyncSafetyTeleporterAction {
 
     private Attempt<Location, TeleportFailureReason> getLocation(@NotNull Entity teleportee) {
         return this.locationOrDestination.fold(
-                location -> parseLocation(teleportee, location),
+                this::parseLocation,
                 destination -> parseDestination(teleportee, destination)
         );
     }
 
-    private Attempt<Location, TeleportFailureReason> parseLocation(
-            @NotNull Entity teleportee, @Nullable Location location) {
+    private Attempt<Location, TeleportFailureReason> parseLocation(@Nullable Location location) {
         if (location == null) {
             return Attempt.failure(TeleportFailureReason.NULL_LOCATION);
         }
