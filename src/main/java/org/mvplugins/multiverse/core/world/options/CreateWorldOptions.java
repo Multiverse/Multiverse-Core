@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world.options;
 
 import java.util.Random;
 
+import co.aikar.commands.ACFUtil;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.block.Biome;
@@ -39,7 +40,7 @@ public final class CreateWorldOptions {
      */
     CreateWorldOptions(@NotNull String worldName) {
         this.worldName = worldName;
-        this.seed = (new Random()).nextLong();
+        this.seed = ACFUtil.RANDOM.nextLong();
     }
 
     /**

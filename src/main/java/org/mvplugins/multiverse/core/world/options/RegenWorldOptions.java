@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world.options;
 
 import java.util.Random;
 
+import co.aikar.commands.ACFUtil;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,8 +23,6 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     public static @NotNull RegenWorldOptions world(@NotNull LoadedMultiverseWorld world) {
         return new RegenWorldOptions(world);
     }
-
-    private final Random random = new Random();
 
     private final LoadedMultiverseWorld world;
     private Biome biome;
@@ -197,7 +196,7 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
      */
     public long seed() {
         if (randomSeed) {
-            return random.nextLong();
+            return ACFUtil.RANDOM.nextLong();
         } else if (seed == Long.MIN_VALUE) {
             return world.getSeed();
         }

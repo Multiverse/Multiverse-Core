@@ -2,8 +2,8 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
+import co.aikar.commands.ACFUtil;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -41,11 +41,9 @@ final class RegenCommand extends CoreCommand {
     private final PlayerWorldTeleporter playerWorldTeleporter;
     private final WorldTickDeferrer worldTickDeferrer;
 
-    private final Random random = new Random();
-
     private final CommandValueFlag<String> seedFlag = flag(CommandValueFlag.builder("--seed", String.class)
             .addAlias("-s")
-            .completion(input -> Collections.singleton(String.valueOf(random.nextLong())))
+            .completion(input -> Collections.singleton(String.valueOf(ACFUtil.RANDOM.nextLong())))
             .optional()
             .build());
 
