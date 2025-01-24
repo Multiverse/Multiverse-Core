@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
@@ -650,21 +651,13 @@ public final class WorldManager {
 
     private <T, F extends FailureReason> Attempt<T, F> worldActionResult(
             @NotNull F failureReason, @NotNull String worldName) {
-        return Attempt.failure(failureReason, replaceWorldName(worldName));
+        return Attempt.failure(failureReason, Replace.WORLD.with(worldName));
     }
 
     private <T, F extends FailureReason> Attempt<T, F> worldActionResult(
             @NotNull F failureReason, @NotNull String worldName, @NotNull Throwable error) {
         // TODO: Localize error message if its a MultiverseException
-        return Attempt.failure(failureReason, replaceWorldName(worldName), replaceError(error.getMessage()));
-    }
-
-    private MessageReplacement replaceWorldName(@NotNull String worldName) {
-        return replace("{world}").with(worldName);
-    }
-
-    private MessageReplacement replaceError(@NotNull String errorMessage) {
-        return replace("{error}").with(errorMessage);
+        return Attempt.failure(failureReason, Replace.WORLD.with(worldName), replace("{error}").with(error.getMessage()));
     }
 
     /**
