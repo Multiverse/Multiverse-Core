@@ -4,6 +4,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -53,13 +54,20 @@ public final class CorePermissions {
 
     public Try<Void> addWorldPermissions(@NotNull MultiverseWorld world) {
         return Try.run(() -> {
-            pluginManager.addPermission(new Permission(concatPermission(WORLD_ACCESS, world.getName())));
-            pluginManager.addPermission(new Permission(concatPermission(WORLD_EXEMPT, world.getName())));
-            pluginManager.addPermission(new Permission(concatPermission(GAMEMODE_BYPASS, world.getName())));
-            pluginManager.addPermission(new Permission(concatPermission(PLAYERLIMIT_BYPASS, world.getName())));
-            pluginManager.addPermission(new Permission(concatPermission(SPAWN, world.getName())));
-            pluginManager.addPermission(new Permission(concatPermission(SPAWN, "self", world.getName())));
-            pluginManager.addPermission(new Permission(concatPermission(SPAWN, "other", world.getName())));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(WORLD_ACCESS, world.getName()), PermissionDefault.OP));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(WORLD_EXEMPT, world.getName()), PermissionDefault.OP));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(GAMEMODE_BYPASS, world.getName()), PermissionDefault.FALSE));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(PLAYERLIMIT_BYPASS, world.getName()), PermissionDefault.FALSE));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(SPAWN, world.getName()), PermissionDefault.OP));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(SPAWN, "self", world.getName()), PermissionDefault.OP));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(SPAWN, "other", world.getName()), PermissionDefault.OP));
             Logging.fine("Successfully registered permissions for world %s", world.getName());
         });
     }
@@ -78,8 +86,10 @@ public final class CorePermissions {
 
     public Try<Void> addDestinationPermissions(@NotNull Destination<?, ?> destination) {
         return Try.run(() -> {
-            pluginManager.addPermission(new Permission(concatPermission(TELEPORT, "self", destination.getIdentifier())));
-            pluginManager.addPermission(new Permission(concatPermission(TELEPORT, "other", destination.getIdentifier())));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(TELEPORT, "self", destination.getIdentifier()), PermissionDefault.FALSE));
+            pluginManager.addPermission(new Permission(
+                    concatPermission(TELEPORT, "other", destination.getIdentifier()), PermissionDefault.FALSE));
             Logging.fine("Successfully registered permissions for destination %s", destination.getIdentifier());
         });
     }
