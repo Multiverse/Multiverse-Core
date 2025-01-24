@@ -11,7 +11,7 @@ import org.mvplugins.multiverse.core.locale.message.Message;
  */
 public class MultiverseException extends Exception {
 
-    private final @Nullable Message message;
+    private final transient @Nullable Message message;
 
     /**
      * Creates a new exception with the given message.
@@ -22,7 +22,8 @@ public class MultiverseException extends Exception {
      * @param message   The message for the exception
      */
     public MultiverseException(@Nullable String message) {
-        this(message != null ? Message.of(message) : null);
+        super(message);
+        this.message = message != null ? Message.of(message) : null;
     }
 
     /**
