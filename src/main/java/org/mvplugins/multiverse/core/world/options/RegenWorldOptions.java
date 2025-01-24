@@ -1,7 +1,5 @@
 package org.mvplugins.multiverse.core.world.options;
 
-import java.util.Random;
-
 import co.aikar.commands.ACFUtil;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +11,8 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
  * Options for customizing the regeneration of a world.
  */
 public final class RegenWorldOptions implements KeepWorldSettingsOptions {
+
+    private static final long UNINITIALIZED_SEED_VALUE = Long.MIN_VALUE;
 
     /**
      * Creates a new {@link RegenWorldOptions} instance with the given world.
@@ -30,10 +30,14 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     private boolean keepWorldConfig = true;
     private boolean keepWorldBorder = true;
     private boolean randomSeed = false;
-    private long seed = Long.MIN_VALUE;
+    private long seed = UNINITIALIZED_SEED_VALUE;
 
     RegenWorldOptions(@NotNull LoadedMultiverseWorld world) {
         this.world = world;
+    }
+
+    private boolean isSeedInitialized() {
+        return seed != UNINITIALIZED_SEED_VALUE;
     }
 
     /**
@@ -140,7 +144,7 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
      * @return This {@link RegenWorldOptions} instance.
      */
     public @NotNull RegenWorldOptions randomSeed(boolean randomSeedInput) {
-        if (randomSeedInput && seed != Long.MIN_VALUE) {
+        if (randomSeedInput && isSeedInitialized()) {
             throw new IllegalStateException("Cannot set randomSeed to true when seed is set");
         }
         this.randomSeed = randomSeedInput;
@@ -152,6 +156,7 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
      *
      * @return Whether to use a random seed for the world to regenerate.
      */
+    @SuppressWarnings("unused")
     public boolean randomSeed() {
         return randomSeed;
     }
@@ -164,18 +169,22 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
      */
     public @NotNull RegenWorldOptions seed(@Nullable String seedInput) {
         if (seedInput == null) {
-            this.seed = Long.MIN_VALUE;
+            this.seed = UNINITIALIZED_SEED_VALUE;
             return this;
         }
         if (randomSeed) {
             randomSeed(false);
         }
-        try {
-            this.seed = Long.parseLong(seedInput);
-        } catch (NumberFormatException numberformatexception) {
-            this.seed = seedInput.hashCode();
-        }
+        this.seed = parseOrHashSeed(seedInput);
         return this;
+    }
+
+    private long parseOrHashSeed(String seedInput) {
+        try {
+            return Long.parseLong(seedInput);
+        } catch (NumberFormatException numberformatexception) {
+            return seedInput.hashCode();
+        }
     }
 
     /**
@@ -197,9 +206,9 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     public long seed() {
         if (randomSeed) {
             return ACFUtil.RANDOM.nextLong();
-        } else if (seed == Long.MIN_VALUE) {
-            return world.getSeed();
+        } else if (isSeedInitialized()) {
+            return seed;
         }
-        return seed;
+        return world.getSeed();
     }
 }
