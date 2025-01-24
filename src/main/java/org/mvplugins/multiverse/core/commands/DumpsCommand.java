@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 
-import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -18,23 +16,19 @@ import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.commands.DumpsLogPoster.LogsType;
+import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
+import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
-import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.FileUtils;
-import org.mvplugins.multiverse.core.utils.webpaste.PasteFailedException;
-import org.mvplugins.multiverse.core.utils.webpaste.PasteService;
-import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceFactory;
-import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceType;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
@@ -45,13 +39,13 @@ final class DumpsCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final FileUtils fileUtils;
 
-    private final CommandValueFlag<LogsTypeOption> logsFlag = flag(CommandValueFlag
-            .enumBuilder("--logs", LogsTypeOption.class)
+    private final CommandValueFlag<LogsType> logsFlag = flag(CommandValueFlag
+            .enumBuilder("--logs", LogsType.class)
             .addAlias("-l")
             .build());
 
-    private final CommandValueFlag<ServiceTypeOption> uploadFlag = flag(CommandValueFlag
-            .enumBuilder("--upload", ServiceTypeOption.class)
+    private final CommandValueFlag<UploadType> uploadFlag = flag(CommandValueFlag
+            .enumBuilder("--upload", UploadType.class)
             .addAlias("-u")
             .build());
 
@@ -71,23 +65,13 @@ final class DumpsCommand extends CoreCommand {
         this.fileUtils = fileUtils;
     }
 
-    private enum ServiceTypeOption {
-        PASTEGG,
-        PASTESDEV
-    }
-
-    private enum LogsTypeOption {
-        APPEND,
-        MCLOGS
-    }
-
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
     @CommandCompletion("@flags:groupName=mvdumpscommand")
     @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
     @Description("{@@mv-core.dumps.description}")
     void onDumpsCommand(
-            CommandIssuer issuer,
+            MVCommandIssuer issuer,
 
             @Optional
             @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
@@ -96,8 +80,8 @@ final class DumpsCommand extends CoreCommand {
 
         // Grab all our flags
         final boolean paranoid = parsedFlags.hasFlag(paranoidFlag);
-        final LogsTypeOption logsType = parsedFlags.flagValue(logsFlag, LogsTypeOption.MCLOGS);
-        final ServiceTypeOption servicesType = parsedFlags.flagValue(uploadFlag, ServiceTypeOption.PASTESDEV);
+        final LogsType logsType = parsedFlags.flagValue(logsFlag, LogsType.MCLOGS);
+        final UploadType servicesType = parsedFlags.flagValue(uploadFlag, UploadType.PASTESDEV);
 
         // Initialise and add info to the debug event
         MVDumpsDebugInfoEvent versionEvent = new MVDumpsDebugInfoEvent();
@@ -109,41 +93,8 @@ final class DumpsCommand extends CoreCommand {
             versionEvent.putDetailedDebugInfo("plugins.md", "# Plugins\n\n" + getPluginList());
         }
 
-        BukkitRunnable logPoster = new BukkitRunnable() {
-            @Override
-            public void run() {
-                // TODO: Refactor into smaller methods
-                Logging.finer("Logs type is: " + logsType);
-                Logging.finer("Services is: " + servicesType);
-
-                // Deal with logs flag
-                if (!paranoid) {
-                    switch (logsType) {
-                        case MCLOGS -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
-                                "{service}", "Logs",
-                                "{link}", postToService(PasteServiceType.MCLOGS, true, getLogs(), null));
-                        case APPEND -> versionEvent.putDetailedDebugInfo("latest.log", getLogs());
-                    }
-                }
-
-                // Get the files from the event
-                final Map<String, String> files = versionEvent.getDetailedDebugInfo();
-
-                // Deal with uploading debug info
-                switch (servicesType) {
-                    case PASTEGG -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
-                            "{service}", "paste.gg",
-                            "{link}", postToService(PasteServiceType.PASTEGG, true, null, files));
-                    case PASTESDEV -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
-                            "{service}", "pastes.dev",
-                            "{link}", postToService(PasteServiceType.PASTESDEV, true, null, files));
-                }
-
-            }
-        };
-
-        // Run the uploader async as it could take some time to upload the debug info
-        logPoster.runTaskAsynchronously(plugin);
+        new DumpsLogPoster(issuer, logsType, servicesType, paranoid, getLogs(), versionEvent)
+                .runTaskAsynchronously(plugin);
     }
 
     /**
@@ -218,65 +169,5 @@ final class DumpsCommand extends CoreCommand {
 
     private String getPluginList() {
         return " - " + StringUtils.join(plugin.getServer().getPluginManager().getPlugins(), "\n - ");
-    }
-
-    /**
-     * Turns a list of files in to a string containing askii art.
-     *
-     * @param files Map of filenames/contents
-     * @return The askii art
-     */
-    private String encodeAsString(Map<String, String> files) {
-        StringBuilder uploadData = new StringBuilder();
-        for (String file : files.keySet()) {
-            String data = files.get(file);
-            uploadData.append("# ---------- ")
-                    .append(file)
-                    .append(" ----------\n\n")
-                    .append(data)
-                    .append("\n\n");
-        }
-
-        return uploadData.toString();
-    }
-
-    /**
-     * Send the current contents of this.pasteBinBuffer to a web service.
-     *
-     * @param type Service type to send paste data to.
-     * @param isPrivate Should the paste be marked as private.
-     * @param rawPasteData Legacy string containing only data to post to a service.
-     * @param pasteFiles Map of filenames/contents of debug info.
-     * @return URL of visible paste
-     */
-    private String postToService(@NotNull PasteServiceType type, boolean isPrivate, @Nullable String rawPasteData, @Nullable Map<String, String> pasteFiles) {
-        PasteService pasteService = PasteServiceFactory.getService(type, isPrivate);
-
-        try {
-            // Upload normally when multi file is supported
-            if (pasteService.supportsMultiFile()) {
-                return pasteService.postData(pasteFiles);
-            }
-
-            // When there is raw paste data, use that
-            if (rawPasteData != null) { // For the logs
-                return pasteService.postData(rawPasteData);
-            }
-
-            // If all we have are files and the paste service does not support multi file then encode them
-            if (pasteFiles != null) {
-                return pasteService.postData(this.encodeAsString(pasteFiles));
-            }
-
-            // Should never get here
-            return "No data specified in code";
-
-        } catch (PasteFailedException e) {
-            e.printStackTrace();
-            return "Error posting to service.";
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return "That service isn't supported yet.";
-        }
     }
 }
