@@ -94,7 +94,7 @@ final class GameruleCommand extends CoreCommand {
             @Syntax("[World or *]")
             @Description("{@@mv-core.gamerule.set.world.description}")
             LoadedMultiverseWorld[] worlds) {
-        Object value = gameRuleValue.getValue();
+        Object value = gameRuleValue.value();
         boolean success = true;
         for (LoadedMultiverseWorld world : worlds) {
             // Set gamerules and add false to list if it fails
