@@ -99,13 +99,13 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      */
     @Override
     public @NotNull Map<String, Object> serialize() {
-        return new HashMap<>() {{
-            put("x", getX());
-            put("y", getY());
-            put("z", getZ());
-            put("pitch", getPitch());
-            put("yaw", getYaw());
-        }};
+        var map = new HashMap<String, Object>();
+        map.put("x", getX());
+        map.put("y", getY());
+        map.put("z", getZ());
+        map.put("pitch", getPitch());
+        map.put("yaw", getYaw());
+        return map;
     }
 
     /**

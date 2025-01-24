@@ -39,7 +39,7 @@ final class ListCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
 
-    private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<Integer> pageFlag = flag(CommandValueFlag
             .builder("--page", Integer.class)
             .addAlias("-p")
             .context(value -> {
@@ -51,7 +51,7 @@ final class ListCommand extends CoreCommand {
             })
             .build());
 
-    private final CommandValueFlag<ContentFilter> FILTER_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<ContentFilter> filterFlag = flag(CommandValueFlag
             .builder("--filter", ContentFilter.class)
             .addAlias("-f")
             .context(value -> {
@@ -63,7 +63,7 @@ final class ListCommand extends CoreCommand {
             })
             .build());
 
-    private final CommandFlag RAW_FLAG = flag(CommandFlag.builder("--raw")
+    private final CommandFlag rawFlag = flag(CommandFlag.builder("--raw")
             .addAlias("-r")
             .build());
 
@@ -91,11 +91,11 @@ final class ListCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
         ContentDisplay.create()
-                .addContent(ListContentProvider.forContent(getListContents(issuer, parsedFlags.hasFlag(RAW_FLAG))))
+                .addContent(ListContentProvider.forContent(getListContents(issuer, parsedFlags.hasFlag(rawFlag))))
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader("%s====[ Multiverse World List ]====", ChatColor.GOLD)
-                        .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))
-                        .withFilter(parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())))
+                        .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
+                        .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
@@ -106,7 +106,8 @@ final class ListCommand extends CoreCommand {
         worldManager.getLoadedWorlds().stream()
                 .filter(world -> worldEntryChecker.canAccessWorld(world).isSuccess())
                 .filter(world -> canSeeWorld(issuer, world))
-                .map(world -> hiddenText(world) + getWorldName(world, useRawNames) + " - " + parseColouredEnvironment(world.getEnvironment()))
+                .map(world -> hiddenText(world) + getWorldName(world, useRawNames) + " - "
+                        + parseColouredEnvironment(world.getEnvironment()))
                 .sorted()
                 .forEach(worldList::add);
 
@@ -120,7 +121,8 @@ final class ListCommand extends CoreCommand {
     }
 
     /**
-     * Gets a world's name or alias
+     * Gets a world's name or alias.
+     *
      * @param world The world to retrieve the name of
      * @param useRawNames True to return the name, false to return the alias
      * @return The name
@@ -135,7 +137,8 @@ final class ListCommand extends CoreCommand {
 
     private boolean canSeeWorld(MVCommandIssuer issuer, MultiverseWorld world) {
         return !world.isHidden()
-                || issuer.hasPermission("multiverse.core.modify"); // TODO: Refactor stray permission check
+                // TODO: Refactor stray permission check
+                || issuer.hasPermission("multiverse.core.modify");
     }
 
     private String hiddenText(MultiverseWorld world) {

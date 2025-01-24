@@ -17,9 +17,12 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -27,15 +30,15 @@ final class CloneCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
-    private final CommandFlag RESET_WORLD_CONFIG_FLAG = flag(CommandFlag.builder("--reset-world-config")
+    private final CommandFlag resetWorldConfigFlag = flag(CommandFlag.builder("--reset-world-config")
             .addAlias("-wc")
             .build());
 
-    private final CommandFlag RESET_GAMERULES_FLAG = flag(CommandFlag.builder("--reset-gamerules")
+    private final CommandFlag resetGamerulesFlag = flag(CommandFlag.builder("--reset-gamerules")
             .addAlias("-gm")
             .build());
 
-    private final CommandFlag RESET_WORLD_BORDER_FLAG = flag(CommandFlag.builder("--reset-world-border")
+    private final CommandFlag resetWorldBorderFlag = flag(CommandFlag.builder("--reset-world-border")
             .addAlias("-wb")
             .build());
 
@@ -68,15 +71,17 @@ final class CloneCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendInfo(MVCorei18n.CLONE_CLONING, "{world}", world.getName(), "{newworld}", newWorldName);
+        issuer.sendInfo(MVCorei18n.CLONE_CLONING,
+                Replace.WORLD.with(world.getName()),
+                replace("{newworld}").with(newWorldName));
         CloneWorldOptions cloneWorldOptions = CloneWorldOptions.fromTo(world, newWorldName)
-                .keepWorldConfig(!parsedFlags.hasFlag(RESET_WORLD_CONFIG_FLAG))
-                .keepGameRule(!parsedFlags.hasFlag(RESET_GAMERULES_FLAG))
-                .keepWorldBorder(!parsedFlags.hasFlag(RESET_WORLD_BORDER_FLAG));
+                .keepWorldConfig(!parsedFlags.hasFlag(resetWorldConfigFlag))
+                .keepGameRule(!parsedFlags.hasFlag(resetGamerulesFlag))
+                .keepWorldBorder(!parsedFlags.hasFlag(resetWorldBorderFlag));
         worldManager.cloneWorld(cloneWorldOptions)
                 .onSuccess(newWorld -> {
                     Logging.fine("World clone success: " + newWorld);
-                    issuer.sendInfo(MVCorei18n.CLONE_SUCCESS, "{world}", newWorld.getName());
+                    issuer.sendInfo(MVCorei18n.CLONE_SUCCESS, Replace.WORLD.with(newWorld.getName()));
                 }).onFailure(failure -> {
                     Logging.fine("World clone failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());

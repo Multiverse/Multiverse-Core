@@ -21,15 +21,14 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
+import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
-
-import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -39,7 +38,7 @@ final class DeleteCommand extends CoreCommand {
     private final PlayerWorldTeleporter playerWorldTeleporter;
     private final WorldTickDeferrer worldTickDeferrer;
 
-    private final CommandFlag REMOVE_PLAYERS_FLAG = flag(CommandFlag.builder("--remove-players")
+    private final CommandFlag removePlayersFlag = flag(CommandFlag.builder("--remove-players")
             .addAlias("-r")
             .build());
 
@@ -79,13 +78,15 @@ final class DeleteCommand extends CoreCommand {
                 .issuer(issuer)
                 .action(() -> runDeleteCommand(issuer, world, parsedFlags))
                 .prompt(Message.of(MVCorei18n.DELETE_PROMPT, "",
-                        replace("{world}").with(world.getName()))));
+                        Replace.WORLD.with(world.getName()))));
     }
 
     private void runDeleteCommand(MVCommandIssuer issuer, MultiverseWorld world, ParsedCommandFlags parsedFlags) {
-        issuer.sendInfo(MVCorei18n.DELETE_DELETING, "{world}", world.getName());
+        issuer.sendInfo(MVCorei18n.DELETE_DELETING, Replace.WORLD.with(world.getName()));
 
-        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG) && world.isLoaded() && world instanceof LoadedMultiverseWorld loadedWorld
+        var future = parsedFlags.hasFlag(removePlayersFlag)
+                        && world.isLoaded()
+                        && world instanceof LoadedMultiverseWorld loadedWorld
                 ? playerWorldTeleporter.removeFromWorld(loadedWorld)
                 : Async.completedFuture(Collections.emptyList());
 
@@ -96,7 +97,7 @@ final class DeleteCommand extends CoreCommand {
         worldManager.deleteWorld(world)
                 .onSuccess(deletedWorldName -> {
                     Logging.fine("World delete success: " + deletedWorldName);
-                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS, "{world}", deletedWorldName);
+                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS, Replace.WORLD.with(deletedWorldName));
                 }).onFailure(failure -> {
                     Logging.fine("World delete failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());

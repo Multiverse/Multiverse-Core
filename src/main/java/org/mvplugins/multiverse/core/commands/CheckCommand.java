@@ -14,9 +14,10 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
+import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
@@ -56,8 +57,8 @@ final class CheckCommand extends CoreCommand {
         issuer.sendInfo(this.corePermissionsChecker.checkTeleportPermissions(player, player, destination)
                         ? MVCorei18n.CHECK_HASPERMISSION
                         : MVCorei18n.CHECK_NOPERMISSION,
-                replace("{player}").with(player.getName()),
-                replace("{destination}").with(destination));
+                Replace.PLAYER.with(player.getName()),
+                Replace.DESTINATION.with(destination));
         issuer.sendInfo(MVCorei18n.CHECK_LOCATION,
                 replace("{location}").with(destination.getLocation(player)
                         .map(locationManipulation::locationToString)

@@ -36,7 +36,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 @CommandAlias("mv")
 final class InfoCommand extends CoreCommand {
 
-    private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<Integer> pageFlag = flag(CommandValueFlag
             .builder("--page", Integer.class)
             .addAlias("-p")
             .context(value -> {
@@ -48,7 +48,7 @@ final class InfoCommand extends CoreCommand {
             })
             .build());
 
-    private final CommandValueFlag<ContentFilter> FILTER_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<ContentFilter> filterFlag = flag(CommandValueFlag
             .builder("--filter", ContentFilter.class)
             .addAlias("-f")
             .context(value -> {
@@ -101,8 +101,8 @@ final class InfoCommand extends CoreCommand {
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader(getTitle(world))
                         .doPagination(true)
-                        .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))
-                        .withFilter(parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())))
+                        .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
+                        .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
@@ -120,7 +120,7 @@ final class InfoCommand extends CoreCommand {
         outMap.put("Difficulty", world.getDifficulty().toString());
         outMap.put("Spawn Location", locationManipulation.strCoords(world.getSpawnLocation()));
         outMap.put("Seed", String.valueOf(world.getSeed()));
-        getEntryFeeInfo(outMap, world); // Entry fee/reward
+        getEntryFeeInfo(outMap, world);
         outMap.put("Respawn World", world.getRespawnWorldName());
         outMap.put("World Type", world.getWorldType().get().toString());
         outMap.put("Biome", world.getBiome() == null ? "@vanilla" : world.getBiome().getKey().getKey());
@@ -131,8 +131,8 @@ final class InfoCommand extends CoreCommand {
         outMap.put("Hunger Depletes", String.valueOf(world.getHunger()));
         outMap.put("Keep Spawn In Memory", String.valueOf(world.getKeepSpawnInMemory()));
         outMap.put("PVP Enabled", String.valueOf(world.getPvp()));
-        getAnimalSpawningInfo(outMap, world); // Animals that can spawn
-        getMonsterSpawningInfo(outMap, world); // Monsters that can spawn
+        getAnimalSpawningInfo(outMap, world);
+        getMonsterSpawningInfo(outMap, world);
 
         return outMap;
     }

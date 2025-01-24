@@ -45,18 +45,18 @@ final class DumpsCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final FileUtils fileUtils;
 
-    private final CommandValueFlag<LogsTypeOption> LOGS_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<LogsTypeOption> logsFlag = flag(CommandValueFlag
             .enumBuilder("--logs", LogsTypeOption.class)
             .addAlias("-l")
             .build());
 
-    private final CommandValueFlag<ServiceTypeOption> UPLOAD_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<ServiceTypeOption> uploadFlag = flag(CommandValueFlag
             .enumBuilder("--upload", ServiceTypeOption.class)
             .addAlias("-u")
             .build());
 
     // Does not upload logs or plugin list (except if --logs mclogs is there)
-    private final CommandFlag PARANOID_FLAG = flag(CommandFlag.builder("--paranoid")
+    private final CommandFlag paranoidFlag = flag(CommandFlag.builder("--paranoid")
             .addAlias("-p")
             .build());
 
@@ -95,9 +95,9 @@ final class DumpsCommand extends CoreCommand {
         final ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         // Grab all our flags
-        final boolean paranoid = parsedFlags.hasFlag(PARANOID_FLAG);
-        final LogsTypeOption logsType = parsedFlags.flagValue(LOGS_FLAG, LogsTypeOption.MCLOGS);
-        final ServiceTypeOption servicesType = parsedFlags.flagValue(UPLOAD_FLAG, ServiceTypeOption.PASTESDEV);
+        final boolean paranoid = parsedFlags.hasFlag(paranoidFlag);
+        final LogsTypeOption logsType = parsedFlags.flagValue(logsFlag, LogsTypeOption.MCLOGS);
+        final ServiceTypeOption servicesType = parsedFlags.flagValue(uploadFlag, ServiceTypeOption.PASTESDEV);
 
         // Initialise and add info to the debug event
         MVDumpsDebugInfoEvent versionEvent = new MVDumpsDebugInfoEvent();

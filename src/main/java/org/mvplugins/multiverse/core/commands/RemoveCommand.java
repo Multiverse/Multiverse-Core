@@ -21,6 +21,7 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -33,7 +34,7 @@ final class RemoveCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
 
-    private final CommandFlag REMOVE_PLAYERS_FLAG = flag(CommandFlag.builder("--remove-players")
+    private final CommandFlag removePlayersFlag = flag(CommandFlag.builder("--remove-players")
             .addAlias("-r")
             .build());
 
@@ -68,7 +69,7 @@ final class RemoveCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
+        var future = parsedFlags.hasFlag(removePlayersFlag)
                 ? worldManager.getLoadedWorld(world)
                 .map(playerWorldTeleporter::removeFromWorld)
                 .getOrElse(Async.completedFuture(Collections.emptyList()))
@@ -81,7 +82,7 @@ final class RemoveCommand extends CoreCommand {
         worldManager.removeWorld(world)
                 .onSuccess(removedWorldName -> {
                     Logging.fine("World remove success: " + removedWorldName);
-                    issuer.sendInfo(MVCorei18n.REMOVE_SUCCESS, "{world}", removedWorldName);
+                    issuer.sendInfo(MVCorei18n.REMOVE_SUCCESS, Replace.WORLD.with(removedWorldName));
                 }).onFailure(failure -> {
                     Logging.fine("World remove failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());

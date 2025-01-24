@@ -19,6 +19,7 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -32,11 +33,11 @@ final class UnloadCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
 
-    private final CommandFlag REMOVE_PLAYERS_FLAG = flag(CommandFlag.builder("--remove-players")
+    private final CommandFlag removePlayersFlag = flag(CommandFlag.builder("--remove-players")
             .addAlias("-r")
             .build());
 
-    private final CommandFlag NO_SAVE_FLAG = flag(CommandFlag.builder("--no-save")
+    private final CommandFlag noSaveFlag = flag(CommandFlag.builder("--no-save")
             .addAlias("-n")
             .build());
 
@@ -69,9 +70,9 @@ final class UnloadCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, "{world}", world.getAlias());
+        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, Replace.WORLD.with(world.getAlias()));
 
-        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
+        var future = parsedFlags.hasFlag(removePlayersFlag)
                 ? playerWorldTeleporter.removeFromWorld(world)
                 : Async.completedFuture(Collections.emptyList());
 
@@ -80,11 +81,11 @@ final class UnloadCommand extends CoreCommand {
 
     private void doWorldUnloading(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {
         UnloadWorldOptions unloadWorldOptions = UnloadWorldOptions.world(world)
-                .saveBukkitWorld(!parsedFlags.hasFlag(NO_SAVE_FLAG));
+                .saveBukkitWorld(!parsedFlags.hasFlag(noSaveFlag));
         worldManager.unloadWorld(unloadWorldOptions)
                 .onSuccess(loadedWorld -> {
                     Logging.fine("World unload success: " + loadedWorld);
-                    issuer.sendInfo(MVCorei18n.UNLOAD_SUCCESS, "{world}", loadedWorld.getName());
+                    issuer.sendInfo(MVCorei18n.UNLOAD_SUCCESS, Replace.WORLD.with(loadedWorld.getName()));
                 }).onFailure(failure -> {
                     Logging.fine("World unload failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());

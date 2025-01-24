@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.utils.result.Result;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
@@ -123,7 +124,7 @@ public final class WorldEntryChecker {
             return Result.success(BlacklistResult.Success.UNKNOWN_FROM_WORLD);
         }
         return toWorld.getWorldBlacklist().contains(fromWorld.getName())
-                ? Result.failure(BlacklistResult.Failure.BLACKLISTED, replace("{world}").with(fromWorld.getAlias()))
+                ? Result.failure(BlacklistResult.Failure.BLACKLISTED, Replace.WORLD.with(fromWorld.getAlias()))
                 : Result.success(BlacklistResult.Success.NOT_BLACKLISTED);
     }
 
@@ -135,7 +136,6 @@ public final class WorldEntryChecker {
      */
     public Result<EntryFeeResult.Success, EntryFeeResult.Failure> canPayEntryFee(MultiverseWorld world) {
         double price = world.getPrice();
-        Material currency = world.getCurrency();
         if (!world.isEntryFeeEnabled() || price == 0D) {
             return Result.success(EntryFeeResult.Success.FREE_ENTRY);
         }
@@ -148,6 +148,7 @@ public final class WorldEntryChecker {
         if (!(sender instanceof Player player)) {
             return Result.failure(EntryFeeResult.Failure.CANNOT_PAY_ENTRY_FEE);
         }
+        Material currency = world.getCurrency();
         return economist.isPlayerWealthyEnough(player, price, currency)
                 ? Result.success(EntryFeeResult.Success.ENOUGH_MONEY)
                 : Result.failure(EntryFeeResult.Failure.NOT_ENOUGH_MONEY,

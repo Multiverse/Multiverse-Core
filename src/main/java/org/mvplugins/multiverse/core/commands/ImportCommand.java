@@ -24,9 +24,10 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.world.WorldManager;
-import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
+import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 
 @Service
 @CommandAlias("mv")
@@ -35,20 +36,20 @@ final class ImportCommand extends CoreCommand {
     private final WorldManager worldManager;
 
     private GeneratorProvider generatorProvider;
-    private final CommandValueFlag<String> GENERATOR_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<String> generatorFlag = flag(CommandValueFlag
             .builder("--generator", String.class)
             .addAlias("-g")
             .completion(input -> generatorProvider.suggestGeneratorString(input))
             .build());
 
-    private final CommandFlag NO_ADJUST_SPAWN_FLAG = flag(CommandFlag.builder("--no-adjust-spawn")
+    private final CommandFlag noAdjustSpawnFlag = flag(CommandFlag.builder("--no-adjust-spawn")
             .addAlias("-n")
             .build());
 
-    private final CommandValueFlag<Biome> BIOME_FLAG = flag(CommandValueFlag.builder("--biome", Biome.class)
+    private final CommandValueFlag<Biome> biomeFlag = flag(CommandValueFlag.builder("--biome", Biome.class)
             .addAlias("-b")
             .completion(input -> Lists.newArrayList(Registry.BIOME).stream()
-                    .filter(biome -> biome !=Biome.CUSTOM)
+                    .filter(biome -> biome != Biome.CUSTOM)
                     .map(biome -> biome.getKey().getKey())
                     .toList())
             .context(biomeStr -> Registry.BIOME.get(NamespacedKey.minecraft(biomeStr)))
@@ -88,15 +89,15 @@ final class ImportCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendInfo(MVCorei18n.IMPORT_IMPORTING, "{world}", worldName);
+        issuer.sendInfo(MVCorei18n.IMPORT_IMPORTING, Replace.WORLD.with(worldName));
         worldManager.importWorld(ImportWorldOptions.worldName(worldName)
-                .biome(parsedFlags.flagValue(BIOME_FLAG, Biome.CUSTOM))
+                .biome(parsedFlags.flagValue(biomeFlag, Biome.CUSTOM))
                 .environment(environment)
-                .generator(parsedFlags.flagValue(GENERATOR_FLAG, String.class))
-                .useSpawnAdjust(!parsedFlags.hasFlag(NO_ADJUST_SPAWN_FLAG)))
+                .generator(parsedFlags.flagValue(generatorFlag, String.class))
+                .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag)))
                 .onSuccess(newWorld -> {
                     Logging.fine("World import success: " + newWorld);
-                    issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS, "{world}", newWorld.getName());
+                    issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS, Replace.WORLD.with(newWorld.getName()));
                 })
                 .onFailure(failure -> {
                     Logging.fine("World import failure: " + failure);

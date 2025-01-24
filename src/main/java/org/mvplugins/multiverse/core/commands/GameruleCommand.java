@@ -35,14 +35,17 @@ import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
 @Subcommand("gamerule|rule|gamerules|rules")
 final class GameruleCommand extends CoreCommand {
 
-    private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<Integer> pageFlag = flag(CommandValueFlag
             .builder("--page", Integer.class)
             .addAlias("-p")
             .context(value -> {
@@ -54,7 +57,7 @@ final class GameruleCommand extends CoreCommand {
             })
             .build());
 
-    private final CommandValueFlag<ContentFilter> FILTER_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<ContentFilter> filterFlag = flag(CommandValueFlag
             .builder("--filter", ContentFilter.class)
             .addAlias("-f")
             .context(value -> {
@@ -98,10 +101,10 @@ final class GameruleCommand extends CoreCommand {
             World bukkitWorld = world.getBukkitWorld().getOrNull();
             if (bukkitWorld == null || !bukkitWorld.setGameRule(gamerule, value)) {
                 issuer.sendError(MVCorei18n.GAMERULE_SET_FAILED,
-                        "{gamerule}", gamerule.getName(),
-                        "{value}", value.toString(),
-                        "{world}", world.getName(),
-                        "{type}", gamerule.getType().getName());
+                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.VALUE.with(value.toString()),
+                        Replace.WORLD.with(world.getName()),
+                        replace("{type}").with(gamerule.getType().getName()));
                 success = false;
             }
         }
@@ -109,14 +112,14 @@ final class GameruleCommand extends CoreCommand {
         if (success) {
             if (worlds.length == 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_SET_SUCCESS_SINGLE,
-                        "{gamerule}", gamerule.getName(),
-                        "{value}", value.toString(),
-                        "{world}", worlds[0].getName());
+                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.VALUE.with(value.toString()),
+                        Replace.WORLD.with(worlds[0].getName()));
             } else if (worlds.length > 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_SET_SUCCESS_MULTIPLE,
-                        "{gamerule}", gamerule.getName(),
-                        "{value}", value.toString(),
-                        "{count}", String.valueOf(worlds.length));
+                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.VALUE.with(value.toString()),
+                        Replace.COUNT.with(String.valueOf(worlds.length)));
             }
         }
     }
@@ -138,25 +141,26 @@ final class GameruleCommand extends CoreCommand {
             @Description("{@@mv-core.gamerule.reset.world.description}")
             LoadedMultiverseWorld[] worlds) {
         AtomicBoolean success = new AtomicBoolean(true);
-        Arrays.stream(worlds).forEach(world -> world.getBukkitWorld().peek(bukkitWorld -> {
-            bukkitWorld.setGameRule(gamerule, bukkitWorld.getGameRuleDefault(gamerule));
-        }).onEmpty(() -> {
-            success.set(false);
-            issuer.sendError(MVCorei18n.GAMERULE_RESET_FAILED,
-                    "{gamerule}", gamerule.getName(),
-                    "{world}", world.getName());
-        }));
+        Arrays.stream(worlds)
+                .forEach(world -> world.getBukkitWorld()
+                .peek(bukkitWorld -> bukkitWorld.setGameRule(gamerule, bukkitWorld.getGameRuleDefault(gamerule)))
+                .onEmpty(() -> {
+                    success.set(false);
+                    issuer.sendError(MVCorei18n.GAMERULE_RESET_FAILED,
+                            Replace.GAMERULE.with(gamerule.getName()),
+                            Replace.WORLD.with(world.getName()));
+                }));
 
         // Tell user if it was successful
         if (success.get()) {
             if (worlds.length == 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_SINGLE,
-                        "{gamerule}", gamerule.getName(),
-                        "{world}", worlds[0].getName());
+                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.WORLD.with(worlds[0].getName()));
             } else if (worlds.length > 1) {
                 issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_MULTIPLE,
-                        "{gamerule}", gamerule.getName(),
-                        "{count}", String.valueOf(worlds.length));
+                        Replace.GAMERULE.with(gamerule.getName()),
+                        Replace.COUNT.with(String.valueOf(worlds.length)));
             }
         }
     }
@@ -187,8 +191,8 @@ final class GameruleCommand extends CoreCommand {
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader(this.getListTitle(issuer, world.getBukkitWorld().getOrNull()))
                         .doPagination(true)
-                        .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))
-                        .withFilter(parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())))
+                        .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
+                        .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
                 .send(issuer);
     }
 

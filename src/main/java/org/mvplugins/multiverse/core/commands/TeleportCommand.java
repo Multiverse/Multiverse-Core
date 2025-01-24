@@ -1,7 +1,7 @@
 package org.mvplugins.multiverse.core.commands;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,13 +25,12 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
-import org.mvplugins.multiverse.core.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.locale.message.Message;
-
-import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -41,7 +40,7 @@ final class TeleportCommand extends CoreCommand {
     private final CorePermissionsChecker permissionsChecker;
     private final AsyncSafetyTeleporter safetyTeleporter;
 
-    private final CommandFlag UNSAFE_FLAG = flag(CommandFlag.builder("--unsafe")
+    private final CommandFlag unsafeFlag = flag(CommandFlag.builder("--unsafe")
             .addAlias("-u")
             .build());
 
@@ -61,10 +60,9 @@ final class TeleportCommand extends CoreCommand {
     @Subcommand("teleport|tp")
     @CommandPermission("@mvteleport")
     @CommandCompletion(
-            "@destinations:playerOnly|@playersarray:checkPermissions=@mvteleportother " +
-            "@destinations:othersOnly|@flags:groupName=mvteleportcommand,resolveUntil=arg2 " +
-            "@flags:groupName=mvteleportcommand"
-    )
+            "@destinations:playerOnly|@playersarray:checkPermissions=@mvteleportother "
+                    + "@destinations:othersOnly|@flags:groupName=mvteleportcommand,resolveUntil=arg2 "
+                    + "@flags:groupName=mvteleportcommand")
     @Syntax("[player] <destination> [--unsafe]")
     @Description("{@@mv-core.teleport.description}")
     void onTeleportCommand(
@@ -87,17 +85,19 @@ final class TeleportCommand extends CoreCommand {
 
         if (players.length == 1) {
             teleportSinglePlayer(issuer, players[0], destination, parsedFlags);
-        }
-        else if (players.length > config.getConcurrentTeleportLimit()) {
+        } else if (players.length > config.getConcurrentTeleportLimit()) {
             issuer.sendError(MVCorei18n.TELEPORT_TOOMANYPLAYERS,
-                    replace("{count}").with(config.getConcurrentTeleportLimit()));
+                    Replace.COUNT.with(config.getConcurrentTeleportLimit()));
         } else {
             teleportMultiplePlayers(issuer, players, destination, parsedFlags);
         }
     }
 
-    private void teleportSinglePlayer(MVCommandIssuer issuer, Player player, DestinationInstance<?, ?> destination, ParsedCommandFlags parsedFlags) {
+    private void teleportSinglePlayer(MVCommandIssuer issuer, Player player,
+                                      DestinationInstance<?, ?> destination,
+                                      ParsedCommandFlags parsedFlags) {
         if (!permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), player, destination)) {
+            // TODO localize
             issuer.sendMessage(player == issuer.getPlayer()
                     ? "You do not have permission to teleport yourself!"
                     : "You do not have permission to teleport other players!");
@@ -106,59 +106,69 @@ final class TeleportCommand extends CoreCommand {
 
         safetyTeleporter.to(destination)
                 .by(issuer)
-                .checkSafety(!parsedFlags.hasFlag(UNSAFE_FLAG) && destination.checkTeleportSafety())
+                .checkSafety(!parsedFlags.hasFlag(unsafeFlag) && destination.checkTeleportSafety())
                 .teleport(player)
                 .onSuccess(() -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                        replace("{player}").with(getYouOrName(issuer, player)),
-                        replace("{destination}").with(destination.toString())))
+                        Replace.PLAYER.with(getYouOrName(issuer, player)),
+                        Replace.DESTINATION.with(destination.toString())))
                 .onFailure(failure -> issuer.sendError(MVCorei18n.TELEPORT_FAILED,
-                        replace("{player}").with(getYouOrName(issuer, player)),
-                        replace("{destination}").with(destination.toString()),
-                        replace("{reason}").with(failure.getFailureMessage())));
+                        Replace.PLAYER.with(getYouOrName(issuer, player)),
+                        Replace.DESTINATION.with(destination.toString()),
+                        Replace.REASON.with(failure.getFailureMessage())));
     }
 
     private Message getYouOrName(MVCommandIssuer issuer, Player player) {
         return player == issuer.getPlayer() ? Message.of(MVCorei18n.GENERIC_YOU) : Message.of(player.getName());
     }
 
-    private void teleportMultiplePlayers(MVCommandIssuer issuer, Player[] players, DestinationInstance<?, ?> destination, ParsedCommandFlags parsedFlags) {
+    private void teleportMultiplePlayers(MVCommandIssuer issuer, Player[] players,
+                                         DestinationInstance<?, ?> destination,
+                                         ParsedCommandFlags parsedFlags) {
         var selfPlayer = Arrays.stream(players).filter(p -> p == issuer.getPlayer()).findFirst();
         var otherPlayer = Arrays.stream(players).filter(p -> p != issuer.getPlayer()).findFirst();
-        if (selfPlayer.isPresent() && !permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), selfPlayer.get(), destination)) {
+        if (selfPlayer.isPresent()
+                && !permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), selfPlayer.get(), destination)) {
+            // TODO localize
             issuer.sendMessage("You do not have permission to teleport yourself!");
             return;
         }
-        if (otherPlayer.isPresent() && !permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), otherPlayer.get(), destination)) {
+        if (otherPlayer.isPresent()
+                && !permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), otherPlayer.get(), destination)) {
+            // TODO localize
             issuer.sendMessage("You do not have permission to teleport other players!");
             return;
         }
         safetyTeleporter.to(destination)
                 .by(issuer)
-                .checkSafety(!parsedFlags.hasFlag(UNSAFE_FLAG) && destination.checkTeleportSafety())
+                .checkSafety(!parsedFlags.hasFlag(unsafeFlag) && destination.checkTeleportSafety())
                 .teleport(List.of(players))
                 .thenAccept(attempts -> {
                     int successCount = 0;
-                    Map<TeleportFailureReason, Integer> failures = new HashMap<>();
+                    Map<TeleportFailureReason, Integer> failures = new EnumMap<>(TeleportFailureReason.class);
                     for (var attempt : attempts) {
                         if (attempt.isSuccess()) {
                             successCount++;
                         } else {
-                            failures.compute(attempt.getFailureReason(), (reason, count) -> count == null ? 1 : count + 1);
+                            failures.compute(attempt.getFailureReason(),
+                                    (reason, count) -> count == null ? 1 : count + 1);
                         }
                     }
                     if (successCount > 0) {
                         Logging.finer("Teleported %s players to %s", successCount, destination);
                         issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                                replace("{player}").with(successCount + " players"),
-                                replace("{destination}").with(destination.toString()));
+                                // TODO should use {count} instead of {player} most likely
+                                Replace.PLAYER.with(successCount + " players"),
+                                Replace.DESTINATION.with(destination.toString()));
                     }
                     if (!failures.isEmpty()) {
                         for (var entry : failures.entrySet()) {
-                            Logging.finer("Failed to teleport %s players to %s: %s", entry.getValue(), destination, entry.getKey());
+                            Logging.finer("Failed to teleport %s players to %s: %s",
+                                    entry.getValue(), destination, entry.getKey());
                             issuer.sendError(MVCorei18n.TELEPORT_FAILED,
-                                    replace("{player}").with(entry.getValue() + " players"),
-                                    replace("{destination}").with(destination.toString()),
-                                    replace("{reason}").with(Message.of(entry.getKey(), "")));
+                                    // TODO should use {count} instead of {player} most likely
+                                    Replace.PLAYER.with(entry.getValue() + " players"),
+                                    Replace.DESTINATION.with(destination.toString()),
+                                    Replace.REASON.with(Message.of(entry.getKey(), "")));
                         }
                     }
                 });
