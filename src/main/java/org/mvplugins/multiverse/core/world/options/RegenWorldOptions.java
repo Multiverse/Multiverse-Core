@@ -5,6 +5,7 @@ import java.util.Random;
 import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
@@ -21,6 +22,8 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     public static @NotNull RegenWorldOptions world(@NotNull LoadedMultiverseWorld world) {
         return new RegenWorldOptions(world);
     }
+
+    private final Random random = new Random();
 
     private final LoadedMultiverseWorld world;
     private Biome biome;
@@ -44,8 +47,8 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     }
 
     /**
-     * Sets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
-     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
+     * Sets the single biome used for this world. This may be null, in which case the biome from the generator will be
+     * used. If no generator is specified, the "natural" biome behaviour for this environment will be used.
      *
      * @param biome The biome used for this world
      * @return This {@link RegenWorldOptions} instance.
@@ -56,8 +59,8 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     }
 
     /**
-     * Gets the single biome used for this world. This may be null, in which case the biome from the generator will be used.
-     * If no generator is specified, the "natural" biome behaviour for this environment will be used.
+     * Gets the single biome used for this world. This may be null, in which case the biome from the generator will be
+     * used. If no generator is specified, the "natural" biome behaviour for this environment will be used.
      *
      * @return The biome used for this world
      */
@@ -194,7 +197,7 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
      */
     public long seed() {
         if (randomSeed) {
-            return new Random().nextLong();
+            return random.nextLong();
         } else if (seed == Long.MIN_VALUE) {
             return world.getSeed();
         }
