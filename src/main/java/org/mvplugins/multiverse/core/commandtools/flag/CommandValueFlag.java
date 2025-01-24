@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.commandtools.flags;
+package org.mvplugins.multiverse.core.commandtools.flag;
 
 import java.util.Arrays;
 import java.util.Collection;
