@@ -1,31 +1,38 @@
 package org.mvplugins.multiverse.core.commands;
 
-import co.aikar.commands.annotation.*;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Optional;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
-import org.mvplugins.multiverse.core.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -35,7 +42,7 @@ final class SpawnCommand extends CoreCommand {
     private final AsyncSafetyTeleporter safetyTeleporter;
     private final CorePermissionsChecker permissionsChecker;
 
-    private final CommandFlag UNSAFE_FLAG = flag(CommandFlag.builder("--unsafe")
+    private final CommandFlag unsafeFlag = flag(CommandFlag.builder("--unsafe")
             .addAlias("-u")
             .build());
 
@@ -53,7 +60,8 @@ final class SpawnCommand extends CoreCommand {
     @CommandAlias("mvspawn")
     @Subcommand("spawn")
     @CommandPermission("@mvspawn")
-    @CommandCompletion("@playersarray:checkPermissions=@mvspawnother|@flags:groupName=mvspawncommand,resolveUntil=arg1 @flags:groupName=mvspawncommand")
+    @CommandCompletion("@playersarray:checkPermissions=@mvspawnother|@flags:groupName=mvspawncommand,resolveUntil=arg1"
+            + " @flags:groupName=mvspawncommand")
     @Syntax("[player]")
     @Description("{@@mv-core.spawn.description}")
     void onSpawnTpCommand(
@@ -70,12 +78,14 @@ final class SpawnCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        Map<World, List<Player>> playersByWorld = Arrays.stream(players).collect(Collectors.groupingBy(Entity::getWorld));
+        Map<World, List<Player>> playersByWorld = Arrays.stream(players)
+                .collect(Collectors.groupingBy(Entity::getWorld));
         playersByWorld.forEach((world, playerList) ->
-                teleportPlayersToSpawn(issuer, world, playerList, !parsedFlags.hasFlag(UNSAFE_FLAG)));
+                teleportPlayersToSpawn(issuer, world, playerList, !parsedFlags.hasFlag(unsafeFlag)));
     }
 
-    private void teleportPlayersToSpawn(MVCommandIssuer issuer, World world, List<Player> players, boolean checkSafety) {
+    private void teleportPlayersToSpawn(MVCommandIssuer issuer, World world,
+                                        List<Player> players, boolean checkSafety) {
         LoadedMultiverseWorld mvWorld = worldManager.getLoadedWorld(world).getOrNull();
         if (mvWorld == null) {
             issuer.sendMessage("The world '" + world.getName() + "' is not a multiverse world!");
@@ -98,49 +108,54 @@ final class SpawnCommand extends CoreCommand {
         }
     }
 
-    private void handleSingleTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld, Player player, boolean checkSafety) {
+    private void handleSingleTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
+                                      Player player, boolean checkSafety) {
         safetyTeleporter.to(mvWorld.getSpawnLocation())
                 .by(issuer)
                 .checkSafety(checkSafety)
                 .teleport(player)
                 .onSuccess(() -> issuer.sendInfo(MVCorei18n.SPAWN_SUCCESS,
-                        replace("{player}").with(player.equals(issuer.getPlayer()) ?
-                                Message.of(MVCorei18n.GENERIC_YOU)
+                        Replace.PLAYER.with(player.equals(issuer.getPlayer())
+                                ? Message.of(MVCorei18n.GENERIC_YOU)
                                 : Message.of(player.getName())),
-                        replace("{world}").with(mvWorld.getName())))
+                        Replace.WORLD.with(mvWorld.getName())))
                 .onFailure(failure -> issuer.sendError(MVCorei18n.SPAWN_FAILED,
-                        replace("{player}").with(player.equals(issuer.getPlayer()) ?
-                                Message.of(MVCorei18n.GENERIC_YOU)
+                        Replace.PLAYER.with(player.equals(issuer.getPlayer())
+                                ? Message.of(MVCorei18n.GENERIC_YOU)
                                 : Message.of(player.getName())),
-                        replace("{world}").with(mvWorld.getName()),
-                        replace("{reason}").with(failure.getFailureMessage())));
+                        Replace.WORLD.with(mvWorld.getName()),
+                        Replace.REASON.with(failure.getFailureMessage())));
     }
 
-    private void handleMultiTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld, List<Player> players, boolean checkSafety) {
+    private void handleMultiTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
+                                     List<Player> players, boolean checkSafety) {
         safetyTeleporter.to(mvWorld.getSpawnLocation())
                 .by(issuer)
                 .checkSafety(checkSafety)
                 .teleport(players)
                 .thenAccept(attempts -> {
                     int successCount = 0;
-                    Map<TeleportFailureReason, Integer> failures = new HashMap<>();
+                    Map<TeleportFailureReason, Integer> failures = new EnumMap<>(TeleportFailureReason.class);
                     for (var attempt : attempts) {
                         if (attempt.isSuccess()) {
                             successCount++;
                         } else {
-                            failures.compute(attempt.getFailureReason(), (reason, count) -> count == null ? 1 : count + 1);
+                            failures.compute(attempt.getFailureReason(),
+                                    (reason, count) -> count == null ? 1 : count + 1);
                         }
                     }
                     if (successCount > 0) {
                         issuer.sendInfo(MVCorei18n.SPAWN_SUCCESS,
-                                replace("{player}").with(successCount + " players"),
-                                replace("{world}").with(mvWorld.getName()));
+                                // TODO should use {count} instead of {player} most likely
+                                Replace.PLAYER.with(successCount + " players"),
+                                Replace.WORLD.with(mvWorld.getName()));
                     } else {
                         for (var entry : failures.entrySet()) {
                             issuer.sendError(MVCorei18n.SPAWN_FAILED,
-                                    replace("{player}").with(entry.getValue() + " players"),
-                                    replace("{world}").with(mvWorld.getName()),
-                                    replace("{reason}").with(entry.getKey().getMessageKey()));
+                                    // TODO should use {count} instead of {player} most likely
+                                    Replace.PLAYER.with(entry.getValue() + " players"),
+                                    Replace.WORLD.with(mvWorld.getName()),
+                                    Replace.REASON.with(entry.getKey().getMessageKey()));
                         }
                     }
                 });

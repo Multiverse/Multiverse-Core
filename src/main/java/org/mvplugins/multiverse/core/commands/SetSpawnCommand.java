@@ -12,12 +12,13 @@ import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 @CommandAlias("mv")
-final public class SetSpawnCommand extends CoreCommand {
+final class SetSpawnCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
@@ -50,13 +51,15 @@ final public class SetSpawnCommand extends CoreCommand {
             worldManager.getLoadedWorld(finalLocation.getWorld())
                     .peek(mvWorld -> mvWorld.setSpawnLocation(finalLocation)
                             .onSuccess(ignore -> issuer.sendMessage(
-                                    "Successfully set spawn in " + mvWorld.getName() + " to " + prettyLocation(mvWorld.getSpawnLocation())))
+                                    "Successfully set spawn in " + mvWorld.getName() + " to "
+                                            + prettyLocation(mvWorld.getSpawnLocation())))
                             .onFailure(e -> issuer.sendMessage(e.getLocalizedMessage())))
-                    .onEmpty(() -> issuer.sendMessage("That world is not loaded or does not exist!"))
-        ).onEmpty(() -> issuer.sendMessage("You must specify a location in the format: worldname:x,y,z"));
+                    .onEmpty(() -> issuer.sendMessage("That world is not loaded or does not exist!")))
+                .onEmpty(() -> issuer.sendMessage("You must specify a location in the format: worldname:x,y,z"));
     }
 
     private String prettyLocation(Location location) {
-        return location.getX() + ", " + location.getY() + ", " + location.getZ() + ". pitch:" + location.getPitch() + ", yaw:" + location.getYaw();
+        return location.getX() + ", " + location.getY() + ", " + location.getZ() + ". pitch:" + location.getPitch()
+                + ", yaw:" + location.getYaw();
     }
 }

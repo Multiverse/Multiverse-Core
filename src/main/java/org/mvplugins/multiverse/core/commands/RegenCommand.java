@@ -24,15 +24,14 @@ import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commandtools.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
+import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
-
-import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -42,25 +41,27 @@ final class RegenCommand extends CoreCommand {
     private final PlayerWorldTeleporter playerWorldTeleporter;
     private final WorldTickDeferrer worldTickDeferrer;
 
-    private final CommandValueFlag<String> SEED_FLAG = flag(CommandValueFlag.builder("--seed", String.class)
+    private final Random random = new Random();
+
+    private final CommandValueFlag<String> seedFlag = flag(CommandValueFlag.builder("--seed", String.class)
             .addAlias("-s")
-            .completion(input -> Collections.singleton(String.valueOf(new Random().nextLong())))
+            .completion(input -> Collections.singleton(String.valueOf(random.nextLong())))
             .optional()
             .build());
 
-    private final CommandFlag RESET_WORLD_CONFIG_FLAG = flag(CommandFlag.builder("--reset-world-config")
+    private final CommandFlag resetWorldConfigFlag = flag(CommandFlag.builder("--reset-world-config")
             .addAlias("-wc")
             .build());
 
-    private final CommandFlag RESET_GAMERULES_FLAG = flag(CommandFlag.builder("--reset-gamerules")
+    private final CommandFlag resetGamerulesFlag = flag(CommandFlag.builder("--reset-gamerules")
             .addAlias("-gm")
             .build());
 
-    private final CommandFlag RESET_WORLD_BORDER_FLAG = flag(CommandFlag.builder("--reset-world-border")
+    private final CommandFlag resetWorldBorderFlag = flag(CommandFlag.builder("--reset-world-border")
             .addAlias("-wb")
             .build());
 
-    private final CommandFlag REMOVE_PLAYERS_FLAG = flag(CommandFlag.builder("--remove-players")
+    private final CommandFlag removePlayersFlag = flag(CommandFlag.builder("--remove-players")
             .addAlias("-r")
             .build());
 
@@ -99,14 +100,14 @@ final class RegenCommand extends CoreCommand {
                 .issuer(issuer)
                 .action(() -> runRegenCommand(issuer, world, parsedFlags))
                 .prompt(Message.of(MVCorei18n.REGEN_PROMPT, "",
-                        replace("{world}").with(world.getName()))));
+                        Replace.WORLD.with(world.getName()))));
     }
 
     private void runRegenCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {
-        issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, "{world}", world.getName());
+        issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, Replace.WORLD.with(world.getName()));
         List<Player> worldPlayers = world.getPlayers().getOrElse(Collections.emptyList());
 
-        var future = parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)
+        var future = parsedFlags.hasFlag(removePlayersFlag)
                 ? playerWorldTeleporter.removeFromWorld(world)
                 : Async.completedFuture(Collections.emptyList());
 
@@ -122,16 +123,16 @@ final class RegenCommand extends CoreCommand {
             List<Player> worldPlayers) {
         //todo: Change biome on regen
         RegenWorldOptions regenWorldOptions = RegenWorldOptions.world(world)
-                .randomSeed(parsedFlags.hasFlag(SEED_FLAG))
-                .seed(parsedFlags.flagValue(SEED_FLAG))
-                .keepWorldConfig(!parsedFlags.hasFlag(RESET_WORLD_CONFIG_FLAG))
-                .keepGameRule(!parsedFlags.hasFlag(RESET_GAMERULES_FLAG))
-                .keepWorldBorder(!parsedFlags.hasFlag(RESET_WORLD_BORDER_FLAG));
+                .randomSeed(parsedFlags.hasFlag(seedFlag))
+                .seed(parsedFlags.flagValue(seedFlag))
+                .keepWorldConfig(!parsedFlags.hasFlag(resetWorldConfigFlag))
+                .keepGameRule(!parsedFlags.hasFlag(resetGamerulesFlag))
+                .keepWorldBorder(!parsedFlags.hasFlag(resetWorldBorderFlag));
 
         worldManager.regenWorld(regenWorldOptions).onSuccess(newWorld -> {
             Logging.fine("World regen success: " + newWorld);
-            issuer.sendInfo(MVCorei18n.REGEN_SUCCESS, "{world}", newWorld.getName());
-            if (parsedFlags.hasFlag(REMOVE_PLAYERS_FLAG)) {
+            issuer.sendInfo(MVCorei18n.REGEN_SUCCESS, Replace.WORLD.with(newWorld.getName()));
+            if (parsedFlags.hasFlag(removePlayersFlag)) {
                 playerWorldTeleporter.teleportPlayersToWorld(worldPlayers, newWorld);
             }
         }).onFailure(failure -> {

@@ -1,5 +1,12 @@
 package org.mvplugins.multiverse.core.commands;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -14,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
@@ -27,17 +35,11 @@ import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @CommandAlias("mv")
-final public class WhoCommand extends CoreCommand {
+final class WhoCommand extends CoreCommand {
 
-    private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<Integer> pageFlag = flag(CommandValueFlag
             .builder("--page", Integer.class)
             .addAlias("-p")
             .context(value -> {
@@ -49,7 +51,7 @@ final public class WhoCommand extends CoreCommand {
             })
             .build());
 
-    private final CommandValueFlag<ContentFilter> FILTER_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<ContentFilter> filterFlag = flag(CommandValueFlag
             .builder("--filter", ContentFilter.class)
             .addAlias("-f")
             .context(value -> {
@@ -84,12 +86,11 @@ final public class WhoCommand extends CoreCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         // Send the display
-        getListDisplay(
-                worldManager.getLoadedWorlds(),
-                parsedFlags.flagValue(PAGE_FLAG, 1),
-                parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get()),
-                true
-        ).send(issuer);
+        getListDisplay(worldManager.getLoadedWorlds(),
+                        parsedFlags.flagValue(pageFlag, 1),
+                        parsedFlags.flagValue(filterFlag, DefaultContentFilter.get()),
+                        true)
+                .send(issuer);
 
     }
 
@@ -112,41 +113,38 @@ final public class WhoCommand extends CoreCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         // Send the display
-        getListDisplay(
-                inputtedWorld,
-                parsedFlags.flagValue(PAGE_FLAG, 1),
-                parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get()),
-                false
-        ).send(issuer);
+        getListDisplay(inputtedWorld,
+                        parsedFlags.flagValue(pageFlag, 1),
+                        parsedFlags.flagValue(filterFlag, DefaultContentFilter.get()),
+                        false)
+                .send(issuer);
     }
 
     private String phrasePlayerList(List<Player> players) {
         return players.stream().map(Player::getName).collect(Collectors.joining(", "));
     }
 
-    private ContentDisplay getListDisplay(LoadedMultiverseWorld world, int page, ContentFilter filter, boolean ignoreEmptyWorlds) {
+    private ContentDisplay getListDisplay(LoadedMultiverseWorld world, int page,
+                                          ContentFilter filter, boolean ignoreEmptyWorlds) {
         Collection<LoadedMultiverseWorld> listingWorlds = new ArrayList<>();
         listingWorlds.add(world);
         return getListDisplay(listingWorlds, page, filter, ignoreEmptyWorlds);
     }
 
-    private ContentDisplay getListDisplay(Collection<LoadedMultiverseWorld> worlds, int page, ContentFilter filter, boolean ignoreEmptyWorlds) {
-        HashMap<String, String> outMap = new HashMap<>();
+    private ContentDisplay getListDisplay(Collection<LoadedMultiverseWorld> worlds, int page,
+                                          ContentFilter filter, boolean ignoreEmptyWorlds) {
+        Map<String, String> outMap = new HashMap<>();
 
         // Add all the worlds to our hashmap
         for (LoadedMultiverseWorld world : worlds) {
             @Nullable List<Player> players = world.getPlayers().getOrNull();
 
-            // If the world has 0 players in it, say that it is empty
-            if ((players == null || players.isEmpty()) && !ignoreEmptyWorlds) {
+            if (players != null && !players.isEmpty()) {
+                outMap.put(world.getAlias(), phrasePlayerList(players));
+            } else if (!ignoreEmptyWorlds) {
+                // If the world has 0 players in it, say that it is empty
                 outMap.put(world.getAlias(), ChatColor.RED + "Empty");
-                continue;
             }
-            if (players == null || players.isEmpty()) {
-                continue;
-            }
-
-            outMap.put(world.getAlias(), phrasePlayerList(players));
         }
 
         return ContentDisplay.create()

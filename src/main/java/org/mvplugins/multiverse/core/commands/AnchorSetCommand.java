@@ -54,10 +54,9 @@ final class AnchorSetCommand extends CoreCommand {
             String anchorName) {
         Location anchorLocation = player.getLocation();
         if (anchorManager.saveAnchorLocation(anchorName, anchorLocation)) {
-            issuer.sendMessage("&aAnchor &f" + anchorName + "&a set to &f"
-                    + locationManipulation.locationToString(anchorLocation));
+            sendAnchorSetSuccessMessage(issuer, anchorName, locationManipulation.locationToString(anchorLocation));
         } else {
-            issuer.sendMessage("&cFailed to set anchor &f" + anchorName + ".");
+            sendAnchorSetFailedMessage(issuer, anchorName);
         }
     }
 
@@ -78,9 +77,17 @@ final class AnchorSetCommand extends CoreCommand {
             @Description("")
             String locationString) {
         if (anchorManager.saveAnchorLocation(anchorName, locationString)) {
-            issuer.sendMessage("&aAnchor &f" + anchorName + "&a set to &f" + locationString);
+            sendAnchorSetSuccessMessage(issuer, anchorName, locationString);
         } else {
-            issuer.sendMessage("&cFailed to set anchor &f" + anchorName + ".");
+            sendAnchorSetFailedMessage(issuer, anchorName);
         }
+    }
+
+    private void sendAnchorSetSuccessMessage(MVCommandIssuer issuer, String anchorName, String locationString) {
+        issuer.sendMessage("&aAnchor &f" + anchorName + "&a set to &f" + locationString);
+    }
+
+    private void sendAnchorSetFailedMessage(MVCommandIssuer issuer, String anchorName) {
+        issuer.sendMessage("&cFailed to set anchor &f" + anchorName + ".");
     }
 }

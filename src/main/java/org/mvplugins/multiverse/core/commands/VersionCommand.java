@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.Subcommand;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
@@ -31,7 +32,9 @@ final class VersionCommand extends CoreCommand {
     @Description("{@@mv-core.version.description}")
     void versionCommand(BukkitCommandIssuer issuer) {
         issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_MV, "{version}", plugin.getDescription().getVersion());
-        issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_AUTHORS, "{authors}", String.join(", ", plugin.getDescription().getAuthors()));
-        issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_SECRETCODE); // An in joke I don't get...
+        issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_AUTHORS,
+                "{authors}", String.join(", ", plugin.getDescription().getAuthors()));
+        // An in joke I don't get...
+        issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_SECRETCODE);
     }
 }

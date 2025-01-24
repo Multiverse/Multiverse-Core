@@ -38,7 +38,7 @@ final class GeneratorsCommand extends CoreCommand {
 
     private final GeneratorProvider generatorProvider;
 
-    private final CommandValueFlag<Integer> PAGE_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<Integer> pageFlag = flag(CommandValueFlag
             .builder("--page", Integer.class)
             .addAlias("-p")
             .context(value -> {
@@ -50,7 +50,7 @@ final class GeneratorsCommand extends CoreCommand {
             })
             .build());
 
-    private final CommandValueFlag<ContentFilter> FILTER_FLAG = flag(CommandValueFlag
+    private final CommandValueFlag<ContentFilter> filterFlag = flag(CommandValueFlag
             .builder("--filter", ContentFilter.class)
             .addAlias("-f")
             .context(value -> {
@@ -97,8 +97,8 @@ final class GeneratorsCommand extends CoreCommand {
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader("%s====[ Multiverse Generator List ]====", ChatColor.AQUA)
                         .doPagination(true)
-                        .withTargetPage(parsedFlags.flagValue(PAGE_FLAG, 1))
-                        .withFilter(parsedFlags.flagValue(FILTER_FLAG, DefaultContentFilter.get())))
+                        .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
+                        .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
                 .send(issuer);
     }
 }

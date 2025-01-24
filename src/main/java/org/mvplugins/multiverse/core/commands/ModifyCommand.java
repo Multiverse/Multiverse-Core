@@ -40,7 +40,7 @@ final class ModifyCommand extends CoreCommand {
     @CommandCompletion("@mvworlds:scope=both @propsmodifyaction @mvworldpropsname @mvworldpropsvalue")
     @Syntax("[world] <set|add|remove|reset> <property> <value>")
     @Description("")
-    void onModifyCommand(
+    void onModifyCommand(// SUPPRESS CHECKSTYLE: ParameterNumber
             MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
@@ -60,36 +60,23 @@ final class ModifyCommand extends CoreCommand {
             @Single
             @Syntax("[value]")
             @Description("")
-            @Nullable String propertyValue
-    ) {
+            @Nullable String propertyValue) {
         if (action.isRequireValue() && propertyValue == null) {
-            issuer.sendMessage("You must specify a value to " + action.name().toLowerCase() + " '" + propertyName + "'.");
+            issuer.sendMessage("You must specify a value to " + action.name().toLowerCase()
+                    + " '" + propertyName + "'.");
             return;
         }
 
         StringPropertyHandle worldPropertyHandle = world.getStringPropertyHandle();
         worldPropertyHandle.modifyPropertyString(propertyName, propertyValue, action).onSuccess(ignore -> {
             issuer.sendMessage("Property %s%s set to %s%s for world %s%s%s.".formatted(
-                    propertyName,
-                    ChatColor.BLUE,
-                    worldPropertyHandle.getProperty(propertyName).getOrNull(),
-                    ChatColor.BLUE,
-                    ChatColor.GRAY,
-                    world.getName(),
-                    ChatColor.BLUE
-            ));
+                    propertyName, ChatColor.BLUE, worldPropertyHandle.getProperty(propertyName).getOrNull(),
+                    ChatColor.BLUE, ChatColor.GRAY, world.getName(), ChatColor.BLUE));
             worldManager.saveWorldsConfig();
         }).onFailure(exception -> {
             issuer.sendMessage("Failed to %s%s property %s%s to %s%s for world %s%s.".formatted(
-                    action.name().toLowerCase(),
-                    ChatColor.BLUE,
-                    propertyName,
-                    ChatColor.BLUE,
-                    propertyValue,
-                    ChatColor.BLUE,
-                    world.getName(),
-                    ChatColor.BLUE
-            ));
+                    action.name().toLowerCase(), ChatColor.BLUE, propertyName, ChatColor.BLUE,
+                    propertyValue, ChatColor.BLUE, world.getName(), ChatColor.BLUE));
             issuer.sendMessage(exception.getMessage());
         });
     }
