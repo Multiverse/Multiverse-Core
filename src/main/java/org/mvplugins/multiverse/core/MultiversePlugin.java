@@ -30,12 +30,12 @@ public abstract class MultiversePlugin extends JavaPlugin {
      *
      * @return The Integer protocol version.
      */
-    abstract int getTargetCoreProtocolVersion();
+    public abstract int getTargetCoreProtocolVersion();
 
     /**
      * Gets the {@link PluginServiceLocator} for this plugin.
      *
      * @return The {@link PluginServiceLocator}
      */
-    abstract PluginServiceLocator getServiceLocator();
+    public abstract PluginServiceLocator getServiceLocator();
 }
