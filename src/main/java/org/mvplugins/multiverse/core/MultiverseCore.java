@@ -7,8 +7,6 @@
 
 package org.mvplugins.multiverse.core;
 
-import java.io.File;
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -18,17 +16,13 @@ import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.submodules.MVCore;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
@@ -36,18 +30,20 @@ import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
+import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.location.NullLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
- * The implementation of the Multiverse-{@link MVCore}.
+ * The start of the Multiverse-Core plugin
  */
 @Service
-public class MultiverseCore extends JavaPlugin implements MVCore {
-    private static final int PROTOCOL = 50;
+public class MultiverseCore extends MultiversePlugin {
 
-    private PluginServiceLocatorFactory serviceLocatorFactory;
+    private static final int MIN_TARGET_CORE_PROTOCOL_VERSION = 50;
+    private static final int CORE_PROTOCOL_VERSION = 50;
+
     private PluginServiceLocator serviceLocator;
 
     @Inject
@@ -64,9 +60,6 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     private Provider<BstatsMetricsConfigurator> metricsConfiguratorProvider;
     @Inject
     private Provider<MVEconomist> economistProvider;
-
-    // Counter for the number of plugins that have registered with us
-    private int pluginCount;
 
     /**
      * This is the constructor for the MultiverseCore.
@@ -90,6 +83,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         // Register our config classes
         ConfigurationSerialization.registerClass(NullLocation.class);
         ConfigurationSerialization.registerClass(SpawnLocation.class);
+
+        // Setup our MultiversePluginsRegistration
+        MultiversePluginsRegistration.get().setCore(this);
     }
 
     /**
@@ -97,6 +93,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onEnable() {
+        super.onEnable();
         initializeDependencyInjection();
 
         // Load our configs first as we need them for everything else.
@@ -112,10 +109,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
 
         // Initialize the worlds
         worldManagerProvider.get().initAllWorlds().andThenTry(() -> {
-            // Setup economy here so vault is loaded
-            loadEconomist();
-
-            // Init all the other stuff
+            loadEconomist(); // Setup economy here so vault is loaded
             loadAnchors();
             registerEvents();
             setUpLocales();
@@ -123,8 +117,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
             registerDestinations();
             setupMetrics();
             loadPlaceholderApiIntegration();
-            saveAllConfigs();
             loadApiService();
+            if (!saveAllConfigs()) {
+                Logging.severe("Failed to save configs, things may not work as expected.");
+            }
             logEnableMessage();
         }).onFailure(e -> {
             Logging.severe("Failed to multiverse core! Disabling...");
@@ -138,6 +134,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
      */
     @Override
     public void onDisable() {
+        super.onDisable();
         MultiverseCoreApi.shutdown();
         saveAllConfigs();
         shutdownDependencyInjection();
@@ -145,9 +142,8 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     private void initializeDependencyInjection() {
-        serviceLocatorFactory = new PluginServiceLocatorFactory();
-        serviceLocator = serviceLocatorFactory.init()
-                .flatMap(ignore -> serviceLocatorFactory.registerPlugin(new MultiverseCorePluginBinder(this)))
+        var serviceLocatorFactory = PluginServiceLocatorFactory.get();
+        serviceLocator = serviceLocatorFactory.registerPlugin(new MultiverseCorePluginBinder(this))
                 .flatMap(PluginServiceLocator::enable)
                 .getOrElseThrow(exception -> {
                     Logging.severe("Failed to initialize dependency injection!");
@@ -161,10 +157,7 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
             serviceLocator.disable();
             serviceLocator = null;
         }
-        if (serviceLocatorFactory != null) {
-            serviceLocatorFactory.shutdown();
-            serviceLocatorFactory = null;
-        }
+        PluginServiceLocatorFactory.get().shutdown();
     }
 
     private boolean shouldShowConfig() {
@@ -261,25 +254,9 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
         }
     }
 
-    private void loadApiService() {
-        MultiverseCoreApi.init(serviceLocator);
-        Bukkit.getServicesManager().register(
-                MultiverseCoreApi.class, MultiverseCoreApi.get(), this, ServicePriority.Normal);
-        Logging.fine("api service loaded");
-    }
-
     /**
-     * Logs the enable message.
+     * Setup placeholder api hook
      */
-    private void logEnableMessage() {
-        Logging.config("Version %s (API v%s) Enabled - By %s", this.getDescription().getVersion(), PROTOCOL, getAuthors());
-
-        if (configProvider.get().isShowingDonateMessage()) {
-            Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
-            Logging.config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
-        }
-    }
-
     private void loadPlaceholderApiIntegration() {
         if (configProvider.get().isRegisterPapiHook()
                 && getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
@@ -292,51 +269,64 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     }
 
     /**
-     * {@inheritDoc}
+     * Setup the api service for {@link MultiverseCoreApi}
      */
-    @Override
-    public MVCore getCore() {
-        return this;
+    private void loadApiService() {
+        MultiverseCoreApi.init(serviceLocator);
+        Bukkit.getServicesManager().register(
+                MultiverseCoreApi.class, MultiverseCoreApi.get(), this, ServicePriority.Normal);
+        Logging.fine("api service loaded");
     }
 
     /**
-     * {@inheritDoc}
+     * Save config.yml, worlds.yml, and anchors.yml.
+     *
+     * @return true if all configs were successfully saved
      */
-    @Override
-    public int getProtocolVersion() {
-        return PROTOCOL;
+    private boolean saveAllConfigs() {
+        // TODO: Make this all Try<Void>
+        return configProvider.get().save().isSuccess()
+                && worldManagerProvider.get().saveWorldsConfig()
+                && anchorManagerProvider.get().saveAnchors();
     }
 
     /**
-     * {@inheritDoc}
+     * Logs the enable message.
      */
-    @Override
-    public String getAuthors() {
-        List<String> authorsList = this.getDescription().getAuthors();
-        if (authorsList.isEmpty()) {
-            return "";
+    private void logEnableMessage() {
+        Logging.config("Version %s (API v%s) Enabled - By %s",
+                this.getDescription().getVersion(), "TODO", StringFormatter.joinAnd(getDescription().getAuthors()));
+
+        if (configProvider.get().isShowingDonateMessage()) {
+            Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
+            Logging.config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
+    }
 
-        StringBuilder authors = new StringBuilder();
-        authors.append(authorsList.get(0));
+    /**
+     * The current core's protocol version.
+     *
+     * @return The current core's protocol version
+     */
+    int getCoreProtocolVersion() {
+        return CORE_PROTOCOL_VERSION;
+    }
 
-        for (int i = 1; i < authorsList.size(); i++) {
-            if (i == authorsList.size() - 1) {
-                authors.append(" and ").append(authorsList.get(i));
-            } else {
-                authors.append(", ").append(authorsList.get(i));
-            }
-        }
-
-        return authors.toString();
+    /**
+     * The minimum protocol version that submodules must target.
+     *
+     * @return The minimum protocol version
+     */
+    int getMinTargetCoreProtocolVersion() {
+        return MIN_TARGET_CORE_PROTOCOL_VERSION;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public PluginServiceLocatorFactory getServiceLocatorFactory() {
-        return serviceLocatorFactory;
+    public int getTargetCoreProtocolVersion() {
+        return CORE_PROTOCOL_VERSION;
     }
 
     /**
@@ -350,31 +340,10 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public int getPluginCount() {
-        return this.pluginCount;
-    }
-
     @NotNull
     @Override
     public Logger getLogger() {
         return Logging.getLogger();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void incrementPluginCount() {
-        this.pluginCount += 1;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void decrementPluginCount() {
-        this.pluginCount -= 1;
     }
 
     /**
@@ -409,28 +378,5 @@ public class MultiverseCore extends JavaPlugin implements MVCore {
     @Override
     public void saveConfig() {
         this.configProvider.get().save();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean saveAllConfigs() {
-        // TODO: Make this all Try<Void>
-        return configProvider.get().save().isSuccess()
-                && worldManagerProvider.get().saveWorldsConfig()
-                && anchorManagerProvider.get().saveAnchors();
-    }
-
-    /**
-     * This is for unit testing ONLY. Do not use this constructor.
-     *
-     * @param loader      The PluginLoader to use.
-     * @param description The Description file to use.
-     * @param dataFolder  The folder that other datafiles can be found in.
-     * @param file        The location of the plugin.
-     */
-    public MultiverseCore(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, description, dataFolder, file);
     }
 }

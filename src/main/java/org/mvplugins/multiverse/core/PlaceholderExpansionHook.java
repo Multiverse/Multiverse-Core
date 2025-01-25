@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -42,7 +43,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
 
     @Override
     public @NotNull String getAuthor() {
-        return plugin.getAuthors();
+        return StringFormatter.joinAnd(plugin.getDescription().getAuthors());
     }
 
     @Override

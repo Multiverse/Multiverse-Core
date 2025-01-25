@@ -13,11 +13,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.MultiversePluginsRegistration;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.LogsType;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
 import org.mvplugins.multiverse.core.utils.FileUtils;
+import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
@@ -94,7 +96,8 @@ class DumpsService {
                 + " - Multiverse-Core Version: " + this.plugin.getDescription().getVersion() + '\n'
                 + " - Bukkit Version: " + this.plugin.getServer().getVersion() + '\n'
                 + " - Loaded Worlds: " + worldManager.getLoadedWorlds() + '\n'
-                + " - Multiverse Plugins Loaded: " + this.plugin.getPluginCount() + '\n';
+                + " - Multiverse Plugins Loaded: " + StringFormatter.joinAnd(MultiversePluginsRegistration.get().getRegisteredPlugins()) + '\n'
+                + " - Multiverse Plugins Count: " + MultiversePluginsRegistration.get().getPluginCount() + '\n';
     }
 
     private MVDumpsDebugInfoEvent createAndCallDebugInfoEvent() {

@@ -15,17 +15,29 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.inject.binder.PluginBinder;
 
+import java.util.Objects;
+
 public final class PluginServiceLocatorFactory {
+
+    private static PluginServiceLocatorFactory instance = null;
+
+    public static PluginServiceLocatorFactory get() {
+        if (instance == null) {
+            instance = new PluginServiceLocatorFactory();
+            instance.init().getOrElseThrow(exception -> new IllegalStateException(exception));
+        }
+        return instance;
+    }
 
     private final ServiceLocatorFactory serviceLocatorFactory;
     private ServiceLocator baseServiceLocator;
 
-    public PluginServiceLocatorFactory() {
+     private PluginServiceLocatorFactory() {
         this.serviceLocatorFactory = new ServiceLocatorFactoryImpl();
     }
 
     @NotNull
-    public Try<Void> init() {
+    private Try<Void> init() {
         return createSystemServiceLocator()
                 .flatMap(this::createServerServiceLocator)
                 .mapTry(locator -> {
@@ -34,8 +46,13 @@ public final class PluginServiceLocatorFactory {
                 });
     }
 
+    /**
+     * Stops injection of all Multiverse plugins.
+     */
     public void shutdown() {
         baseServiceLocator.shutdown();
+        baseServiceLocator = null;
+        instance = null;
     }
 
     @NotNull
@@ -59,6 +76,7 @@ public final class PluginServiceLocatorFactory {
     }
 
     public <T extends Plugin> Try<PluginServiceLocator> registerPlugin(@NotNull PluginBinder<T> pluginBinder) {
+        Objects.requireNonNull(baseServiceLocator, "PluginServiceLocatorFactory has not been initialized.");
         return createPluginServiceLocator(pluginBinder, baseServiceLocator);
     }
 

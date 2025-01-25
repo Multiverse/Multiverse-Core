@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class ServerProperties {
+public final class ServerProperties {
 
     private final Map<String, String> properties;
     private final FileUtils fileUtils;
