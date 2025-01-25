@@ -6,10 +6,10 @@ import jakarta.annotation.PostConstruct;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Contract;
 
-import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagGroup;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandFlagsManager;
-import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
+import org.mvplugins.multiverse.core.commandtools.flag.CommandFlagGroup;
+import org.mvplugins.multiverse.core.commandtools.flag.CommandFlagsManager;
+import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
 
 /**
  * Base class for all Multiverse commands.

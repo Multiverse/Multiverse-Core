@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
 import java.util.Collections;
-import java.util.Random;
 
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.annotation.CommandAlias;
@@ -24,14 +23,17 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandFlag;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
-import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
+import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
+import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
+import org.mvplugins.multiverse.core.utils.result.Attempt.Failure;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions;
+import org.mvplugins.multiverse.core.world.reasons.CreateFailureReason;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
@@ -110,6 +112,24 @@ final class CreateCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
+        messageWorldDetails(issuer, worldName, environment, parsedFlags);
+
+        issuer.sendInfo(MVCorei18n.CREATE_LOADING);
+
+        worldManager.createWorld(CreateWorldOptions.worldName(worldName)
+                .biome(parsedFlags.flagValue(biomeFlag, Biome.CUSTOM))
+                .environment(environment)
+                .seed(parsedFlags.flagValue(seedFlag))
+                .worldType(parsedFlags.flagValue(worldTypeFlag, WorldType.NORMAL))
+                .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag))
+                .generator(parsedFlags.flagValue(generatorFlag, ""))
+                .generateStructures(!parsedFlags.hasFlag(noStructuresFlag)))
+                .onSuccess(newWorld -> messageSuccess(issuer, newWorld))
+                .onFailure(failure -> messageFailure(issuer, failure));
+    }
+
+    private void messageWorldDetails(MVCommandIssuer issuer, String worldName,
+                                     World.Environment environment, ParsedCommandFlags parsedFlags) {
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES,
                 replace("{worldName}").with(worldName));
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ENVIRONMENT,
@@ -130,23 +150,15 @@ final class CreateCommand extends CoreCommand {
         }
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_STRUCTURES,
                 replace("{structures}").with(String.valueOf(!parsedFlags.hasFlag(noStructuresFlag))));
+    }
 
-        issuer.sendInfo(MVCorei18n.CREATE_LOADING);
+    private void messageSuccess(MVCommandIssuer issuer, LoadedMultiverseWorld newWorld) {
+        Logging.fine("World create success: " + newWorld);
+        issuer.sendInfo(MVCorei18n.CREATE_SUCCESS, Replace.WORLD.with(newWorld.getName()));
+    }
 
-        worldManager.createWorld(CreateWorldOptions.worldName(worldName)
-                .biome(parsedFlags.flagValue(biomeFlag, Biome.CUSTOM))
-                .environment(environment)
-                .seed(parsedFlags.flagValue(seedFlag))
-                .worldType(parsedFlags.flagValue(worldTypeFlag, WorldType.NORMAL))
-                .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag))
-                .generator(parsedFlags.flagValue(generatorFlag, ""))
-                .generateStructures(!parsedFlags.hasFlag(noStructuresFlag)))
-                .onSuccess(newWorld -> {
-                    Logging.fine("World create success: " + newWorld);
-                    issuer.sendInfo(MVCorei18n.CREATE_SUCCESS, Replace.WORLD.with(newWorld.getName()));
-                }).onFailure(failure -> {
-                    Logging.fine("World create failure: " + failure);
-                    issuer.sendError(failure.getFailureMessage());
-                });
+    private void messageFailure(MVCommandIssuer issuer, Failure<LoadedMultiverseWorld, CreateFailureReason> failure) {
+        Logging.fine("World create failure: " + failure);
+        issuer.sendError(failure.getFailureMessage());
     }
 }
