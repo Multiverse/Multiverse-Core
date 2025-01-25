@@ -21,11 +21,11 @@ public class MultiverseCoreApi {
 
     private static MultiverseCoreApi instance;
 
-    static void init(PluginServiceLocator serviceProvider) {
+    static void init(PluginServiceLocator serviceLocator) {
         if (instance != null) {
             throw new IllegalStateException("MultiverseCoreApi has already been initialized!");
         }
-        instance = new MultiverseCoreApi(serviceProvider);
+        instance = new MultiverseCoreApi(serviceLocator);
     }
 
     static void shutdown() {
@@ -44,10 +44,10 @@ public class MultiverseCoreApi {
         return instance;
     }
 
-    private final PluginServiceLocator serviceProvider;
+    private final PluginServiceLocator serviceLocator;
 
     private MultiverseCoreApi(PluginServiceLocator serviceProvider) {
-        this.serviceProvider = serviceProvider;
+        this.serviceLocator = serviceProvider;
     }
 
     /**
@@ -56,7 +56,7 @@ public class MultiverseCoreApi {
      * @return The AnchorManager instance
      */
     public @NotNull AnchorManager getAnchorManager() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(AnchorManager.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(AnchorManager.class));
     }
 
     /**
@@ -65,7 +65,7 @@ public class MultiverseCoreApi {
      * @return The BlockSafety instance
      */
     public @NotNull BlockSafety getBlockSafety() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(BlockSafety.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(BlockSafety.class));
     }
 
     /**
@@ -74,7 +74,7 @@ public class MultiverseCoreApi {
      * @return The DestinationsProvider instance
      */
     public @NotNull DestinationsProvider getDestinationsProvider() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(DestinationsProvider.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(DestinationsProvider.class));
     }
 
     /**
@@ -83,7 +83,7 @@ public class MultiverseCoreApi {
      * @return The GeneratorProvider instance
      */
     public @NotNull GeneratorProvider getGeneratorProvider() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(GeneratorProvider.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(GeneratorProvider.class));
     }
 
     /**
@@ -92,7 +92,7 @@ public class MultiverseCoreApi {
      * @return The LocationManipulation instance
      */
     public @NotNull LocationManipulation getLocationManipulation() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(LocationManipulation.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(LocationManipulation.class));
     }
 
     /**
@@ -101,7 +101,7 @@ public class MultiverseCoreApi {
      * @return The MVCoreConfig instance
      */
     public @NotNull MVCoreConfig getMVCoreConfig() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(MVCoreConfig.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(MVCoreConfig.class));
     }
 
     /**
@@ -110,7 +110,7 @@ public class MultiverseCoreApi {
      * @return The MVEconomist instance
      */
     public @NotNull MVEconomist getMVEconomist() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(MVEconomist.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(MVEconomist.class));
     }
 
     /**
@@ -119,7 +119,7 @@ public class MultiverseCoreApi {
      * @return The SafetyTeleporter instance
      */
     public @NotNull AsyncSafetyTeleporter getSafetyTeleporter() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(AsyncSafetyTeleporter.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(AsyncSafetyTeleporter.class));
     }
 
     /**
@@ -128,7 +128,7 @@ public class MultiverseCoreApi {
      * @return The WorldManager instance
      */
     public @NotNull WorldManager getWorldManager() {
-        return Objects.requireNonNull(serviceProvider.getActiveService(WorldManager.class));
+        return Objects.requireNonNull(serviceLocator.getActiveService(WorldManager.class));
     }
 
     /**
@@ -138,7 +138,7 @@ public class MultiverseCoreApi {
      *
      * @return The Multiverse-Core's PluginServiceLocator
      */
-    public PluginServiceLocator getServiceProvider() {
-        return serviceProvider;
+    public PluginServiceLocator getServiceLocator() {
+        return serviceLocator;
     }
 }
