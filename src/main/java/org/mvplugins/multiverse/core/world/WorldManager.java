@@ -29,11 +29,13 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
+import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
@@ -77,6 +79,7 @@ public final class WorldManager {
     private final LocationManipulation locationManipulation;
     private final PluginManager pluginManager;
     private final CorePermissions corePermissions;
+    private final ServerProperties serverProperties;
 
     @Inject
     WorldManager(
@@ -87,7 +90,9 @@ public final class WorldManager {
             @NotNull BlockSafety blockSafety,
             @NotNull LocationManipulation locationManipulation,
             @NotNull PluginManager pluginManager,
-            @NotNull CorePermissions corePermissions) {
+            @NotNull CorePermissions corePermissions,
+            @NotNull ServerProperties serverProperties) {
+        this.serverProperties = serverProperties;
         this.worldsMap = new HashMap<>();
         this.loadedWorldsMap = new HashMap<>();
         this.unloadTracker = new ArrayList<>();
@@ -696,11 +701,16 @@ public final class WorldManager {
             unloadTracker.add(world.getName());
             if (!Bukkit.unloadWorld(world, save)) {
                 // TODO: Localize this, maybe with MultiverseException
+                var defaultWorldName = getDefaultWorld().map(LoadedMultiverseWorld::getName).getOrElse("");
+                if (Objects.equals(world.getName(), defaultWorldName)) {
+                    throw new MultiverseException("You can't unload the default world! World " + world.getName() +
+                            " is the default world defined in server.properties `level-name`.");
+                }
                 if (!world.getPlayers().isEmpty()) {
-                    throw new Exception("There are still players in the world! Please use --remove-players flag to "
+                    throw new MultiverseException("There are still players in the world! Please use --remove-players flag to "
                             + "your command if wish to teleport all players out of the world.");
                 }
-                throw new Exception("Is this the default world? You can't unload the default world!");
+                throw new MultiverseException("An unknown error occurred while unloading world: " + world.getName());
             }
             Logging.fine("Bukkit unloaded world: " + world.getName());
         }).andFinally(() -> unloadTracker.remove(world.getName()));
@@ -913,6 +923,19 @@ public final class WorldManager {
      */
     public boolean isLoadedWorld(@Nullable String worldName) {
         return loadedWorldsMap.containsKey(worldName);
+    }
+
+    /**
+     * Gets the default world defined by `level-name` in server.properties. If server.properties is not found,
+     * the first world in the bukkit world list will be returned.
+     * <br/>
+     * This world cannot be unloaded.
+     *
+     * @return The default world.
+     */
+    public Option<LoadedMultiverseWorld> getDefaultWorld() {
+        return serverProperties.getLevelName().flatMap(this::getLoadedWorld)
+                .orElse(getLoadedWorld(Bukkit.getWorlds().get(0)));
     }
 
     /**
