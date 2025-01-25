@@ -12,7 +12,7 @@ import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 
 /**
  * A command flag for regex filtering.
- * <p/>
+ * <br/>
  * Parses the value of the --filter (or -f) flag as a {@link ContentFilter}.
  */
 public final class FilterCommandFlag extends CommandValueFlag<ContentFilter> {

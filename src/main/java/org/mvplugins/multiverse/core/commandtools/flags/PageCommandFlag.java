@@ -9,7 +9,7 @@ import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
 
 /**
  * A command flag for page number.
- * <p/>
+ * <br/>
  * Parses the value of the --page (or -p) flag as an integer.
  */
 public final class PageCommandFlag extends CommandValueFlag<Integer> {
