@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
@@ -51,6 +52,7 @@ final class WhoCommand extends CoreCommand {
         this.worldManager = worldManager;
     }
 
+    @CommandAlias("mvwhoall")
     @Subcommand("whoall")
     @CommandPermission("multiverse.core.list.who.all")
     @CommandCompletion("@flags:groupName=mvwhocommand")
@@ -74,6 +76,7 @@ final class WhoCommand extends CoreCommand {
 
     }
 
+    @CommandAlias("mvwho|mvw")
     @Subcommand("who")
     @CommandPermission("multiverse.core.list.who")
     @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvwhocommand")
@@ -81,7 +84,8 @@ final class WhoCommand extends CoreCommand {
     @Description("{@@mv-core.who.description}")
     void onWhoCommand(
             MVCommandIssuer issuer,
-
+            @Flags("resolve=issuerAware")
+            @Optional
             @Syntax("<world>")
             @Description("{@@mv-core.who.world.description}")
             LoadedMultiverseWorld inputtedWorld,
