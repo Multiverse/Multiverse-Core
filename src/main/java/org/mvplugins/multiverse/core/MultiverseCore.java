@@ -295,7 +295,7 @@ public class MultiverseCore extends MultiversePlugin {
      */
     private void logEnableMessage() {
         Logging.config("Version %s (API v%s) Enabled - By %s",
-                this.getDescription().getVersion(), "TODO", StringFormatter.joinAnd(getDescription().getAuthors()));
+                this.getDescription().getVersion(), getCoreProtocolVersion(), StringFormatter.joinAnd(getDescription().getAuthors()));
 
         if (configProvider.get().isShowingDonateMessage()) {
             Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
