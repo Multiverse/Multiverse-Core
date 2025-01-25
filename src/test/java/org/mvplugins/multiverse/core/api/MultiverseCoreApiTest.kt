@@ -23,12 +23,18 @@ class MultiverseCoreApiTest : TestWithMockBukkit() {
     fun `Get MultiverseCoreApi from bukkit service`() {
         val registeredService = server.servicesManager.getRegistration(MultiverseCoreApi::class.java)
         val api = assertNotNull(registeredService?.provider)
-        assertNotNull(api.blockSafety)
-        assertNotNull(api.destinationsProvider)
-        assertNotNull(api.generatorProvider)
-        assertNotNull(api.locationManipulation)
-        assertNotNull(api.mvCoreConfig)
-        assertNotNull(api.safetyTeleporter)
-        assertNotNull(api.worldManager)
+        testApiAccess(api)
+    }
+
+    private fun testApiAccess(api: MultiverseCoreApi?) {
+        assertNotNull(api?.anchorManager)
+        assertNotNull(api?.blockSafety)
+        assertNotNull(api?.destinationsProvider)
+        assertNotNull(api?.mvEconomist)
+        assertNotNull(api?.generatorProvider)
+        assertNotNull(api?.locationManipulation)
+        assertNotNull(api?.mvCoreConfig)
+        assertNotNull(api?.safetyTeleporter)
+        assertNotNull(api?.worldManager)
     }
 }
