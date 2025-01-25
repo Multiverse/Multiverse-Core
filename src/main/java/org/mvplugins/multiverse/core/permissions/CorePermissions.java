@@ -87,9 +87,9 @@ public final class CorePermissions {
     public Try<Void> addDestinationPermissions(@NotNull Destination<?, ?> destination) {
         return Try.run(() -> {
             pluginManager.addPermission(new Permission(
-                    concatPermission(TELEPORT, "self", destination.getIdentifier()), PermissionDefault.FALSE));
+                    concatPermission(TELEPORT, "self", destination.getIdentifier()), PermissionDefault.OP));
             pluginManager.addPermission(new Permission(
-                    concatPermission(TELEPORT, "other", destination.getIdentifier()), PermissionDefault.FALSE));
+                    concatPermission(TELEPORT, "other", destination.getIdentifier()), PermissionDefault.OP));
             Logging.fine("Successfully registered permissions for destination %s", destination.getIdentifier());
         });
     }
