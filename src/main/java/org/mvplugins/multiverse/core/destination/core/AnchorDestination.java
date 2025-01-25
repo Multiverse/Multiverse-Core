@@ -5,6 +5,8 @@ import java.util.Collection;
 import co.aikar.commands.BukkitCommandIssuer;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -53,8 +55,10 @@ public class AnchorDestination implements Destination<AnchorDestination, AnchorD
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
-        return this.anchorManager.getAllAnchors().stream()
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
+            @NotNull CommandSender sender, @Nullable String destinationParams) {
+        return this.anchorManager.getAnchors(sender instanceof Player ? (Player)sender : null)
+                .stream()
                 .map(anchorName -> new DestinationSuggestionPacket(anchorName, anchorName))
                 .toList();
     }

@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import jakarta.inject.Inject;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -14,6 +15,7 @@ import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
 /**
  * {@link Destination} implementation for exact locations.
@@ -24,12 +26,18 @@ public class WorldDestination implements Destination<WorldDestination, WorldDest
     private final MVCoreConfig config;
     private final WorldManager worldManager;
     private final LocationManipulation locationManipulation;
+    private final WorldEntryCheckerProvider worldEntryCheckerProvider;
 
     @Inject
-    WorldDestination(MVCoreConfig config, WorldManager worldManager, LocationManipulation locationManipulation) {
+    WorldDestination(
+            @NotNull MVCoreConfig config,
+            @NotNull WorldManager worldManager,
+            @NotNull LocationManipulation locationManipulation,
+            @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider) {
         this.config = config;
         this.worldManager = worldManager;
         this.locationManipulation = locationManipulation;
+        this.worldEntryCheckerProvider = worldEntryCheckerProvider;
     }
 
     /**
@@ -73,8 +81,12 @@ public class WorldDestination implements Destination<WorldDestination, WorldDest
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
+            @NotNull CommandSender sender, @Nullable String destinationParams) {
         return worldManager.getLoadedWorlds().stream()
+                .filter(world -> worldEntryCheckerProvider.forSender(sender)
+                        .canAccessWorld(world)
+                        .isSuccess())
                 .map(world -> new DestinationSuggestionPacket(world.getName(), world.getName()))
                 .toList();
     }

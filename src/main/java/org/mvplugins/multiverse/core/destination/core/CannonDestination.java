@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandIssuer;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -87,7 +88,7 @@ public class CannonDestination implements Destination<CannonDestination, CannonD
      */
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
-            @NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+            @NotNull CommandSender sender, @Nullable String destinationParams) {
         return List.of();
     }
 }

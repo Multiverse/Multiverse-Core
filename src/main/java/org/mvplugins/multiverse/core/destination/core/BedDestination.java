@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,11 +50,14 @@ public class BedDestination implements Destination<BedDestination, BedDestinatio
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
+            @NotNull CommandSender sender, @Nullable String destinationParams) {
         List<DestinationSuggestionPacket> collect = Bukkit.getOnlinePlayers().stream()
                 .map(player -> new DestinationSuggestionPacket(player.getName(), player.getName()))
                 .collect(Collectors.toList());
-        collect.add(new DestinationSuggestionPacket(OWN_BED_STRING, OWN_BED_STRING));
+        if (sender instanceof Player) {
+            collect.add(new DestinationSuggestionPacket(OWN_BED_STRING, OWN_BED_STRING));
+        }
         return collect;
     }
 }

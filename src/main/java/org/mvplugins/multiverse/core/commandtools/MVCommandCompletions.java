@@ -179,17 +179,17 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                     if (context.hasConfig("othersOnly") && player.equals(context.getPlayer())) {
                         return Collections.<String>emptyList();
                     }
-                    return suggestDestinationsWithPerms((BukkitCommandIssuer) context.getIssuer(), player, context.getInput());
+                    return suggestDestinationsWithPerms(context.getIssuer().getIssuer(), player, context.getInput());
                 })
                 .getOrElse(Collections.emptyList());
     }
 
-    private Collection<String> suggestDestinationsWithPerms(BukkitCommandIssuer teleporter, Player teleportee, String deststring) {
+    private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, Player teleportee, String deststring) {
         return destinationsProvider.getDestinations().stream()
-                .filter(destination -> corePermissionsChecker.hasDestinationPermission(teleporter.getIssuer(), teleportee, destination))
+                .filter(destination -> corePermissionsChecker.hasDestinationPermission(teleporter, teleportee, destination))
                 .flatMap(destination -> destination.suggestDestinations(teleporter, deststring).stream()
                         .filter(packet -> corePermissionsChecker.hasFinerDestinationPermission(
-                                teleporter.getIssuer(), teleportee, destination, packet.finerPermissionSuffix()))
+                                teleporter, teleportee, destination, packet.finerPermissionSuffix()))
                         .map(packet -> destination instanceof WorldDestination
                                 ? packet.destinationString()
                                 : destination.getIdentifier() + ":" + packet.destinationString()))

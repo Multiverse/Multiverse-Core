@@ -7,6 +7,7 @@ import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -16,6 +17,8 @@ import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryChecker;
+import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
 /**
  * {@link Destination} implementation for exact locations.
@@ -25,11 +28,13 @@ public class ExactDestination implements Destination<ExactDestination, ExactDest
 
     private final MVCoreConfig config;
     private final WorldManager worldManager;
+    private final WorldEntryCheckerProvider worldEntryCheckerProvider;
 
     @Inject
-    public ExactDestination(MVCoreConfig config, WorldManager worldManager) {
+    public ExactDestination(MVCoreConfig config, WorldManager worldManager, WorldEntryCheckerProvider worldEntryCheckerProvider) {
         this.config = config;
         this.worldManager = worldManager;
+        this.worldEntryCheckerProvider = worldEntryCheckerProvider;
     }
 
     /**
@@ -108,9 +113,14 @@ public class ExactDestination implements Destination<ExactDestination, ExactDest
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(@NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams) {
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
+            @NotNull CommandSender sender, @Nullable String destinationParams) {
         return worldManager.getLoadedWorlds().stream()
-                .map(world -> new DestinationSuggestionPacket(world.getName() + ":", world.getName()))
+                .filter(world -> worldEntryCheckerProvider.forSender(sender)
+                        .canAccessWorld(world)
+                        .isSuccess())
+                .map(world ->
+                        new DestinationSuggestionPacket(world.getName() + ":", world.getName()))
                 .toList();
     }
 }

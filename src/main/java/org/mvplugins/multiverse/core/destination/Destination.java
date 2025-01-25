@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.destination;
 import java.util.Collection;
 
 import co.aikar.commands.BukkitCommandIssuer;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Contract;
@@ -37,11 +38,11 @@ public interface Destination<D extends Destination<D, T>, T extends DestinationI
     /**
      * Returns a list of possible destinations for the given destination parameters.
      *
-     * @param issuer            The command issuer.
+     * @param commandSender     The command sender
      * @param destinationParams The destination parameters. ex: p:MyPortal:nw
      * @return A list of possible destinations
      */
     @NotNull
      Collection<DestinationSuggestionPacket> suggestDestinations(
-             @NotNull BukkitCommandIssuer issuer, @Nullable String destinationParams);
+            @NotNull CommandSender commandSender, @Nullable String destinationParams);
 }

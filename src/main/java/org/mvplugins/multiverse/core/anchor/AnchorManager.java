@@ -160,7 +160,7 @@ public final class AnchorManager {
      * @param player The {@link Player}.
      * @return An unmodifiable {@link Set} containing all anchors the specified {@link Player} can access.
      */
-    public Set<String> getAnchors(Player player) {
+    public Set<String> getAnchors(@Nullable Player player) {
         if (player == null) {
             return anchors.keySet();
         } else {
