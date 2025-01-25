@@ -1,7 +1,9 @@
 package org.mvplugins.multiverse.core.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +35,7 @@ public final class WorldTickDeferrer {
             Logging.fine("Unable to find console.");
             return;
         }
-        this.isIteratingOverLevelsMethod = ReflectHelper.getField(console.getClass(), "isIteratingOverLevels");
+        this.isIteratingOverLevelsMethod = Try.of(() -> console.getClass().getField("isIteratingOverLevels")).getOrNull();
         if (isIteratingOverLevelsMethod == null) {
             Logging.fine("Unable to find isIteratingOverLevels field.");
         }
@@ -50,7 +52,7 @@ public final class WorldTickDeferrer {
             public void run() {
                 action.run();
             }
-        }.runTask(this.plugin);
+        }.runTaskLater(this.plugin, 1L);
     }
 
     public boolean isIteratingOverLevels() {
