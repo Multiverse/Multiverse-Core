@@ -40,7 +40,7 @@ public class MultiversePluginsRegistration {
         if (core == null) {
             throw new IllegalStateException("MultiverseCore has not been initialized!");
         }
-        if (core.getCoreProtocolVersion() >= plugin.getTargetCoreProtocolVersion()) {
+        if (core.getCoreProtocolVersion() < plugin.getTargetCoreProtocolVersion()) {
             Logging.severe("Your Multiverse-Core is OUT OF DATE!");
             Logging.severe("This version of %s requires Protocol Level: %d", plugin.getDescription().getName(), plugin.getTargetCoreProtocolVersion());
             Logging.severe("Your of Core Protocol Level is: %s", core.getTargetCoreProtocolVersion());
@@ -50,7 +50,7 @@ public class MultiversePluginsRegistration {
             core.getServer().getPluginManager().disablePlugin(plugin);
             return;
         }
-        if (core.getMinTargetCoreProtocolVersion() < plugin.getTargetCoreProtocolVersion()) {
+        if (core.getMinTargetCoreProtocolVersion() > plugin.getTargetCoreProtocolVersion()) {
             Logging.severe("Your %s is OUT OF DATE!", plugin.getDescription().getName());
             Logging.severe("This version of Multiverse-Core requires AT LEAST Protocol Level: " + core.getCoreProtocolVersion());
             Logging.severe("Your of %s Protocol Level is: %s", plugin.getDescription().getName(), plugin.getTargetCoreProtocolVersion());
