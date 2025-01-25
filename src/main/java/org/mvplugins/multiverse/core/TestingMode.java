@@ -8,6 +8,10 @@ final class TestingMode {
 
     private static boolean enabled = false;
 
+    private TestingMode() {
+        // No instantiation
+    }
+
     static void enable() {
         enabled = true;
     }

@@ -189,12 +189,16 @@ public final class AnchorManager {
 
     private boolean playerCanAccess(Player player, World world, String anchor) {
         String worldPerm = "multiverse.access." + world.getName();
-        if (config.getEnforceAccess() && !player.hasPermission(worldPerm)) {
-            Logging.finer(String.format("Not adding anchor %s to the list, user %s doesn't have the %s permission "
-                    + "and 'enforceaccess' is enabled!", anchor, player.getName(), worldPerm));
-            return false;
+        if (playerCanAccess(player, worldPerm)) {
+            return true;
         }
-        return true;
+        Logging.finer(String.format("Not adding anchor %s to the list, user %s doesn't have the %s permission "
+                + "and 'enforceaccess' is enabled!", anchor, player.getName(), worldPerm));
+        return false;
+    }
+
+    private boolean playerCanAccess(Player player, String worldPerm) {
+        return !config.getEnforceAccess() || player.hasPermission(worldPerm);
     }
 
     /**

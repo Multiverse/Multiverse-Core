@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.commandtools.flags;
+package org.mvplugins.multiverse.core.commandtools.flag;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -192,7 +192,7 @@ public class CommandValueFlag<T> extends CommandFlag {
         @Override
         public @NotNull CommandValueFlag<T> build() {
             if (context == null && !String.class.equals(type)) {
-                throw new IllegalStateException("Context is required for none-string value flags");
+                throw new IllegalStateException("Context is required for non-string value flags");
             }
             return new CommandValueFlag<>(key, aliases, type, optional, defaultValue, context, completion);
         }

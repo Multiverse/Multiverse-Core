@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -24,12 +23,13 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.flags.CommandValueFlag;
-import org.mvplugins.multiverse.core.commandtools.flags.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
+import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.commandtools.flags.FilterCommandFlag;
+import org.mvplugins.multiverse.core.commandtools.flags.PageCommandFlag;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
-import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -39,29 +39,9 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 @CommandAlias("mv")
 final class WhoCommand extends CoreCommand {
 
-    private final CommandValueFlag<Integer> pageFlag = flag(CommandValueFlag
-            .builder("--page", Integer.class)
-            .addAlias("-p")
-            .context(value -> {
-                try {
-                    return Integer.parseInt(value);
-                } catch (NumberFormatException e) {
-                    throw new InvalidCommandArgument("Invalid page number: " + value);
-                }
-            })
-            .build());
+    private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
 
-    private final CommandValueFlag<ContentFilter> filterFlag = flag(CommandValueFlag
-            .builder("--filter", ContentFilter.class)
-            .addAlias("-f")
-            .context(value -> {
-                try {
-                    return RegexContentFilter.fromString(value);
-                } catch (IllegalArgumentException e) {
-                    throw new InvalidCommandArgument("Invalid filter: " + value);
-                }
-            })
-            .build());
+    private final CommandValueFlag<ContentFilter> filterFlag = flag(FilterCommandFlag.create());
 
     private final WorldManager worldManager;
 
