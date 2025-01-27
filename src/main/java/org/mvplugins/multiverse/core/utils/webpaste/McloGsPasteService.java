@@ -7,7 +7,7 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 
-public class McloGsPasteService extends PasteService {
+final class McloGsPasteService extends PasteService {
 
     private static final String MCLOGS_POST_REQUEST = "https://api.mclo.gs/1/log";
 

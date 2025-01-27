@@ -9,7 +9,7 @@ package org.mvplugins.multiverse.core.utils.webpaste;
  *
  * An example of this, is the BitlyURLShortener.
  */
-public abstract class URLShortener extends HttpAPIClient {
+public abstract sealed class URLShortener extends HttpAPIClient permits BitlyURLShortener {
     URLShortener(String url) {
         super(url);
     }

@@ -11,7 +11,7 @@ import net.minidev.json.parser.ParseException;
 /**
  * Pastes to {@code gist.github.com}. Requires an access token with the {@code gist} scope.
  */
-class GitHubPasteService extends PasteService {
+final class GitHubPasteService extends PasteService {
     private final boolean isPrivate;
     // this access token must have the "gist" scope
     private static final String ACCESS_TOKEN = "token github-access-token";
