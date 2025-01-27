@@ -62,9 +62,12 @@ public final class CorePermissionsChecker {
             @NotNull CommandSender teleporter,
             @NotNull Entity teleportee,
             @NotNull MultiverseWorld world) {
-        // TODO: Config whether to use finer permission
+        if (config.getUseFinerTeleportPermissions()) {
+            return hasPermission(teleporter, concatPermission(
+                    CorePermissions.SPAWN, teleportee.equals(teleporter) ? "self" : "other", world.getName()));
+        }
         return hasPermission(teleporter, concatPermission(
-                CorePermissions.SPAWN, teleportee.equals(teleporter) ? "self" : "other", world.getName()));
+                CorePermissions.SPAWN, teleportee.equals(teleporter) ? "self" : "other"));
     }
 
     /**
