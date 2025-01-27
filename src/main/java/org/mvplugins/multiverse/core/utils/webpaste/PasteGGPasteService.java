@@ -12,7 +12,7 @@ import net.minidev.json.parser.ParseException;
 /**
  * Pastes to {@code paste.gg}.
  */
-class PasteGGPasteService extends PasteService {
+final class PasteGGPasteService extends PasteService {
     private final boolean isPrivate;
     private static final String PASTEGG_POST_REQUEST = "https://api.paste.gg/v1/pastes";
 

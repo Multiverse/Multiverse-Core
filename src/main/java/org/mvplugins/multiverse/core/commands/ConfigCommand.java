@@ -60,6 +60,7 @@ final class ConfigCommand extends CoreCommand {
     }
 
     private void updateConfigValue(MVCommandIssuer issuer, String name, String value) {
+        // TODO: Update with localization
         config.getStringPropertyHandle().setPropertyString(name, value)
                 .onSuccess(ignore -> {
                     config.save();

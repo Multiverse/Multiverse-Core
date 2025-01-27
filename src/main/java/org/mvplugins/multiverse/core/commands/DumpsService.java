@@ -56,7 +56,7 @@ class DumpsService {
      *
      * @return A string containing the latest.log file
      */
-    private String getLogs() {
+    private @NotNull String getLogs() {
         // Get the Path of latest.log
         Path logsPath = fileUtils.getServerFolder().toPath().resolve("logs/latest.log");
         File logsFile = logsPath.toFile();
@@ -69,7 +69,7 @@ class DumpsService {
         return readLogsFromFile(logsPath);
     }
 
-    private String readLogsFromFile(Path logsPath) {
+    private @NotNull String readLogsFromFile(Path logsPath) {
         String logs = "Could not read log";
 
         // Try reading as ANSI encoded

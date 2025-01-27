@@ -13,7 +13,7 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * HTTP API-client.
  */
-abstract class HttpAPIClient {
+abstract sealed class HttpAPIClient permits PasteService, URLShortener {
     /**
      * The URL for this API-request, and if necessary, the access token.
      * If an access token is not necessary, it should be set to null.

@@ -10,7 +10,7 @@ import net.minidev.json.parser.ParseException;
 /**
  * Pastes to {@code hastebin.com}.
  */
-class PastesDevPasteService extends PasteService {
+final class PastesDevPasteService extends PasteService {
     private static final String PASTESDEV_POST_REQUEST = "https://api.pastes.dev/post";
 
     PastesDevPasteService() {

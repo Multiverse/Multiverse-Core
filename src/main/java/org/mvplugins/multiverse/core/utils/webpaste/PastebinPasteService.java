@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Pastes to {@code pastebin.com}.
  */
-class PastebinPasteService extends PasteService {
+final class PastebinPasteService extends PasteService {
     private final boolean isPrivate;
     private static final String PASTEBIN_POST_REQUEST = "https://pastebin.com/api/api_post.php";
 

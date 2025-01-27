@@ -13,7 +13,12 @@ import java.util.Map;
  * should implement a constructor that specifies which kind the PasteService
  * instance is submitting; an example of this is the PastebinPasteService class.
  */
-public abstract class PasteService extends HttpAPIClient {
+public abstract sealed class PasteService extends HttpAPIClient
+        permits GitHubPasteService,
+                McloGsPasteService,
+                PastebinPasteService,
+                PasteGGPasteService,
+                PastesDevPasteService {
     PasteService(String url) {
         super(url);
     }
