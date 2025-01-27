@@ -1,6 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -31,7 +31,7 @@ final class DebugCommand extends CoreCommand {
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
     @Description("{@@mv-core.debug.info.description}")
-    void onShowDebugCommand(BukkitCommandIssuer issuer) {
+    void onShowDebugCommand(CommandIssuer issuer) {
         this.displayDebugMode(issuer);
     }
 
@@ -42,7 +42,7 @@ final class DebugCommand extends CoreCommand {
     @Syntax("<{@@mv-core.debug.change.syntax}>")
     @Description("{@@mv-core.debug.change.description}")
     void onChangeDebugCommand(
-            BukkitCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("<{@@mv-core.debug.change.syntax}>")
             @Description("{@@mv-core.debug.change.level.description}")
@@ -53,7 +53,7 @@ final class DebugCommand extends CoreCommand {
         this.displayDebugMode(issuer);
     }
 
-    private void displayDebugMode(BukkitCommandIssuer issuer) {
+    private void displayDebugMode(CommandIssuer issuer) {
         final int debugLevel = config.getGlobalDebug();
         if (debugLevel == 0) {
             issuer.sendInfo(MVCorei18n.DEBUG_INFO_OFF);

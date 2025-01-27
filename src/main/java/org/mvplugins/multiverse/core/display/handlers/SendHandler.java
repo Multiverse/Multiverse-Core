@@ -2,7 +2,7 @@ package org.mvplugins.multiverse.core.display.handlers;
 
 import java.util.List;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,5 +16,5 @@ public interface SendHandler {
      * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content);
+    void send(@NotNull CommandIssuer issuer, @NotNull List<String> content);
 }

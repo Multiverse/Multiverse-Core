@@ -3,7 +3,8 @@ package org.mvplugins.multiverse.core.display.handlers;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
+
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -38,7 +39,7 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      * {@inheritDoc}
      */
     @Override
-    public void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    public void send(@NotNull CommandIssuer issuer, @NotNull List<String> content) {
         sendHeader(issuer);
         List<String> filteredContent = filterContent(content);
         if (filteredContent.isEmpty() && !Strings.isNullOrEmpty(noContentMessage)) {
@@ -53,7 +54,7 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      *
      * @param issuer    The target which the header will be displayed to.
      */
-    protected void sendHeader(BukkitCommandIssuer issuer) {
+    protected void sendHeader(CommandIssuer issuer) {
         if (!Strings.isNullOrEmpty(header)) {
             issuer.sendMessage(header);
         }
@@ -78,7 +79,7 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    protected abstract void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content);
+    protected abstract void sendContent(@NotNull CommandIssuer issuer, @NotNull List<String> content);
 
     /**
      * Sets header to be displayed.

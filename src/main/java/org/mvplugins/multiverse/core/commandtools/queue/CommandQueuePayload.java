@@ -1,17 +1,18 @@
 package org.mvplugins.multiverse.core.commandtools.queue;
 
 import co.aikar.commands.ACFUtil;
+import co.aikar.commands.CommandIssuer;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
+
 import org.mvplugins.multiverse.core.locale.message.Message;
 
 /**
  * Represents a single command used in {@link CommandQueueManager} for confirming before running potentially
  * dangerous action.
  */
-public class CommandQueuePayload {
+public class CommandQueuePayload<T extends CommandIssuer> {
 
     /**
      * Creates a new {@link CommandQueuePayload}
@@ -19,21 +20,21 @@ public class CommandQueuePayload {
      * @param issuer    The issuer of the command
      * @return The new {@link CommandQueuePayload}
      */
-    public static CommandQueuePayload issuer(@NotNull MVCommandIssuer issuer) {
-        return new CommandQueuePayload(issuer);
+    public static <T extends CommandIssuer> CommandQueuePayload<T> issuer(@NotNull T issuer) {
+        return new CommandQueuePayload<T>(issuer);
     }
 
     private static final String DEFAULT_PROMPT_MESSAGE = "The command you are trying to run is deemed dangerous."; // todo: localize
     private static final int DEFAULT_VALID_TIME = 10;
 
     private final int otp;
-    private final MVCommandIssuer issuer;
+    private final T issuer;
     private Runnable action = () -> {};
     private int validDuration = DEFAULT_VALID_TIME;
     private Message prompt = Message.of(DEFAULT_PROMPT_MESSAGE);
     private BukkitTask expireTask;
 
-    protected CommandQueuePayload(@NotNull MVCommandIssuer issuer) {
+    protected CommandQueuePayload(@NotNull T issuer) {
         this.otp = ACFUtil.rand(100, 999);
         this.issuer = issuer;
     }
@@ -43,7 +44,7 @@ public class CommandQueuePayload {
      * @return The issuer
      */
     @NotNull
-    public MVCommandIssuer issuer() {
+    public T issuer() {
         return issuer;
     }
 

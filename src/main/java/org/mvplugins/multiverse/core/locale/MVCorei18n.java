@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.locale;
 
+import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.MessageType;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import org.jetbrains.annotations.NotNull;
@@ -219,5 +221,40 @@ public enum MVCorei18n implements MessageKeyProvider {
     @NotNull
     public Message bundle(@NotNull String nonLocalizedMessage, @NotNull MessageReplacement... replacements) {
         return Message.of(this, nonLocalizedMessage, replacements);
+    }
+
+    /**
+     * Sends this informational message to the given receiver with any given replacements.
+     *
+     * @param receiver The CommandIssuer to receive the message.
+     * @param replacements The replacements to apply to the message.
+     */
+    public void sendInfo(CommandIssuer receiver, MessageReplacement... replacements) {
+        send(receiver, MessageType.INFO, replacements);
+    }
+
+    /**
+     * Sends this error message to the given receiver with any given replacements.
+     *
+     * @param receiver The CommandIssuer to receive the message.
+     * @param replacements The replacements to apply to the message.
+     */
+    public void sendError(CommandIssuer receiver, MessageReplacement... replacements) {
+        send(receiver, MessageType.ERROR, replacements);
+    }
+
+    /**
+     * Sends this syntax message to the given receiver with any given replacements.
+     *
+     * @param receiver The CommandIssuer to receive the message.
+     * @param replacements The replacements to apply to the message.
+     */
+    public void sendSyntax(CommandIssuer receiver, MessageReplacement... replacements) {
+        send(receiver, MessageType.SYNTAX, replacements);
+    }
+
+    private void send(CommandIssuer receiver, MessageType messageType, MessageReplacement... replacements) {
+        Message.of(this, "{error_key: %s}".formatted(getMessageKey().getKey()), replacements)
+                .send(receiver, messageType);
     }
 }

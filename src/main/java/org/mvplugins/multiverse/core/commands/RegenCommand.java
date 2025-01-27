@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import co.aikar.commands.ACFUtil;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -17,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
@@ -82,7 +82,7 @@ final class RegenCommand extends CoreCommand {
     @Syntax("<world> [--seed [seed] --reset-world-config --reset-gamerules --reset-world-border --remove-players]")
     @Description("{@@mv-core.regen.description}")
     void onRegenCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("<world>")
             @Description("{@@mv-core.regen.world.description}")
@@ -101,8 +101,8 @@ final class RegenCommand extends CoreCommand {
                         Replace.WORLD.with(world.getName()))));
     }
 
-    private void runRegenCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {
-        issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, Replace.WORLD.with(world.getName()));
+    private void runRegenCommand(CommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {
+        MVCorei18n.REGEN_REGENERATING.sendInfo(issuer, Replace.WORLD.with(world.getName()));
         List<Player> worldPlayers = world.getPlayers().getOrElse(Collections.emptyList());
 
         var future = parsedFlags.hasFlag(removePlayersFlag)
@@ -115,7 +115,7 @@ final class RegenCommand extends CoreCommand {
     }
 
     private void doWorldRegening(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
             LoadedMultiverseWorld world,
             ParsedCommandFlags parsedFlags,
             List<Player> worldPlayers) {
@@ -129,13 +129,13 @@ final class RegenCommand extends CoreCommand {
 
         worldManager.regenWorld(regenWorldOptions).onSuccess(newWorld -> {
             Logging.fine("World regen success: " + newWorld);
-            issuer.sendInfo(MVCorei18n.REGEN_SUCCESS, Replace.WORLD.with(newWorld.getName()));
+            MVCorei18n.REGEN_SUCCESS.sendInfo(issuer, Replace.WORLD.with(newWorld.getName()));
             if (parsedFlags.hasFlag(removePlayersFlag)) {
                 playerWorldTeleporter.teleportPlayersToWorld(worldPlayers, newWorld);
             }
         }).onFailure(failure -> {
             Logging.warning("World regen failure: " + failure);
-            issuer.sendError(failure.getFailureMessage());
+            failure.getFailureMessage().sendError(issuer);
         });
     }
 }

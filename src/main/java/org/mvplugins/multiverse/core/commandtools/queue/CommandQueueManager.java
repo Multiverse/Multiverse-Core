@@ -12,6 +12,8 @@ import java.util.WeakHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
+
+import co.aikar.commands.CommandIssuer;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 
 /**
@@ -70,7 +71,7 @@ public class CommandQueueManager {
         this.queuedCommandMap.put(senderName, payload);
         payload.expireTask(runExpireLater(senderName, payload.validDuration()));
 
-        payload.issuer().sendInfo(payload.prompt());
+        payload.prompt().sendInfo(payload.issuer());
         var confirmCommand = "/mv confirm";
         if (config.getUseConfirmOtp()) {
             confirmCommand += " " + payload.otp();
@@ -133,7 +134,7 @@ public class CommandQueueManager {
      * @param issuer    Sender that confirmed the command.
      * @return True if queued command ran successfully, else false.
      */
-    public boolean runQueuedCommand(@NotNull MVCommandIssuer issuer, int otp) {
+    public boolean runQueuedCommand(@NotNull CommandIssuer issuer, int otp) {
         String senderName = parseSenderName(issuer);
         CommandQueuePayload payload = this.queuedCommandMap.get(senderName);
         if (payload == null) {
@@ -166,7 +167,7 @@ public class CommandQueueManager {
         return true;
     }
 
-    private String parseSenderName(MVCommandIssuer issuer) {
+    private String parseSenderName(CommandIssuer issuer) {
         CommandSender sender = issuer.getIssuer();
         if (isCommandBlock(sender)) {
             return COMMAND_BLOCK_NAME;

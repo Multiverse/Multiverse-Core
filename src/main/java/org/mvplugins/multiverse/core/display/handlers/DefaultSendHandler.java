@@ -2,7 +2,7 @@ package org.mvplugins.multiverse.core.display.handlers;
 
 import java.util.List;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -31,7 +31,7 @@ public final class DefaultSendHandler implements SendHandler {
      * {@inheritDoc}
      */
     @Override
-    public void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    public void send(@NotNull CommandIssuer issuer, @NotNull List<String> content) {
         content.forEach(issuer::sendMessage);
     }
 }

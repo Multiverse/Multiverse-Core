@@ -1,6 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
@@ -30,7 +30,7 @@ final class VersionCommand extends CoreCommand {
     @Subcommand("version")
     @CommandPermission("multiverse.core.version")
     @Description("{@@mv-core.version.description}")
-    void versionCommand(BukkitCommandIssuer issuer) {
+    void versionCommand(CommandIssuer issuer) {
         issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_MV, "{version}", plugin.getDescription().getVersion());
         issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_AUTHORS,
                 "{authors}", String.join(", ", plugin.getDescription().getAuthors()));

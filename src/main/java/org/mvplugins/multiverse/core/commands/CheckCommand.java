@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -11,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
@@ -45,7 +45,7 @@ final class CheckCommand extends CoreCommand {
     @Syntax("<player> <destination>")
     @Description("{@@mv-core.check.description}")
     void onCheckCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("<player>")
             @Description("{@@mv-core.check.player.description}")
@@ -54,12 +54,12 @@ final class CheckCommand extends CoreCommand {
             @Syntax("<destination>")
             @Description("{@@mv-core.check.destination.description}")
             DestinationInstance<?, ?> destination) {
-        issuer.sendInfo(this.corePermissionsChecker.checkTeleportPermissions(player, player, destination)
+        (this.corePermissionsChecker.checkTeleportPermissions(player, player, destination)
                         ? MVCorei18n.CHECK_HASPERMISSION
-                        : MVCorei18n.CHECK_NOPERMISSION,
+                        : MVCorei18n.CHECK_NOPERMISSION).sendInfo(issuer,
                 Replace.PLAYER.with(player.getName()),
                 Replace.DESTINATION.with(destination));
-        issuer.sendInfo(MVCorei18n.CHECK_LOCATION,
+        MVCorei18n.CHECK_LOCATION.sendInfo(issuer,
                 replace("{location}").with(destination.getLocation(player)
                         .map(locationManipulation::locationToString)
                         .map(Message::of)

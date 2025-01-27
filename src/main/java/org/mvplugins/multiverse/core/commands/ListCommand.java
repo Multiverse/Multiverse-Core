@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -15,7 +16,6 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
@@ -64,7 +64,7 @@ final class ListCommand extends CoreCommand {
     @Syntax("--filter [filter] --page [page] --raw")
     @Description("Displays a listing of all worlds that you can enter.")
     public void onListCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("[--filter <filter>] [--page <page>]")
             @Description("Filters the list of worlds by the given regex and displays the given page.")
@@ -79,7 +79,7 @@ final class ListCommand extends CoreCommand {
                 .send(issuer);
     }
 
-    private List<String> getListContents(MVCommandIssuer issuer, boolean useRawNames) {
+    private List<String> getListContents(CommandIssuer issuer, boolean useRawNames) {
         List<String> worldList = new ArrayList<>();
         WorldEntryChecker worldEntryChecker = worldEntryCheckerProvider.forSender(issuer.getIssuer());
 
@@ -115,7 +115,7 @@ final class ListCommand extends CoreCommand {
         return world.getAlias();
     }
 
-    private boolean canSeeWorld(MVCommandIssuer issuer, MultiverseWorld world) {
+    private boolean canSeeWorld(CommandIssuer issuer, MultiverseWorld world) {
         return !world.isHidden()
                 // TODO: Refactor stray permission check
                 || issuer.hasPermission("multiverse.core.modify");

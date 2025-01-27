@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.List;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -16,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
@@ -56,7 +56,7 @@ final class AnchorListCommand extends CoreCommand {
     @Syntax("[--page <page>] [--filter <filter>]")
     @Description("")
     void onAnchorListCommand(
-            MVCommandIssuer issuer,
+            BukkitCommandIssuer issuer,
 
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")

@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -12,7 +13,6 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
@@ -36,7 +36,7 @@ final class ConfigCommand extends CoreCommand {
     @Syntax("<name> [value]")
     @Description("Show or set a config value.")
     void onConfigCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("<name>")
             @Description("The name of the config to set or show.")
@@ -53,13 +53,13 @@ final class ConfigCommand extends CoreCommand {
         updateConfigValue(issuer, name, value);
     }
 
-    private void showConfigValue(MVCommandIssuer issuer, String name) {
+    private void showConfigValue(CommandIssuer issuer, String name) {
         config.getStringPropertyHandle().getProperty(name)
                 .onSuccess(value -> issuer.sendMessage(name + "is currently set to " + value))
                 .onFailure(e -> issuer.sendMessage(e.getMessage()));
     }
 
-    private void updateConfigValue(MVCommandIssuer issuer, String name, String value) {
+    private void updateConfigValue(CommandIssuer issuer, String name, String value) {
         // TODO: Update with localization
         config.getStringPropertyHandle().setPropertyString(name, value)
                 .onSuccess(ignore -> {
@@ -67,6 +67,6 @@ final class ConfigCommand extends CoreCommand {
                     issuer.sendMessage("Successfully set " + name + " to " + value);
                 })
                 .onFailure(ignore -> issuer.sendMessage("Unable to set " + name + " to " + value + "."))
-                .onFailure(MultiverseException.class, e -> Option.of(e.getMVMessage()).peek(issuer::sendError));
+                .onFailure(MultiverseException.class, e -> Option.of(e.getMVMessage()).peek(m -> m.sendError(issuer)));
     }
 }

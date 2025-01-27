@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -38,21 +38,21 @@ final class CoordinatesCommand extends CoreCommand {
     @CommandPermission("multiverse.core.coord")
     @Description("{@@mv-core.coordinates.description}")
     void onCoordinatesCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Flags("resolve=issuerOnly")
             Player player,
 
             @Flags("resolve=issuerOnly")
             MultiverseWorld world) {
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_TITLE);
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLD, Replace.WORLD.with(world.getName()));
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_ALIAS, replace("{alias}").with(world.getAlias()));
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLDSCALE,
+        MVCorei18n.COORDINATES_INFO_TITLE.sendInfo(issuer);
+        MVCorei18n.COORDINATES_INFO_WORLD.sendInfo(issuer, Replace.WORLD.with(world.getName()));
+        MVCorei18n.COORDINATES_INFO_ALIAS.sendInfo(issuer, replace("{alias}").with(world.getAlias()));
+        MVCorei18n.COORDINATES_INFO_WORLDSCALE.sendInfo(issuer,
                 replace("{scale}").with(String.valueOf(world.getScale())));
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_COORDINATES,
+        MVCorei18n.COORDINATES_INFO_COORDINATES.sendInfo(issuer,
                 replace("{coordinates}").with(locationManipulation.strCoords(player.getLocation())));
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_DIRECTION,
+        MVCorei18n.COORDINATES_INFO_DIRECTION.sendInfo(issuer,
                 replace("{direction}").with(locationManipulation.getDirection(player.getLocation())));
     }
 }

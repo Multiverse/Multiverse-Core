@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.commands;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -16,7 +17,6 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
@@ -61,7 +61,7 @@ final class InfoCommand extends CoreCommand {
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.info.description")
     public void onInfoCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("<world>")

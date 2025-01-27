@@ -2,7 +2,7 @@ package org.mvplugins.multiverse.core.display.handlers;
 
 import java.util.List;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +34,7 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
      * {@inheritDoc}
      */
     @Override
-    public void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    public void sendContent(@NotNull CommandIssuer issuer, @NotNull List<String> content) {
         if (!paginate || (issuer.getIssuer() instanceof ConsoleCommandSender && !paginateInConsole)) {
             sendNormal(issuer, content);
             return;
@@ -48,7 +48,7 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
      * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    private void sendNormal(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    private void sendNormal(@NotNull CommandIssuer issuer, @NotNull List<String> content) {
         if (filter.needToFilter()) {
             issuer.sendMessage(String.format("%s[Filter '%s']", ChatColor.GRAY, filter));
         }
@@ -61,7 +61,7 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
      * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    private void sendPaged(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    private void sendPaged(@NotNull CommandIssuer issuer, @NotNull List<String> content) {
         int totalPages = (content.size() + linesPerPage - 1) / linesPerPage; // Basically just divide round up
         if (targetPage < 1 || targetPage > totalPages) {
             issuer.sendMessage(String.format("%sInvalid page number. Please enter a page number between 1 and %s", ChatColor.RED, totalPages));

@@ -22,7 +22,6 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.context.GameRuleValue;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
@@ -60,7 +59,7 @@ final class GameruleCommand extends CoreCommand {
     @Syntax("<Gamerule> <Gamerule value> [World or *]")
     @Description("{@@mv-core.gamerule.set.description}")
     void onGameruleSetCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("<Gamerule>")
             @Description("{@@mv-core.gamerule.set.gamerule.description}")
@@ -80,7 +79,7 @@ final class GameruleCommand extends CoreCommand {
             // Set gamerules and add false to list if it fails
             World bukkitWorld = world.getBukkitWorld().getOrNull();
             if (bukkitWorld == null || !bukkitWorld.setGameRule(gamerule, value)) {
-                issuer.sendError(MVCorei18n.GAMERULE_SET_FAILED,
+                MVCorei18n.GAMERULE_SET_FAILED.sendError(issuer,
                         Replace.GAMERULE.with(gamerule.getName()),
                         Replace.VALUE.with(value.toString()),
                         Replace.WORLD.with(world.getName()),
@@ -91,12 +90,12 @@ final class GameruleCommand extends CoreCommand {
         // Tell user if it was successful
         if (success) {
             if (worlds.length == 1) {
-                issuer.sendInfo(MVCorei18n.GAMERULE_SET_SUCCESS_SINGLE,
+                MVCorei18n.GAMERULE_SET_SUCCESS_SINGLE.sendInfo(issuer,
                         Replace.GAMERULE.with(gamerule.getName()),
                         Replace.VALUE.with(value.toString()),
                         Replace.WORLD.with(worlds[0].getName()));
             } else if (worlds.length > 1) {
-                issuer.sendInfo(MVCorei18n.GAMERULE_SET_SUCCESS_MULTIPLE,
+                MVCorei18n.GAMERULE_SET_SUCCESS_MULTIPLE.sendInfo(issuer,
                         Replace.GAMERULE.with(gamerule.getName()),
                         Replace.VALUE.with(value.toString()),
                         Replace.COUNT.with(String.valueOf(worlds.length)));
@@ -110,7 +109,7 @@ final class GameruleCommand extends CoreCommand {
     @Syntax("<Gamerule> [World or *]")
     @Description("{@@mv-core.gamerule.reset.description}")
     void onGameruleSetCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("<Gamerule>")
             @Description("{@@mv-core.gamerule.reset.gamerule.description}")
@@ -126,7 +125,7 @@ final class GameruleCommand extends CoreCommand {
                 .peek(bukkitWorld -> bukkitWorld.setGameRule(gamerule, bukkitWorld.getGameRuleDefault(gamerule)))
                 .onEmpty(() -> {
                     success.set(false);
-                    issuer.sendError(MVCorei18n.GAMERULE_RESET_FAILED,
+                    MVCorei18n.GAMERULE_RESET_FAILED.sendError(issuer,
                             Replace.GAMERULE.with(gamerule.getName()),
                             Replace.WORLD.with(world.getName()));
                 }));
@@ -134,11 +133,11 @@ final class GameruleCommand extends CoreCommand {
         // Tell user if it was successful
         if (success.get()) {
             if (worlds.length == 1) {
-                issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_SINGLE,
+                MVCorei18n.GAMERULE_RESET_SUCCESS_SINGLE.sendInfo(issuer,
                         Replace.GAMERULE.with(gamerule.getName()),
                         Replace.WORLD.with(worlds[0].getName()));
             } else if (worlds.length > 1) {
-                issuer.sendInfo(MVCorei18n.GAMERULE_RESET_SUCCESS_MULTIPLE,
+                MVCorei18n.GAMERULE_RESET_SUCCESS_MULTIPLE.sendInfo(issuer,
                         Replace.GAMERULE.with(gamerule.getName()),
                         Replace.COUNT.with(String.valueOf(worlds.length)));
             }
@@ -151,7 +150,7 @@ final class GameruleCommand extends CoreCommand {
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.gamerule.list.description}")
     void onGameruleListCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("<world>")

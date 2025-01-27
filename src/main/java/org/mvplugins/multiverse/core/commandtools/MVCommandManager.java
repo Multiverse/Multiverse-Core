@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.commandtools;
 
 import java.util.List;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandHelp;
@@ -134,16 +135,7 @@ public class MVCommandManager extends PaperCommandManager {
         help.showHelp();
     }
 
-    public @NotNull MVCommandIssuer getConsoleCommandIssuer() {
+    public @NotNull BukkitCommandIssuer getConsoleCommandIssuer() {
         return getCommandIssuer(Bukkit.getConsoleSender());
-    }
-
-    @Override
-    public @NotNull MVCommandIssuer getCommandIssuer(Object issuer) {
-        if (!(issuer instanceof CommandSender)) {
-            throw new IllegalArgumentException(issuer.getClass().getName() + " is not a Command Issuer.");
-        } else {
-            return new MVCommandIssuer(this, (CommandSender)issuer);
-        }
     }
 }

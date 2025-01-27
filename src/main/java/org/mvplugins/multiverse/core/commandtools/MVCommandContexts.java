@@ -48,7 +48,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         this.config = config;
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
-        registerIssuerOnlyContext(MVCommandIssuer.class, this::parseMVCommandIssuer);
+        registerIssuerOnlyContext(BukkitCommandIssuer.class, this::parseBukkitCommandIssuer);
         registerOptionalContext(ContentFilter.class, this::parseContentFilter);
         registerContext(DestinationInstance.class, this::parseDestination);
         registerContext(GameRule.class, this::parseGameRule);
@@ -60,9 +60,9 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
     }
 
-    private MVCommandIssuer parseMVCommandIssuer(BukkitCommandExecutionContext context) {
-        if (context.getIssuer() instanceof MVCommandIssuer) {
-            return (MVCommandIssuer) context.getIssuer();
+    private BukkitCommandIssuer parseBukkitCommandIssuer(BukkitCommandExecutionContext context) {
+        if (context.getIssuer() != null) {
+            return context.getIssuer();
         }
         return mvCommandManager.getCommandIssuer(context.getSender());
     }

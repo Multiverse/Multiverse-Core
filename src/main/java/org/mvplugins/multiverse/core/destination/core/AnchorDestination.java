@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;

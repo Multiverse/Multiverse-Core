@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -13,7 +14,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.LogsType;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
@@ -52,7 +52,7 @@ final class DumpsCommand extends CoreCommand {
     @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
     @Description("{@@mv-core.dumps.description}")
     void onDumpsCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Optional
             @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")

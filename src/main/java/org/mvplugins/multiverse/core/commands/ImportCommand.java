@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -18,7 +19,6 @@ import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
@@ -72,7 +72,7 @@ final class ImportCommand extends CoreCommand {
     @Syntax("<name> <env> [--generator <generator[:id]> --adjust-spawn --biome <biome>]")
     @Description("{@@mv-core.import.description}")
     void onImportCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Conditions("worldname:scope=new")
             @Syntax("<name>")
@@ -89,7 +89,7 @@ final class ImportCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendInfo(MVCorei18n.IMPORT_IMPORTING, Replace.WORLD.with(worldName));
+        MVCorei18n.IMPORT_IMPORTING.sendInfo(issuer, Replace.WORLD.with(worldName));
         worldManager.importWorld(ImportWorldOptions.worldName(worldName)
                 .biome(parsedFlags.flagValue(biomeFlag, Biome.CUSTOM))
                 .environment(environment)
@@ -97,11 +97,11 @@ final class ImportCommand extends CoreCommand {
                 .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag)))
                 .onSuccess(newWorld -> {
                     Logging.fine("World import success: " + newWorld);
-                    issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS, Replace.WORLD.with(newWorld.getName()));
+                    MVCorei18n.IMPORT_SUCCESS.sendInfo(issuer, Replace.WORLD.with(newWorld.getName()));
                 })
                 .onFailure(failure -> {
                     Logging.fine("World import failure: " + failure);
-                    issuer.sendError(failure.getFailureMessage());
+                    failure.getFailureMessage().sendError(issuer);
                 });
     }
 }

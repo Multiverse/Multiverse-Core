@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.Collections;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -16,7 +17,6 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
@@ -55,7 +55,7 @@ final class RemoveCommand extends CoreCommand {
     @Syntax("<world>")
     @Description("{@@mv-core.remove.description}")
     void onRemoveCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Single
             @Conditions("mvworlds:scope=both @flags:groupName=mvremovecommand")
@@ -78,14 +78,14 @@ final class RemoveCommand extends CoreCommand {
         future.thenRun(() -> doWorldRemoving(issuer, world));
     }
 
-    private void doWorldRemoving(MVCommandIssuer issuer, MultiverseWorld world) {
+    private void doWorldRemoving(CommandIssuer issuer, MultiverseWorld world) {
         worldManager.removeWorld(world)
                 .onSuccess(removedWorldName -> {
                     Logging.fine("World remove success: " + removedWorldName);
-                    issuer.sendInfo(MVCorei18n.REMOVE_SUCCESS, Replace.WORLD.with(removedWorldName));
+                    MVCorei18n.REMOVE_SUCCESS.sendInfo(issuer, Replace.WORLD.with(removedWorldName));
                 }).onFailure(failure -> {
                     Logging.fine("World remove failure: " + failure);
-                    issuer.sendError(failure.getFailureMessage());
+                    failure.getFailureMessage().sendError(issuer);
                 });
     }
 }

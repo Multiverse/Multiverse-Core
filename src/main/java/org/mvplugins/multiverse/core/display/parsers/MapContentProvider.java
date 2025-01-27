@@ -3,7 +3,8 @@ package org.mvplugins.multiverse.core.display.parsers;
 import java.util.Collection;
 import java.util.Map;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
+
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class MapContentProvider<K, V> implements ContentProvider {
      * {@inheritDoc}
      */
     @Override
-    public Collection<String> parse(@NotNull BukkitCommandIssuer issuer) {
+    public Collection<String> parse(@NotNull CommandIssuer issuer) {
         return map.entrySet().stream()
                 .map(e -> String.format(format, keyColor, e.getKey(), separator, valueColor, formatValue(e.getValue())))
                 .toList();

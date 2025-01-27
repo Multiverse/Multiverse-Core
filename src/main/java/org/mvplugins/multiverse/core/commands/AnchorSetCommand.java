@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -15,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
@@ -42,7 +42,7 @@ final class AnchorSetCommand extends CoreCommand {
     @Syntax("<name> [location]")
     @Description("")
     void onAnchorSetCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Flags("resolve=issuerOnly")
             Player player,
@@ -66,7 +66,7 @@ final class AnchorSetCommand extends CoreCommand {
     @Syntax("<name> [location]")
     @Description("")
     void onAnchorSetCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("<name>")
             @Description("")
@@ -83,11 +83,11 @@ final class AnchorSetCommand extends CoreCommand {
         }
     }
 
-    private void sendAnchorSetSuccessMessage(MVCommandIssuer issuer, String anchorName, String locationString) {
+    private void sendAnchorSetSuccessMessage(CommandIssuer issuer, String anchorName, String locationString) {
         issuer.sendMessage("&aAnchor &f" + anchorName + "&a set to &f" + locationString);
     }
 
-    private void sendAnchorSetFailedMessage(MVCommandIssuer issuer, String anchorName) {
+    private void sendAnchorSetFailedMessage(CommandIssuer issuer, String anchorName) {
         issuer.sendMessage("&cFailed to set anchor &f" + anchorName + ".");
     }
 }

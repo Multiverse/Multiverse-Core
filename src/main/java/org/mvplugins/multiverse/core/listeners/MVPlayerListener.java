@@ -289,7 +289,7 @@ final class MVPlayerListener implements CoreListener {
                 })
                 .onFailure(results -> {
                     event.setCancelled(true);
-                    getCommandManager().getCommandIssuer(finalTeleporter).sendError(results.getLastResultMessage());
+                    results.getLastResultMessage().sendError(getCommandManager().getCommandIssuer(finalTeleporter));
                 });
 
         Logging.fine("Teleport result: %s", entryResult);
@@ -353,7 +353,7 @@ final class MVPlayerListener implements CoreListener {
         ResultChain entryResult = worldEntryCheckerProvider.forSender(event.getPlayer()).canEnterWorld(fromWorld, toWorld)
                 .onFailure(results -> {
                     event.setCancelled(true);
-                    getCommandManager().getCommandIssuer(event.getPlayer()).sendError(results.getLastResultMessage());
+                    results.getLastResultMessage().sendError(getCommandManager().getCommandIssuer(event.getPlayer()));
                 });
 
         Logging.fine("Teleport result: %s", entryResult);

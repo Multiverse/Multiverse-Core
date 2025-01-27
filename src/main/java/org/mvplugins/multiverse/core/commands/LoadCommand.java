@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -13,7 +14,6 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -38,21 +38,21 @@ final class LoadCommand extends CoreCommand {
     @Syntax("<world>")
     @Description("{@@mv-core.load.description}")
     void onLoadCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Single
             @Conditions("worldname:scope=unloaded")
             @Syntax("<world>")
             @Description("{@@mv-core.load.world.description}")
             String worldName) {
-        issuer.sendInfo(MVCorei18n.LOAD_LOADING, Replace.WORLD.with(worldName));
+        MVCorei18n.LOAD_LOADING.sendInfo(issuer, Replace.WORLD.with(worldName));
         worldManager.loadWorld(worldName)
                 .onSuccess(newWorld -> {
                     Logging.fine("World load success: " + newWorld);
-                    issuer.sendInfo(MVCorei18n.LOAD_SUCCESS, Replace.WORLD.with(newWorld.getName()));
+                    MVCorei18n.LOAD_SUCCESS.sendInfo(issuer, Replace.WORLD.with(newWorld.getName()));
                 }).onFailure(failure -> {
                     Logging.fine("World load failure: " + failure);
-                    issuer.sendError(failure.getFailureMessage());
+                    failure.getFailureMessage().sendError(issuer);
                 });
     }
 }

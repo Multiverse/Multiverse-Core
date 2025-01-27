@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -15,7 +16,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
@@ -41,7 +41,7 @@ final class ModifyCommand extends CoreCommand {
     @Syntax("[world] <set|add|remove|reset> <property> <value>")
     @Description("")
     void onModifyCommand(// SUPPRESS CHECKSTYLE: ParameterNumber
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("[world]")

@@ -2,11 +2,11 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.Map;
 
+import co.aikar.commands.CommandIssuer;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.webpaste.PasteFailedException;
@@ -42,14 +42,14 @@ final class DumpsLogPoster extends BukkitRunnable {
         MCLOGS
     }
 
-    private final MVCommandIssuer issuer;
+    private final CommandIssuer issuer;
     private final LogsType logsType;
     private final UploadType uploadType;
     private final boolean paranoid;
     private final String logs;
     private final MVDumpsDebugInfoEvent versionEvent;
 
-    DumpsLogPoster(@NotNull MVCommandIssuer issuer,
+    DumpsLogPoster(@NotNull CommandIssuer issuer,
                    @NotNull DumpsLogPoster.LogsType logsType,
                    @NotNull DumpsLogPoster.UploadType uploadType,
                    boolean paranoid,

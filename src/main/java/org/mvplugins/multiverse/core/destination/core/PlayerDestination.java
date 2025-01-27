@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

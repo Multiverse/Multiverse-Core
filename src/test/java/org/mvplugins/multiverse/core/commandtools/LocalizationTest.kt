@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commandtools
 
+import co.aikar.commands.CommandIssuer
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.endsWith
@@ -63,7 +64,7 @@ class LocalizationTest : TestWithMockBukkit() {
         inner class WithCommandSender {
 
             private lateinit var sender: CommandSender
-            private lateinit var issuer: MVCommandIssuer
+            private lateinit var issuer: CommandIssuer
 
             @BeforeTest
             fun setUp() {
@@ -73,7 +74,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
             @Test
             fun `Sending the issuer the message should send the formatted message to the sender`() {
-                issuer.sendInfo(message);
+                message.sendInfo(issuer);
 
                 verify(sender).sendMessage("§9§9$messageString")
             }
@@ -115,7 +116,7 @@ class LocalizationTest : TestWithMockBukkit() {
         inner class WithCommandSender {
 
             private lateinit var sender: CommandSender
-            private lateinit var issuer: MVCommandIssuer
+            private lateinit var issuer: CommandIssuer
 
             @BeforeTest
             fun setUp() {
@@ -125,7 +126,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
             @Test
             fun `Sending the issuer the message should send the formatted message to the sender`() {
-                issuer.sendInfo(message);
+                message.sendInfo(issuer);
 
                 verify(sender).sendMessage("§9§9$replacedMessageString")
             }
@@ -174,7 +175,7 @@ class LocalizationTest : TestWithMockBukkit() {
         inner class WithCommandSender {
 
             private lateinit var sender: CommandSender
-            private lateinit var issuer: MVCommandIssuer
+            private lateinit var issuer: CommandIssuer
 
             @BeforeTest
             fun setUp() {
@@ -184,7 +185,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
             @Test
             fun `Sending the issuer the message should send the formatted message to the sender`() {
-                issuer.sendInfo(message);
+                message.sendInfo(issuer);
 
                 verify(sender).sendMessage("§9§9$replacedMessageString")
             }
@@ -229,7 +230,7 @@ class LocalizationTest : TestWithMockBukkit() {
         inner class WithCommandSender {
 
             private lateinit var sender: CommandSender
-            private lateinit var issuer: MVCommandIssuer
+            private lateinit var issuer: CommandIssuer
 
             @BeforeTest
             fun setUp() {
@@ -239,7 +240,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
             @Test
             fun `Sending the issuer the message should send the formatted message to the sender`() {
-                issuer.sendInfo(message);
+                message.sendInfo(issuer)
 
                 val sentMessage = argumentCaptor<String> {
                     verify(sender).sendMessage(capture())
@@ -290,7 +291,7 @@ class LocalizationTest : TestWithMockBukkit() {
         inner class WithCommandSender {
 
             private lateinit var sender: CommandSender
-            private lateinit var issuer: MVCommandIssuer
+            private lateinit var issuer: CommandIssuer
 
             @BeforeTest
             fun setUp() {
@@ -300,7 +301,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
             @Test
             fun `Sending the issuer the message should send the formatted message to the sender`() {
-                issuer.sendInfo(message);
+                message.sendInfo(issuer);
 
                 val sentMessage = argumentCaptor<String> {
                     verify(sender).sendMessage(capture())
@@ -317,7 +318,7 @@ class LocalizationTest : TestWithMockBukkit() {
     inner class LocaleConfiguration {
         private lateinit var config: MVCoreConfig
         private lateinit var player: PlayerMock
-        private lateinit var issuer: MVCommandIssuer
+        private lateinit var issuer: CommandIssuer
 
         @BeforeTest
         fun setUp() {

@@ -2,7 +2,7 @@ package org.mvplugins.multiverse.core.display.handlers;
 
 import java.util.List;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
      * {@inheritDoc}
      */
     @Override
-    public void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    public void sendContent(@NotNull CommandIssuer issuer, @NotNull List<String> content) {
         if (filter.needToFilter()) {
             issuer.sendMessage(String.format("%s[Filter '%s']", ChatColor.GRAY, filter));
         }

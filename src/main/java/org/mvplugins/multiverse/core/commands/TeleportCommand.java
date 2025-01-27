@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -19,7 +20,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
@@ -66,7 +66,7 @@ final class TeleportCommand extends CoreCommand {
     @Syntax("[player] <destination> [--unsafe]")
     @Description("{@@mv-core.teleport.description}")
     void onTeleportCommand(
-            MVCommandIssuer issuer,
+            BukkitCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("[player]")
@@ -86,14 +86,14 @@ final class TeleportCommand extends CoreCommand {
         if (players.length == 1) {
             teleportSinglePlayer(issuer, players[0], destination, parsedFlags);
         } else if (players.length > config.getConcurrentTeleportLimit()) {
-            issuer.sendError(MVCorei18n.TELEPORT_TOOMANYPLAYERS,
+            MVCorei18n.TELEPORT_TOOMANYPLAYERS.sendError(issuer,
                     Replace.COUNT.with(config.getConcurrentTeleportLimit()));
         } else {
             teleportMultiplePlayers(issuer, players, destination, parsedFlags);
         }
     }
 
-    private void teleportSinglePlayer(MVCommandIssuer issuer, Player player,
+    private void teleportSinglePlayer(BukkitCommandIssuer issuer, Player player,
                                       DestinationInstance<?, ?> destination,
                                       ParsedCommandFlags parsedFlags) {
         if (!permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), player, destination)) {
@@ -108,20 +108,20 @@ final class TeleportCommand extends CoreCommand {
                 .by(issuer)
                 .checkSafety(!parsedFlags.hasFlag(unsafeFlag) && destination.checkTeleportSafety())
                 .teleport(player)
-                .onSuccess(() -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                .onSuccess(() -> MVCorei18n.TELEPORT_SUCCESS.sendInfo(issuer,
                         Replace.PLAYER.with(getYouOrName(issuer, player)),
                         Replace.DESTINATION.with(destination.toString())))
-                .onFailure(failure -> issuer.sendError(MVCorei18n.TELEPORT_FAILED,
+                .onFailure(failure -> MVCorei18n.TELEPORT_FAILED.sendError(issuer,
                         Replace.PLAYER.with(getYouOrName(issuer, player)),
                         Replace.DESTINATION.with(destination.toString()),
                         Replace.REASON.with(failure.getFailureMessage())));
     }
 
-    private Message getYouOrName(MVCommandIssuer issuer, Player player) {
+    private Message getYouOrName(BukkitCommandIssuer issuer, Player player) {
         return player == issuer.getPlayer() ? Message.of(MVCorei18n.GENERIC_YOU) : Message.of(player.getName());
     }
 
-    private void teleportMultiplePlayers(MVCommandIssuer issuer, Player[] players,
+    private void teleportMultiplePlayers(BukkitCommandIssuer issuer, Player[] players,
                                          DestinationInstance<?, ?> destination,
                                          ParsedCommandFlags parsedFlags) {
         var selfPlayer = Arrays.stream(players).filter(p -> p == issuer.getPlayer()).findFirst();
@@ -155,7 +155,7 @@ final class TeleportCommand extends CoreCommand {
                     }
                     if (successCount > 0) {
                         Logging.finer("Teleported %s players to %s", successCount, destination);
-                        issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                        MVCorei18n.TELEPORT_SUCCESS.sendInfo(issuer,
                                 // TODO should use {count} instead of {player} most likely
                                 Replace.PLAYER.with(successCount + " players"),
                                 Replace.DESTINATION.with(destination.toString()));
@@ -164,7 +164,7 @@ final class TeleportCommand extends CoreCommand {
                         for (var entry : failures.entrySet()) {
                             Logging.finer("Failed to teleport %s players to %s: %s",
                                     entry.getValue(), destination, entry.getKey());
-                            issuer.sendError(MVCorei18n.TELEPORT_FAILED,
+                            MVCorei18n.TELEPORT_FAILED.sendError(issuer,
                                     // TODO should use {count} instead of {player} most likely
                                     Replace.PLAYER.with(entry.getValue() + " players"),
                                     Replace.DESTINATION.with(destination.toString()),

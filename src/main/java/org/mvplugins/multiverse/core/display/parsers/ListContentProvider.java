@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -37,7 +37,7 @@ public class ListContentProvider<T> implements ContentProvider {
      * {@inheritDoc}
      */
     @Override
-    public Collection<String> parse(@NotNull BukkitCommandIssuer issuer) {
+    public Collection<String> parse(@NotNull CommandIssuer issuer) {
         if (format == null) {
             return list.stream().map(Object::toString).collect(Collectors.toList());
         }

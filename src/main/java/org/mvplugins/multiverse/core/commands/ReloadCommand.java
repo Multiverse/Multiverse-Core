@@ -3,7 +3,7 @@ package org.mvplugins.multiverse.core.commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -47,7 +47,7 @@ final class ReloadCommand extends CoreCommand {
     @Subcommand("reload")
     @CommandPermission("multiverse.core.reload")
     @Description("{@@mv-core.reload.description}")
-    void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
+    void onReloadCommand(@NotNull CommandIssuer issuer) {
         issuer.sendInfo(MVCorei18n.RELOAD_RELOADING);
         try {
             // TODO: Make this all Try<Void>

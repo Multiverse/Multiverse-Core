@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import co.aikar.commands.CommandIssuer;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +17,6 @@ import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.MultiversePluginsRegistration;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.LogsType;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
 import org.mvplugins.multiverse.core.utils.FileUtils;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
@@ -38,7 +38,7 @@ class DumpsService {
         this.fileUtils = fileUtils;
     }
 
-    void postLogs(MVCommandIssuer issuer, LogsType logsType, UploadType servicesType, boolean paranoid) {
+    void postLogs(CommandIssuer issuer, LogsType logsType, UploadType servicesType, boolean paranoid) {
         // Initialise and add info to the debug event
         MVDumpsDebugInfoEvent versionEvent = createAndCallDebugInfoEvent();
 

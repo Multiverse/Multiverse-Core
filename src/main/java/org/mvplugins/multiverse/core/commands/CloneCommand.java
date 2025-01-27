@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -12,7 +13,6 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
@@ -55,7 +55,7 @@ final class CloneCommand extends CoreCommand {
     @Syntax("<world> <new world name>")
     @Description("{@@mv-core.clone.description}")
     void onCloneCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Syntax("<world>")
             @Description("{@@mv-core.clone.world.description}")
@@ -71,7 +71,7 @@ final class CloneCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendInfo(MVCorei18n.CLONE_CLONING,
+        MVCorei18n.CLONE_CLONING.sendInfo(issuer,
                 Replace.WORLD.with(world.getName()),
                 replace("{newworld}").with(newWorldName));
         CloneWorldOptions cloneWorldOptions = CloneWorldOptions.fromTo(world, newWorldName)
@@ -81,10 +81,10 @@ final class CloneCommand extends CoreCommand {
         worldManager.cloneWorld(cloneWorldOptions)
                 .onSuccess(newWorld -> {
                     Logging.fine("World clone success: " + newWorld);
-                    issuer.sendInfo(MVCorei18n.CLONE_SUCCESS, Replace.WORLD.with(newWorld.getName()));
+                    MVCorei18n.CLONE_SUCCESS.sendInfo(issuer, Replace.WORLD.with(newWorld.getName()));
                 }).onFailure(failure -> {
                     Logging.fine("World clone failure: " + failure);
-                    issuer.sendError(failure.getFailureMessage());
+                    failure.getFailureMessage().sendError(issuer);
                 });
     }
 }

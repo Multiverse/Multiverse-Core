@@ -2,7 +2,7 @@ package org.mvplugins.multiverse.core.display.parsers;
 
 import java.util.Collection;
 
-import co.aikar.commands.BukkitCommandIssuer;
+import co.aikar.commands.CommandIssuer;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,5 +16,5 @@ public interface ContentProvider {
      * @param issuer    The target which the content will be displayed to.
      * @return          The parsed content list.
      */
-    Collection<String> parse(@NotNull BukkitCommandIssuer issuer);
+    Collection<String> parse(@NotNull CommandIssuer issuer);
 }

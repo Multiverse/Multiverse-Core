@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
-import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;

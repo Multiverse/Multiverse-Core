@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -22,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
@@ -59,7 +59,7 @@ final class WhoCommand extends CoreCommand {
     @Syntax("[--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.who.all.description}")
     void onWhoAllCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
@@ -83,7 +83,7 @@ final class WhoCommand extends CoreCommand {
     @Syntax("<world> [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.who.description}")
     void onWhoCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
             @Flags("resolve=issuerAware")
             @Optional
             @Syntax("<world>")

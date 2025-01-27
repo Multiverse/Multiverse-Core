@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.Collections;
 
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -15,7 +16,6 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
@@ -61,7 +61,7 @@ final class DeleteCommand extends CoreCommand {
     @Syntax("<world>")
     @Description("{@@mv-core.delete.description}")
     void onDeleteCommand(
-            MVCommandIssuer issuer,
+            CommandIssuer issuer,
 
             @Single
             @Syntax("<world>")
@@ -81,8 +81,8 @@ final class DeleteCommand extends CoreCommand {
                         Replace.WORLD.with(world.getName()))));
     }
 
-    private void runDeleteCommand(MVCommandIssuer issuer, MultiverseWorld world, ParsedCommandFlags parsedFlags) {
-        issuer.sendInfo(MVCorei18n.DELETE_DELETING, Replace.WORLD.with(world.getName()));
+    private void runDeleteCommand(CommandIssuer issuer, MultiverseWorld world, ParsedCommandFlags parsedFlags) {
+        MVCorei18n.DELETE_DELETING.sendInfo(issuer, Replace.WORLD.with(world.getName()));
 
         var future = parsedFlags.hasFlag(removePlayersFlag)
                         && world.isLoaded()
@@ -93,14 +93,14 @@ final class DeleteCommand extends CoreCommand {
         future.thenRun(() -> worldTickDeferrer.deferWorldTick(() -> doWorldDeleting(issuer, world)));
     }
 
-    private void doWorldDeleting(MVCommandIssuer issuer, MultiverseWorld world) {
+    private void doWorldDeleting(CommandIssuer issuer, MultiverseWorld world) {
         worldManager.deleteWorld(world)
                 .onSuccess(deletedWorldName -> {
                     Logging.fine("World delete success: " + deletedWorldName);
-                    issuer.sendInfo(MVCorei18n.DELETE_SUCCESS, Replace.WORLD.with(deletedWorldName));
+                    MVCorei18n.DELETE_SUCCESS.sendInfo(issuer, Replace.WORLD.with(deletedWorldName));
                 }).onFailure(failure -> {
                     Logging.fine("World delete failure: " + failure);
-                    issuer.sendError(failure.getFailureMessage());
+                    failure.getFailureMessage().sendError(issuer);
                 });
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -21,7 +22,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
@@ -65,7 +65,7 @@ final class SpawnCommand extends CoreCommand {
     @Syntax("[player]")
     @Description("{@@mv-core.spawn.description}")
     void onSpawnTpCommand(
-            MVCommandIssuer issuer,
+            BukkitCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("[player]")
@@ -84,7 +84,7 @@ final class SpawnCommand extends CoreCommand {
                 teleportPlayersToSpawn(issuer, world, playerList, !parsedFlags.hasFlag(unsafeFlag)));
     }
 
-    private void teleportPlayersToSpawn(MVCommandIssuer issuer, World world,
+    private void teleportPlayersToSpawn(BukkitCommandIssuer issuer, World world,
                                         List<Player> players, boolean checkSafety) {
         LoadedMultiverseWorld mvWorld = worldManager.getLoadedWorld(world).getOrNull();
         if (mvWorld == null) {
@@ -108,18 +108,18 @@ final class SpawnCommand extends CoreCommand {
         }
     }
 
-    private void handleSingleTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
+    private void handleSingleTeleport(BukkitCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
                                       Player player, boolean checkSafety) {
         safetyTeleporter.to(mvWorld.getSpawnLocation())
                 .by(issuer)
                 .checkSafety(checkSafety)
                 .teleport(player)
-                .onSuccess(() -> issuer.sendInfo(MVCorei18n.SPAWN_SUCCESS,
+                .onSuccess(() -> MVCorei18n.SPAWN_SUCCESS.sendInfo(issuer,
                         Replace.PLAYER.with(player.equals(issuer.getPlayer())
                                 ? Message.of(MVCorei18n.GENERIC_YOU)
                                 : Message.of(player.getName())),
                         Replace.WORLD.with(mvWorld.getName())))
-                .onFailure(failure -> issuer.sendError(MVCorei18n.SPAWN_FAILED,
+                .onFailure(failure -> MVCorei18n.SPAWN_FAILED.sendError(issuer,
                         Replace.PLAYER.with(player.equals(issuer.getPlayer())
                                 ? Message.of(MVCorei18n.GENERIC_YOU)
                                 : Message.of(player.getName())),
@@ -127,7 +127,7 @@ final class SpawnCommand extends CoreCommand {
                         Replace.REASON.with(failure.getFailureMessage())));
     }
 
-    private void handleMultiTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
+    private void handleMultiTeleport(BukkitCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
                                      List<Player> players, boolean checkSafety) {
         safetyTeleporter.to(mvWorld.getSpawnLocation())
                 .by(issuer)
@@ -145,13 +145,13 @@ final class SpawnCommand extends CoreCommand {
                         }
                     }
                     if (successCount > 0) {
-                        issuer.sendInfo(MVCorei18n.SPAWN_SUCCESS,
+                        MVCorei18n.SPAWN_SUCCESS.sendInfo(issuer,
                                 // TODO should use {count} instead of {player} most likely
                                 Replace.PLAYER.with(successCount + " players"),
                                 Replace.WORLD.with(mvWorld.getName()));
                     } else {
                         for (var entry : failures.entrySet()) {
-                            issuer.sendError(MVCorei18n.SPAWN_FAILED,
+                            MVCorei18n.SPAWN_FAILED.sendError(issuer,
                                     // TODO should use {count} instead of {player} most likely
                                     Replace.PLAYER.with(entry.getValue() + " players"),
                                     Replace.WORLD.with(mvWorld.getName()),

@@ -5,6 +5,7 @@ import java.util.Objects;
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.Locales;
+import co.aikar.commands.MessageType;
 import co.aikar.locales.MessageKeyProvider;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -164,5 +165,52 @@ public sealed class Message permits LocalizedMessage {
             replacementsArray[i++] = replacement.getReplacement().fold(s -> s, Message::formatted);
         }
         return replacementsArray;
+    }
+
+    /**
+     * Sends this informational message to the given receiver.
+     *
+     * @param receiver The CommandIssuer to receive the message.
+     */
+    public void sendInfo(CommandIssuer receiver) {
+        send(receiver, MessageType.INFO);
+    }
+
+    /**
+     * Sends this error message to the given receiver.
+     *
+     * @param receiver The CommandIssuer to receive the message.
+     */
+    public void sendError(CommandIssuer receiver) {
+        send(receiver, MessageType.ERROR);
+    }
+
+    /**
+     * Sends this error message to the given receiver.
+     *
+     * @param receiver The CommandIssuer to receive the message.
+     */
+    public void sendSyntax(CommandIssuer receiver) {
+        send(receiver, MessageType.SYNTAX);
+    }
+
+    /**
+     * Sends this message to the given receive as the given type.
+     *
+     * @param receiver The CommandIssuer to receive the message.
+     * @param messageType The type of message to send.
+     */
+    public void send(CommandIssuer receiver, MessageType messageType) {
+        if (this instanceof MessageKeyProvider messageKeyProvider) {
+            receiver.sendMessage(messageType, messageKeyProvider,
+                    getReplacements(receiver.getManager().getLocales(), receiver));
+        } else {
+            var formatter = receiver.getManager().getFormat(messageType);
+            if (formatter != null) {
+                receiver.sendMessage(formatter.format(formatted()));
+            } else {
+                receiver.sendMessage(formatted());
+            }
+        }
     }
 }
