@@ -16,16 +16,19 @@ import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
  * Handles all player actions that need to be done when a change in world related activity occurs.
  */
 @Service
 public final class PlayerWorldTeleporter {
+    private final WorldManager worldManager;
     private final AsyncSafetyTeleporter safetyTeleporter;
 
     @Inject
-    PlayerWorldTeleporter(@NotNull AsyncSafetyTeleporter safetyTeleporter) {
+    PlayerWorldTeleporter(@NotNull WorldManager worldManager, @NotNull AsyncSafetyTeleporter safetyTeleporter) {
+        this.worldManager = worldManager;
         this.safetyTeleporter = safetyTeleporter;
     }
 
@@ -36,8 +39,8 @@ public final class PlayerWorldTeleporter {
      * @return A list of async futures that represent the teleportation result of each player.
      */
     public Async<List<Attempt<Void, TeleportFailureReason>>> removeFromWorld(@NotNull LoadedMultiverseWorld world) {
-        // TODO: Better handling of fallback world
-        World toWorld = Bukkit.getWorlds().get(0);
+        World toWorld = worldManager.getDefaultWorld().flatMap(LoadedMultiverseWorld::getBukkitWorld)
+                .getOrElse(Bukkit.getWorlds().get(0));
         return transferFromWorldTo(world, toWorld);
     }
 
