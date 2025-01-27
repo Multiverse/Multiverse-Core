@@ -111,7 +111,7 @@ public final class AsyncAttempt<T, F extends FailureReason> {
     }
 
     public <U> AsyncAttempt<U, F> mapAsyncAttempt(Function<? super T, AsyncAttempt<U, F>> mapper) {
-        return new AsyncAttempt<>(future.thenApplyAsync(
+        return new AsyncAttempt<>(future.thenApply(
                 attempt -> attempt.mapAttempt(rasult -> mapper.apply(rasult).toAttempt())));
     }
 
