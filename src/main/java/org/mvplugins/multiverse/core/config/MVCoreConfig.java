@@ -45,7 +45,7 @@ public class MVCoreConfig {
         this.configNodes = new MVCoreConfigNodes(pluginManager, commandManager);
         this.configHandle = CommentedConfigurationHandle.builder(configPath, configNodes.getNodes())
                 .logger(Logging.getLogger())
-                .migrator(ConfigMigrator.builder(configNodes.VERSION)
+                .migrator(ConfigMigrator.builder(configNodes.version)
                         .addVersionMigrator(VersionMigrator.builder(5.0)
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.enforceaccess", "world.enforce-access"))
                                 .addAction(BooleanMigratorAction.of("world.enforce-access"))
@@ -135,392 +135,392 @@ public class MVCoreConfig {
      * {@inheritDoc}
      */
     public Try<Void> setEnforceAccess(boolean enforceAccess) {
-        return configHandle.set(configNodes.ENFORCE_ACCESS, enforceAccess);
+        return configHandle.set(configNodes.enforceAccess, enforceAccess);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getEnforceAccess() {
-        return configHandle.get(configNodes.ENFORCE_ACCESS);
+        return configHandle.get(configNodes.enforceAccess);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setEnforceGameMode(boolean enforceGameMode) {
-        return configHandle.set(configNodes.ENFORCE_GAMEMODE, enforceGameMode);
+        return configHandle.set(configNodes.enforceGamemode, enforceGameMode);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getEnforceGameMode() {
-        return configHandle.get(configNodes.ENFORCE_GAMEMODE);
+        return configHandle.get(configNodes.enforceGamemode);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setAutoPurgeEntities(boolean autopurge) {
-        return configHandle.set(configNodes.AUTO_PURGE_ENTITIES, autopurge);
+        return configHandle.set(configNodes.autoPurgeEntities, autopurge);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isAutoPurgeEntities() {
-        return configHandle.get(configNodes.AUTO_PURGE_ENTITIES);
+        return configHandle.get(configNodes.autoPurgeEntities);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setUseFinerTeleportPermissions(boolean useFinerTeleportPermissions) {
-        return configHandle.set(configNodes.USE_FINER_TELEPORT_PERMISSIONS, useFinerTeleportPermissions);
+        return configHandle.set(configNodes.useFinerTeleportPermissions, useFinerTeleportPermissions);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getUseFinerTeleportPermissions() {
-        return configHandle.get(configNodes.USE_FINER_TELEPORT_PERMISSIONS);
+        return configHandle.get(configNodes.useFinerTeleportPermissions);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setConcurrentTeleportLimit(int concurrentTeleportLimit) {
-        return configHandle.set(configNodes.CONCURRENT_TELEPORT_LIMIT, concurrentTeleportLimit);
+        return configHandle.set(configNodes.concurrentTeleportLimit, concurrentTeleportLimit);
     }
 
     /**
      * {@inheritDoc}
      */
     public int getConcurrentTeleportLimit() {
-        return configHandle.get(configNodes.CONCURRENT_TELEPORT_LIMIT);
+        return configHandle.get(configNodes.concurrentTeleportLimit);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setTeleportIntercept(boolean teleportIntercept) {
-        return configHandle.set(configNodes.TELEPORT_INTERCEPT, teleportIntercept);
+        return configHandle.set(configNodes.teleportIntercept, teleportIntercept);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getTeleportIntercept() {
-        return configHandle.get(configNodes.TELEPORT_INTERCEPT);
+        return configHandle.get(configNodes.teleportIntercept);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setFirstSpawnOverride(boolean firstSpawnOverride) {
-        return configHandle.set(configNodes.FIRST_SPAWN_OVERRIDE, firstSpawnOverride);
+        return configHandle.set(configNodes.firstSpawnOverride, firstSpawnOverride);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setSafeLocationHorizontalSearchRadius(int searchRadius) {
-        return configHandle.set(configNodes.SAFE_LOCATION_HORIZONTAL_SEARCH_RADIUS, searchRadius);
+        return configHandle.set(configNodes.safeLocationHorizontalSearchRadius, searchRadius);
     }
 
     /**
      * {@inheritDoc}
      */
     public int getSafeLocationHorizontalSearchRadius() {
-        return configHandle.get(configNodes.SAFE_LOCATION_HORIZONTAL_SEARCH_RADIUS);
+        return configHandle.get(configNodes.safeLocationHorizontalSearchRadius);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setSafeLocationVerticalSearchRadius(int searchRadius) {
-        return configHandle.set(configNodes.SAFE_LOCATION_VERTICAL_SEARCH_RADIUS, searchRadius);
+        return configHandle.set(configNodes.safeLocationVerticalSearchRadius, searchRadius);
     }
 
     /**
      * {@inheritDoc}
      */
     public int getSafeLocationVerticalSearchRadius() {
-        return configHandle.get(configNodes.SAFE_LOCATION_VERTICAL_SEARCH_RADIUS);
+        return configHandle.get(configNodes.safeLocationVerticalSearchRadius);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getFirstSpawnOverride() {
-        return configHandle.get(configNodes.FIRST_SPAWN_OVERRIDE);
+        return configHandle.get(configNodes.firstSpawnOverride);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setFirstSpawnLocation(String firstSpawnWorld) {
-        return configHandle.set(configNodes.FIRST_SPAWN_LOCATION, firstSpawnWorld);
+        return configHandle.set(configNodes.firstSpawnLocation, firstSpawnWorld);
     }
 
     /**
      * {@inheritDoc}
      */
     public String getFirstSpawnLocation() {
-        return configHandle.get(configNodes.FIRST_SPAWN_LOCATION);
+        return configHandle.get(configNodes.firstSpawnLocation);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setEnableJoinDestination(boolean enableJoinDestination) {
-        return configHandle.set(configNodes.ENABLE_JOIN_DESTINATION, enableJoinDestination);
+        return configHandle.set(configNodes.enableJoinDestination, enableJoinDestination);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getEnableJoinDestination() {
-        return  configHandle.get(configNodes.ENABLE_JOIN_DESTINATION);
+        return  configHandle.get(configNodes.enableJoinDestination);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setJoinDestination(String alwaysSpawnDestination) {
-        return configHandle.set(configNodes.JOIN_DESTINATION, alwaysSpawnDestination);
+        return configHandle.set(configNodes.joinDestination, alwaysSpawnDestination);
     }
 
     /**
      * {@inheritDoc}
      */
     public String getJoinDestination() {
-        return  configHandle.get(configNodes.JOIN_DESTINATION);
+        return  configHandle.get(configNodes.joinDestination);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setDefaultRespawnWithinSameWorld(boolean defaultRespawnToWorldSpawn) {
-        return configHandle.set(configNodes.DEFAULT_RESPAWN_WITHIN_SAME_WORLD, defaultRespawnToWorldSpawn);
+        return configHandle.set(configNodes.defaultRespawnWithinSameWorld, defaultRespawnToWorldSpawn);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getDefaultRespawnWithinSameWorld() {
-        return configHandle.get(configNodes.DEFAULT_RESPAWN_WITHIN_SAME_WORLD);
+        return configHandle.get(configNodes.defaultRespawnWithinSameWorld);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setEnforceRespawnAtWorldSpawn(boolean enforceRespawnAtWorldSpawn) {
-        return configHandle.set(configNodes.ENFORCE_RESPAWN_AT_WORLD_SPAWN, enforceRespawnAtWorldSpawn);
+        return configHandle.set(configNodes.enforceRespawnAtWorldSpawn, enforceRespawnAtWorldSpawn);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getEnforceRespawnAtWorldSpawn() {
-        return configHandle.get(configNodes.ENFORCE_RESPAWN_AT_WORLD_SPAWN);
+        return configHandle.get(configNodes.enforceRespawnAtWorldSpawn);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setUseCustomPortalSearch(boolean useDefaultPortalSearch) {
-        return configHandle.set(configNodes.USE_CUSTOM_PORTAL_SEARCH, useDefaultPortalSearch);
+        return configHandle.set(configNodes.useCustomPortalSearch, useDefaultPortalSearch);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isUsingCustomPortalSearch() {
-        return configHandle.get(configNodes.USE_CUSTOM_PORTAL_SEARCH);
+        return configHandle.get(configNodes.useCustomPortalSearch);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setCustomPortalSearchRadius(int searchRadius) {
-        return configHandle.set(configNodes.CUSTOM_PORTAL_SEARCH_RADIUS, searchRadius);
+        return configHandle.set(configNodes.customPortalSearchRadius, searchRadius);
     }
 
     /**
      * {@inheritDoc}
      */
     public int getCustomPortalSearchRadius() {
-        return configHandle.get(configNodes.CUSTOM_PORTAL_SEARCH_RADIUS);
+        return configHandle.get(configNodes.customPortalSearchRadius);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setEnablePrefixChat(boolean prefixChat) {
-        return configHandle.set(configNodes.ENABLE_CHAT_PREFIX, prefixChat);
+        return configHandle.set(configNodes.enableChatPrefix, prefixChat);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isEnablePrefixChat() {
-        return configHandle.get(configNodes.ENABLE_CHAT_PREFIX);
+        return configHandle.get(configNodes.enableChatPrefix);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setPrefixChatFormat(String prefixChatFormat) {
-        return configHandle.set(configNodes.CHAT_PREFIX_FORMAT, prefixChatFormat);
+        return configHandle.set(configNodes.chatPrefixFormat, prefixChatFormat);
     }
 
     /**
      * {@inheritDoc}
      */
     public String getPrefixChatFormat() {
-        return configHandle.get(configNodes.CHAT_PREFIX_FORMAT);
+        return configHandle.get(configNodes.chatPrefixFormat);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setRegisterPapiHook(boolean registerPapiHook) {
-        return configHandle.set(configNodes.REGISTER_PAPI_HOOK, registerPapiHook);
+        return configHandle.set(configNodes.registerPapiHook, registerPapiHook);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isRegisterPapiHook() {
-        return configHandle.get(configNodes.REGISTER_PAPI_HOOK);
+        return configHandle.get(configNodes.registerPapiHook);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setDefaultLocale(Locale defaultLocale) {
-        return configHandle.set(configNodes.DEFAULT_LOCALE, defaultLocale);
+        return configHandle.set(configNodes.defaultLocale, defaultLocale);
     }
 
     /**
      * {@inheritDoc}
      */
     public Locale getDefaultLocale() {
-        return configHandle.get(configNodes.DEFAULT_LOCALE);
+        return configHandle.get(configNodes.defaultLocale);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setPerPlayerLocale(boolean perPlayerLocale) {
-        return configHandle.set(configNodes.PER_PLAYER_LOCALE, perPlayerLocale);
+        return configHandle.set(configNodes.perPlayerLocale, perPlayerLocale);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getPerPlayerLocale() {
-        return configHandle.get(configNodes.PER_PLAYER_LOCALE);
+        return configHandle.get(configNodes.perPlayerLocale);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setResolveAliasName(boolean resolveAliasInCommands) {
-        return configHandle.set(configNodes.RESOLVE_ALIAS_NAME, resolveAliasInCommands);
+        return configHandle.set(configNodes.resolveAliasName, resolveAliasInCommands);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getResolveAliasName() {
-        return configHandle.get(configNodes.RESOLVE_ALIAS_NAME);
+        return configHandle.get(configNodes.resolveAliasName);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setConfirmMode(ConfirmMode confirmMode) {
-        return configHandle.set(configNodes.CONFIRM_MODE, confirmMode);
+        return configHandle.set(configNodes.confirmMode, confirmMode);
     }
 
     /**
      * {@inheritDoc}
      */
     public ConfirmMode getConfirmMode() {
-        return configHandle.get(configNodes.CONFIRM_MODE);
+        return configHandle.get(configNodes.confirmMode);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setUseConfirmOtp(boolean useConfirmOtp) {
-        return configHandle.set(configNodes.USE_CONFIRM_OTP, useConfirmOtp);
+        return configHandle.set(configNodes.useConfirmOtp, useConfirmOtp);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getUseConfirmOtp() {
-        return configHandle.get(configNodes.USE_CONFIRM_OTP);
+        return configHandle.get(configNodes.useConfirmOtp);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setGlobalDebug(int globalDebug) {
-        return configHandle.set(configNodes.GLOBAL_DEBUG, globalDebug);
+        return configHandle.set(configNodes.globalDebug, globalDebug);
     }
 
     /**
      * {@inheritDoc}
      */
     public int getGlobalDebug() {
-        return configHandle.get(configNodes.GLOBAL_DEBUG);
+        return configHandle.get(configNodes.globalDebug);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setDebugPermissions(boolean debugPermissions) {
-        return configHandle.set(configNodes.DEBUG_PERMISSIONS, debugPermissions);
+        return configHandle.set(configNodes.debugPermissions, debugPermissions);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getDebugPermissions() {
-        return configHandle.get(configNodes.DEBUG_PERMISSIONS);
+        return configHandle.get(configNodes.debugPermissions);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setSilentStart(boolean silentStart) {
-        return configHandle.set(configNodes.SILENT_START, silentStart);
+        return configHandle.set(configNodes.silentStart, silentStart);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean getSilentStart() {
-        return configHandle.get(configNodes.SILENT_START);
+        return configHandle.get(configNodes.silentStart);
     }
 
     /**
      * {@inheritDoc}
      */
     public Try<Void> setShowDonateMessage(boolean showDonateMessage) {
-        return configHandle.set(configNodes.SHOW_DONATION_MESSAGE, showDonateMessage);
+        return configHandle.set(configNodes.showDonationMessage, showDonateMessage);
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean isShowingDonateMessage() {
-        return configHandle.get(configNodes.SHOW_DONATION_MESSAGE);
+        return configHandle.get(configNodes.showDonationMessage);
     }
 
     /**

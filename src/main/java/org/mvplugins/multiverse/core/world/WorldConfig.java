@@ -49,7 +49,7 @@ final class WorldConfig {
         this.configNodes = new WorldConfigNodes(multiverseCore);
         this.configHandle = MemoryConfigurationHandle.builder(configSection, configNodes.getNodes())
                 .logger(Logging.getLogger())
-                .migrator(ConfigMigrator.builder(configNodes.VERSION)
+                .migrator(ConfigMigrator.builder(configNodes.version)
                         .addVersionMigrator(initialVersionMigrator())
                         .build())
                 .build();
@@ -130,266 +130,265 @@ final class WorldConfig {
     }
 
     boolean getAdjustSpawn() {
-        return configHandle.get(configNodes.ADJUST_SPAWN);
+        return configHandle.get(configNodes.adjustSpawn);
     }
 
     Try<Void> setAdjustSpawn(boolean adjustSpawn) {
-        return configHandle.set(configNodes.ADJUST_SPAWN, adjustSpawn);
+        return configHandle.set(configNodes.adjustSpawn, adjustSpawn);
     }
 
     @Nullable String getAlias() {
-        return configHandle.get(configNodes.ALIAS);
+        return configHandle.get(configNodes.alias);
     }
 
     Try<Void> setAlias(String alias) {
-        return configHandle.set(configNodes.ALIAS, alias);
+        return configHandle.set(configNodes.alias, alias);
     }
 
     boolean getAllowFlight() {
-        return configHandle.get(configNodes.ALLOW_FLIGHT);
+        return configHandle.get(configNodes.allowFlight);
     }
 
     Try<Void> setAllowFlight(boolean allowFlight) {
-        return configHandle.set(configNodes.ALLOW_FLIGHT, allowFlight);
+        return configHandle.set(configNodes.allowFlight, allowFlight);
     }
 
     boolean getAllowWeather() {
-        return configHandle.get(configNodes.ALLOW_WEATHER);
+        return configHandle.get(configNodes.allowWeather);
     }
 
     Try<Void> setAllowWeather(boolean allowWeather) {
-        return configHandle.set(configNodes.ALLOW_WEATHER, allowWeather);
+        return configHandle.set(configNodes.allowWeather, allowWeather);
     }
     boolean getAnchorRespawn() {
-        return configHandle.get(configNodes.ANCHOR_RESPAWN);
+        return configHandle.get(configNodes.anchorRespawn);
     }
 
     Try<Void> setAnchorSpawn(boolean anchorSpawn) {
-        return configHandle.set(configNodes.ANCHOR_RESPAWN, anchorSpawn);
+        return configHandle.set(configNodes.anchorRespawn, anchorSpawn);
     }
 
     boolean getAutoHeal() {
-        return configHandle.get(configNodes.AUTO_HEAL);
+        return configHandle.get(configNodes.autoHeal);
     }
 
     Try<Void> setAutoHeal(boolean autoHeal) {
-        return configHandle.set(configNodes.AUTO_HEAL, autoHeal);
+        return configHandle.set(configNodes.autoHeal, autoHeal);
     }
 
     boolean getAutoLoad() {
-        return configHandle.get(configNodes.AUTO_LOAD);
+        return configHandle.get(configNodes.autoLoad);
     }
 
     Try<Void> setAutoLoad(boolean autoLoad) {
-        return configHandle.set(configNodes.AUTO_LOAD, autoLoad);
+        return configHandle.set(configNodes.autoLoad, autoLoad);
     }
 
     Biome getBiome() {
-        return configHandle.get(configNodes.BIOME);
+        return configHandle.get(configNodes.biome);
     }
 
     Try<Void> setBiome(Biome biome) {
-        return configHandle.set(configNodes.BIOME, biome);
+        return configHandle.set(configNodes.biome, biome);
     }
 
     boolean getBedRespawn() {
-        return configHandle.get(configNodes.BED_RESPAWN);
+        return configHandle.get(configNodes.bedRespawn);
     }
 
     Try<Void> setBedRespawn(boolean bedRespawn) {
-        return configHandle.set(configNodes.BED_RESPAWN, bedRespawn);
+        return configHandle.set(configNodes.bedRespawn, bedRespawn);
     }
 
     Difficulty getDifficulty() {
-        return configHandle.get(configNodes.DIFFICULTY);
+        return configHandle.get(configNodes.difficulty);
     }
 
     Try<Void> setDifficulty(Difficulty difficulty) {
-        return configHandle.set(configNodes.DIFFICULTY, difficulty);
+        return configHandle.set(configNodes.difficulty, difficulty);
     }
 
     boolean isEntryFeeEnabled() {
-        return configHandle.get(configNodes.ENTRY_FEE_ENABLED);
+        return configHandle.get(configNodes.entryFeeEnabled);
     }
 
     Try<Void> setEntryFeeEnabled(boolean entryFeeEnabled) {
-        return configHandle.set(configNodes.ENTRY_FEE_ENABLED, entryFeeEnabled);
+        return configHandle.set(configNodes.entryFeeEnabled, entryFeeEnabled);
     }
 
     double getEntryFeeAmount() {
-        return configHandle.get(configNodes.ENTRY_FEE_AMOUNT);
+        return configHandle.get(configNodes.entryFeeAmount);
     }
 
     Try<Void> setEntryFeeAmount(double entryFeeAmount) {
-        return configHandle.set(configNodes.ENTRY_FEE_AMOUNT, entryFeeAmount);
+        return configHandle.set(configNodes.entryFeeAmount, entryFeeAmount);
     }
 
     Material getEntryFeeCurrency() {
-        return configHandle.get(configNodes.ENTRY_FEE_CURRENCY);
+        return configHandle.get(configNodes.entryFeeCurrency);
     }
 
     Try<Void> setEntryFeeCurrency(Material entryFeeCurrency) {
-        return configHandle.set(configNodes.ENTRY_FEE_CURRENCY, entryFeeCurrency);
+        return configHandle.set(configNodes.entryFeeCurrency, entryFeeCurrency);
     }
 
     World.Environment getEnvironment() {
-        return configHandle.get(configNodes.ENVIRONMENT);
+        return configHandle.get(configNodes.environment);
     }
 
     Try<Void> setEnvironment(World.Environment environment) {
-        return configHandle.set(configNodes.ENVIRONMENT, environment);
+        return configHandle.set(configNodes.environment, environment);
     }
 
     GameMode getGameMode() {
-        return configHandle.get(configNodes.GAMEMODE);
+        return configHandle.get(configNodes.gamemode);
     }
 
     Try<Void> setGameMode(GameMode gamemode) {
-        return configHandle.set(configNodes.GAMEMODE, gamemode);
+        return configHandle.set(configNodes.gamemode, gamemode);
     }
 
-    @Nullable String getGenerator() {
-        return configHandle.get(configNodes.GENERATOR);
+    String getGenerator() {
+        return configHandle.get(configNodes.generator);
     }
 
     Try<Void> setGenerator(String generator) {
-        return configHandle.set(configNodes.GENERATOR, generator);
+        return configHandle.set(configNodes.generator, generator);
     }
 
     boolean isHidden() {
-        return configHandle.get(configNodes.HIDDEN);
+        return configHandle.get(configNodes.hidden);
     }
 
     Try<Void> setHidden(boolean hidden) {
-        return configHandle.set(configNodes.HIDDEN, hidden);
+        return configHandle.set(configNodes.hidden, hidden);
     }
 
     boolean getHunger() {
-        return configHandle.get(configNodes.HUNGER);
+        return configHandle.get(configNodes.hunger);
     }
 
     Try<Void> setHunger(boolean hunger) {
-        return configHandle.set(configNodes.HUNGER, hunger);
+        return configHandle.set(configNodes.hunger, hunger);
     }
-
     boolean getKeepSpawnInMemory() {
-        return configHandle.get(configNodes.KEEP_SPAWN_IN_MEMORY);
+        return configHandle.get(configNodes.keepSpawnInMemory);
     }
 
     Try<Void> setKeepSpawnInMemory(boolean keepSpawnInMemory) {
-        return configHandle.set(configNodes.KEEP_SPAWN_IN_MEMORY, keepSpawnInMemory);
+        return configHandle.set(configNodes.keepSpawnInMemory, keepSpawnInMemory);
     }
 
     int getPlayerLimit() {
-        return configHandle.get(configNodes.PLAYER_LIMIT);
+        return configHandle.get(configNodes.playerLimit);
     }
 
     Try<Void> setPlayerLimit(int playerLimit) {
-        return configHandle.set(configNodes.PLAYER_LIMIT, playerLimit);
+        return configHandle.set(configNodes.playerLimit, playerLimit);
     }
 
     AllowedPortalType getPortalForm() {
-        return configHandle.get(configNodes.PORTAL_FORM);
+        return configHandle.get(configNodes.portalForm);
     }
 
     Try<Void> setPortalForm(AllowedPortalType portalForm) {
-        return configHandle.set(configNodes.PORTAL_FORM, portalForm);
+        return configHandle.set(configNodes.portalForm, portalForm);
     }
 
     boolean getPvp() {
-        return configHandle.get(configNodes.PVP);
+        return configHandle.get(configNodes.pvp);
     }
 
     Try<Void> setPvp(boolean pvp) {
-        return configHandle.set(configNodes.PVP, pvp);
+        return configHandle.set(configNodes.pvp, pvp);
     }
 
     String getRespawnWorld() {
-        return configHandle.get(configNodes.RESPAWN_WORLD);
+        return configHandle.get(configNodes.respawnWorld);
     }
 
     Try<Void> setRespawnWorld(String respawnWorld) {
-        return configHandle.set(configNodes.RESPAWN_WORLD, respawnWorld);
+        return configHandle.set(configNodes.respawnWorld, respawnWorld);
     }
 
     double getScale() {
-        return configHandle.get(configNodes.SCALE);
+        return configHandle.get(configNodes.scale);
     }
 
     Try<Void> setScale(double scale) {
-        return configHandle.set(configNodes.SCALE, scale);
+        return configHandle.set(configNodes.scale, scale);
     }
 
     long getSeed() {
-        return configHandle.get(configNodes.SEED);
+        return configHandle.get(configNodes.seed);
     }
 
     Try<Void> setSeed(long seed) {
-        return configHandle.set(configNodes.SEED, seed);
+        return configHandle.set(configNodes.seed, seed);
     }
 
     SpawnLocation getSpawnLocation() {
-        return configHandle.get(configNodes.SPAWN_LOCATION);
+        return configHandle.get(configNodes.spawnLocation);
     }
 
     Try<Void> setSpawnLocation(SpawnLocation spawnLocation) {
-        return configHandle.set(configNodes.SPAWN_LOCATION, spawnLocation);
+        return configHandle.set(configNodes.spawnLocation, spawnLocation);
     }
 
     boolean getSpawningAnimals() {
-        return configHandle.get(configNodes.SPAWNING_ANIMALS);
+        return configHandle.get(configNodes.spawningAnimals);
     }
 
     Try<Void> setSpawningAnimals(boolean spawningAnimals) {
-        return configHandle.set(configNodes.SPAWNING_ANIMALS, spawningAnimals);
+        return configHandle.set(configNodes.spawningAnimals, spawningAnimals);
     }
 
     int getSpawningAnimalsTicks() {
-        return configHandle.get(configNodes.SPAWNING_ANIMALS_TICKS);
+        return configHandle.get(configNodes.spawningAnimalsTicks);
     }
 
     Try<Void> setSpawningAnimalsTicks(int spawningAnimalsAmount) {
-        return configHandle.set(configNodes.SPAWNING_ANIMALS_TICKS, spawningAnimalsAmount);
+        return configHandle.set(configNodes.spawningAnimalsTicks, spawningAnimalsAmount);
     }
 
     List<String> getSpawningAnimalsExceptions() {
-        return configHandle.get(configNodes.SPAWNING_ANIMALS_EXCEPTIONS);
+        return configHandle.get(configNodes.spawningAnimalsExceptions);
     }
 
     Try<Void> setSpawningAnimalsExceptions(List<String> spawningAnimalsExceptions) {
-        return configHandle.set(configNodes.SPAWNING_ANIMALS_EXCEPTIONS, spawningAnimalsExceptions);
+        return configHandle.set(configNodes.spawningAnimalsExceptions, spawningAnimalsExceptions);
     }
 
     boolean getSpawningMonsters() {
-        return configHandle.get(configNodes.SPAWNING_MONSTERS);
+        return configHandle.get(configNodes.spawningMonsters);
     }
 
     Try<Void> setSpawningMonsters(boolean spawningMonsters) {
-        return configHandle.set(configNodes.SPAWNING_MONSTERS, spawningMonsters);
+        return configHandle.set(configNodes.spawningMonsters, spawningMonsters);
     }
 
     int getSpawningMonstersTicks() {
-        return configHandle.get(configNodes.SPAWNING_MONSTERS_TICKS);
+        return configHandle.get(configNodes.spawningMonstersTicks);
     }
 
     Try<Void> setSpawningMonstersTicks(int spawningMonstersAmount) {
-        return configHandle.set(configNodes.SPAWNING_MONSTERS_TICKS, spawningMonstersAmount);
+        return configHandle.set(configNodes.spawningMonstersTicks, spawningMonstersAmount);
     }
 
     List<String> getSpawningMonstersExceptions() {
-        return configHandle.get(configNodes.SPAWNING_MONSTERS_EXCEPTIONS);
+        return configHandle.get(configNodes.spawningMonstersExceptions);
     }
 
     Try<Void> setSpawningMonstersExceptions(List<String> spawningMonstersExceptions) {
-        return configHandle.set(configNodes.SPAWNING_MONSTERS_EXCEPTIONS, spawningMonstersExceptions);
+        return configHandle.set(configNodes.spawningMonstersExceptions, spawningMonstersExceptions);
     }
 
     List<String> getWorldBlacklist() {
-        return configHandle.get(configNodes.WORLD_BLACKLIST);
+        return configHandle.get(configNodes.worldBlacklist);
     }
 
     Try<Void> setWorldBlacklist(List<String> worldBlacklist) {
-        return configHandle.set(configNodes.WORLD_BLACKLIST, worldBlacklist);
+        return configHandle.set(configNodes.worldBlacklist, worldBlacklist);
     }
 
     void setMVWorld(@NotNull MultiverseWorld world) {
