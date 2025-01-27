@@ -5,7 +5,6 @@ import java.util.Map;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
@@ -18,31 +17,47 @@ import org.mvplugins.multiverse.core.utils.webpaste.PasteServiceType;
 final class DumpsLogPoster extends BukkitRunnable {
 
     enum UploadType {
-        PASTEGG,
-        PASTESDEV
+        // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
+        PASTEGG(PasteServiceType.PASTEGG, "paste.gg"),
+        PASTESDEV(PasteServiceType.PASTESDEV, "pastes.dev");
+        // END CHECKSTYLE-SUPPRESSION: JavadocVariable
+
+        private final PasteServiceType pasteServiceType;
+        private final String serviceName;
+
+        UploadType(PasteServiceType pasteServiceType, String serviceName) {
+            this.pasteServiceType = pasteServiceType;
+            this.serviceName = serviceName;
+        }
     }
 
     enum LogsType {
+        /**
+         * Appends the log file to the debug info.
+         */
         APPEND,
+        /**
+         * Uploads the log file to a paste service.
+         */
         MCLOGS
     }
 
     private final MVCommandIssuer issuer;
     private final LogsType logsType;
-    private final UploadType servicesType;
+    private final UploadType uploadType;
     private final boolean paranoid;
     private final String logs;
     private final MVDumpsDebugInfoEvent versionEvent;
 
     DumpsLogPoster(@NotNull MVCommandIssuer issuer,
                    @NotNull DumpsLogPoster.LogsType logsType,
-                   @NotNull DumpsLogPoster.UploadType servicesType,
+                   @NotNull DumpsLogPoster.UploadType uploadType,
                    boolean paranoid,
-                   @Nullable String logs,
+                   @NotNull String logs,
                    @NotNull MVDumpsDebugInfoEvent versionEvent) {
         this.issuer = issuer;
         this.logsType = logsType;
-        this.servicesType = servicesType;
+        this.uploadType = uploadType;
         this.paranoid = paranoid;
         this.logs = logs;
         this.versionEvent = versionEvent;
@@ -50,63 +65,52 @@ final class DumpsLogPoster extends BukkitRunnable {
 
     @Override
     public void run() {
-        // TODO: Refactor into smaller methods
-        Logging.finer("Logs type is: " + logsType);
-        Logging.finer("Services is: " + servicesType);
+        handleLogs();
+        handleVersionEvent();
+    }
 
-        // Deal with logs flag
+    @SuppressWarnings("checkstyle:MissingSwitchDefault")
+    private void handleLogs() {
+        Logging.finer("Logs type is: " + logsType);
+
         if (!paranoid) {
             switch (logsType) {
-                case MCLOGS -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
-                        "{service}", "Logs",
-                        "{link}", postToService(PasteServiceType.MCLOGS, logs, null));
+                case MCLOGS -> sendDumpsUrl("Logs", postRawDataToMcLogs(logs));
                 case APPEND -> versionEvent.putDetailedDebugInfo("latest.log", logs);
+                default -> Logging.finer("Not uploading logs.");
             }
-        }
-
-        // Get the files from the event
-        final Map<String, String> files = versionEvent.getDetailedDebugInfo();
-
-        // Deal with uploading debug info
-        switch (servicesType) {
-            case PASTEGG -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
-                    "{service}", "paste.gg",
-                    "{link}", postToService(PasteServiceType.PASTEGG, null, files));
-            case PASTESDEV -> issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST,
-                    "{service}", "pastes.dev",
-                    "{link}", postToService(PasteServiceType.PASTESDEV, null, files));
+        } else {
+            Logging.finer("Paranoid mode is on, not uploading logs.");
         }
     }
 
-    private String postToService(@NotNull PasteServiceType type, @Nullable String rawPasteData, @Nullable Map<String, String> pasteFiles) {
-        PasteService pasteService = PasteServiceFactory.getService(type, true);
+    private void handleVersionEvent() {
+        Logging.finer("Upload service is: " + uploadType);
 
-        try {
-            // Upload normally when multi file is supported
+        final Map<String, String> files = versionEvent.getDetailedDebugInfo();
+        sendDumpsUrl(uploadType.serviceName, postFilesToService(files));
+    }
+
+    private void sendDumpsUrl(String service, String url) {
+        issuer.sendInfo(MVCorei18n.DUMPS_URL_LIST, "{service}", service, "{link}", url);
+    }
+
+    private String postRawDataToMcLogs(@NotNull String rawPasteData) {
+        PasteService pasteService = PasteServiceFactory.getService(PasteServiceType.MCLOGS, true);
+
+        return pasteToService(() -> pasteService.postData(rawPasteData));
+    }
+
+    private String postFilesToService(@NotNull Map<String, String> pasteFiles) {
+        PasteService pasteService = PasteServiceFactory.getService(uploadType.pasteServiceType, true);
+
+        return pasteToService(() -> {
             if (pasteService.supportsMultiFile()) {
                 return pasteService.postData(pasteFiles);
-            }
-
-            // When there is raw paste data, use that
-            if (rawPasteData != null) { // For the logs
-                return pasteService.postData(rawPasteData);
-            }
-
-            // If all we have are files and the paste service does not support multi file then encode them
-            if (pasteFiles != null) {
+            } else {
                 return pasteService.postData(this.encodeAsString(pasteFiles));
             }
-
-            // Should never get here
-            return "No data specified in code";
-
-        } catch (PasteFailedException e) {
-            e.printStackTrace();
-            return "Error posting to service.";
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-            return "That service isn't supported yet.";
-        }
+        });
     }
 
     private String encodeAsString(Map<String, String> files) {
@@ -122,5 +126,18 @@ final class DumpsLogPoster extends BukkitRunnable {
         }
 
         return uploadData.toString();
+    }
+
+    private String pasteToService(LogPaster paster) {
+        try {
+            return paster.postLogs();
+        } catch (PasteFailedException e) {
+            e.printStackTrace();
+            return "Error posting to service.";
+        }
+    }
+
+    private interface LogPaster {
+        String postLogs() throws PasteFailedException;
     }
 }
