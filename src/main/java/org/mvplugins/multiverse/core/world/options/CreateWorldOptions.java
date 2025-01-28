@@ -25,7 +25,7 @@ public final class CreateWorldOptions {
     }
 
     private final String worldName;
-    private Biome biome;
+    private String biome = "";
     private World.Environment environment = World.Environment.NORMAL;
     private boolean generateStructures = true;
     private String generator = null;
@@ -60,7 +60,7 @@ public final class CreateWorldOptions {
      * @param biome The biome used for this world
      * @return This {@link CreateWorldOptions} instance.
      */
-    public @NotNull CreateWorldOptions biome(@Nullable Biome biome) {
+    public @NotNull CreateWorldOptions biome(@NotNull String biome) {
         this.biome = biome;
         return this;
     }
@@ -71,7 +71,7 @@ public final class CreateWorldOptions {
      *
      * @return The biome used for this world
      */
-    public @NotNull Biome biome() {
+    public @NotNull String biome() {
         return biome;
     }
 

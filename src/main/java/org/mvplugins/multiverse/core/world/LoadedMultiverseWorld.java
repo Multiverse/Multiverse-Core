@@ -10,7 +10,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
@@ -45,10 +44,6 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
     private void setupWorldConfig(World world) {
         worldConfig.setMVWorld(this);
         worldConfig.load();
-        BiomeProvider biomeProvider = world.getBiomeProvider();
-        if (biomeProvider instanceof SingleBiomeProvider singleBiomeProvider) {
-            worldConfig.setBiome(singleBiomeProvider.getBiome());
-        }
         worldConfig.setEnvironment(world.getEnvironment());
         worldConfig.setSeed(world.getSeed());
     }

@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
@@ -237,7 +238,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return The biome used for this world
      */
-    public @Nullable Biome getBiome() {
+    public @NotNull String getBiome() {
         return worldConfig.getBiome();
     }
 

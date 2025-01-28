@@ -21,7 +21,7 @@ public final class ImportWorldOptions {
     }
 
     private final String worldName;
-    private Biome biome;
+    private String biome = "";
     private World.Environment environment = World.Environment.NORMAL;
     private String generator = null;
     private boolean useSpawnAdjust = true;
@@ -46,7 +46,7 @@ public final class ImportWorldOptions {
      * @param biome The biome used for this world
      * @return This {@link ImportWorldOptions} instance.
      */
-    public @NotNull ImportWorldOptions biome(@Nullable Biome biome) {
+    public @NotNull ImportWorldOptions biome(@NotNull String biome) {
         this.biome = biome;
         return this;
     }
@@ -57,7 +57,7 @@ public final class ImportWorldOptions {
      *
      * @return The biome used for this world
      */
-    public @NotNull Biome biome() {
+    public @NotNull String biome() {
         return biome;
     }
 

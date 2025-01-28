@@ -46,13 +46,8 @@ final class ImportCommand extends CoreCommand {
             .addAlias("-n")
             .build());
 
-    private final CommandValueFlag<Biome> biomeFlag = flag(CommandValueFlag.builder("--biome", Biome.class)
+    private final CommandValueFlag<String> biomeFlag = flag(CommandValueFlag.builder("--biome", String.class)
             .addAlias("-b")
-            .completion(input -> Lists.newArrayList(Registry.BIOME).stream()
-                    .filter(biome -> biome != Biome.CUSTOM)
-                    .map(biome -> biome.getKey().getKey())
-                    .toList())
-            .context(biomeStr -> Registry.BIOME.get(NamespacedKey.minecraft(biomeStr)))
             .build());
 
     @Inject
@@ -91,7 +86,7 @@ final class ImportCommand extends CoreCommand {
 
         issuer.sendInfo(MVCorei18n.IMPORT_IMPORTING, Replace.WORLD.with(worldName));
         worldManager.importWorld(ImportWorldOptions.worldName(worldName)
-                .biome(parsedFlags.flagValue(biomeFlag, Biome.CUSTOM))
+                .biome(parsedFlags.flagValue(biomeFlag, ""))
                 .environment(environment)
                 .generator(parsedFlags.flagValue(generatorFlag, String.class))
                 .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag)))

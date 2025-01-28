@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
  * A default implementation of {@link GeneratorPlugin} for those generator plugins that do not provide their own
  * custom {@link GeneratorPlugin} implementation to Multiverse.
  */
-public final class SimpleGeneratorPlugin implements GeneratorPlugin {
+final class SimpleGeneratorPlugin implements GeneratorPlugin {
     private final String pluginName;
 
     SimpleGeneratorPlugin(@NotNull String pluginName) {

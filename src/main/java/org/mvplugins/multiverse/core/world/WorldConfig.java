@@ -10,7 +10,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,67 +48,70 @@ final class WorldConfig {
         this.configNodes = new WorldConfigNodes(multiverseCore);
         this.configHandle = MemoryConfigurationHandle.builder(configSection, configNodes.getNodes())
                 .logger(Logging.getLogger())
-                .migrator(ConfigMigrator.builder(configNodes.version)
-                        .addVersionMigrator(initialVersionMigrator())
-                        .build())
+                .migrator(migrator())
                 .build();
         this.stringPropertyHandle = new StringPropertyHandle(configHandle);
         load();
     }
 
-    private VersionMigrator initialVersionMigrator() {
-        return VersionMigrator.builder(1.0)
-                .addAction(MoveMigratorAction.of("adjustSpawn", "adjust-spawn"))
-                .addAction(BooleanMigratorAction.of("adjust-spawn"))
-                .addAction(MoveMigratorAction.of("allowFlight", "allow-flight"))
-                .addAction(BooleanMigratorAction.of("allow-flight"))
-                .addAction(MoveMigratorAction.of("allowWeather", "allow-weather"))
-                .addAction(BooleanMigratorAction.of("allow-weather"))
-                .addAction(MoveMigratorAction.of("autoHeal", "auto-heal"))
-                .addAction(BooleanMigratorAction.of("auto-heal"))
-                .addAction(MoveMigratorAction.of("autoLoad", "auto-load"))
-                .addAction(BooleanMigratorAction.of("auto-load"))
-                .addAction(MoveMigratorAction.of("bedRespawn", "bed-respawn"))
-                .addAction(BooleanMigratorAction.of("bed-respawn"))
-                //.addAction(MoveMigratorAction.of("difficulty", "difficulty"))
-                .addAction(MoveMigratorAction.of("entryfee.amount", "entry-fee.amount"))
-                .addAction(DoubleMigratorAction.of("entry-fee.amount"))
-                .addAction(MoveMigratorAction.of("entryfee.currency", "entry-fee.currency"))
-                .addAction(DeleteMigratorAction.of("entryfee"))
-                //.addAction(MoveMigratorAction.of("environment", "environment"))
-                .addAction(MoveMigratorAction.of("gameMode", "gamemode"))
-                //.addAction(MoveMigratorAction.of("generator", "generator"))
-                .addAction(NullStringMigratorAction.of("generator"))
-                //.addAction(MoveMigratorAction.of("hidden", "hidden"))
-                .addAction(BooleanMigratorAction.of("hidden"))
-                //.addAction(MoveMigratorAction.of("hunger", "hunger"))
-                .addAction(BooleanMigratorAction.of("hunger"))
-                .addAction(MoveMigratorAction.of("keepSpawnInMemory", "keep-spawn-in-memory"))
-                .addAction(BooleanMigratorAction.of("keep-spawn-in-memory"))
-                .addAction(MoveMigratorAction.of("playerLimit", "player-limit"))
-                .addAction(IntegerMigratorAction.of("player-limit"))
-                .addAction(MoveMigratorAction.of("portalForm", "portal-form"))
-                //.addAction(MoveMigratorAction.of("pvp", "pvp"))
-                .addAction(BooleanMigratorAction.of("pvp"))
-                .addAction(MoveMigratorAction.of("respawnWorld", "respawn-world"))
-                //.addAction(MoveMigratorAction.of("scale", "scale"))
-                .addAction(DoubleMigratorAction.of("scale"))
-                //.addAction(MoveMigratorAction.of("seed", "seed"))
-                .addAction(LongMigratorAction.of("seed"))
-                .addAction(MoveMigratorAction.of("spawnLocation", "spawn-location"))
-                //.addAction(MoveMigratorAction.of("spawning.animals.spawn", "spawning.animals.spawn"))
-                .addAction(BooleanMigratorAction.of("spawning.animals.spawn"))
-                .addAction(MoveMigratorAction.of("spawning.animals.spawnrate", "spawning.animals.tick-rate"))
-                .addAction(IntegerMigratorAction.of("spawning.animals.tick-rate"))
-                //.addAction(MoveMigratorAction.of("spawning.animals.exceptions", "spawning.animals.exceptions"))
-                //.addAction(MoveMigratorAction.of("spawning.monsters.spawn", "spawning.monsters.spawn"))
-                .addAction(BooleanMigratorAction.of("spawning.monsters.spawn"))
-                .addAction(MoveMigratorAction.of("spawning.monsters.spawnrate", "spawning.monsters.tick-rate"))
-                .addAction(IntegerMigratorAction.of("spawning.monsters.tick-rate"))
-                //.addAction(MoveMigratorAction.of("spawning.monsters.exceptions", "spawning.monsters.exceptions"))
-                .addAction(MoveMigratorAction.of("worldBlacklist", "world-blacklist"))
-                .addAction(new EntryFeeMigrator())
-                .addAction(new LegacyAliasMigrator())
+    private ConfigMigrator migrator() {
+        return ConfigMigrator.builder(configNodes.version)
+                .addVersionMigrator(VersionMigrator.builder(1.0)
+                        .addAction(MoveMigratorAction.of("adjustSpawn", "adjust-spawn"))
+                        .addAction(BooleanMigratorAction.of("adjust-spawn"))
+                        .addAction(MoveMigratorAction.of("allowFlight", "allow-flight"))
+                        .addAction(BooleanMigratorAction.of("allow-flight"))
+                        .addAction(MoveMigratorAction.of("allowWeather", "allow-weather"))
+                        .addAction(BooleanMigratorAction.of("allow-weather"))
+                        .addAction(MoveMigratorAction.of("autoHeal", "auto-heal"))
+                        .addAction(BooleanMigratorAction.of("auto-heal"))
+                        .addAction(MoveMigratorAction.of("autoLoad", "auto-load"))
+                        .addAction(BooleanMigratorAction.of("auto-load"))
+                        .addAction(MoveMigratorAction.of("bedRespawn", "bed-respawn"))
+                        .addAction(BooleanMigratorAction.of("bed-respawn"))
+                        //.addAction(MoveMigratorAction.of("difficulty", "difficulty"))
+                        .addAction(MoveMigratorAction.of("entryfee.amount", "entry-fee.amount"))
+                        .addAction(DoubleMigratorAction.of("entry-fee.amount"))
+                        .addAction(MoveMigratorAction.of("entryfee.currency", "entry-fee.currency"))
+                        .addAction(DeleteMigratorAction.of("entryfee"))
+                        //.addAction(MoveMigratorAction.of("environment", "environment"))
+                        .addAction(MoveMigratorAction.of("gameMode", "gamemode"))
+                        //.addAction(MoveMigratorAction.of("generator", "generator"))
+                        .addAction(NullStringMigratorAction.of("generator"))
+                        //.addAction(MoveMigratorAction.of("hidden", "hidden"))
+                        .addAction(BooleanMigratorAction.of("hidden"))
+                        //.addAction(MoveMigratorAction.of("hunger", "hunger"))
+                        .addAction(BooleanMigratorAction.of("hunger"))
+                        .addAction(MoveMigratorAction.of("keepSpawnInMemory", "keep-spawn-in-memory"))
+                        .addAction(BooleanMigratorAction.of("keep-spawn-in-memory"))
+                        .addAction(MoveMigratorAction.of("playerLimit", "player-limit"))
+                        .addAction(IntegerMigratorAction.of("player-limit"))
+                        .addAction(MoveMigratorAction.of("portalForm", "portal-form"))
+                        //.addAction(MoveMigratorAction.of("pvp", "pvp"))
+                        .addAction(BooleanMigratorAction.of("pvp"))
+                        .addAction(MoveMigratorAction.of("respawnWorld", "respawn-world"))
+                        //.addAction(MoveMigratorAction.of("scale", "scale"))
+                        .addAction(DoubleMigratorAction.of("scale"))
+                        //.addAction(MoveMigratorAction.of("seed", "seed"))
+                        .addAction(LongMigratorAction.of("seed"))
+                        .addAction(MoveMigratorAction.of("spawnLocation", "spawn-location"))
+                        //.addAction(MoveMigratorAction.of("spawning.animals.spawn", "spawning.animals.spawn"))
+                        .addAction(BooleanMigratorAction.of("spawning.animals.spawn"))
+                        .addAction(MoveMigratorAction.of("spawning.animals.spawnrate", "spawning.animals.tick-rate"))
+                        .addAction(IntegerMigratorAction.of("spawning.animals.tick-rate"))
+                        //.addAction(MoveMigratorAction.of("spawning.animals.exceptions", "spawning.animals.exceptions"))
+                        //.addAction(MoveMigratorAction.of("spawning.monsters.spawn", "spawning.monsters.spawn"))
+                        .addAction(BooleanMigratorAction.of("spawning.monsters.spawn"))
+                        .addAction(MoveMigratorAction.of("spawning.monsters.spawnrate", "spawning.monsters.tick-rate"))
+                        .addAction(IntegerMigratorAction.of("spawning.monsters.tick-rate"))
+                        //.addAction(MoveMigratorAction.of("spawning.monsters.exceptions", "spawning.monsters.exceptions"))
+                        .addAction(MoveMigratorAction.of("worldBlacklist", "world-blacklist"))
+                        .addAction(new EntryFeeMigrator())
+                        .addAction(new LegacyAliasMigrator())
+                        .build())
+                .addVersionMigrator(VersionMigrator.builder(1.1)
+                        .addAction(new BiomeMigrator())
+                        .build())
                 .build();
     }
 
@@ -184,11 +186,11 @@ final class WorldConfig {
         return configHandle.set(configNodes.autoLoad, autoLoad);
     }
 
-    Biome getBiome() {
+    String getBiome() {
         return configHandle.get(configNodes.biome);
     }
 
-    Try<Void> setBiome(Biome biome) {
+    Try<Void> setBiome(String biome) {
         return configHandle.set(configNodes.biome, biome);
     }
 
@@ -504,6 +506,19 @@ final class WorldConfig {
                 this.color = color;
             }
 
+        }
+    }
+
+    private static final class BiomeMigrator implements MigratorAction {
+        @Override
+        public void migrate(ConfigurationSection config) {
+            String biome = config.getString("biome", "");
+            if (biome.equals("@vanilla")) {
+                biome = "";
+            } else if (!biome.isEmpty()) {
+                biome = "@single:" + biome;
+            }
+            config.set("biome", biome);
         }
     }
 }

@@ -38,6 +38,7 @@ import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
+import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
@@ -72,6 +73,7 @@ public final class WorldManager {
     private final List<String> loadTracker;
     private final WorldsConfigManager worldsConfigManager;
     private final WorldNameChecker worldNameChecker;
+    private final BiomeProviderFactory biomeProviderFactory;
     private final GeneratorProvider generatorProvider;
     private final FileUtils fileUtils;
     private final BlockSafety blockSafety;
@@ -84,6 +86,7 @@ public final class WorldManager {
     WorldManager(
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
+            @NotNull BiomeProviderFactory biomeProviderFactory,
             @NotNull GeneratorProvider generatorProvider,
             @NotNull FileUtils fileUtils,
             @NotNull BlockSafety blockSafety,
@@ -91,6 +94,7 @@ public final class WorldManager {
             @NotNull PluginManager pluginManager,
             @NotNull CorePermissions corePermissions,
             @NotNull ServerProperties serverProperties) {
+        this.biomeProviderFactory = biomeProviderFactory;
         this.serverProperties = serverProperties;
         this.worldsMap = new HashMap<>();
         this.loadedWorldsMap = new HashMap<>();
@@ -200,7 +204,7 @@ public final class WorldManager {
             CreateWorldOptions options) {
         String parsedGenerator = parseGenerator(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
-                .biomeProvider(createSingleBiomeProvider(options.biome()))
+                .biomeProvider(biomeProviderFactory.parseBiomeProvider(options.worldName(), options.biome()))
                 .environment(options.environment())
                 .generateStructures(options.generateStructures())
                 .generator(parsedGenerator)
@@ -214,6 +218,7 @@ public final class WorldManager {
                     LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
                             world,
                             parsedGenerator,
+                            options.biome(),
                             options.useSpawnAdjust());
                     return worldActionResult(loadedWorld);
                 });
@@ -249,7 +254,7 @@ public final class WorldManager {
             ImportWorldOptions options) {
         String parsedGenerator = parseGenerator(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
-                .biomeProvider(createSingleBiomeProvider(options.biome()))
+                .biomeProvider(biomeProviderFactory.parseBiomeProvider(options.worldName(), options.biome()))
                 .environment(options.environment())
                 .generator(parsedGenerator);
         return createBukkitWorld(worldCreator).fold(
@@ -258,6 +263,7 @@ public final class WorldManager {
                 world -> {
                     LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(world,
                             parsedGenerator,
+                            options.biome(),
                             options.useSpawnAdjust());
                     return worldActionResult(loadedWorld);
                 });
@@ -291,10 +297,11 @@ public final class WorldManager {
      * @param adjustSpawn   Whether to adjust spawn.
      */
     private LoadedMultiverseWorld newLoadedMultiverseWorld(
-            @NotNull World world, @Nullable String generator, boolean adjustSpawn) {
+            @NotNull World world, @Nullable String generator, @Nullable String biome, boolean adjustSpawn) {
         WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getName());
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
+        worldConfig.setBiome(biome == null ? "" : biome);
 
         MultiverseWorld mvWorld = newMultiverseWorld(world.getName(), worldConfig);
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
@@ -356,7 +363,7 @@ public final class WorldManager {
 
     private Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadWorld(@NotNull MultiverseWorld mvWorld) {
         return createBukkitWorld(WorldCreator.name(mvWorld.getName())
-                .biomeProvider(createSingleBiomeProvider(mvWorld.getBiome()))
+                .biomeProvider(biomeProviderFactory.parseBiomeProvider(mvWorld.getName(), mvWorld.getBiome()))
                 .environment(mvWorld.getEnvironment())
                 .generator(Strings.isNullOrEmpty(mvWorld.getGenerator()) ? null : mvWorld.getGenerator())
                 .seed(mvWorld.getSeed())).fold(
@@ -373,18 +380,6 @@ public final class WorldManager {
                             saveWorldsConfig();
                             return worldActionResult(loadedWorld);
                         });
-    }
-
-    /**
-     * Creates a single biome provider for the specified biome.
-     * @param biome The biome
-     * @return The single biome provider or null if biome is null or custom
-     */
-    private @Nullable BiomeProvider createSingleBiomeProvider(@Nullable Biome biome) {
-        if (biome == null || biome == Biome.CUSTOM) {
-            return null;
-        }
-        return new SingleBiomeProvider(biome);
     }
 
     /**

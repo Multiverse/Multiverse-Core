@@ -73,13 +73,8 @@ final class CreateCommand extends CoreCommand {
             .addAlias("-a")
             .build());
 
-    private final CommandValueFlag<Biome> biomeFlag = flag(CommandValueFlag.builder("--biome", Biome.class)
+    private final CommandValueFlag<String> biomeFlag = flag(CommandValueFlag.builder("--biome", String.class)
             .addAlias("-b")
-            .completion(input -> Lists.newArrayList(Registry.BIOME).stream()
-                    .filter(biome -> biome != Biome.CUSTOM)
-                    .map(biome -> biome.getKey().getKey())
-                    .toList())
-            .context(biomeStr -> Registry.BIOME.get(NamespacedKey.minecraft(biomeStr)))
             .build());
 
     @Inject
@@ -122,7 +117,7 @@ final class CreateCommand extends CoreCommand {
         issuer.sendInfo(MVCorei18n.CREATE_LOADING);
 
         worldManager.createWorld(CreateWorldOptions.worldName(worldName)
-                .biome(parsedFlags.flagValue(biomeFlag, Biome.CUSTOM))
+                .biome(parsedFlags.flagValue(biomeFlag, ""))
                 .environment(environment)
                 .seed(parsedFlags.flagValue(seedFlag))
                 .worldType(parsedFlags.flagValue(worldTypeFlag, WorldType.NORMAL))
@@ -148,7 +143,7 @@ final class CreateCommand extends CoreCommand {
                 replace("{adjustSpawn}").with(String.valueOf(!parsedFlags.hasFlag(noAdjustSpawnFlag))));
         if (parsedFlags.hasFlag(biomeFlag)) {
             issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_BIOME,
-                    replace("{biome}").with(parsedFlags.flagValue(biomeFlag, Biome.CUSTOM).name()));
+                    replace("{biome}").with(parsedFlags.flagValue(biomeFlag)));
         }
         if (parsedFlags.hasFlag(generatorFlag)) {
             issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATOR,

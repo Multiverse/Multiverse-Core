@@ -111,36 +111,9 @@ final class WorldConfigNodes {
     final ConfigNode<Boolean> bedRespawn = node(ConfigNode.builder("bed-respawn", Boolean.class)
             .defaultValue(true));
 
-    final ConfigNode<Biome> biome = node(ConfigNode.builder("biome", Biome.class)
-            .defaultValue(Biome.CUSTOM)
-            .name(null)
-            .serializer(new NodeSerializer<>() {
-                private static final String VANILLA_BIOME_BEHAVIOUR = "@vanilla";
-
-                @Override
-                public Biome deserialize(Object object, Class<Biome> type) {
-                    if (object instanceof Biome) {
-                        return (Biome) object;
-                    }
-                    try {
-                        String biomeStr = String.valueOf(object);
-                        if (biomeStr.equalsIgnoreCase(VANILLA_BIOME_BEHAVIOUR)) {
-                            return null;
-                        }
-                        return Biome.valueOf(biomeStr.toUpperCase());
-                    } catch (IllegalArgumentException e) {
-                        return null;
-                    }
-                }
-
-                @Override
-                public Object serialize(Biome biome, Class<Biome> type) {
-                    if (biome == null || biome == Biome.CUSTOM) {
-                        return VANILLA_BIOME_BEHAVIOUR;
-                    }
-                    return biome.name().toLowerCase();
-                }
-            }));
+    final ConfigNode<String> biome = node(ConfigNode.builder("biome", String.class)
+            .defaultValue("@error")
+            .name(null));
 
     final ConfigNode<Difficulty> difficulty = node(ConfigNode.builder("difficulty", Difficulty.class)
             .defaultValue(Difficulty.NORMAL)

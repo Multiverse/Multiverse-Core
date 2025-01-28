@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world;
+package org.mvplugins.multiverse.core.world.biomeprovider;
 
 import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;

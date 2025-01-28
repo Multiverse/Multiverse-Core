@@ -103,7 +103,7 @@ final class InfoCommand extends CoreCommand {
         getEntryFeeInfo(outMap, world);
         outMap.put("Respawn World", world.getRespawnWorldName());
         outMap.put("World Type", world.getWorldType().get().toString());
-        outMap.put("Biome", world.getBiome() == null ? "@vanilla" : world.getBiome().getKey().getKey());
+        outMap.put("Biome", world.getBiome());
         outMap.put("Generator", world.getGenerator());
         outMap.put("Generate Structures", world.canGenerateStructures().get().toString());
         outMap.put("World Scale", String.valueOf(world.getScale()));
