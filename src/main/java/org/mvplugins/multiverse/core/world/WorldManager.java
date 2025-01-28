@@ -943,12 +943,11 @@ public final class WorldManager {
      *
      * @return true if it had successfully saved the file.
      */
-    public boolean saveWorldsConfig() {
+    public Try<Void> saveWorldsConfig() {
         return worldsConfigManager.save()
                 .onFailure(failure -> {
                     Logging.severe("Failed to save worlds config: %s", failure);
                     failure.printStackTrace();
-                })
-                .isSuccess();
+                });
     }
 }

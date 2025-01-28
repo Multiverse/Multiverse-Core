@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -94,14 +95,11 @@ public final class AnchorManager {
      *
      * @return True if all anchors were successfully saved.
      */
-    public boolean saveAnchors() {
-        try {
-            anchorConfig.save(new File(plugin.getDataFolder(), ANCHORS_FILE));
-            return true;
-        } catch (IOException e) {
-            Logging.severe("Failed to save anchors.yml. Please check your file permissions.");
-            return false;
-        }
+    public Try<Void> saveAnchors() {
+        return Try.run(() -> anchorConfig.save(new File(plugin.getDataFolder(), ANCHORS_FILE)))
+                .onFailure(failure -> {
+                    Logging.severe("Failed to save anchors.yml. Please check your file permissions.");
+                });
     }
 
     /**
@@ -124,7 +122,7 @@ public final class AnchorManager {
      * @param location The location of the anchor as string.
      * @return True if the anchor was successfully saved.
      */
-    public boolean saveAnchorLocation(String anchor, String location) {
+    public Try<Void> saveAnchorLocation(String anchor, String location) {
         Location parsed = locationManipulation.stringToLocation(location);
         return saveAnchorLocation(anchor, parsed);
     }
@@ -136,9 +134,9 @@ public final class AnchorManager {
      * @param l The {@link Location} of the anchor.
      * @return True if the anchor was successfully saved.
      */
-    public boolean saveAnchorLocation(String anchor, Location l) {
+    public Try<Void> saveAnchorLocation(String anchor, Location l) {
         if (l == null) {
-            return false;
+            return Try.failure(new IllegalArgumentException("Location cannot be null"));
         }
         getAnchorsConfigSection().set(anchor, locationManipulation.locationToString(l));
         anchors.put(anchor, l);
@@ -207,12 +205,12 @@ public final class AnchorManager {
      * @param s The name of the anchor.
      * @return True if the anchor was successfully deleted.
      */
-    public boolean deleteAnchor(String s) {
+    public Try<Void> deleteAnchor(String s) {
         if (anchors.containsKey(s)) {
             anchors.remove(s);
             getAnchorsConfigSection().set(s, null);
             return saveAnchors();
         }
-        return false;
+        return Try.failure(new IllegalArgumentException("Anchor does not exist"));
     }
 }

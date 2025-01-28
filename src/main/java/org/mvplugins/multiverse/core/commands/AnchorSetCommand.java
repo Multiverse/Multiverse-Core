@@ -53,7 +53,7 @@ final class AnchorSetCommand extends CoreCommand {
             //TODO: Check if anchor name is valid or exists already.
             String anchorName) {
         Location anchorLocation = player.getLocation();
-        if (anchorManager.saveAnchorLocation(anchorName, anchorLocation)) {
+        if (anchorManager.saveAnchorLocation(anchorName, anchorLocation).isSuccess()) {
             sendAnchorSetSuccessMessage(issuer, anchorName, locationManipulation.locationToString(anchorLocation));
         } else {
             sendAnchorSetFailedMessage(issuer, anchorName);
@@ -76,7 +76,7 @@ final class AnchorSetCommand extends CoreCommand {
             @Syntax("[location]")
             @Description("")
             String locationString) {
-        if (anchorManager.saveAnchorLocation(anchorName, locationString)) {
+        if (anchorManager.saveAnchorLocation(anchorName, locationString).isSuccess()) {
             sendAnchorSetSuccessMessage(issuer, anchorName, locationString);
         } else {
             sendAnchorSetFailedMessage(issuer, anchorName);

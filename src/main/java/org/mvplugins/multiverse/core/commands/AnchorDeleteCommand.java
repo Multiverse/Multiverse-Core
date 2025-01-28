@@ -37,7 +37,7 @@ final class AnchorDeleteCommand extends CoreCommand {
             @Syntax("<name>")
             @Description("")
             String anchorName) {
-        if (anchorManager.deleteAnchor(anchorName)) {
+        if (anchorManager.deleteAnchor(anchorName).isSuccess()) {
             issuer.sendMessage("&aAnchor &f" + anchorName + "&a deleted.");
         } else {
             issuer.sendMessage("&cFailed to delete anchor.");

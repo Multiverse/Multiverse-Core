@@ -118,9 +118,7 @@ public class MultiverseCore extends MultiversePlugin {
             setupMetrics();
             loadPlaceholderApiIntegration();
             loadApiService();
-            if (!saveAllConfigs()) {
-                Logging.severe("Failed to save configs, things may not work as expected.");
-            }
+            saveAllConfigs();
             logEnableMessage();
         }).onFailure(e -> {
             Logging.severe("Failed to multiverse core! Disabling...");
@@ -281,13 +279,14 @@ public class MultiverseCore extends MultiversePlugin {
     /**
      * Save config.yml, worlds.yml, and anchors.yml.
      *
-     * @return true if all configs were successfully saved
+     * @return {@link Try#isSuccess()} true if all configs were successfully saved
      */
-    private boolean saveAllConfigs() {
-        // TODO: Make this all Try<Void>
-        return configProvider.get().save().isSuccess()
-                && worldManagerProvider.get().saveWorldsConfig()
-                && anchorManagerProvider.get().saveAnchors();
+    private Try<Void> saveAllConfigs() {
+        Try<Void> saveConfig = configProvider.get().save();
+        Try<Void> saveWorld = worldManagerProvider.get().saveWorldsConfig();
+        Try<Void> saveAnchor = anchorManagerProvider.get().saveAnchors();
+        return saveConfig.flatMap(ignore ->saveWorld).flatMap(ignore ->saveAnchor)
+                .onFailure(e -> Logging.severe("Failed to save configs, things may not work as expected."));
     }
 
     /**
