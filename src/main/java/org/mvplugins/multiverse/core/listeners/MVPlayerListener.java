@@ -239,30 +239,27 @@ final class MVPlayerListener implements CoreListener {
             return;
         }
         Player teleportee = event.getPlayer();
-        CommandSender teleporter = null;
         Option<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
-        if (teleporterName.isDefined()) {
-            if (teleporterName.equals("CONSOLE")) {
+        CommandSender teleporter = teleporterName.map(name -> {
+            if (name.equalsIgnoreCase("CONSOLE")) {
                 Logging.finer("We know the teleporter is the console! Magical!");
-                teleporter = this.server.getConsoleSender();
-            } else {
-                teleporter = this.server.getPlayerExact(teleporterName.get());
+                return this.server.getConsoleSender();
             }
-            if (teleporter != null) {
-                Logging.finer("Inferred sender '" + teleporter + "' from name '"
-                        + teleporterName + "', fetched from name '" + teleportee.getName() + "'");
-            }
-        }
+            return this.server.getPlayerExact(teleporterName.get());
+        }).getOrNull();
 
         if (teleporter == null) {
-            if (config.getTeleportIntercept()) {
-                teleporter = teleportee;
-            } else {
+            if (!config.getTeleportIntercept()) {
                 Logging.finer("Teleport for %s was not initiated by multiverse and " +
                         "teleport intercept is disabled. Ignoring...", teleportee.getName());
                 return;
             }
+            Logging.finer("Unknown teleporter for teleport for %s. Using player as teleporter.", teleportee.getName());
+            teleporter = teleportee;
         }
+
+        Logging.finer("Teleporter %s is teleporting %s from %s to %s", teleporter.getName(), teleportee.getName(),
+                event.getFrom(), event.getTo());
 
         MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
         LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld().getName()).getOrNull();
