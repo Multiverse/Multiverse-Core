@@ -14,7 +14,7 @@ world_the_end:
     currency: '@vault-economy'
   environment: the_end
   gamemode: survival
-  biome: '@vanilla'
+  biome: ''
   generator: ''
   hidden: false
   hunger: true
@@ -42,7 +42,7 @@ world_the_end:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
-  version: 1.0
+  version: 1.1
 world:
   adjust-spawn: true
   alias: ''
@@ -59,7 +59,7 @@ world:
     currency: DIRT
   environment: normal
   gamemode: survival
-  biome: '@vanilla'
+  biome: ''
   generator: ''
   hidden: false
   hunger: true
@@ -88,4 +88,4 @@ world:
       exceptions: []
   world-blacklist:
   - test
-  version: 1.0
+  version: 1.1

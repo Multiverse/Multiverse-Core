@@ -14,7 +14,7 @@ world:
     currency: '@vault-economy'
   environment: normal
   gamemode: survival
-  biome: '@vanilla'
+  biome: ''
   generator: ''
   hidden: false
   hunger: true
@@ -42,7 +42,7 @@ world:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
-  version: 1.0
+  version: 1.1
 world_nether:
   adjust-spawn: false
   alias: ''
@@ -59,7 +59,7 @@ world_nether:
     currency: '@vault-economy'
   environment: nether
   gamemode: survival
-  biome: '@vanilla'
+  biome: ''
   generator: ''
   hidden: false
   hunger: true
@@ -87,7 +87,7 @@ world_nether:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
-  version: 1.0
+  version: 1.1
 newworld:
   adjust-spawn: false
   alias: ''
@@ -97,7 +97,7 @@ newworld:
   auto-heal: true
   auto-load: true
   bed-respawn: true
-  biome: '@vanilla'
+  biome: '@error'
   difficulty: normal
   entry-fee:
     enabled: false
@@ -127,4 +127,4 @@ newworld:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
-  version: 1.0
+  version: 1.1

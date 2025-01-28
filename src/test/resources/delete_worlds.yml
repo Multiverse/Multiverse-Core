@@ -14,7 +14,7 @@ world_nether:
     currency: '@vault-economy'
   environment: nether
   gamemode: survival
-  biome: '@vanilla'
+  biome: ''
   generator: ''
   hidden: false
   hunger: true
@@ -42,4 +42,4 @@ world_nether:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
-  version: 1.0
+  version: 1.1

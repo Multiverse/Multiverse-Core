@@ -14,7 +14,7 @@ world:
     currency: dirt # should be parsed to @minecraft:dirt
   environment: normal
   gamemode: sUrvivAl # random casing shouldn't affect parsing
-  biome: '@vanilla'
+  biome: ''
   generator: ''
   hidden: false
   hunger: true
@@ -45,7 +45,7 @@ world:
     - a
     - 1
     - 2
-  version: 1.0
+  version: 1.1
 world_nether:
   adjust-spawn: false
   alias: ''
@@ -61,7 +61,7 @@ world_nether:
     currency: '@vault-economy'
   environment: nether
   gamemode: survival
-  biome: '@vanilla'
+  biome: ''
   generator: ''
   hidden: false
   hunger: true
@@ -89,4 +89,4 @@ world_nether:
       tick-rate: -1
       exceptions: []
   world-blacklist: []
-  version: 1.0
+  version: 1.1

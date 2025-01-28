@@ -25,6 +25,9 @@ public final class BiomeProviderFactory {
     }
 
     public BiomeProvider parseBiomeProvider(@NotNull String worldName, @NotNull String biomeProviderString) {
+        if (biomeProviderString.isEmpty()) {
+            return null;
+        }
         if (biomeProviderString.startsWith("@")) {
             String[] split = biomeProviderString.split(":", 2);
             BiomeProviderParser biomeProviderParser = biomeProviderParsers.get(split[0]);
