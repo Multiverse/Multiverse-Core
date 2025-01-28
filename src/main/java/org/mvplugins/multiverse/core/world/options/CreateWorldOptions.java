@@ -29,6 +29,7 @@ public final class CreateWorldOptions {
     private World.Environment environment = World.Environment.NORMAL;
     private boolean generateStructures = true;
     private String generator = null;
+    private String generatorSettings = "";
     private long seed;
     private boolean useSpawnAdjust = true;
     private WorldType worldType = WorldType.NORMAL;
@@ -132,6 +133,35 @@ public final class CreateWorldOptions {
      */
     public @Nullable String generator() {
         return generator;
+    }
+
+    /**
+     * Sets the generator settings of the world that will be created or loaded.
+     * <p>
+     * Currently only {@link WorldType#FLAT} uses these settings, and expects
+     * them to be in JSON format with a valid biome (1.18.2 and
+     * above) defined. An example valid configuration is as follows:
+     * <code>{"layers": [{"block": "stone", "height": 1}, {"block": "grass_block", "height": 1}], "biome":"plains"}</code>
+     *
+     * @param generatorSettings The settings that should be used by the
+     * generator
+     * @return This object, for chaining
+     * @see <a href="https://minecraft.gamepedia.com/Custom_dimension">Custom
+     * dimension</a> (scroll to "When the generator ID type is
+     * <code>minecraft:flat</code>)"
+     */
+    public @NotNull CreateWorldOptions generatorSettings(@NotNull String generatorSettings) {
+        this.generatorSettings = generatorSettings;
+        return this;
+    }
+
+    /**
+     * Gets the generator settings of the world that will be created or loaded.
+     *
+     * @return The generator settings of the world that will be created or loaded
+     */
+    public @NotNull String generatorSettings() {
+        return generatorSettings;
     }
 
     /**

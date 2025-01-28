@@ -32,7 +32,6 @@ import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
-import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
@@ -205,6 +204,7 @@ public final class WorldManager {
                 .environment(options.environment())
                 .generateStructures(options.generateStructures())
                 .generator(parsedGenerator)
+                .generatorSettings(options.generatorSettings())
                 .seed(options.seed())
                 .type(options.worldType());
         return createBukkitWorld(worldCreator).fold(

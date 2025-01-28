@@ -55,6 +55,11 @@ final class CreateCommand extends CoreCommand {
             .completion(input -> generatorProvider.suggestGeneratorString(input))
             .build());
 
+    private final CommandValueFlag<String> generatorSettingsFlag = flag(CommandValueFlag
+            .builder("--generator-settings", String.class)
+            .addAlias("-gs")
+            .build());
+
     private final CommandValueFlag<WorldType> worldTypeFlag = flag(CommandValueFlag
             .enumBuilder("--world-type", WorldType.class)
             .addAlias("-t")
@@ -123,6 +128,7 @@ final class CreateCommand extends CoreCommand {
                 .worldType(parsedFlags.flagValue(worldTypeFlag, WorldType.NORMAL))
                 .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag))
                 .generator(parsedFlags.flagValue(generatorFlag, ""))
+                .generatorSettings(parsedFlags.flagValue(generatorSettingsFlag, ""))
                 .generateStructures(!parsedFlags.hasFlag(noStructuresFlag)))
                 .onSuccess(newWorld -> messageSuccess(issuer, newWorld))
                 .onFailure(failure -> messageFailure(issuer, failure));
@@ -147,6 +153,10 @@ final class CreateCommand extends CoreCommand {
         if (parsedFlags.hasFlag(generatorFlag)) {
             issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATOR,
                     replace("{generator}").with(parsedFlags.flagValue(generatorFlag)));
+        }
+        if (parsedFlags.hasFlag(generatorSettingsFlag)) {
+            issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATORSETTINGS,
+                    replace("{generatorSettings}").with(parsedFlags.flagValue(generatorSettingsFlag)));
         }
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_STRUCTURES,
                 replace("{structures}").with(String.valueOf(!parsedFlags.hasFlag(noStructuresFlag))));
