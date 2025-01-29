@@ -1,8 +1,8 @@
 package org.mvplugins.multiverse.core.commandtools;
 
+import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MessageType;
-import co.aikar.commands.OpenBukkitCommandIssuer;
 import co.aikar.locales.MessageKeyProvider;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +10,9 @@ import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
-public class MVCommandIssuer extends OpenBukkitCommandIssuer {
+import java.util.Objects;
+
+public class MVCommandIssuer extends BukkitCommandIssuer {
 
     private final MVCommandManager commandManager;
 
@@ -100,5 +102,22 @@ public class MVCommandIssuer extends OpenBukkitCommandIssuer {
                 sendMessage(message.formatted());
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o != null && this.getClass() == o.getClass()) {
+            MVCommandIssuer that = (MVCommandIssuer) o;
+            return Objects.equals(this.getIssuer(), that.getIssuer());
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
