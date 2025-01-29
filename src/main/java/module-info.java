@@ -1,4 +1,4 @@
-module multiverse.core.main {
+module multiverse.core {
     requires acf.paper;
     requires bstats.base;
     requires bstats.bukkit;
