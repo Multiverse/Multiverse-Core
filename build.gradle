@@ -150,10 +150,19 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
+    doFirst {
+        options.compilerArgs += [
+                '--module-path', classpath.asPath,
+                '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/Multiverse-Core'
+        ]
+    }
     options.encoding = 'UTF-8'
 }
 
 tasks.withType(Javadoc).configureEach {
+    doFirst {
+        options.modulePath = [] + classpath.files
+    }
     options.encoding = 'UTF-8'
 }
 
@@ -240,11 +249,6 @@ task prepareSource(type: Sync) {
 
 compileJava {
     source = prepareSource.outputs
-}
-tasks.withType(JavaCompile) {
-    configure(options) {
-        options.compilerArgs << '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/Multiverse-Core'
-    }
 }
 
 compileKotlin {
