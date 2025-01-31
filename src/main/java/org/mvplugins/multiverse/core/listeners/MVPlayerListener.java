@@ -57,7 +57,6 @@ final class MVPlayerListener implements CoreListener {
     private final MVCoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
     private final BlockSafety blockSafety;
-    private final AsyncSafetyTeleporter safetyTeleporter;
     private final Server server;
     private final TeleportQueue teleportQueue;
     private final MVEconomist economist;
@@ -74,7 +73,6 @@ final class MVPlayerListener implements CoreListener {
             MVCoreConfig config,
             Provider<WorldManager> worldManagerProvider,
             BlockSafety blockSafety,
-            AsyncSafetyTeleporter safetyTeleporter,
             Server server,
             TeleportQueue teleportQueue,
             MVEconomist economist,
@@ -86,7 +84,6 @@ final class MVPlayerListener implements CoreListener {
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
         this.blockSafety = blockSafety;
-        this.safetyTeleporter = safetyTeleporter;
         this.server = server;
         this.teleportQueue = teleportQueue;
         this.economist = economist;
