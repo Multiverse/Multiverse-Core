@@ -6,9 +6,11 @@ plugins {
     id 'maven-publish'
     id 'com.gradleup.shadow' version '8.3.5'
     id "org.jetbrains.kotlin.jvm" version "2.0.21"
+    id 'org.gradlex.extra-java-module-info' version '1.9'
 }
 
-version = System.getenv('GITHUB_VERSION') ?: 'local'
+//version = System.getenv('GITHUB_VERSION') ?: 'local'
+version = System.getenv('GITHUB_VERSION') ?: '0.0.0-SNAPSHOT'
 group = 'org.mvplugins.multiverse.core'
 description = 'Multiverse-Core'
 
@@ -137,10 +139,439 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'com.natpryce:hamkrest:1.8.0.1'
     testImplementation 'org.mockito.kotlin:mockito-kotlin:4.1.0'
+    testImplementation 'com.google.j2objc:j2objc-annotations'
 
     // Annotation Processors
     annotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
     testAnnotationProcessor 'org.glassfish.hk2:hk2-metadata-generator:3.0.3'
+}
+
+extraJavaModuleInfo {
+    deriveAutomaticModuleNamesFromFileNames.set(true)
+
+    knownModule('com.google.code.gson:gson', 'com.google.gson')
+    module('com.google.code.findbugs:jsr305', 'javax.annotation')
+    module('com.google.guava:failureaccess', 'com.google.guava.failureaccess') {
+        exportAllPackages()
+    }
+    module('com.google.guava:listenablefuture', 'com.google.guava.listenablefuture')
+    module('com.google.j2objc:j2objc-annotations', 'com.google.j2objc.annotations') {
+        exportAllPackages()
+    }
+    module('com.google.guava:guava', 'com.google.guava') {
+        overrideModuleName()
+        requiresTransitive('javax.annotation')
+        requiresTransitive('com.google.guava.failureaccess')
+        requiresTransitive('com.google.guava.listenablefuture')
+        requiresTransitive('com.google.j2objc.annotations')
+        exportAllPackages()
+    }
+    module('commons-lang:commons-lang', 'org.apache.commons.lang') {
+        overrideModuleName()
+        exportAllPackages()
+    }
+    module('net.md-5:bungeecord-chat', 'net.md_5.bungee') {
+        requiresTransitive('com.google.gson')
+        exportAllPackages()
+    }
+    module('org.spigotmc:spigot-api', 'org.bukkit') {
+        requiresTransitive('org.yaml.snakeyaml')
+        requiresTransitive('com.google.gson')
+        requiresTransitive('com.google.guava')
+        requiresTransitive('java.logging')
+        requiresTransitive('net.md_5.bungee')
+        requiresTransitive('org.apache.commons.lang')
+        exportAllPackages()
+    }
+
+    module('com.github.MilkBowl:VaultAPI', 'net.milkbowl.vault') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('me.clip:placeholderapi', 'me.clip.placeholderapi') {
+        overrideModuleName()
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('co.aikar:acf-paper', 'co.aikar.commands') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration',
+            'io.github.townyadvanced.commentedconfiguration') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('io.vavr:vavr', 'io.vavr') {
+        exportAllPackages()
+    }
+
+    module('jakarta.annotation:jarkarta.annotation-api', 'jakarta.annotation') {
+        exportAllPackages()
+    }
+    module('jakarta.inject:jakarta.inject-api', 'jakarta.inject') {
+        exportAllPackages()
+    }
+    module('org.glassfish.hk2.external:aopalliance-repackaged', 'org.aopalliance') {
+        exportAllPackages()
+    }
+    module('org.glassfish.hk2:hk2-utils', 'org.glassfish.hk2.utilities') {
+        requiresTransitive('jakarta.annotation')
+        requiresTransitive('jakarta.inject')
+        exportAllPackages()
+    }
+    module('org.glassfish.hk2:hk2-api', 'org.glassfish.hk2') {
+        overrideModuleName()
+        requiresTransitive('org.glassfish.hk2.utilities')
+        requiresTransitive('org.aopalliance')
+        exportAllPackages()
+    }
+    module('org.javassist:javassist', 'javassist') {
+        exportAllPackages()
+    }
+    module('org.glassfish.hk2:hk2-locator', 'org.jvnet.hk2') {
+        overrideModuleName()
+        requiresTransitive('org.glassfish.hk2')
+        requiresTransitive('javassist')
+        exports('org.jvnet.hk2.external.generator')
+        exports('org.jvnet.hk2.external.runtime')
+    }
+
+    module('org.glassfish.hk2:hk2-inhabitant-generator', 'org.jvnet.hk2.generator') {
+        requiresTransitive('jakarta.inject')
+        requiresTransitive('org.glassfish.hk2')
+        requiresTransitive('org.objectweb.asm')
+        requiresTransitive('org.objectweb.asm.commons')
+        requiresTransitive('org.objectweb.asm.tree')
+        requiresTransitive('org.objectweb.asm.tree.analysis')
+        requiresTransitive('org.objectweb.asm.util')
+        exports('org.jvnet.hk2.generator')
+        exports('org.jvnet.hk2.generator.ant')
+        exports('org.jvnet.hk2.generator.eclipse')
+        exports('org.jvnet.hk2.generator.maven')
+    }
+
+    module('com.dumptruckman.minecraft:Logging', 'com.dumptruckman.minecraft.util') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('de.themoep.idconverter:mappings', 'de.themoep.idconverter') {
+        exportAllPackages()
+    }
+
+    module('org.bstats:bstats-base', 'org.bstats.base') {
+        exportAllPackages()
+    }
+    module('org.bstats:bstats-bukkit', 'org.bstats.bukkit') {
+        requires('org.bukkit')
+        requiresTransitive('org.bstats.base')
+        exportAllPackages()
+    }
+
+    module('net.minidev:accessors-smart', 'net.minidev.asm') {
+        requiresTransitive('org.objectweb.asm')
+        exportAllPackages()
+    }
+    module('net.minidev:json-smart', 'net.minidev.json') {
+        requiresTransitive('net.minidev.asm')
+        exportAllPackages()
+    }
+
+    module('io.papermc:paperlib', 'io.papermc.lib') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('org.glassfish.hk2:hk2-metadata-generator', 'org.glassfish.hk2.metadata.generator') {
+        requiresTransitive('jakarta.annotation')
+        requiresTransitive('jakarta.inject')
+        requiresTransitive('org.glassfish.hk2')
+        requiresTransitive('org.glassfish.hk2.utilities')
+        exportAllPackages()
+    }
+
+    module('com.googlecode.json-simple:json-simple', 'org.json.simple') {
+        exportAllPackages()
+    }
+    module('com.mojang:brigadier', 'com.mojang.brigadier') {
+        exportAllPackages()
+    }
+    module('it.unimi.dsi:fastutil', 'it.unimi.dsi.fastutil') {
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-key', 'net.kyori.adventure.key') {
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-api', 'net.kyori.adventure') {
+        requiresTransitive('net.kyori.adventure.key')
+        requiresTransitive('net.kyori.examination.api')
+        requiresTransitive('net.kyori.examination.string')
+        requiresTransitive('org.jetbrains.annotations')
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-text-logger-slf4j', 'net.kyori.adventure.text.logger.slf4j') {
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-text-minimessage', 'net.kyori.adventure.text.minimessage') {
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-text-serializer-json', 'net.kyori.adventure.text.serializer.json') {
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-text-serializer-gson', 'net.kyori.adventure.text.serializer.gson') {
+        requires('net.kyori.adventure')
+        requires('net.kyori.adventure.text.serializer.json')
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-text-serializer-legacy', 'net.kyori.adventure.text.serializer.legacy') {
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-text-serializer-plain', 'net.kyori.adventure.text.serializer.plain') {
+        exportAllPackages()
+    }
+    module('javax.inject:javax.inject', 'javax.inject') {
+        exportAllPackages()
+    }
+    module('org.apache.maven.resolver:maven-resolver-api', 'org.eclipse.aether') {
+        overrideModuleName()
+        exportAllPackages()
+    }
+    module('org.apache.maven.resolver:maven-resolver-named-locks', 'org.eclipse.aether.named') {
+        overrideModuleName()
+        requiresTransitive('org.slf4j')
+        exportAllPackages()
+    }
+    module('org.apache.maven.resolver:maven-resolver-spi', 'org.eclipse.aether.spi') {
+        overrideModuleName()
+        requiresTransitive('org.eclipse.aether')
+        exportAllPackages()
+    }
+    module('org.apache.maven.resolver:maven-resolver-util', 'org.eclipse.aether.util') {
+        overrideModuleName()
+        requiresTransitive('org.eclipse.aether')
+        exportAllPackages()
+    }
+    module('org.apache.maven.resolver:maven-resolver-impl', 'org.eclipse.aether.impl') {
+        overrideModuleName()
+        requiresTransitive('org.eclipse.aether')
+        requiresTransitive('org.eclipse.aether.named')
+        requiresTransitive('org.eclipse.aether.spi')
+        requiresTransitive('org.eclipse.aether.util')
+        requiresTransitive('org.slf4j')
+        exportAllPackages()
+    }
+    module('org.apache.commons:commons-lang', 'org.apache.commons.lang3') {
+        exportAllPackages()
+    }
+    module('org.codehaus.plexus:plexus-utils', 'org.codehaus.plexus.util') {
+        exportAllPackages()
+    }
+//    automaticModule('org.codehaus.plexus:plexus-utils', 'org.codehaus.plexus.util')
+    module('org.apache.maven:maven-artifact', 'org.apache.maven') {
+        requiresTransitive('org.apache.commons.lang3')
+        requiresTransitive('org.codehaus.plexus.util')
+        exports('org.apache.maven.artifact')
+        exports('org.apache.maven.artifact.handler')
+        exports('org.apache.maven.artifact.metadata')
+        exports('org.apache.maven.artifact.repository')
+        exports('org.apache.maven.artifact.repository.layout')
+        exports('org.apache.maven.artifact.resolver')
+        exports('org.apache.maven.artifact.resolver.filter')
+        exports('org.apache.maven.artifact.versioning')
+        exports('org.apache.maven.repository')
+        exports('org.apache.maven.repository.legacy.metadata')
+    }
+    module('org.apache.maven:maven-builder-support', 'org.apache.maven.building') {
+        exportAllPackages()
+    }
+    module('org.apache.maven:maven-model', 'org.apache.maven.model') {
+        requiresTransitive('org.codehaus.plexus.util')
+        exports('org.apache.maven.model')
+        exports('org.apache.maven.model.io.xpp3')
+    }
+    module('org.codehaus.plexus:plexus-interpolation', 'org.codehaus.plexus.interpolation') {
+        exportAllPackages()
+    }
+    module('org.eclipse.sisu:org.eclipse.sisu.inject', 'org.eclipse.sisu') {
+        exportAllPackages()
+    }
+    module('org.apache.maven:maven-model-builder', 'org.apache.maven.model.builder') {
+        requiresTransitive('javax.inject')
+        requiresTransitive('org.eclipse.aether')
+        requiresTransitive('org.eclipse.aether.impl')
+        requiresTransitive('org.eclipse.aether.spi')
+        requiresTransitive('org.eclipse.aether.util')
+        requiresTransitive('org.apache.maven')
+        requiresTransitive('org.apache.maven.building')
+        requiresTransitive('org.apache.maven.model')
+        requiresTransitive('org.codehaus.plexus.interpolation')
+        requiresTransitive('org.codehaus.plexus.util')
+        requiresTransitive('org.eclipse.sisu')
+        exportAllPackages()
+    }
+    module('org.apache.maven:maven-repository-metadata', 'org.apache.maven.artifact.repository.metadata') {
+        requiresTransitive('org.codehaus.plexus.util')
+        exportAllPackages()
+    }
+    module('org.apache.maven:maven-resolver-provider', 'org.apache.maven.repository.internal') {
+        requiresTransitive('javax.inject')
+        requiresTransitive('org.eclipse.aether')
+        requiresTransitive('org.eclipse.aether.impl')
+        requiresTransitive('org.eclipse.aether.spi')
+        requiresTransitive('org.eclipse.aether.util')
+        requiresTransitive('org.apache.maven.model.builder')
+        requiresTransitive('org.apache.maven.model')
+        requiresTransitive('org.apache.maven.artifact.repository.metadata')
+        requiresTransitive('org.codehaus.plexus.util')
+        exportAllPackages()
+    }
+    module('org.checkerframework:checker-qual', 'org.checkerframework') {
+        overrideModuleName()
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-platform-api', 'net.kyori.adventure.platform') {
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-platform-facet', 'net.kyori.adventure.platform.facet') {
+        requiresTransitive('net.kyori.adventure.platform')
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-platform-viaversion', 'net.kyori.adventure.platform.viaversion') {
+        requires('net.kyori.adventure.platform.facet')
+        requiresTransitive('net.kyori.adventure.platform')
+        exportAllPackages()
+    }
+    module('net.kyori:adventure-platform-bukkit', 'net.kyori.adventure.platform.bukkit') {
+        requires('net.kyori.adventure.platform.facet')
+        requires('net.kyori.adventure.platform.viaversion')
+        requiresTransitive('net.kyori.adventure.platform')
+        exportAllPackages()
+    }
+//    automaticModule('net.kyori:adventure-platform-bukkit', 'net.kyori.adventure.platform.bukkit')
+    module('net.kyori:adventure-platform-bungeecord', 'net.kyori.adventure.platform.bungeecord') {
+        requires('net.kyori.adventure.platform.facet')
+        requiresTransitive('net.kyori.adventure.platform')
+        exportAllPackages()
+    }
+//    automaticModule('net.kyori:adventure-platform-bungeecord', 'net.kyori.adventure.platform.bungeecord')
+    module('io.papermc.paper:paper-api', 'org.bukkit') {
+        requires('net.kyori.adventure.platform.bukkit')
+        requires('net.kyori.adventure.platform.bungeecord')
+        requiresTransitive('java.logging')
+        requiresTransitive('com.google.gson')
+        requiresTransitive('com.google.guava')
+        requiresTransitive('org.json.simple')
+        requiresTransitive('com.mojang.brigadier')
+        requiresTransitive('it.unimi.dsi.fastutil')
+        requiresTransitive('net.kyori.adventure')
+        requiresTransitive('net.kyori.adventure.text.logger.slf4j')
+        requiresTransitive('net.kyori.adventure.text.minimessage')
+        requiresTransitive('net.kyori.adventure.text.serializer.gson')
+        requiresTransitive('net.kyori.adventure.text.serializer.legacy')
+        requiresTransitive('net.kyori.adventure.text.serializer.plain')
+        requiresTransitive('net.md_5.bungee')
+        requiresTransitive('org.apache.logging.log4j')
+        requiresTransitive('org.apache.maven.repository.internal')
+        requiresTransitive('org.checkerframework')
+        requiresTransitive('org.joml')
+        requiresTransitive('org.jspecify')
+        requiresTransitive('org.slf4j')
+        requiresTransitive('org.yaml.snakeyaml')
+        exportAllPackages()
+    }
+
+//    module('org.mockbukkit.mockbukkit:mockbukkit-v1.21', 'org.mockbukkit.mockbukkit') {
+//        requires('java.logging')
+//        requires('org.bukkit')
+//        requires('net.kyori.adventure.platform.bukkit')
+//        requires('net.kyori.adventure.platform.bungeecord')
+////        requiresTransitive('io.papermc.paper')
+//        exports('org.mockbukkit.mockbukkit')
+//        exports('org.mockbukkit.mockbukkit.adventure')
+//        exports('org.mockbukkit.mockbukkit.art')
+//        exports('org.mockbukkit.mockbukkit.attribute')
+//        exports('org.mockbukkit.mockbukkit.ban')
+//        exports('org.mockbukkit.mockbukkit.block')
+//        exports('org.mockbukkit.mockbukkit.block.banner')
+//        exports('org.mockbukkit.mockbukkit.block.data')
+//        exports('org.mockbukkit.mockbukkit.block.state')
+//        exports('org.mockbukkit.mockbukkit.boss')
+//        exports('org.mockbukkit.mockbukkit.command')
+//        exports('org.mockbukkit.mockbukkit.configuration')
+//        exports('org.mockbukkit.mockbukkit.conversations')
+//        exports('org.mockbukkit.mockbukkit.damage')
+//        exports('org.mockbukkit.mockbukkit.datacomponent')
+//        exports('org.mockbukkit.mockbukkit.enchantments')
+//        exports('org.mockbukkit.mockbukkit.entity')
+//        exports('org.mockbukkit.mockbukkit.entity.ai')
+//        exports('org.mockbukkit.mockbukkit.entity.boat')
+//        exports('org.mockbukkit.mockbukkit.entity.data')
+//        exports('org.mockbukkit.mockbukkit.entity.variant')
+//        exports('org.mockbukkit.mockbukkit.event')
+//        exports('org.mockbukkit.mockbukkit.exception')
+//        exports('org.mockbukkit.mockbukkit.fluid')
+//        exports('org.mockbukkit.mockbukkit.food')
+//        exports('org.mockbukkit.mockbukkit.generator')
+//        exports('org.mockbukkit.mockbukkit.generator.structure')
+//        exports('org.mockbukkit.mockbukkit.help')
+//        exports('org.mockbukkit.mockbukkit.inventory')
+//        exports('org.mockbukkit.mockbukkit.inventory.meta')
+//        exports('org.mockbukkit.mockbukkit.inventory.meta.trim')
+//        exports('org.mockbukkit.mockbukkit.map')
+//        exports('org.mockbukkit.mockbukkit.matcher.block')
+//        exports('org.mockbukkit.mockbukkit.matcher.command')
+//        exports('org.mockbukkit.mockbukkit.matcher.entity')
+//        exports('org.mockbukkit.mockbukkit.matcher.entity.allay')
+//        exports('org.mockbukkit.mockbukkit.matcher.entity.goat')
+//        exports('org.mockbukkit.mockbukkit.matcher.entity.human')
+//        exports('org.mockbukkit.mockbukkit.matcher.entity.player')
+//        exports('org.mockbukkit.mockbukkit.matcher.entity.ranged')
+//        exports('org.mockbukkit.mockbukkit.matcher.help')
+//        exports('org.mockbukkit.mockbukkit.matcher.inventory')
+//        exports('org.mockbukkit.mockbukkit.matcher.plugin')
+//        exports('org.mockbukkit.mockbukkit.matcher.scheduler')
+//        exports('org.mockbukkit.mockbukkit.matcher.sound')
+//        exports('org.mockbukkit.mockbukkit.metadata')
+//        exports('org.mockbukkit.mockbukkit.persistence')
+//        exports('org.mockbukkit.mockbukkit.plugin')
+//        exports('org.mockbukkit.mockbukkit.plugin.lifecycle.event')
+//        exports('org.mockbukkit.mockbukkit.potion')
+//        exports('org.mockbukkit.mockbukkit.profile')
+//        exports('org.mockbukkit.mockbukkit.registry')
+//        exports('org.mockbukkit.mockbukkit.scheduler')
+//        exports('org.mockbukkit.mockbukkit.scheduler.paper')
+//        exports('org.mockbukkit.mockbukkit.scoreboard')
+//        exports('org.mockbukkit.mockbukkit.services')
+//        exports('org.mockbukkit.mockbukkit.simulate.entity')
+//        exports('org.mockbukkit.mockbukkit.sound')
+//        exports('org.mockbukkit.mockbukkit.statistic')
+//        exports('org.mockbukkit.mockbukkit.tags')
+//        exports('org.mockbukkit.mockbukkit.tags.internal')
+//        exports('org.mockbukkit.mockbukkit.util')
+//        exports('org.mockbukkit.mockbukkit.util.io')
+//        exports('org.mockbukkit.mockbukkit.world')
+////        closeModule()
+//    }
+////    automaticModule('org.mockbukkit.mockbukkit:mockbukkit-v1.21', 'org.mockbukkit.mockbukkit')
+//
+//    module('com.natpryce:hamkrest', 'com.natpryce.hamkrest') {
+//        exportAllPackages()
+//    }
+//
+//    module('org.mockito:mockito-core', 'org.mockito') {
+//        requiresTransitive('net.bytebuddy.agent')
+//        requiresTransitive('net.bytebuddy')
+//        exportAllPackages()
+//    }
+//    module('org.mockito.kotlin:mockito-kotlin', 'org.mockito.kotlin') {
+//        requiresTransitive('org.mockito')
+//        exportAllPackages()
+//    }
 }
 
 
@@ -150,19 +581,30 @@ java {
 }
 
 tasks.withType(JavaCompile).configureEach {
+    options.javaModuleVersion = provider { version }
     doFirst {
         options.compilerArgs += [
-                '--module-path', classpath.asPath,
+//                '--module-path', classpath.asPath,
                 '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/Multiverse-Core'
         ]
     }
     options.encoding = 'UTF-8'
 }
 
-tasks.withType(Javadoc).configureEach {
+compileTestJava {
+    modularity.inferModulePath = false
     doFirst {
-        options.modulePath = [] + classpath.files
+        options.compilerArgs += [
+//                '--module-path', classpath.asPath,
+                '-Aorg.glassfish.hk2.metadata.location=META-INF/hk2-locator/Multiverse-Core'
+        ]
     }
+}
+
+tasks.withType(Javadoc).configureEach {
+//    doFirst {
+//        options.modulePath = [] + classpath.files
+//    }
     options.encoding = 'UTF-8'
 }
 
@@ -310,7 +752,9 @@ shadowJar {
         exclude(dependency {
             it.moduleGroup == 'org.jetbrains.kotlin'
         })
+        exclude 'META-INF/versions/**'
     }
+    excludes.remove("module-info.class")
     //classifier = ''
 }
 
