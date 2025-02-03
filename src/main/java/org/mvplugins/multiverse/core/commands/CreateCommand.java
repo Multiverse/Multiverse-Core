@@ -11,13 +11,9 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
-import com.google.common.collect.Lists;
 import jakarta.inject.Inject;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.WorldType;
-import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -31,6 +27,7 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.Attempt.Failure;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions;
 import org.mvplugins.multiverse.core.world.reasons.CreateFailureReason;
@@ -43,6 +40,7 @@ final class CreateCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private GeneratorProvider generatorProvider;
+    private BiomeProviderFactory biomeProviderFactory;
 
     private final CommandValueFlag<String> seedFlag = flag(CommandValueFlag.builder("--seed", String.class)
             .addAlias("-s")
@@ -75,16 +73,19 @@ final class CreateCommand extends CoreCommand {
 
     private final CommandValueFlag<String> biomeFlag = flag(CommandValueFlag.builder("--biome", String.class)
             .addAlias("-b")
+            .completion(input -> biomeProviderFactory.suggestBiomeString(input))
             .build());
 
     @Inject
     CreateCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull GeneratorProvider generatorProvider) {
+            @NotNull GeneratorProvider generatorProvider,
+            @NotNull BiomeProviderFactory biomeProviderFactory) {
         super(commandManager);
         this.worldManager = worldManager;
         this.generatorProvider = generatorProvider;
+        this.biomeProviderFactory = biomeProviderFactory;
     }
 
     @CommandAlias("mvcreate|mvc")
