@@ -13,9 +13,7 @@ import java.util.List;
  */
 final class SingleBiomeProviderParser implements BiomeProviderParser {
 
-    private final List<String> biomeStrings = Arrays.stream(Biome.values())
-            .map(biome -> biome.toString().toLowerCase())
-            .toList();
+    private List<String> biomes;
 
     @Override
     public BiomeProvider parseBiomeProvider(@NotNull String worldName, @NotNull String params) {
@@ -24,6 +22,9 @@ final class SingleBiomeProviderParser implements BiomeProviderParser {
 
     @Override
     public Collection<String> suggestParams(@NotNull String currentInput) {
-        return biomeStrings;
+        if (biomes == null) {
+            biomes = Arrays.stream(Biome.values()).map(biome -> biome.toString().toLowerCase()).toList();
+        }
+        return biomes;
     }
 }
