@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -121,21 +122,40 @@ public final class ReflectHelper {
     }
 
     /**
-     * Gets the value of an {@link Field} from an instance of the class responsible.
+     * Gets the value of a {@link Field} from an instance of the class responsible.
      *
      * @param classInstance Instance of the class to get the field value from.
      * @param field         The field to get value from.
+     * @param fieldType     Type of the field.
      * @param <C>           The class type.
      * @param <V>           The field value type.
      * @return The field value if any, else null.
      */
     @Nullable
-    public static <C, V> V getFieldValue(C classInstance, Field field, Class<V> fieldType) {
+    public static <C, V> V getFieldValue(C classInstance, @Nullable Field field, @NotNull Class<V> fieldType) {
         try {
+            if (field == null) {
+                return null;
+            }
             Object value = field.get(classInstance);
             return fieldType.isInstance(value) ? fieldType.cast(value) : null;
         } catch (IllegalAccessException e) {
             return null;
         }
+    }
+
+    /**
+     * Gets the value of a field name from an instance of the class responsible.
+     *
+     * @param classInstance Instance of the class to get the field value from.
+     * @param fieldName     Name of the field to get value from.
+     * @param fieldType     Type of the field.
+     * @param <C>           The class type.
+     * @param <V>           The field value type.
+     * @return The field value if any, else null.
+     */
+    @Nullable
+    public static <C, V> V getFieldValue(C classInstance, @Nullable String fieldName, @NotNull Class<V> fieldType) {
+        return getFieldValue(classInstance, getField(classInstance, fieldName), fieldType);
     }
 }

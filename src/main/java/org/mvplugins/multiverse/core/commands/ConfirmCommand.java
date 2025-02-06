@@ -32,6 +32,10 @@ final class ConfirmCommand extends CoreCommand {
 
             @Default("0")
             int otp) {
-        this.commandManager.getCommandQueueManager().runQueuedCommand(issuer, otp);
+        try {
+            this.commandManager.getCommandQueueManager().runQueuedCommand(issuer, otp);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 }
