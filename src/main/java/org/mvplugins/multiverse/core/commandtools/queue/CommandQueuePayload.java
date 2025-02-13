@@ -24,12 +24,10 @@ public class CommandQueuePayload {
     }
 
     private static final String DEFAULT_PROMPT_MESSAGE = "The command you are trying to run is deemed dangerous."; // todo: localize
-    private static final int DEFAULT_VALID_TIME = 10;
 
     private final int otp;
     private final MVCommandIssuer issuer;
     private Runnable action = () -> {};
-    private int validDuration = DEFAULT_VALID_TIME;
     private Message prompt = Message.of(DEFAULT_PROMPT_MESSAGE);
     private BukkitTask expireTask;
 
@@ -74,26 +72,6 @@ public class CommandQueuePayload {
      */
     public int otp() {
         return otp;
-    }
-
-    /**
-     * Sets the duration in which the command is valid for confirm in seconds.
-     *
-     * @param validDuration The target duration in seconds.
-     * @return The same {@link CommandQueuePayload} for method chaining.
-     */
-    public CommandQueuePayload validDuration(int validDuration) {
-        this.validDuration = validDuration;
-        return this;
-    }
-
-    /**
-     * Gets the duration in which the command is valid for confirm in seconds.
-     *
-     * @return The duration in seconds.
-     */
-    public int validDuration() {
-        return validDuration;
     }
 
     /**

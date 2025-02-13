@@ -467,6 +467,14 @@ public class MVCoreConfig {
         return configHandle.get(configNodes.useConfirmOtp);
     }
 
+    public Integer getConfirmTimeout() {
+        return configHandle.get(configNodes.confirmTimeout);
+    }
+
+    public Try<Void> setConfirmTimeout(int confirmTimeout) {
+        return configHandle.set(configNodes.confirmTimeout, confirmTimeout);
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -68,7 +68,7 @@ public class CommandQueueManager {
 
         Logging.finer("Add new command to queue for sender %s.", senderName);
         this.queuedCommandMap.put(senderName, payload);
-        payload.expireTask(runExpireLater(senderName, payload.validDuration()));
+        payload.expireTask(runExpireLater(senderName, config.getConfirmTimeout()));
 
         payload.issuer().sendInfo(payload.prompt());
         var confirmCommand = "/mv confirm";
@@ -76,7 +76,7 @@ public class CommandQueueManager {
             confirmCommand += " " + payload.otp();
         }
         payload.issuer().sendMessage(String.format("Run %s%s %sto continue. This will expire in %s seconds.",
-                ChatColor.GREEN, confirmCommand, ChatColor.WHITE, payload.validDuration()));
+                ChatColor.GREEN, confirmCommand, ChatColor.WHITE, config.getConfirmTimeout()));
     }
 
     /**
