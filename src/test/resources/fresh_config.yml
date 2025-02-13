@@ -33,6 +33,7 @@ command:
   resolve-alias-name: true
   confirm-mode: enable
   use-confirm-otp: true
+  confirm-timeout: 30
 
 misc:
   global-debug: 0

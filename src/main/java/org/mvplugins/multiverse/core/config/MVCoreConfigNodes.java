@@ -323,8 +323,11 @@ final class MVCoreConfigNodes {
     final ConfigNode<Integer> confirmTimeout = node(ConfigNode.builder("command.confirm-timeout", Integer.class)
             .comment("")
             .comment("The amount of time in seconds before `/mv confirm` times out")
-            .defaultValue(10)
+            .defaultValue(30)
             .name("confirm-timeout")
+            .validator(value -> (value <= 0)
+                    ? Try.failure(new MultiverseException("Confirm timeout must be a positive number!"))
+                    : Try.success(null))
             .build());
 
     private final ConfigHeaderNode miscHeader = node(ConfigHeaderNode.builder("misc")

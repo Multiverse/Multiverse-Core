@@ -1,20 +1,16 @@
 package org.mvplugins.multiverse.core.commandtools.queue;
 
 import co.aikar.commands.ACFUtil;
-import jakarta.inject.Inject;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.locale.message.Message;
 
 /**
  * Represents a single command used in {@link CommandQueueManager} for confirming before running potentially
  * dangerous action.
  */
-@Service
 public class CommandQueuePayload {
 
     /**
@@ -23,24 +19,17 @@ public class CommandQueuePayload {
      * @param issuer    The issuer of the command
      * @return The new {@link CommandQueuePayload}
      */
-
     public static CommandQueuePayload issuer(@NotNull MVCommandIssuer issuer) {
         return new CommandQueuePayload(issuer);
     }
-    @Inject
-    private MVCoreConfig config; // TODO: Why on earth is this null?
+
     private static final String DEFAULT_PROMPT_MESSAGE = "The command you are trying to run is deemed dangerous."; // todo: localize
-    private static final int DEFAULT_VALID_TIME = 10;
 
     private final int otp;
     private final MVCommandIssuer issuer;
     private Runnable action = () -> {};
-    private int validDuration = config.getConfirmTimeout();
     private Message prompt = Message.of(DEFAULT_PROMPT_MESSAGE);
     private BukkitTask expireTask;
-
-
-
 
     protected CommandQueuePayload(@NotNull MVCommandIssuer issuer) {
         this.otp = ACFUtil.rand(100, 999);
@@ -83,26 +72,6 @@ public class CommandQueuePayload {
      */
     public int otp() {
         return otp;
-    }
-
-    /**
-     * Sets the duration in which the command is valid for confirm in seconds.
-     *
-     * @param validDuration The target duration in seconds.
-     * @return The same {@link CommandQueuePayload} for method chaining.
-     */
-    public CommandQueuePayload validDuration(int validDuration) {
-        this.validDuration = validDuration;
-        return this;
-    }
-
-    /**
-     * Gets the duration in which the command is valid for confirm in seconds.
-     *
-     * @return The duration in seconds.
-     */
-    public int validDuration() {
-        return validDuration;
     }
 
     /**
