@@ -56,6 +56,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(LoadedMultiverseWorld.class, this::parseLoadedMultiverseWorld);
         registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseLoadedMultiverseWorldArray);
         registerIssuerAwareContext(MultiverseWorld.class, this::parseMultiverseWorld);
+        registerIssuerAwareContext(MultiverseWorld[].class, this::parseMultiverseWorldArray);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
     }
@@ -276,6 +277,65 @@ public class MVCommandContexts extends PaperCommandContexts {
         throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
     }
 
+    private MultiverseWorld[] parseMultiverseWorldArray(BukkitCommandExecutionContext context) {
+        String resolve = context.getFlagValue("resolve", "");
+
+        // Get world based on sender only
+        if (resolve.equals("issuerOnly")) {
+            if (context.getIssuer().isPlayer()) {
+                MultiverseWorld playerWorld = worldManager.getWorld(context.getIssuer().getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
+                return new MultiverseWorld[]{playerWorld};
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
+        }
+
+        String worldStrings = context.getFirstArg();
+        String[] worldNames = worldStrings == null ? new String[0] : worldStrings.split(",");
+        Set<MultiverseWorld> worlds = new HashSet<>(worldNames.length);
+        for (String worldName : worldNames) {
+            if ("*".equals(worldName)) {
+                worlds.addAll(worldManager.getWorlds());
+                break;
+            }
+            MultiverseWorld world = getMultiverseWorld(worldName);
+            if (world == null) {
+                throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+            }
+            worlds.add(world);
+        }
+
+        // Get world based on input, fallback to sender if input is not a world
+        if (resolve.equals("issuerAware")) {
+            if (!worlds.isEmpty()) {
+                context.popFirstArg();
+                return worlds.toArray(new MultiverseWorld[0]);
+            }
+            if (context.getIssuer().isPlayer()) {
+                MultiverseWorld playerWorld = worldManager.getWorld(context.getIssuer().getPlayer().getWorld())
+                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
+                return new MultiverseWorld[]{playerWorld};
+            }
+            if (context.isOptional()) {
+                return null;
+            }
+            throw new InvalidCommandArgument("Worlds '" + worldStrings + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
+        }
+
+        // Get world based on input only
+        if (!worlds.isEmpty()) {
+            context.popFirstArg();
+            return worlds.toArray(new MultiverseWorld[0]);
+        }
+        if (context.isOptional()) {
+            return null;
+        }
+        throw new InvalidCommandArgument("World " + worldStrings + " is not a loaded multiverse world.");
+    }
+
     @Nullable
     private MultiverseWorld getMultiverseWorld(String worldName) {
         return config.getResolveAliasName()
@@ -326,7 +386,6 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
         throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
     }
-
 
     private Player[] parsePlayerArray(BukkitCommandExecutionContext context) {
         String resolve = context.getFlagValue("resolve", "");
