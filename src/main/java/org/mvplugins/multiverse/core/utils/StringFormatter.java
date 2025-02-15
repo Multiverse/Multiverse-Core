@@ -1,8 +1,11 @@
 package org.mvplugins.multiverse.core.utils;
 
+import com.google.common.collect.Sets;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Common string formatting methods used throughout Multiverse plugins.
@@ -53,5 +56,15 @@ public final class StringFormatter {
         }
 
         return authors.toString();
+    }
+
+    public static Collection<String> addonToCommaSeperated(String input, Collection<String> addons) {
+        int lastComma = input.lastIndexOf(',');
+        String previousInputs = input.substring(0, lastComma + 1);
+        Set<String> inputSet = Sets.newHashSet(input.split(","));
+        return addons.stream()
+                .filter(suggestion -> !inputSet.contains(suggestion))
+                .map(suggestion -> previousInputs + suggestion)
+                .toList();
     }
 }

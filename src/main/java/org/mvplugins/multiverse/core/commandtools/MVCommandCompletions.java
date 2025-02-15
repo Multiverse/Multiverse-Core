@@ -43,6 +43,8 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
+import static org.mvplugins.multiverse.core.utils.StringFormatter.addonToCommaSeperated;
+
 @Service
 public class MVCommandCompletions extends PaperCommandCompletions {
 
@@ -275,7 +277,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }).getOrElse(Collections.emptyList());
     }
 
-
     private Collection<String> suggestPlayersArray(BukkitCommandCompletionContext context) {
         CommandSender sender = context.getSender();
         Validate.notNull(sender, "Sender cannot be null");
@@ -290,15 +291,5 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             }
         }
         return addonToCommaSeperated(context.getInput(), matchedPlayers);
-    }
-
-    private Collection<String> addonToCommaSeperated(String input, Collection<String> addons) {
-        int lastComma = input.lastIndexOf(',');
-        String previousInputs = input.substring(0, lastComma + 1);
-        Set<String> inputSet = Sets.newHashSet(input.split(","));
-        return addons.stream()
-                .filter(suggestion -> !inputSet.contains(suggestion))
-                .map(suggestion -> previousInputs + suggestion)
-                .toList();
     }
 }
