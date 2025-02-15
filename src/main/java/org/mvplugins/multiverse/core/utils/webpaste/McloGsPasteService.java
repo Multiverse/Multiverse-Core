@@ -1,6 +1,8 @@
 package org.mvplugins.multiverse.core.utils.webpaste;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import net.minidev.json.JSONObject;
@@ -17,7 +19,7 @@ final class McloGsPasteService extends PasteService {
 
     @Override
     String encodeData(String data) {
-        return "content=" + data;
+        return "content=" + URLEncoder.encode(data, StandardCharsets.UTF_8);
     }
 
     /**
