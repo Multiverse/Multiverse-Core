@@ -54,6 +54,7 @@ final class GameruleCommand extends CoreCommand {
         super(commandManager);
     }
 
+    @CommandAlias("mvrule|mvgamerule")
     @Subcommand("set")
     @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules @gamerulesvalues @mvworlds:multiple|*")
@@ -145,6 +146,7 @@ final class GameruleCommand extends CoreCommand {
         }
     }
 
+    @CommandAlias("mvrules|mvgamerules")
     @Subcommand("list")
     @CommandPermission("multiverse.core.gamerule.list")
     @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulecommand @flags:groupName=mvgamerulecommand")
