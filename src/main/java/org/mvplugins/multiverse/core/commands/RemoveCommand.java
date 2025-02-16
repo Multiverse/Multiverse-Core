@@ -51,7 +51,7 @@ final class RemoveCommand extends CoreCommand {
     @CommandAlias("mvremove")
     @Subcommand("remove")
     @CommandPermission("multiverse.core.remove")
-    @CommandCompletion("@mvworlds:scope=both")
+    @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvremovecommand")
     @Syntax("<world>")
     @Description("{@@mv-core.remove.description}")
     void onRemoveCommand(
