@@ -43,23 +43,21 @@ jobs:
           echo "version_bump: ${{ inputs.version_bump }}"
           echo "promote_from: ${{ inputs.promote_from }}"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.promote_from }}
 
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build and test
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: clean build -x assemble -x shadowJar
+        run: ./gradlew clean build -x assemble -x shadowJar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -74,12 +72,10 @@ jobs:
 
       - name: Publish package
         if: steps.release.outputs.release_created == 'true'
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: >
-            publish -x test
-              -PmultiverseUsername=${{ secrets.REPOSILITE_REPO_USERNAME }}
-              -PmultiversePassword=${{ secrets.REPOSILITE_REPO_PASSWORD }}
+        run: >
+          ./gradlew publish -x test
+            -PmultiverseUsername=${{ secrets.REPOSILITE_REPO_USERNAME }}
+            -PmultiversePassword=${{ secrets.REPOSILITE_REPO_PASSWORD }}
         env:
           GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -96,9 +92,7 @@ jobs:
       - name: Generate javadoc
         id: javadoc
         if: steps.release.outputs.release_created == 'true' && steps.release.outputs.release_type == 'release'
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: javadoc
+        run: ./gradlew javadoc
         env:
           GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
