@@ -148,6 +148,9 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
             case "seed" -> {
                 return String.valueOf(world.getSeed());
             }
+            case "time" -> {
+                return String.valueOf(world.getBukkitWorld().map(World::getTime).getOrElse(0L));
+            }
             case "type" -> {
                 return world.getBukkitWorld().map(World::getWorldType).map(Enum::name).getOrElse("null");
             }
