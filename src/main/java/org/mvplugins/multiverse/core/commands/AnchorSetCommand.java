@@ -38,7 +38,7 @@ final class AnchorSetCommand extends CoreCommand {
 
     @Subcommand("anchor set")
     @CommandPermission("multiverse.core.anchor.create")
-    @CommandCompletion("@anchornames")
+    @CommandCompletion("@empty @locations")
     @Syntax("<name> [location]")
     @Description("")
     void onAnchorSetCommand(

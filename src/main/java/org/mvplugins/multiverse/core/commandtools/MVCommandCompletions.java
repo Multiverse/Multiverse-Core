@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.configuration.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
@@ -53,6 +54,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private final DestinationsProvider destinationsProvider;
     private final MVCoreConfig config;
     private final CorePermissionsChecker corePermissionsChecker;
+    private final AnchorManager anchorManager;
 
     @Inject
     MVCommandCompletions(
@@ -60,14 +62,17 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             @NotNull WorldManager worldManager,
             @NotNull DestinationsProvider destinationsProvider,
             @NotNull MVCoreConfig config,
-            @NotNull CorePermissionsChecker corePermissionsChecker) {
+            @NotNull CorePermissionsChecker corePermissionsChecker,
+            @NotNull AnchorManager anchorManager) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
         this.worldManager = worldManager;
         this.destinationsProvider = destinationsProvider;
         this.config = config;
         this.corePermissionsChecker = corePermissionsChecker;
+        this.anchorManager = anchorManager;
 
+        registerAsyncCompletion("anchornames", this::suggestAnchorNames);
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerStaticCompletion("difficulties", suggestEnums(Difficulty.class));
@@ -138,6 +143,10 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                 .map(Enum::name)
                 .map(String::toLowerCase)
                 .toList();
+    }
+
+    private Collection<String> suggestAnchorNames(BukkitCommandCompletionContext context) {
+        return anchorManager.getAnchors(context.getPlayer());
     }
 
     private Collection<String> suggestCommands(BukkitCommandCompletionContext context) {
