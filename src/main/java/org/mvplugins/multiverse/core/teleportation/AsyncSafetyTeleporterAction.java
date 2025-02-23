@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandIssuer;
 import com.dumptruckman.minecraft.util.Logging;
 import io.papermc.lib.PaperLib;
 import io.vavr.control.Either;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.event.MVTeleportDestinationEvent;
 import org.mvplugins.multiverse.core.utils.result.Async;
@@ -24,6 +26,8 @@ import java.util.List;
  */
 public final class AsyncSafetyTeleporterAction {
 
+    @NotNull
+    private final MultiverseCore multiverseCore;
     private final BlockSafety blockSafety;
     private final TeleportQueue teleportQueue;
     private final PluginManager pluginManager;
@@ -33,10 +37,12 @@ public final class AsyncSafetyTeleporterAction {
     private @Nullable CommandSender teleporter = null;
 
     AsyncSafetyTeleporterAction(
+            @NotNull MultiverseCore multiverseCore,
             @NotNull BlockSafety blockSafety,
             @NotNull TeleportQueue teleportQueue,
             @NotNull PluginManager pluginManager,
             @NotNull Either<Location, DestinationInstance<?, ?>> locationOrDestination) {
+        this.multiverseCore = multiverseCore;
         this.blockSafety = blockSafety;
         this.teleportQueue = teleportQueue;
         this.pluginManager = pluginManager;
@@ -161,11 +167,18 @@ public final class AsyncSafetyTeleporterAction {
             return Attempt.failure(TeleportFailureReason.TELEPORT_FAILED_EXCEPTION);
         }).mapAttempt(success -> {
             if (success) {
+                applyPostTeleportVelocity(teleportee);
                 Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
                 return Attempt.success(null);
             }
             Logging.warning("Failed to async teleport %s to %s", teleportee.getName(), location);
             return Attempt.failure(TeleportFailureReason.TELEPORT_FAILED);
         });
+    }
+
+    private void applyPostTeleportVelocity(@NotNull Entity teleportee) {
+        locationOrDestination.peek(destination ->
+                destination.getVelocity(teleportee).peek(velocity ->
+                        Bukkit.getScheduler().runTaskLater(multiverseCore, () -> teleportee.setVelocity(velocity), 1L)));
     }
 }
