@@ -78,61 +78,56 @@ final class SpawnCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        Map<World, List<Player>> playersByWorld = Arrays.stream(players)
+        Map<World, List<Entity>> playersByWorld = Arrays.stream(players)
                 .collect(Collectors.groupingBy(Entity::getWorld));
-        playersByWorld.forEach((world, playerList) ->
-                teleportPlayersToSpawn(issuer, world, playerList, !parsedFlags.hasFlag(unsafeFlag)));
+        playersByWorld.forEach((world, entities) ->
+                teleportPlayersToSpawn(issuer, world, entities, !parsedFlags.hasFlag(unsafeFlag)));
     }
 
     private void teleportPlayersToSpawn(MVCommandIssuer issuer, World world,
-                                        List<Player> players, boolean checkSafety) {
+                                        List<Entity> entities, boolean checkSafety) {
         LoadedMultiverseWorld mvWorld = worldManager.getLoadedWorld(world).getOrNull();
         if (mvWorld == null) {
             issuer.sendMessage("The world '" + world.getName() + "' is not a multiverse world!");
             return;
         }
-
-        Player selfOrOther = players.stream()
-                .filter(p -> !p.equals(issuer.getPlayer()))
-                .findFirst()
-                .orElse(issuer.getPlayer());
-        if (!permissionsChecker.checkSpawnPermission(issuer.getIssuer(), selfOrOther, mvWorld)) {
+        if (!permissionsChecker.checkSpawnPermission(issuer.getIssuer(), entities, mvWorld)) {
             issuer.sendMessage("You do not have permission to use this command in this world!");
             return;
         }
 
-        if (players.size() == 1) {
-            handleSingleTeleport(issuer, mvWorld, players.get(0), checkSafety);
+        if (entities.size() == 1) {
+            handleSingleTeleport(issuer, mvWorld, entities.get(0), checkSafety);
         } else {
-            handleMultiTeleport(issuer, mvWorld, players, checkSafety);
+            handleMultiTeleport(issuer, mvWorld, entities, checkSafety);
         }
     }
 
     private void handleSingleTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
-                                      Player player, boolean checkSafety) {
+                                      Entity entity, boolean checkSafety) {
         safetyTeleporter.to(mvWorld.getSpawnLocation())
                 .by(issuer)
                 .checkSafety(checkSafety)
-                .teleport(player)
+                .teleport(entity)
                 .onSuccess(() -> issuer.sendInfo(MVCorei18n.SPAWN_SUCCESS,
-                        Replace.PLAYER.with(player.equals(issuer.getPlayer())
+                        Replace.PLAYER.with(entity.equals(issuer.getPlayer())
                                 ? Message.of(MVCorei18n.GENERIC_YOU)
-                                : Message.of(player.getName())),
+                                : Message.of(entity.getName())),
                         Replace.WORLD.with(mvWorld.getName())))
                 .onFailure(failure -> issuer.sendError(MVCorei18n.SPAWN_FAILED,
-                        Replace.PLAYER.with(player.equals(issuer.getPlayer())
+                        Replace.PLAYER.with(entity.equals(issuer.getPlayer())
                                 ? Message.of(MVCorei18n.GENERIC_YOU)
-                                : Message.of(player.getName())),
+                                : Message.of(entity.getName())),
                         Replace.WORLD.with(mvWorld.getName()),
                         Replace.REASON.with(failure.getFailureMessage())));
     }
 
     private void handleMultiTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
-                                     List<Player> players, boolean checkSafety) {
+                                     List<Entity> entities, boolean checkSafety) {
         safetyTeleporter.to(mvWorld.getSpawnLocation())
                 .by(issuer)
                 .checkSafety(checkSafety)
-                .teleport(players)
+                .teleport(entities)
                 .thenAccept(attempts -> {
                     int successCount = 0;
                     Map<TeleportFailureReason, Integer> failures = new EnumMap<>(TeleportFailureReason.class);

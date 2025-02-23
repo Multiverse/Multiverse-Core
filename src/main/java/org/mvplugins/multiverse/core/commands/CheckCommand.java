@@ -54,7 +54,7 @@ final class CheckCommand extends CoreCommand {
             @Syntax("<destination>")
             @Description("{@@mv-core.check.destination.description}")
             DestinationInstance<?, ?> destination) {
-        issuer.sendInfo(this.corePermissionsChecker.checkTeleportPermissions(player, player, destination)
+        issuer.sendInfo(this.corePermissionsChecker.checkTeleportPermission(player, player, destination)
                         ? MVCorei18n.CHECK_HASPERMISSION
                         : MVCorei18n.CHECK_NOPERMISSION,
                 Replace.PLAYER.with(player.getName()),

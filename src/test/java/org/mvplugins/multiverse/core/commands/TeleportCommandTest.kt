@@ -10,7 +10,9 @@ class TeleportCommandTest : AbstractCommandTest() {
 
     @BeforeTest
     fun setUp() {
-        server.setPlayers(4)
+        server.addPlayer("Player1")
+        server.addPlayer("Player2")
+        server.addPlayer("Player3")
         assertTrue(worldManager.createWorld(CreateWorldOptions.worldName("otherworld")).isSuccess)
     }
 
@@ -46,7 +48,6 @@ class TeleportCommandTest : AbstractCommandTest() {
 
     @Test
     fun `Player permission to teleport self`() {
-        addPermission("multiverse.teleport.self.w")
         addPermission("multiverse.teleport.self.w.otherworld")
 
         assertTrue(player.performCommand("mv tp otherworld --unsafe"))
@@ -65,7 +66,6 @@ class TeleportCommandTest : AbstractCommandTest() {
 
     @Test
     fun `Player permission to teleport others`() {
-        addPermission("multiverse.teleport.other.w")
         addPermission("multiverse.teleport.other.w.otherworld")
 
         assertTrue(player.performCommand("mv tp Player1 otherworld --unsafe"))
@@ -76,9 +76,20 @@ class TeleportCommandTest : AbstractCommandTest() {
         Thread.sleep(100) // wait for the player to teleport asynchronously
         assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player2")?.location)
         assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player3")?.location)
+    }
+
+    @Test
+    fun `Player permission to teleport others cannot teleport self`() {
+        addPermission("multiverse.teleport.other.w.otherworld")
 
         assertTrue(player.performCommand("mv tp otherworld --unsafe"))
         Thread.sleep(100) // wait for the player to teleport asynchronously
         assertLocationEquals(server.getWorld("world")?.spawnLocation, player.location)
+
+        assertTrue(player.performCommand("mv tp benwoo1110,Player1,Player2 world --unsafe"))
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("benwoo1110")?.location)
+        assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player1")?.location)
+        assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player2")?.location)
     }
 }

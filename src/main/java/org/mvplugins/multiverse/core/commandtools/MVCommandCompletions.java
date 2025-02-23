@@ -8,17 +8,14 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
-import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
 import com.dumptruckman.minecraft.util.Logging;
-import com.google.common.collect.Sets;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.Validate;
@@ -179,28 +176,24 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
         return Try.of(() -> context.getContextValue(Player[].class))
                 .map(players -> {
-                    Player player = Arrays.stream(players)
-                            .filter(p -> !Objects.equals(p, context.getPlayer()))
-                            .findFirst()
-                            .orElse(context.getPlayer());
-                    if (player == null) {
+                    if (players.length == 0) {
                         // Most likely console did not specify a player
                         return Collections.<String>emptyList();
                     }
-                    if (context.hasConfig("othersOnly") && player.equals(context.getPlayer())) {
+                    if (context.hasConfig("othersOnly") && (players.length == 1 && players[0].equals(context.getIssuer().getIssuer()))) {
                         return Collections.<String>emptyList();
                     }
-                    return suggestDestinationsWithPerms(context.getIssuer().getIssuer(), player, context.getInput());
+                    return suggestDestinationsWithPerms(context.getIssuer().getIssuer(), players, context.getInput());
                 })
                 .getOrElse(Collections.emptyList());
     }
 
-    private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, Player teleportee, String deststring) {
+    private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, Player[] players, String deststring) {
         return destinationsProvider.getDestinations().stream()
-                .filter(destination -> corePermissionsChecker.hasDestinationPermission(teleporter, teleportee, destination))
-                .flatMap(destination -> destination.suggestDestinations(teleporter, deststring).stream()
-                        .filter(packet -> corePermissionsChecker.hasFinerDestinationPermission(
-                                teleporter, teleportee, destination, packet.finerPermissionSuffix()))
+                .flatMap(destination -> destination.suggestDestinations(teleporter, deststring)
+                        .stream()
+                        .filter(packet -> corePermissionsChecker
+                                .checkDestinationPacketPermission(teleporter, Arrays.asList(players), destination, packet))
                         .map(packet -> destination instanceof WorldDestination
                                 ? packet.destinationString()
                                 : destination.getIdentifier() + ":" + packet.destinationString()))

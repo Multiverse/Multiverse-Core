@@ -12,7 +12,9 @@ class SpawnCommandTest : AbstractCommandTest() {
 
     @BeforeTest
     fun setUp() {
-        server.setPlayers(4)
+        server.addPlayer("Player1")
+        server.addPlayer("Player2")
+        server.addPlayer("Player3")
         assertTrue(worldManager.createWorld(CreateWorldOptions.worldName("otherworld")).isSuccess)
         server.getWorld("otherworld")?.spawnLocation?.let { Bukkit.getPlayer("Player1")?.teleport(it) }
         worldManager.getLoadedWorld("world").get().setSpawnLocation(SpawnLocation(20.0, 20.0, 20.0))
@@ -57,5 +59,13 @@ class SpawnCommandTest : AbstractCommandTest() {
         Thread.sleep(100) // wait for the player to teleport asynchronously
         assertLocationEquals(Location(server.getWorld("otherworld"), 0.0, 5.0, 0.0), server.getPlayer("Player1")?.location)
         assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player2")?.location)
+    }
+    @Test
+    fun `Teleport others to spawn but not self`() {
+        addPermission("multiverse.core.spawn.other.otherworld")
+        assertTrue(player.performCommand("mv spawn benwoo1110,Player1 --unsafe"))
+        Thread.sleep(100) // wait for the player to teleport asynchronously
+        assertLocationEquals(Location(server.getWorld("world"), 0.0, 5.0, 0.0), server.getPlayer("benwoo1110")?.location)
+        assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player1")?.location)
     }
 }

@@ -96,7 +96,7 @@ final class TeleportCommand extends CoreCommand {
     private void teleportSinglePlayer(MVCommandIssuer issuer, Player player,
                                       DestinationInstance<?, ?> destination,
                                       ParsedCommandFlags parsedFlags) {
-        if (!permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), player, destination)) {
+        if (!permissionsChecker.checkTeleportPermission(issuer.getIssuer(), player, destination)) {
             // TODO localize
             issuer.sendMessage(player == issuer.getPlayer()
                     ? "You do not have permission to teleport yourself!"
@@ -124,18 +124,9 @@ final class TeleportCommand extends CoreCommand {
     private void teleportMultiplePlayers(MVCommandIssuer issuer, Player[] players,
                                          DestinationInstance<?, ?> destination,
                                          ParsedCommandFlags parsedFlags) {
-        var selfPlayer = Arrays.stream(players).filter(p -> p == issuer.getPlayer()).findFirst();
-        var otherPlayer = Arrays.stream(players).filter(p -> p != issuer.getPlayer()).findFirst();
-        if (selfPlayer.isPresent()
-                && !permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), selfPlayer.get(), destination)) {
+        if (!permissionsChecker.checkTeleportPermission(issuer.getIssuer(), Arrays.asList(players), destination)) {
             // TODO localize
-            issuer.sendMessage("You do not have permission to teleport yourself!");
-            return;
-        }
-        if (otherPlayer.isPresent()
-                && !permissionsChecker.checkTeleportPermissions(issuer.getIssuer(), otherPlayer.get(), destination)) {
-            // TODO localize
-            issuer.sendMessage("You do not have permission to teleport other players!");
+            issuer.sendMessage("You do not have permission to teleport all these players!");
             return;
         }
         safetyTeleporter.to(destination)
