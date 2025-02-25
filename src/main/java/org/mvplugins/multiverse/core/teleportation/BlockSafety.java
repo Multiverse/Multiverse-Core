@@ -134,19 +134,19 @@ public final class BlockSafety {
         Logging.finest("Checking spawn safety for location: %s, %s, %s", block.getX(), block.getY(), block.getZ());
         if (isUnsafeSpawnBody(block)) {
             // Player body will be stuck in solid
-            Logging.finest("Unsafe location for player's body.");
+            Logging.finest("Unsafe location for player's body: " + block);
             return false;
         }
         Block airBlockForHead = block.getRelative(0, 1, 0);
         if (isUnsafeSpawnBody(airBlockForHead)) {
             // Player's head will be stuck in solid
-            Logging.finest("Unsafe location for player's head.");
+            Logging.finest("Unsafe location for player's head: " + airBlockForHead);
             return false;
         }
         Block standingOnBlock = block.getRelative(0, -1, 0);
         if (isUnsafeSpawnPlatform(standingOnBlock)) {
             // Player will drop down
-            Logging.finest("Unsafe location due to invalid platform.");
+            Logging.finest("Unsafe location due to invalid platform: " + standingOnBlock);
             return false;
         }
         Logging.finest("Location is safe.");
