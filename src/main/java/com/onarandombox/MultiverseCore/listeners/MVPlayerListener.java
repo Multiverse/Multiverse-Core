@@ -128,6 +128,7 @@ public class MVPlayerListener implements Listener {
         } else {
             Logging.finer("Player joined AGAIN!");
             if (this.plugin.getMVConfig().getEnforceAccess() // check this only if we're enforcing access!
+                    && (this.plugin.getMVConfig().getTeleportIntercept() && this.plugin.getMVConfig().getPortalIntercept()) // only all method Intercept will force send
                     && !this.plugin.getMVPerms().hasPermission(p, "multiverse.access." + p.getWorld().getName(), false)) {
                 p.sendMessage("[MV] - Sorry you can't be in this world anymore!");
                 this.sendPlayerToDefaultWorld(p);
@@ -305,7 +306,7 @@ public class MVPlayerListener implements Listener {
                     + "' because they don't have the FUNDS required to enter.");
             return;
         }
-        if (plugin.getMVConfig().getEnforceAccess()) {
+        if (plugin.getMVConfig().getEnforceAccess() && plugin.getMVConfig().getPortalIntercept()) {
             event.setCancelled(!pt.playerCanGoFromTo(fromWorld, toWorld, event.getPlayer(), event.getPlayer()));
             if (event.isCancelled()) {
                 Logging.fine("Player '" + event.getPlayer().getName()
