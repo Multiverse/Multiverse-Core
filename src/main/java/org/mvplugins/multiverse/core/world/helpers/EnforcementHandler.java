@@ -69,15 +69,25 @@ public final class EnforcementHandler {
      */
     public void handleFlightEnforcement(@NotNull Player player) {
         worldManagerProvider.get().getLoadedWorld(player.getWorld()).peek(world -> {
-            if (player.getAllowFlight() && !world.getAllowFlight() && player.getGameMode() != GameMode.CREATIVE) {
-                player.setAllowFlight(false);
-                if (player.isFlying()) {
-                    player.setFlying(false);
-                }
-            } else if (world.getAllowFlight()) {
+            if (player.getGameMode() == GameMode.SPECTATOR) {
+                // Spectators has to fly or not they will just fall to the void and die
+                player.setAllowFlight(true);
+                player.setFlying(true);
+                return;
+            }
+
+            if (world.getAllowFlight()) {
                 if (player.getGameMode() == GameMode.CREATIVE) {
                     player.setAllowFlight(true);
                 }
+                return;
+            }
+
+            if (player.getAllowFlight() && player.getGameMode() != GameMode.CREATIVE) {
+                if (player.isFlying()) {
+                    player.setFlying(false);
+                }
+                player.setAllowFlight(false);
             }
         }).onEmpty(() -> {
             Logging.fine("Player %s is not in a Multiverse world, flight enforcement will not apply",
