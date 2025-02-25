@@ -1,141 +1,74 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.mvplugins.multiverse-plugin' version '1.0.1'
+    id 'org.mvplugins.kotlin-test-only' version '1.0.1'
 }
 
-version = System.getenv('GITHUB_VERSION') ?: 'local'
-group = 'com.onarandombox.multiversecore'
+group = 'org.mvplugins.multiverse.core'
 description = 'Multiverse-Core'
 
-java.sourceCompatibility = JavaVersion.VERSION_11
-
 repositories {
-    mavenLocal()
-    mavenCentral()
-
     maven {
-        url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/')
+        name = 'aikar repo'
+        url = uri('https://repo.aikar.co/content/groups/aikar/')
     }
 
     maven {
-        url = uri('https://repo.onarandombox.com/content/groups/public')
+        name = 'glaremasters repo'
+        url = 'https://repo.glaremasters.me/repository/towny/'
     }
 
     maven {
-        url = uri('https://hub.spigotmc.org/nexus/content/groups/public/')
+        name = "helpchatRepoReleases"
+        url = uri("https://repo.helpch.at/releases/")
     }
+}
 
-    maven {
-        url = uri('https://jitpack.io')
-    }
-
-    maven {
-        url = uri('https://repo.minebench.de/')
-    }
-
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
+configure(apiDependencies) {
+    serverApiVersion = '1.18.2-R0.1-SNAPSHOT'
+    mockBukkitServerApiVersion = '1.21'
 }
 
 dependencies {
-    implementation 'org.bukkit:bukkit:1.13.2-R0.1-SNAPSHOT'
-
-    implementation('com.github.MilkBowl:VaultAPI:1.7') {
+    // Economy
+    externalPlugin('com.github.MilkBowl:VaultAPI:1.7.1') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
 
-    compileOnly('me.main__.util:SerializationConfig:1.7') {
-        exclude group: 'org.bukkit', module: 'bukkit'
+    // PlaceholderAPI
+    externalPlugin 'me.clip:placeholderapi:2.11.6'
+
+    // Command Framework
+    shadowed 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
+
+    // Config
+    shadowed('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
+        exclude group: 'org.spigotmc', module: 'spigot-api'
     }
-    compileOnly('com.pneumaticraft.commandhandler:CommandHandler:11') {
-        exclude group: 'org.bukkit', module: 'bukkit'
+
+    // Utils
+    shadowed 'io.vavr:vavr:0.10.4'
+    shadowed 'org.glassfish.hk2:hk2-locator:3.0.3'
+    shadowed('org.glassfish.hk2:hk2-inhabitant-generator:3.0.3') {
+        exclude group: 'org.apache.maven', module: 'maven-core'
+    }
+    shadowed('com.dumptruckman.minecraft:Logging:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
-    compileOnly 'com.dumptruckman.minecraft:buscript:2.0-SNAPSHOT'
-    compileOnly 'org.bstats:bstats-bukkit:2.2.1'
-    compileOnly('com.dumptruckman.minecraft:Logging:1.1.1') {
-        exclude group: 'junit', module: 'junit'
+    shadowed 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
+    shadowed('org.bstats:bstats-bukkit:3.1.0') {
+        exclude group: 'org.bukkit', module: 'bukkit'
     }
-    compileOnly 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
-    compileOnly 'org.jetbrains:annotations:16.0.2'
+    shadowed 'net.minidev:json-smart:2.4.9'
+    shadowed 'org.jetbrains:annotations:22.0.0'
+    shadowed 'io.papermc:paperlib:1.0.8'
 
-    testImplementation 'org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT'
+    // Tests
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:3.11.2'
-    testImplementation 'commons-io:commons-io:2.4'
 }
-
-
-java {
-    withSourcesJar()
-    withJavadocJar()
-}
-
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
-tasks.withType(Javadoc) {
-    options.encoding = 'UTF-8'
-}
-
-
-configurations {
-    [apiElements, runtimeElements].each {
-        it.outgoing.artifacts.removeIf { it.buildDependencies.getDependencies(null).contains(jar) }
-        it.outgoing.artifact(shadowJar)
-    }
-
-    testCompileOnly.extendsFrom compileOnly
-    testRuntimeOnly.extendsFrom testCompileOnly
-
-    shadowed.extendsFrom compileOnly {
-        canBeResolved = true
-    }
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-
-            pom.withXml {
-                asNode().dependencies.'*'.findAll() {
-                    it.scope.text() == 'runtime'  && project.configurations.implementation.allDependencies.find { dep ->
-                        dep.name == it.artifactId.text()
-                    }
-                }.each() {
-                    it.scope*.value = 'provided'
-                }
-            }
-        }
-    }
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/Multiverse/Multiverse-Core"
-            credentials {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-        maven {
-            name = "multiverse"
-            def releasesRepoUrl = "https://repo.dumptruckman.com/multiverse-releases"
-            def snapshotsRepoUrl = "https://repo.dumptruckman.com/multiverse-snapshots"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            credentials(PasswordCredentials)
-        }
-    }
-}
-
 
 ext.bitlyAccessToken = System.getenv('BITLY_ACCESS_TOKEN') ?: 'bitly-access-token'
 
@@ -148,47 +81,44 @@ task prepareSource(type: Sync) {
     ])
 }
 
-compileJava {
-    source = prepareSource.outputs
-}
-
-processResources {
-    def props = [version: "${project.version}"]
-    inputs.properties props
-    filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
-        expand props
-    }
-
-    // This task should never be skipped. The tests depend on this having been run but we want the new version number
-    // that is created after tests are run and before we run again to publish.
-    outputs.upToDateWhen { false }
-}
-
-
-javadoc {
-    source = sourceSets.main.allJava
-    classpath = configurations.compileClasspath
-}
-
-
-project.configurations.api.canBeResolved = true
-
 shadowJar {
-    relocate 'me.main__.util', 'com.onarandombox.serializationconfig'
-    relocate 'com.pneumaticraft.commandhandler', 'com.onarandombox.commandhandler'
-    relocate 'buscript', 'com.onarandombox.buscript'
-    relocate 'org.bstats', 'com.onarandombox.bstats'
-    relocate 'com.dumptruckman.minecraft.util.Logging', 'com.onarandombox.MultiverseCore.utils.CoreLogging'
-    relocate 'com.dumptruckman.minecraft.util.DebugLog', 'com.onarandombox.MultiverseCore.utils.DebugFileLogger'
-    relocate 'org.codehaus.jettison', 'com.onarandombox.jettison'
-    relocate 'de.themoep.idconverter', 'com.onarandombox.idconverter'
-
-    configurations = [project.configurations.shadowed]
-
-    archiveFileName = "$baseName-$version.$extension"
-    classifier = ''
+    relocate 'co.aikar', 'org.mvplugins.multiverse.external.acf'
+    relocate 'com.dumptruckman.minecraft.util.Logging', 'org.mvplugins.multiverse.core.utils.CoreLogging'
+    relocate 'com.dumptruckman.minecraft.util.DebugLog', 'org.mvplugins.multiverse.core.utils.DebugFileLogger'
+    relocate 'de.themoep.idconverter', 'org.mvplugins.multiverse.external.idconverter'
+    relocate 'io.github.townyadvanced.commentedconfiguration', 'org.mvplugins.multiverse.external.commentedconfiguration'
+    relocate 'me.main__.util', 'org.mvplugins.multiverse.external.serializationconfig'
+    relocate 'org.bstats', 'org.mvplugins.multiverse.external.bstats'
+    relocate 'com.sun', 'org.mvplugins.multiverse.external.sun'
+    relocate 'net.minidev', 'org.mvplugins.multiverse.external.minidev'
+    relocate 'org.objectweb', 'org.mvplugins.multiverse.external.objectweb'
+    relocate 'io.vavr', 'org.mvplugins.multiverse.external.vavr'
+    relocate 'jakarta', 'org.mvplugins.multiverse.external.jakarta'
+    relocate 'javassist', 'org.mvplugins.multiverse.external.javassist'
+    relocate 'org.aopalliance', 'org.mvplugins.multiverse.external.aopalliance'
+    relocate 'org.glassfish', 'org.mvplugins.multiverse.external.glassfish'
+    relocate 'org.jvnet', 'org.mvplugins.multiverse.external.jvnet'
+    relocate 'org.intellij', 'org.mvplugins.multiverse.external.intellij'
+    relocate 'org.jetbrains', 'org.mvplugins.multiverse.external.jetbrains'
+    relocate 'io.papermc.lib', 'org.mvplugins.multiverse.external.paperlib'
 }
 
-build.dependsOn shadowJar
-jar.enabled = false
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/Multiverse/Multiverse-Core"
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+
+        maven {
+            // todo: remove before mv5 release
+            name = "multiverseBeta"
+            url = "https://repo.c0ding.party/multiverse-beta"
+            credentials(PasswordCredentials)
+        }
+    }
+}
