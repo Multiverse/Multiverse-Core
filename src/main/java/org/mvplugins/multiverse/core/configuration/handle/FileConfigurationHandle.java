@@ -91,20 +91,6 @@ public abstract class FileConfigurationHandle<C extends FileConfiguration> exten
     protected abstract void loadConfigObject() throws IOException, InvalidConfigurationException;
 
     /**
-     * Saves the configuration.
-     */
-    public abstract Try<Void> save();
-
-    /**
-     * Checks if the configuration is loaded.
-     *
-     * @return True if the configuration is loaded, false otherwise.
-     */
-    public boolean isLoaded() {
-        return config != null;
-    }
-
-    /**
      * Abstract builder for {@link FileConfigurationHandle}.
      *
      * @param <C>   The configuration type.

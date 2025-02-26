@@ -302,6 +302,7 @@ public final class WorldManager {
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
         worldConfig.setBiome(biome == null ? "" : biome);
+        worldConfig.save();
 
         MultiverseWorld mvWorld = newMultiverseWorld(world.getName(), worldConfig);
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(

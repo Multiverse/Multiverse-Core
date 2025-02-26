@@ -123,6 +123,14 @@ final class WorldConfig {
         return configHandle.load(section);
     }
 
+    Try<Void> save() {
+        return configHandle.save();
+    }
+
+    ConfigurationSection getConfigurationSection() {
+        return configHandle.getConfig();
+    }
+
     StringPropertyHandle getStringPropertyHandle() {
         return stringPropertyHandle;
     }
@@ -403,10 +411,6 @@ final class WorldConfig {
 
     void deferenceMVWorld() {
         configNodes.setWorld(null);
-    }
-
-    ConfigurationSection getConfigurationSection() {
-        return configHandle.getConfig();
     }
 
     /**

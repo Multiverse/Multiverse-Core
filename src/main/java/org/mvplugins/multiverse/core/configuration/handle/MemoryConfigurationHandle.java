@@ -1,8 +1,10 @@
 package org.mvplugins.multiverse.core.configuration.handle;
 
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.MemorySection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
@@ -34,26 +36,9 @@ public class MemoryConfigurationHandle extends ConfigurationSectionHandle<Config
     }
 
     @Override
-    protected void setUpNodes() {
-        if (nodes == null || nodes.isEmpty()) {
-            return;
-        }
-
-        ConfigurationSection oldConfig = config;
-        config = new MemoryConfiguration();
-
-        nodes.forEach(node -> {
-            if (!(node instanceof ValueNode valueNode)) {
-                return;
-            }
-            //todo: this is a copied from CommentedConfigurationHandle
-            Option.of(oldConfig.get(valueNode.getPath()))
-                    .peek(oldValue -> {
-                        this.config.set(valueNode.getPath(), oldValue);
-                        set(valueNode, get(valueNode));
-                    })
-                    .onEmpty(() -> reset(valueNode));
-        });
+    public Try<Void> save() {
+        return Try.run(() -> config = new MemoryConfiguration())
+                .flatMap(ignore -> super.save());
     }
 
     /**

@@ -125,14 +125,16 @@ final class WorldsConfigManager {
         for (String worldName : allWorldsInConfig) {
             getWorldConfig(worldName)
                     .peek(config -> config.load(getWorldConfigSection(worldName)))
-                    .onEmpty(() -> {
+                    .orElse(() -> {
                         WorldConfig newWorldConfig = new WorldConfig(
                                 worldName,
                                 getWorldConfigSection(worldName),
                                 multiverseCore);
                         worldConfigMap.put(worldName, newWorldConfig);
                         newWorldsAdded.add(newWorldConfig);
-                    });
+                        return Option.of(newWorldConfig);
+                    })
+                    .peek(WorldConfig::save);
         }
 
         List<String> worldsRemoved = worldConfigMap.keySet().stream()
@@ -166,8 +168,12 @@ final class WorldsConfigManager {
                 throw new IllegalStateException("WorldsConfigManager is not loaded!");
             }
             worldsConfig = new YamlConfiguration();
-            worldConfigMap.forEach((worldName, worldConfig) ->
-                    worldsConfig.set(worldName, worldConfig.getConfigurationSection()));
+            worldConfigMap.forEach((worldName, worldConfig) -> {
+                worldConfig.save().onFailure(e -> {
+                    throw new RuntimeException("Failed to save world config: " + worldName, e);
+                });
+                worldsConfig.set(worldName, worldConfig.getConfigurationSection());
+            });
             worldsConfig.save(worldConfigFile);
         });
     }

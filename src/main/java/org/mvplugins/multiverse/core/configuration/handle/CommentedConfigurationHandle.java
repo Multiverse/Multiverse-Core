@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import io.github.townyadvanced.commentedconfiguration.CommentedConfiguration;
-import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,39 +54,21 @@ public class CommentedConfigurationHandle extends FileConfigurationHandle<Commen
      * {@inheritDoc}
      */
     @Override
-    protected void setUpNodes() {
-        if (nodes == null || nodes.isEmpty()) {
-            return;
-        }
-
-        CommentedConfiguration oldConfig = config;
-        this.config = new CommentedConfiguration(configPath, logger);
-
-        nodes.forEach(node -> {
-            if (node instanceof CommentedNode typedNode) {
-                if (typedNode.getComments().length > 0) {
-                    config.addComment(typedNode.getPath(), typedNode.getComments());
-                }
-            }
-            if (node instanceof ValueNode valueNode) {
-                //noinspection unchecked
-                Option.of(oldConfig.get(valueNode.getPath()))
-                        .peek(oldValue -> {
-                            this.config.set(valueNode.getPath(), oldValue);
-                            set(valueNode, get(valueNode));
-                        })
-                        .onEmpty(() -> reset(valueNode));
-            }
-        });
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Try<Void> save() {
-        // TODO: There is no way to check if the save was successful.
-        return Try.run(() -> config.save());
+        return Try.run(() -> {
+            config = new CommentedConfiguration(configPath, logger);
+            nodes.forEach(node -> {
+                if (node instanceof CommentedNode typedNode) {
+                    if (typedNode.getComments().length > 0) {
+                        config.addComment(typedNode.getPath(), typedNode.getComments());
+                    }
+                }
+                if (node instanceof ValueNode valueNode) {
+                    serializeNodeToConfig(valueNode);
+                }
+            });
+            config.save();
+        });
     }
 
     /**

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import io.vavr.Value;
 import io.vavr.control.Try;
@@ -141,9 +142,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             public List<I> deserialize(Object object, Class<List<I>> type) {
                 if (object instanceof List list) {
                     //noinspection unchecked
-                    return list.stream()
+                    return (List<I>) list.stream()
                             .map(item -> itemSerializer != null ? itemSerializer.deserialize(item, itemType) : item)
-                            .toList();
+                            .collect(Collectors.toList());
                 }
                 //todo: Maybe assume object is the first element of the list
                 return new ArrayList<>();
@@ -156,7 +157,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
                 }
                 return object.stream()
                         .map(item -> itemSerializer != null ? itemSerializer.serialize(item, itemType) : item)
-                        .toList();
+                        .collect(Collectors.toList());
             }
         };
     }

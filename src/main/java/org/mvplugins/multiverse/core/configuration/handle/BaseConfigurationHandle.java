@@ -1,6 +1,8 @@
 package org.mvplugins.multiverse.core.configuration.handle;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.configuration.node.ListValueNode;
+import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
 import org.mvplugins.multiverse.core.configuration.node.ValueNode;
 
@@ -26,6 +29,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
     protected final @Nullable Logger logger;
     protected final @NotNull NodeGroup nodes;
     protected final @Nullable ConfigMigrator migrator;
+    protected final @NotNull Map<Node, Object> nodeValueMap;
 
     protected C config;
 
@@ -36,6 +40,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         this.logger = logger;
         this.nodes = nodes;
         this.migrator = migrator;
+        this.nodeValueMap = new HashMap<>(nodes.size());
     }
 
     /**
@@ -63,15 +68,62 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      * Sets up the nodes.
      */
     protected void setUpNodes() {
+        nodeValueMap.clear();
         if (nodes == null || nodes.isEmpty()) {
             return;
         }
 
         nodes.forEach(node -> {
             if (node instanceof ValueNode valueNode) {
-                set(valueNode, get(valueNode));
+                var value = deserializeNodeFromConfig(valueNode);
+                nodeValueMap.put(valueNode, value);
+                valueNode.onSetValue(value, value);
             }
         });
+    }
+
+    protected <T> T deserializeNodeFromConfig(ValueNode<T> node) {
+        if (node.getSerializer() == null) {
+            return Option.of(config.getObject(node.getPath(), node.getType())).getOrElse(node::getDefaultValue);
+        }
+        return Try.of(() -> {
+                    var value = config.get(node.getPath());
+                    if (value == null) {
+                        return node.getDefaultValue();
+                    }
+                    return node.getSerializer().deserialize(value, node.getType());
+                }).flatMap(value -> node.validate(value).map(ignore -> value))
+                .onFailure(e -> Logging.warning("Failed to deserialize node %s: %s", node.getPath(), e.getMessage()))
+                .getOrElse(node::getDefaultValue);
+    }
+
+    /**
+     * Saves the configuration.
+     */
+    public Try<Void> save() {
+        return Try.run(() -> nodes.forEach(node -> {
+            if (!(node instanceof ValueNode valueNode)) {
+                return;
+            }
+            serializeNodeToConfig(valueNode);
+        }));
+    }
+
+    protected void serializeNodeToConfig(ValueNode node) {
+        var value = nodeValueMap.get(node);
+        if (value == null) {
+            value = node.getDefaultValue();
+        }
+        if (node.getSerializer() != null) {
+            var serialized = node.getSerializer().serialize(value, node.getType());
+            config.set(node.getPath(), serialized);
+        } else {
+            config.set(node.getPath(), value);
+        }
+    }
+
+    public boolean isLoaded() {
+        return !nodeValueMap.isEmpty();
     }
 
     /**
@@ -81,13 +133,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      * @return The value of the node.
      */
     public <T> T get(@NotNull ValueNode<T> node) {
-        if (node.getSerializer() == null) {
-            return Option.of(config.getObject(node.getPath(), node.getType())).getOrElse(node::getDefaultValue);
-        }
-        return Try.of(() -> node.getSerializer()
-                        .deserialize(config.get(node.getPath(), node.getDefaultValue()), node.getType()))
-                .onFailure(e -> Logging.warning("Failed to deserialize node %s: %s", node.getPath(), e.getMessage()))
-                .getOrElse(node::getDefaultValue);
+        return (T) nodeValueMap.get(node);
     }
 
     /**
@@ -101,12 +147,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
     public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
         return node.validate(value).map(ignore -> {
             T oldValue = get(node);
-            if (node.getSerializer() != null) {
-                var serialized = node.getSerializer().serialize(value, node.getType());
-                config.set(node.getPath(), serialized);
-            } else {
-                config.set(node.getPath(), value);
-            }
+            nodeValueMap.put(node, value);
             node.onSetValue(oldValue, get(node));
             return null;
         });
@@ -122,15 +163,8 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      */
     public <I> Try<Void> add(@NotNull ListValueNode<I> node, I itemValue) {
         return node.validateItem(itemValue).map(ignore -> {
-            var serialized = node.getItemSerializer() != null
-                    ? node.getItemSerializer().serialize(itemValue, node.getItemType())
-                    : itemValue;
-            List valueList = config.getList(node.getPath());
-            if (valueList == null) {
-                throw new IllegalArgumentException("Cannot add item to non-list node");
-            }
-            valueList.add(serialized);
-            config.set(node.getPath(), valueList);
+            List<I> list = get(node);
+            list.add(itemValue);
             node.onSetItemValue(null, itemValue);
             return null;
         });
@@ -146,17 +180,10 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      */
     public <I> Try<Void> remove(@NotNull ListValueNode<I> node, I itemValue) {
         return node.validateItem(itemValue).map(ignore -> {
-            var serialized = node.getItemSerializer() != null
-                    ? node.getItemSerializer().serialize(itemValue, node.getItemType())
-                    : itemValue;
-            List valueList = config.getList(node.getPath());
-            if (valueList == null) {
-                throw new IllegalArgumentException("Cannot remove item from non-list node");
+            List<I> list = get(node);
+            if (!list.remove(itemValue)) {
+                throw new IllegalArgumentException("Cannot remove item as it is already not in the list!");
             }
-            if (!valueList.remove(serialized)) {
-                throw new IllegalArgumentException("Cannot remove item from list node");
-            }
-            config.set(node.getPath(), valueList);
             node.onSetItemValue(itemValue, null);
             return null;
         });
@@ -170,7 +197,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      * @return Empty try if the value was set, try containing an error otherwise.
      */
     public <T> Try<Void> reset(@NotNull ValueNode<T> node) {
-        return Try.run(() -> set(node, node.getDefaultValue()));
+        return set(node, node.getDefaultValue());
     }
 
     /**

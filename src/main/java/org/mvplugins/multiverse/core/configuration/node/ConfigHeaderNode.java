@@ -45,6 +45,13 @@ public class ConfigHeaderNode implements CommentedNode {
         return comments;
     }
 
+    @Override
+    public String toString() {
+        return "Node{" +
+                "path='" + path + '\'' +
+                '}';
+    }
+
     public static class Builder<B extends Builder<B>> {
 
         protected final @NotNull String path;

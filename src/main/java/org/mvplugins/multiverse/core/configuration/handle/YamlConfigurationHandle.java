@@ -51,7 +51,9 @@ public class YamlConfigurationHandle extends FileConfigurationHandle<YamlConfigu
      */
     @Override
     public Try<Void> save() {
-        return Try.run(() -> config.save(configFile));
+        return Try.run(() -> config = new YamlConfiguration())
+                .flatMap(ignore -> super.save())
+                .andThenTry(ignore -> config.save(configFile));
     }
 
     /**
