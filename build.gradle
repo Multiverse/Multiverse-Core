@@ -87,7 +87,6 @@ shadowJar {
     relocate 'com.dumptruckman.minecraft.util.DebugLog', 'org.mvplugins.multiverse.core.utils.DebugFileLogger'
     relocate 'de.themoep.idconverter', 'org.mvplugins.multiverse.external.idconverter'
     relocate 'io.github.townyadvanced.commentedconfiguration', 'org.mvplugins.multiverse.external.commentedconfiguration'
-    relocate 'me.main__.util', 'org.mvplugins.multiverse.external.serializationconfig'
     relocate 'org.bstats', 'org.mvplugins.multiverse.external.bstats'
     relocate 'com.sun', 'org.mvplugins.multiverse.external.sun'
     relocate 'net.minidev', 'org.mvplugins.multiverse.external.minidev'
