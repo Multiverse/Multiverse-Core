@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.configuration.migration;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -43,8 +44,8 @@ public class ConfigMigrator {
             return;
         }
 
-        double versionNumber = config.getDouble(versionNode.getPath());
         for (VersionMigrator versionMigrator : versionMigrators) {
+            double versionNumber = config.getDouble(versionNode.getPath());
             if (versionNumber < versionMigrator.getVersion()) {
                 Logging.info("Migrating config from version %s to %s...", versionNumber, versionMigrator.getVersion());
                 versionMigrator.migrate(config);
@@ -101,6 +102,7 @@ public class ConfigMigrator {
          * @return The built ConfigMigrator.
          */
         public ConfigMigrator build() {
+            Collections.sort(versionMigrators);
             return new ConfigMigrator(versionNode, versionMigrators);
         }
     }

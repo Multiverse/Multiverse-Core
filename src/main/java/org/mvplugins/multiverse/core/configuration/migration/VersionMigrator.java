@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A version migrator is a collection of migrator actions that are performed when migrating a config to a specific version.
  */
-public class VersionMigrator {
+public class VersionMigrator implements Comparable<VersionMigrator> {
 
     /**
      * Creates a new builder for a VersionMigrator.
@@ -44,6 +45,11 @@ public class VersionMigrator {
      */
     public double getVersion() {
         return version;
+    }
+
+    @Override
+    public int compareTo(@NotNull VersionMigrator o) {
+        return Double.compare(version, o.version);
     }
 
     /**
