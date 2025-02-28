@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
@@ -16,6 +15,7 @@ import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
 import co.aikar.commands.RootCommand;
 import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.apache.commons.lang.Validate;
@@ -215,7 +215,8 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private Collection<String> suggestGamerulesValues(BukkitCommandCompletionContext context) {
        return Try.of(() -> context.getContextValue(GameRule.class))
                // Just use our suggester from configuration lib since gamerules are only boolean or int
-               .mapTry(gamerule -> DefaultSuggesterProvider.getDefaultSuggester(gamerule.getType()).suggest(context.getInput()))
+               .mapTry(gamerule -> Option.of(DefaultSuggesterProvider.getDefaultSuggester(gamerule.getType()))
+                       .map(s -> s.suggest(context.getInput())).getOrElse(Collections.emptyList()))
                .getOrElse(Collections.emptyList());
     }
 
