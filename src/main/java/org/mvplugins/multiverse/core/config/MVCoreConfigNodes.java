@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.config;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Provider;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
@@ -12,10 +13,14 @@ import org.mvplugins.multiverse.core.configuration.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
 import org.mvplugins.multiverse.core.configuration.node.NodeGroup;
+import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 final class MVCoreConfigNodes {
@@ -23,10 +28,15 @@ final class MVCoreConfigNodes {
     private final NodeGroup nodes = new NodeGroup();
     private PluginManager pluginManager;
     private Provider<MVCommandManager> commandManager;
+    private final Provider<DestinationsProvider> destinationsProvider;
 
-    MVCoreConfigNodes(@NotNull PluginManager pluginManager, @NotNull Provider<MVCommandManager> commandManager) {
+    MVCoreConfigNodes(
+            @NotNull PluginManager pluginManager,
+            @NotNull Provider<MVCommandManager> commandManager,
+            @NotNull Provider<DestinationsProvider> destinationsProvider) {
         this.pluginManager = pluginManager;
         this.commandManager = commandManager;
+        this.destinationsProvider = destinationsProvider;
     }
 
     NodeGroup getNodes() {
@@ -167,6 +177,7 @@ final class MVCoreConfigNodes {
             .comment("This only applies if first-spawn-override is set to true.")
             .defaultValue("")
             .name("first-spawn-location")
+            .suggester(this::suggestDestinations)
             .build());
 
     final ConfigNode<Boolean> enableJoinDestination = node(ConfigNode.builder("spawn.enable-join-destination", Boolean.class)
@@ -182,6 +193,7 @@ final class MVCoreConfigNodes {
             .comment("Set the above enable-join-destination to false to disable")
             .defaultValue("")
             .name("join-destination")
+            .suggester(this::suggestDestinations)
             .build());
 
     final ConfigNode<Boolean> defaultRespawnWithinSameWorld = node(ConfigNode.builder("spawn.default-respawn-within-same-world", Boolean.class)
@@ -345,6 +357,7 @@ final class MVCoreConfigNodes {
             .comment("  3 = finest")
             .defaultValue(0)
             .name("global-debug")
+            .suggester(input -> List.of("0", "1", "2", "3"))
             .validator(value -> (value < 0 || value > 3)
                     ? Try.failure(new MultiverseException("Debug level must be between 0 and 3."))
                     : Try.success(null))
@@ -388,6 +401,17 @@ final class MVCoreConfigNodes {
             .defaultValue(0.0)
             .name(null)
             .build());
+
+    // todo: Maybe combine with the similar method in MVCommandCompletion but that has permission checking
+    private Collection<String> suggestDestinations(String input) {
+        return destinationsProvider.get().getDestinations().stream()
+                .flatMap(destination -> destination.suggestDestinations(Bukkit.getConsoleSender(), null)
+                        .stream()
+                        .map(packet -> destination instanceof WorldDestination
+                                ? packet.destinationString()
+                                : destination.getIdentifier() + ":" + packet.destinationString()))
+                .toList();
+    }
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc
     // END CHECKSTYLE-SUPPRESSION: MemberName
