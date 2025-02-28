@@ -399,7 +399,7 @@ final class MVCoreConfigNodes {
             .comment("This just signifies the version number so we can see what version of config you have.")
             .comment("NEVER TOUCH THIS VALUE")
             .defaultValue(0.0)
-            .name(null)
+            .hidden()
             .build());
 
     // todo: Maybe combine with the similar method in MVCommandCompletion but that has permission checking

@@ -113,7 +113,7 @@ final class WorldConfigNodes {
 
     final ConfigNode<String> biome = node(ConfigNode.builder("biome", String.class)
             .defaultValue("@error")
-            .name(null));
+            .hidden());
 
     final ConfigNode<Difficulty> difficulty = node(ConfigNode.builder("difficulty", Difficulty.class)
             .defaultValue(Difficulty.NORMAL)
@@ -160,7 +160,7 @@ final class WorldConfigNodes {
     final ConfigNode<World.Environment> environment = node(ConfigNode
             .builder("environment", World.Environment.class)
             .defaultValue(World.Environment.NORMAL)
-            .name(null));
+            .hidden());
 
     final ConfigNode<GameMode> gamemode = node(ConfigNode.builder("gamemode", GameMode.class)
             .defaultValue(GameMode.SURVIVAL)
@@ -172,7 +172,7 @@ final class WorldConfigNodes {
     final ConfigNode<String> generator = node(ConfigNode.builder("generator", String.class)
             // this should be set on world creation, if @error is shown in config, something went wrong
             .defaultValue("@error")
-            .name(null));
+            .hidden());
 
     final ConfigNode<Boolean> hidden = node(ConfigNode.builder("hidden", Boolean.class)
             .defaultValue(false));
@@ -221,11 +221,11 @@ final class WorldConfigNodes {
 
     final ConfigNode<Long> seed = node(ConfigNode.builder("seed", Long.class)
             .defaultValue(Long.MIN_VALUE)
-            .name(null));
+            .hidden());
 
     final ConfigNode<SpawnLocation> spawnLocation = node(ConfigNode.builder("spawn-location", SpawnLocation.class)
             .defaultValue(NullLocation.get())
-            .name(null)
+            .hidden()
             .onSetValue((oldValue, newValue) -> {
                 if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
                 if (newValue == null || newValue instanceof NullLocation) return;
@@ -286,7 +286,7 @@ final class WorldConfigNodes {
 
     final ConfigNode<Double> version = node(ConfigNode.builder("version", Double.class)
             .defaultValue(CONFIG_VERSION)
-            .name(null));
+            .hidden());
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc
     // END CHECKSTYLE-SUPPRESSION: VisibilityModifier

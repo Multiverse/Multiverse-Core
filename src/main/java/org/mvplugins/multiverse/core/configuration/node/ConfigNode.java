@@ -17,6 +17,7 @@ import org.mvplugins.multiverse.core.configuration.functions.DefaultSuggesterPro
 import org.mvplugins.multiverse.core.configuration.functions.NodeSerializer;
 import org.mvplugins.multiverse.core.configuration.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.configuration.functions.NodeSuggester;
+import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 
 /**
  * A node that contains a value.
@@ -231,6 +232,15 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          */
         public @Nullable String name() {
             return name;
+        }
+
+        /**
+         * Sets the name as null, and will not be shown in {@link StringPropertyHandle} as a property.
+         *
+         * @return This builder.
+         */
+        public @NotNull B hidden() {
+            return name(null);
         }
 
         /**
