@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.world.WorldManager;
-import org.mvplugins.multiverse.core.world.helpers.WorldPurger;
+import org.mvplugins.multiverse.core.world.helpers.LegacyWorldPurger;
 
 /**
  * Multiverse's Entity {@link Listener}.
@@ -29,12 +29,12 @@ import org.mvplugins.multiverse.core.world.helpers.WorldPurger;
 @Service
 final class MVEntityListener implements CoreListener {
     private final WorldManager worldManager;
-    private final WorldPurger worldPurger;
+    private final LegacyWorldPurger worldPurger;
 
     @Inject
     MVEntityListener(
             @NotNull WorldManager worldManager,
-            @NotNull WorldPurger worldPurger) {
+            @NotNull LegacyWorldPurger worldPurger) {
         this.worldManager = worldManager;
         this.worldPurger = worldPurger;
     }

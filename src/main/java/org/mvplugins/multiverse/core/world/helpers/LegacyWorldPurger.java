@@ -34,7 +34,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
  */
 @Deprecated
 @Service
-public final class WorldPurger {
+public final class LegacyWorldPurger {
 
     /**
      * Synchronizes the given worlds with their settings.
