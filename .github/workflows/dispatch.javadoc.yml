@@ -14,20 +14,21 @@ jobs:
   javadocs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.target_tag }}
 
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
-      
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
       - name: build javadoc
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: javadoc
+        run: ./gradlew javadoc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_VERSION: ${{ inputs.target_tag }}
