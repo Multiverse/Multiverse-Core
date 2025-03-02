@@ -1,0 +1,90 @@
+world:
+  adjust-spawn: false
+  alias: my world
+  allow-flight: false
+  allow-weather: true
+  anchor-respawn: true
+  auto-heal: true
+  auto-load: true
+  bed-respawn: true
+  difficulty: normal
+  entry-fee:
+    enabled: false
+    amount: 0.0
+    currency: '@vault-economy'
+  environment: normal
+  gamemode: survival
+  biome: ''
+  generator: ''
+  hidden: false
+  hunger: true
+  keep-spawn-in-memory: true
+  player-limit: -1
+  portal-form: all
+  pvp: true
+  respawn-world: ''
+  scale: 1.0
+  seed: -9223372036854775808
+  spawn-location:
+    ==: MVSpawnLocation
+    x: -64.0
+    y: 64.0
+    z: 48.0
+    pitch: 0.0
+    yaw: 0.0
+  spawning:
+    animals:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+    monsters:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+  world-blacklist: []
+  version: 1.1
+world_nether:
+  adjust-spawn: false
+  alias: ''
+  allow-flight: false
+  allow-weather: true
+  anchor-respawn: true
+  auto-heal: true
+  auto-load: true
+  bed-respawn: true
+  difficulty: normal
+  entry-fee:
+    enabled: false
+    amount: 0.0
+    currency: '@vault-economy'
+  environment: nether
+  gamemode: survival
+  biome: ''
+  generator: ''
+  hidden: false
+  hunger: true
+  keep-spawn-in-memory: true
+  player-limit: -1
+  portal-form: all
+  pvp: true
+  respawn-world: ''
+  scale: 8.0
+  seed: -9223372036854775808
+  spawn-location:
+    ==: MVSpawnLocation
+    x: -64.0
+    y: 64.0
+    z: 48.0
+    pitch: 0.0
+    yaw: 0.0
+  spawning:
+    animals:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+    monsters:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+  world-blacklist: []
+  version: 1.1
