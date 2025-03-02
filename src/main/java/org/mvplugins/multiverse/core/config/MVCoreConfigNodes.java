@@ -167,7 +167,7 @@ final class MVCoreConfigNodes {
             .comment("Sets whether Multiverse will override the first spawn location of a world.")
             .comment("If enabled, Multiverse will set the first spawn location of a world to the spawn location of the world.")
             .comment("If disabled, it will default to server.properties settings.")
-            .defaultValue(true)
+            .defaultValue(false)
             .name("first-spawn-override")
             .build());
 
