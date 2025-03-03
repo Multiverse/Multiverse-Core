@@ -1,0 +1,38 @@
+world:
+  enforce-access: false
+  enforce-gamemode: true
+  auto-purge-entities: false
+
+teleport:
+  use-finer-teleport-permissions: true
+  concurrent-teleport-limit: 50
+  teleport-intercept: true
+
+spawn:
+  first-spawn-override: true
+  first-spawn-location: ''
+  enable-join-destination: false
+  join-destination: ''
+
+portal:
+  use-custom-portal-search: false
+  custom-portal-search-radius: 128
+
+messaging:
+  enable-chat-prefix: false
+  chat-prefix-format: '[%world%]%chat%'
+  register-papi-hook: true
+  default-locale: en
+  per-player-locale: true
+?!
+command:
+  resolve-alias-name: true
+  confirm-mode: enable
+  use-confirm-otp: true
+
+misc:
+  global-debug: 0
+  silent-start: false
+  show-donation-message: true
+
+version: 5.1

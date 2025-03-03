@@ -1,0 +1,92 @@
+world:
+  adjust-spawn: false
+  alias: 1234 # should be parsed as string and not integer
+  allow-flight: false
+  allow-weather: true
+  anchor-respawn: true
+  auto-heal: true
+  auto-load: true
+  bed-respawn: allow # should parse to true as boolean
+  difficulty: normal
+  entry-fee:
+    enabled: false
+    amount: 0.0
+    currency: dirt # should be parsed to @minecraft:dirt
+  environment: normal
+  gamemode: sUrvivAl # random casing shouldn't affect parsing
+  biome: ''
+  generator: ''
+  hidden: false
+  hunger: true
+  keep-spawn-in-memory: true
+  player-limit: -1
+  portal-form: all
+  pvp: true
+  respawn-world: ''
+  scale: '4' # string number should be parsed as double
+  seed: -9223372036854775808
+  spawn-location:
+    ==: MVSpawnLocation
+    x: -64.0
+    y: 64.0
+    z: 48.0
+    pitch: 0.0
+    yaw: 0.0
+  spawning:
+    animals:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+    monsters:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+  world-blacklist: # should be parsed as list of string
+    - a
+    - 1
+    - 2
+  version: 1.1
+world_nether:
+  adjust-spawn: false
+  alias: ''
+  allow-flight: false
+  allow-weather: true
+  auto-heal: true
+  auto-load: true
+  bed-respawn: true
+  difficulty: normal
+  entry-fee:
+    enabled: false
+    amount: 0.0
+    currency: '@vault-economy'
+  environment: nether
+  gamemode: survival
+  biome: ''
+  generator: ''
+  hidden: false
+  hunger: true
+  keep-spawn-in-memory: true
+  player-limit: -1
+  portal-form: all
+  pvp: true
+  respawn-world: ''
+  scale: 8.0
+  seed: -9223372036854775808
+  spawn-location:
+    ==: MVSpawnLocation
+    x: -64.0
+    y: 64.0
+    z: 48.0
+    pitch: 0.0
+    yaw: 0.0
+  spawning:
+    animals:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+    monsters:
+      spawn: true
+      tick-rate: -1
+      exceptions: []
+  world-blacklist: []
+  version: 1.1
