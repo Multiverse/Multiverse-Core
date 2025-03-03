@@ -11,7 +11,7 @@ teleport:
   safe-location-vertical-search-radius: 3
 
 spawn:
-  first-spawn-override: true
+  first-spawn-override: false
   first-spawn-location: ''
   enable-join-destination: false
   join-destination: ''
