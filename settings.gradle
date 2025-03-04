@@ -4,9 +4,10 @@
 
 pluginManagement {
     repositories {
+        mavenLocal()
         gradlePluginPortal()
         maven {
-            url = uri('https://repo.onarandombox.com/multiverse-releases')
+            url = uri('https://repo.onarandombox.com/multiverse')
         }
     }
 }

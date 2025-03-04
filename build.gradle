@@ -3,6 +3,12 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'org.mvplugins.multiverse-plugin' version '1.0.1'
     id 'org.mvplugins.kotlin-test-only' version '1.0.1'
+    id 'org.gradlex.extra-java-module-info' version '1.10'
+//    id 'org.moditect.gradleplugin' version '1.0.0-rc3'
+    id 'org.mvplugins.jpms.spigot-api' version '1.18.2-R0.1-SNAPSHOT'
+//    id 'org.mvplugins.jpms.hk2-locator' version '3.0.3'
+    id 'org.mvplugins.jpms.hk2-inhabitant-generator' version '3.0.3'
+//    id 'org.mvplugins.jpms.hk2-metadata-generator' version '3.0.3'
 }
 
 group = 'org.mvplugins.multiverse.core'
@@ -31,6 +37,9 @@ configure(apiDependencies) {
 }
 
 dependencies {
+    compileOnly 'com.google.guava:listenablefuture'
+    compileOnly 'com.google.code.findbugs:jsr305'
+
     // Economy
     externalPlugin('com.github.MilkBowl:VaultAPI:1.7.1') {
         exclude group: 'org.bukkit', module: 'bukkit'
@@ -101,6 +110,11 @@ shadowJar {
     relocate 'org.intellij', 'org.mvplugins.multiverse.external.intellij'
     relocate 'org.jetbrains', 'org.mvplugins.multiverse.external.jetbrains'
     relocate 'io.papermc.lib', 'org.mvplugins.multiverse.external.paperlib'
+
+    dependencies {
+        exclude 'META-INF/versions/**'
+    }
+    excludes.remove("module-info.class")
 }
 
 publishing {
@@ -122,3 +136,187 @@ publishing {
         }
     }
 }
+
+tasks.withType(Test).configureEach {
+    extraJavaModuleInfo {
+        deriveAutomaticModuleNamesFromFileNames.set(true)
+    }
+}
+
+//compileTestKotlin {
+//    extraJavaModuleInfo {
+//        failOnAutomaticModules.set(false)
+//    }
+//}
+//
+//compileTestJava {
+//    extraJavaModuleInfo {
+//        failOnAutomaticModules.set(false)
+//    }
+//}
+//
+//compileJava {
+//    extraJavaModuleInfo {
+//        failOnAutomaticModules.set(true)
+//    }
+//}
+
+extraJavaModuleInfo {
+//    failOnAutomaticModules.set(true)
+//    deriveAutomaticModuleNamesFromFileNames.set(true)
+
+    module('com.github.MilkBowl:VaultAPI', 'net.milkbowl.vault') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('me.clip:placeholderapi', 'me.clip.placeholderapi') {
+        overrideModuleName()
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('co.aikar:acf-paper', 'co.aikar.commands') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration',
+            'io.github.townyadvanced.commentedconfiguration') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('io.vavr:vavr-match', 'io.vavr.match') {
+        exportAllPackages()
+    }
+    module('io.vavr:vavr', 'io.vavr') {
+        requiresTransitive('io.vavr.match')
+        exportAllPackages()
+    }
+
+//    module('jakarta.annotation:jarkarta.annotation-api', 'jakarta.annotation') {
+//        exportAllPackages()
+//    }
+//    module('jakarta.inject:jakarta.inject-api', 'jakarta.inject') {
+//        exportAllPackages()
+//    }
+//    module('org.glassfish.hk2.external:aopalliance-repackaged', 'org.aopalliance') {
+//        exportAllPackages()
+//    }
+//    module('org.glassfish.hk2:hk2-utils', 'org.glassfish.hk2.utilities') {
+//        requiresTransitive('jakarta.annotation')
+//        requiresTransitive('jakarta.inject')
+//        exportAllPackages()
+//    }
+//    module('org.glassfish.hk2:hk2-api', 'org.glassfish.hk2') {
+//        overrideModuleName()
+//        requiresTransitive('org.glassfish.hk2.utilities')
+//        requiresTransitive('org.aopalliance')
+//        exportAllPackages()
+//    }
+    module('org.javassist:javassist', 'javassist') {
+        exportAllPackages()
+    }
+    module('org.glassfish.hk2:hk2-locator', 'org.jvnet.hk2') {
+        overrideModuleName()
+        requiresTransitive('org.glassfish.hk2')
+        requiresTransitive('javassist')
+        exports('org.jvnet.hk2.external.generator')
+        exports('org.jvnet.hk2.external.runtime')
+    }
+
+//    module('org.glassfish.hk2:hk2-inhabitant-generator', 'org.jvnet.hk2.generator') {
+//        requiresTransitive('jakarta.inject')
+//        requiresTransitive('org.glassfish.hk2')
+//        requiresTransitive('org.objectweb.asm')
+//        requiresTransitive('org.objectweb.asm.commons')
+//        requiresTransitive('org.objectweb.asm.tree')
+//        requiresTransitive('org.objectweb.asm.tree.analysis')
+//        requiresTransitive('org.objectweb.asm.util')
+//        exports('org.jvnet.hk2.generator')
+//        exports('org.jvnet.hk2.generator.ant')
+//        exports('org.jvnet.hk2.generator.eclipse')
+//        exports('org.jvnet.hk2.generator.maven')
+//    }
+
+    module('com.dumptruckman.minecraft:Logging', 'com.dumptruckman.minecraft.util') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('de.themoep.idconverter:mappings', 'de.themoep.idconverter') {
+        exportAllPackages()
+    }
+
+    module('org.bstats:bstats-base', 'org.bstats.base') {
+        exportAllPackages()
+    }
+    module('org.bstats:bstats-bukkit', 'org.bstats.bukkit') {
+        requires('org.bukkit')
+        requiresTransitive('org.bstats.base')
+        exportAllPackages()
+    }
+
+    module('net.minidev:accessors-smart', 'net.minidev.asm') {
+        requiresTransitive('org.objectweb.asm')
+        exportAllPackages()
+    }
+    module('net.minidev:json-smart', 'net.minidev.json') {
+        requiresTransitive('net.minidev.asm')
+        exportAllPackages()
+    }
+
+    module('io.papermc:paperlib', 'io.papermc.lib') {
+        requires('org.bukkit')
+        exportAllPackages()
+    }
+
+    module('org.glassfish.hk2:hk2-metadata-generator', 'org.glassfish.hk2.metadata.generator') {
+        requiresTransitive('jakarta.annotation')
+        requiresTransitive('jakarta.inject')
+        requiresTransitive('org.glassfish.hk2')
+        requiresTransitive('org.glassfish.hk2.utilities')
+        exportAllPackages()
+    }
+}
+
+//afterEvaluate {
+//    addDependenciesModuleInfo.dependsOn -= tasks.jar
+//    addDependenciesModuleInfo.enabled = false
+//    generateModuleInfo.dependsOn -= tasks.jar
+//    generateModuleInfo.enabled = false
+//
+//    jar.dependsOn -= tasks.addDependenciesModuleInfo
+//    jar.dependsOn -= tasks.generateModuleInfo
+//    jar.dependsOn -= tasks.addMainModuleInfo
+//}
+//
+//addMainModuleInfo.dependsOn = [shadowJar]
+//shadowJar.finalizedBy(tasks.addMainModuleInfo)
+//
+//addMainModuleInfo {
+//    module {
+//        moduleInfoFile = file("$projectDir/src/main/java/module-info.java") as File
+//        moduleInfo {
+//            requires = '''
+//                requires co.aikar.commands;
+//                requires com.dumptruckman.minecraft.util;
+//                requires de.themoep.idconverter;
+//                requires io.github.townyadvanced.commentedconfiguration;
+//                requires io.papermc.lib;
+//                requires io.vavr;
+//                requires me.clip.placeholderapi;
+//                requires net.milkbowl.vault;
+//                requires net.minidev.json;
+//                requires org.bstats.bukkit;
+//                requires org.bukkit;
+//                requires org.jetbrains.annotations;
+//                requires org.jvnet.hk2;
+//            '''
+//            exports = '''
+//                org.mvplugins.multiverse.external.*;
+//            '''
+//        }
+//    }
+//}

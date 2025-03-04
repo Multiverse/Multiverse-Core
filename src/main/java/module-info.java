@@ -1,0 +1,45 @@
+open module org.mvplugins.multiverse.core {
+    requires org.bukkit;
+    requires static co.aikar.commands;
+    requires static com.dumptruckman.minecraft.util;
+    requires static de.themoep.idconverter;
+    requires static io.github.townyadvanced.commentedconfiguration;
+    requires static io.papermc.lib;
+    requires static io.vavr;
+//    requires jakarta.annotation;
+//    requires jakarta.inject;
+    requires static me.clip.placeholderapi;
+    requires static net.milkbowl.vault;
+    requires static net.minidev.json;
+    requires static org.bstats.bukkit;
+//    requires org.glassfish.hk2;
+    requires static org.jetbrains.annotations;
+    requires org.jvnet.hk2;
+
+    exports org.mvplugins.multiverse.core;
+    exports org.mvplugins.multiverse.core.commands;
+    exports org.mvplugins.multiverse.core.listeners;
+    exports org.mvplugins.multiverse.core.configuration.handle;
+    exports org.mvplugins.multiverse.core.configuration.functions;
+    exports org.mvplugins.multiverse.core.configuration.node;
+    exports org.mvplugins.multiverse.core.commandtools;
+    exports org.mvplugins.multiverse.core.utils;
+    exports org.mvplugins.multiverse.core.utils.result;
+    exports org.mvplugins.multiverse.core.locale;
+    exports org.mvplugins.multiverse.core.locale.message;
+    exports org.mvplugins.multiverse.core.config;
+    exports org.mvplugins.multiverse.core.event;
+    exports org.mvplugins.multiverse.core.inject;
+    exports org.mvplugins.multiverse.core.inject.binder;
+    exports org.mvplugins.multiverse.core.anchor;
+    exports org.mvplugins.multiverse.core.economy;
+    exports org.mvplugins.multiverse.core.destination;
+    exports org.mvplugins.multiverse.core.destination.core;
+    exports org.mvplugins.multiverse.core.world;
+    exports org.mvplugins.multiverse.core.world.helpers;
+    exports org.mvplugins.multiverse.core.world.reasons;
+    exports org.mvplugins.multiverse.core.world.location;
+    exports org.mvplugins.multiverse.core.world.options;
+    exports org.mvplugins.multiverse.core.world.generators;
+    exports org.mvplugins.multiverse.core.teleportation;
+}
