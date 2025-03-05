@@ -362,10 +362,9 @@ final class MVCoreConfigNodes {
                     ? Try.failure(new MultiverseException("Debug level must be between 0 and 3."))
                     : Try.success(null))
             .onSetValue((oldValue, newValue) -> {
-                int level = Logging.getDebugLevel();
-                Logging.setDebugLevel(newValue);
-                if (level != Logging.getDebugLevel()) {
-                    pluginManager.callEvent(new MVDebugModeEvent(level));
+                if (newValue != Logging.getDebugLevel()) {
+                    Logging.setDebugLevel(newValue);
+                    pluginManager.callEvent(new MVDebugModeEvent(newValue));
                 }
             })
             .build());
