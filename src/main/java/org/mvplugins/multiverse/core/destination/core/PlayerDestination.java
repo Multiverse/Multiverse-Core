@@ -18,7 +18,7 @@ import org.mvplugins.multiverse.core.utils.PlayerFinder;
  * {@link Destination} implementation for players.s
  */
 @Service
-public class PlayerDestination implements Destination<PlayerDestination, PlayerDestinationInstance> {
+public final class PlayerDestination implements Destination<PlayerDestination, PlayerDestinationInstance> {
     /**
      * Creates a new instance of the PlayerDestination.
      */

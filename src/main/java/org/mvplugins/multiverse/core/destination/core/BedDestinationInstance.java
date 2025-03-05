@@ -13,7 +13,7 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 /**
  * Destination instance implementation for the {@link BedDestination}.
  */
-public class BedDestinationInstance extends DestinationInstance<BedDestinationInstance, BedDestination> {
+public final class BedDestinationInstance extends DestinationInstance<BedDestinationInstance, BedDestination> {
     private final Player player;
 
     /**

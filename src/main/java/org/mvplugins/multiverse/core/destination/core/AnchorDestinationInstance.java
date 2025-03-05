@@ -11,7 +11,7 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 /**
  * Destination instance implementation for the {@link AnchorDestination}.
  */
-public class AnchorDestinationInstance extends DestinationInstance<AnchorDestinationInstance, AnchorDestination> {
+public final class AnchorDestinationInstance extends DestinationInstance<AnchorDestinationInstance, AnchorDestination> {
     private final String anchorName;
     private final Location anchorLocation;
 

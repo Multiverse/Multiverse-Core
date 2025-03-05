@@ -12,7 +12,7 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 /**
  * Destination instance implementation for the {@link CannonDestination}.
  */
-public class CannonDestinationInstance extends DestinationInstance<CannonDestinationInstance, CannonDestination> {
+public final class CannonDestinationInstance extends DestinationInstance<CannonDestinationInstance, CannonDestination> {
     private final Location location;
     private final double speed;
 

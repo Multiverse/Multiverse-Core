@@ -24,7 +24,7 @@ import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
  * {@link Destination} implementation for exact locations.
  */
 @Service
-public class ExactDestination implements Destination<ExactDestination, ExactDestinationInstance> {
+public final class ExactDestination implements Destination<ExactDestination, ExactDestinationInstance> {
 
     private final MVCoreConfig config;
     private final WorldManager worldManager;

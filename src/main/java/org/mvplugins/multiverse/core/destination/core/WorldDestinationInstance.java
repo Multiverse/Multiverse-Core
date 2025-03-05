@@ -13,7 +13,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 /**
  * Destination instance implementation for the {@link WorldDestination}.
  */
-public class WorldDestinationInstance extends DestinationInstance<WorldDestinationInstance, WorldDestination> {
+public final class WorldDestinationInstance extends DestinationInstance<WorldDestinationInstance, WorldDestination> {
     private final MultiverseWorld world;
     private final String direction;
     private final float yaw;

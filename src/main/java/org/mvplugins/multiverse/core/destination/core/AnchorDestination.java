@@ -19,7 +19,7 @@ import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
  * {@link Destination} implementation for anchors.
  */
 @Service
-public class AnchorDestination implements Destination<AnchorDestination, AnchorDestinationInstance> {
+public final class AnchorDestination implements Destination<AnchorDestination, AnchorDestinationInstance> {
 
     private final AnchorManager anchorManager;
 

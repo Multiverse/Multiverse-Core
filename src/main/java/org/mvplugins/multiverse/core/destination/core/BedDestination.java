@@ -20,7 +20,7 @@ import org.mvplugins.multiverse.core.utils.PlayerFinder;
  * {@link Destination} implementation for beds.
  */
 @Service
-public class BedDestination implements Destination<BedDestination, BedDestinationInstance> {
+public final class BedDestination implements Destination<BedDestination, BedDestinationInstance> {
     static final String OWN_BED_STRING = "playerbed";
 
     BedDestination() {

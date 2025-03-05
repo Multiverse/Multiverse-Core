@@ -12,7 +12,7 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 /**
  * Destination instance implementation for the {@link ExactDestination}.
  */
-public class ExactDestinationInstance extends DestinationInstance<ExactDestinationInstance, ExactDestination> {
+public final class ExactDestinationInstance extends DestinationInstance<ExactDestinationInstance, ExactDestination> {
     private final Location location;
 
     /**

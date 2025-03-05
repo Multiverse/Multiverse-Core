@@ -21,7 +21,7 @@ import java.util.List;
  * {@link Destination} implementation for cannons.
  */
 @Service
-public class CannonDestination implements Destination<CannonDestination, CannonDestinationInstance> {
+public final class CannonDestination implements Destination<CannonDestination, CannonDestinationInstance> {
 
     private final WorldManager worldManager;
 
