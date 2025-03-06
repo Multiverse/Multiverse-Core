@@ -260,7 +260,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private String getWorldNameOrAlias(MultiverseWorld world) {
-        return config.getResolveAliasName() ? world.getAlias() : world.getName();
+        return config.getResolveAliasName() ? world.getColourlessAlias() : world.getName();
     }
 
     private Collection<String> suggestMVWorldPropsName(BukkitCommandCompletionContext context) {

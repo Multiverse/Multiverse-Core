@@ -78,7 +78,11 @@ final class WorldConfigNodes {
             .defaultValue(false));
 
     final ConfigNode<String> alias = node(ConfigNode.builder("alias", String.class)
-            .defaultValue(""));
+            .defaultValue("")
+            .onSetValue((oldValue, newValue) -> {
+                if (world == null) return;
+                world.updateColourlessAlias();
+            }));
 
     final ConfigNode<Boolean> allowFlight = node(ConfigNode.builder("allow-flight", Boolean.class)
             .defaultValue(false)

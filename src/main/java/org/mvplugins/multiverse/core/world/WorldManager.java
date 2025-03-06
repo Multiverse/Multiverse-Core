@@ -17,12 +17,11 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
-import org.bukkit.block.Biome;
-import org.bukkit.generator.BiomeProvider;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -807,11 +806,14 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getUnloadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
-        return getUnloadedWorld(worldNameOrAlias)
-                .orElse(() -> Option.ofOptional(worldsMap.values().stream()
-                        .filter(world -> !world.isLoaded())
-                        .filter(world -> world.getAlias().equalsIgnoreCase(worldNameOrAlias))
-                        .findFirst()));
+        return getUnloadedWorld(worldNameOrAlias).orElse(() -> getUnloadedWorldByAlias(worldNameOrAlias));
+    }
+
+    private Option<MultiverseWorld> getUnloadedWorldByAlias(@Nullable String alias) {
+        return Option.ofOptional(worldsMap.values().stream()
+                .filter(world -> !world.isLoaded())
+                .filter(world -> world.getColourlessAlias().equalsIgnoreCase(ChatColor.stripColor(alias)))
+                .findFirst());
     }
 
     /**
@@ -874,10 +876,14 @@ public final class WorldManager {
      */
     public Option<LoadedMultiverseWorld> getLoadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
         return getLoadedWorld(worldNameOrAlias)
-                .orElse(() -> Option.ofOptional(loadedWorldsMap.values().stream()
-                        .filter(world -> world.getAlias().equalsIgnoreCase(worldNameOrAlias))
-                        .map(world -> (LoadedMultiverseWorld) world)
-                        .findFirst()));
+                .orElse(() -> getLoadedWorldByAlias(worldNameOrAlias));
+    }
+
+    private Option<LoadedMultiverseWorld> getLoadedWorldByAlias(@Nullable String alias) {
+        return Option.ofOptional(loadedWorldsMap.values().stream()
+                .filter(world -> world.getColourlessAlias().equalsIgnoreCase(ChatColor.stripColor(alias)))
+                .map(world -> (LoadedMultiverseWorld) world)
+                .findFirst());
     }
 
     /**
