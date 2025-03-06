@@ -12,6 +12,7 @@ import java.util.WeakHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -145,7 +146,11 @@ public class CommandQueueManager {
             return false;
         }
         Logging.finer("Running queued command...");
-        payload.action().run();
+        Try.run(() -> payload.action().run()).onFailure(e -> {
+            issuer.sendMessage(ChatColor.RED + "Failed to run queued command.");
+            Logging.severe("Failed to run queued command: %s", e.getMessage());
+            e.printStackTrace();
+        });
         return removeFromQueue(senderName);
     }
 
