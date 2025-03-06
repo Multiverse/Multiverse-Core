@@ -32,10 +32,13 @@ import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -48,7 +51,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -1028,5 +1030,46 @@ public class WorldManager implements MVWorldManager {
                 .filter(WorldNameChecker::isValidWorldFolder)
                 .map(File::getName)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addOrRemoveWorldSafely(String worldName, String operationName, Runnable worldModification) {
+        Logging.finest("Checking if it is safe to perform world modification");
+        if (safeToAddOrRemoveWorld()) {
+            // Operation is fine to do now
+            Logging.finest("Clear to modify worlds");
+            worldModification.run();
+        } else {
+            // Operation needs to be delayed until worlds are not being ticked
+            Logging.fine("Worlds were being ticked while attempting to %s %s. Trying again in the next tick", operationName, worldName);
+            new BukkitRunnable() {
+                public void run() {
+                    worldModification.run();
+                }
+            }.runTask(plugin);
+        }
+    }
+
+    private boolean safeToAddOrRemoveWorld(){
+        Logging.finest("Checking for Paper");
+        Method isTickingWorlds;
+        try {
+            isTickingWorlds = Bukkit.class.getMethod("isTickingWorlds");
+        } catch (NoSuchMethodException e) {
+            // Paper fixes aren't active, so it is always considered safe to proceed
+            Logging.finest("Paper fixes inactive");
+            return true;
+        }
+        // Paper fixes are active, and Paper wants us to check Bukkit.isTickingWorlds()
+        Logging.finest("Paper fixes active");
+        try {
+            return !(boolean) isTickingWorlds.invoke(null);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            // Shouldn't happen, I know I'm using the method correctly
+            throw new RuntimeException(e);
+        }
     }
 }
