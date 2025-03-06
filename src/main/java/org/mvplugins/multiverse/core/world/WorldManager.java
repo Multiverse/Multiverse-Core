@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -80,6 +81,8 @@ public final class WorldManager {
     private final PluginManager pluginManager;
     private final CorePermissions corePermissions;
     private final ServerProperties serverProperties;
+    @NotNull
+    private final MVCoreConfig config;
 
     @Inject
     WorldManager(
@@ -92,22 +95,24 @@ public final class WorldManager {
             @NotNull LocationManipulation locationManipulation,
             @NotNull PluginManager pluginManager,
             @NotNull CorePermissions corePermissions,
-            @NotNull ServerProperties serverProperties) {
-        this.biomeProviderFactory = biomeProviderFactory;
-        this.serverProperties = serverProperties;
-        this.worldsMap = new HashMap<>();
-        this.loadedWorldsMap = new HashMap<>();
-        this.unloadTracker = new ArrayList<>();
-        this.loadTracker = new ArrayList<>();
-
+            @NotNull ServerProperties serverProperties,
+            @NotNull MVCoreConfig config) {
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
+        this.biomeProviderFactory = biomeProviderFactory;
         this.generatorProvider = generatorProvider;
         this.fileUtils = fileUtils;
         this.blockSafety = blockSafety;
         this.locationManipulation = locationManipulation;
         this.pluginManager = pluginManager;
         this.corePermissions = corePermissions;
+        this.serverProperties = serverProperties;
+        this.config = config;
+
+        this.worldsMap = new HashMap<>();
+        this.loadedWorldsMap = new HashMap<>();
+        this.unloadTracker = new ArrayList<>();
+        this.loadTracker = new ArrayList<>();
     }
 
     /**
@@ -282,7 +287,7 @@ public final class WorldManager {
     }
 
     private MultiverseWorld newMultiverseWorld(String worldName, WorldConfig worldConfig) {
-        MultiverseWorld mvWorld = new MultiverseWorld(worldName, worldConfig);
+        MultiverseWorld mvWorld = new MultiverseWorld(worldName, worldConfig, config);
         worldsMap.put(mvWorld.getName(), mvWorld);
         corePermissions.addWorldPermissions(mvWorld);
         return mvWorld;
@@ -308,7 +313,8 @@ public final class WorldManager {
                 world,
                 worldConfig,
                 blockSafety,
-                locationManipulation);
+                locationManipulation,
+                config);
         setDefaultEnvironmentScale(mvWorld);
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
@@ -375,7 +381,8 @@ public final class WorldManager {
                                     world,
                                     worldConfig,
                                     blockSafety,
-                                    locationManipulation);
+                                    locationManipulation,
+                                    config);
                             loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
                             saveWorldsConfig();
                             return worldActionResult(loadedWorld);

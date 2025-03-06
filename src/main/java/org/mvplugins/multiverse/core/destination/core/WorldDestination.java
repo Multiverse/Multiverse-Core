@@ -87,7 +87,7 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
                 .filter(world -> worldEntryCheckerProvider.forSender(sender)
                         .canAccessWorld(world)
                         .isSuccess())
-                .map(world -> new DestinationSuggestionPacket(world.getName(), world.getName()))
+                .map(world -> new DestinationSuggestionPacket(world.getTabCompleteName(), world.getName()))
                 .toList();
     }
 }

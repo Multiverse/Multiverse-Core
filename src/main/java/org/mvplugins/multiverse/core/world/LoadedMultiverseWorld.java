@@ -12,6 +12,7 @@ import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.world.location.NullLocation;
@@ -31,8 +32,9 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
             @NotNull World world,
             @NotNull WorldConfig worldConfig,
             @NotNull BlockSafety blockSafety,
-            @NotNull LocationManipulation locationManipulation) {
-        super(world.getName(), worldConfig);
+            @NotNull LocationManipulation locationManipulation,
+            @NotNull MVCoreConfig config) {
+        super(world.getName(), worldConfig, config);
         this.worldUid = world.getUID();
         this.blockSafety = blockSafety;
         this.locationManipulation = locationManipulation;

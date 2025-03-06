@@ -120,7 +120,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
                         .canAccessWorld(world)
                         .isSuccess())
                 .map(world ->
-                        new DestinationSuggestionPacket(world.getName() + ":", world.getName()))
+                        new DestinationSuggestionPacket(world.getTabCompleteName() + ":", world.getName()))
                 .toList();
     }
 }

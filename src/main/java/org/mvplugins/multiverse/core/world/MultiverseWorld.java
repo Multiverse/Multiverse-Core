@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.config.MVCoreConfig;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
@@ -25,16 +26,19 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      * This world's name.
      */
     protected final String worldName;
-    private String colourlessAlias = "";
 
     /**
      * This world's configuration.
      */
-    protected WorldConfig worldConfig;
+    WorldConfig worldConfig;
 
-    MultiverseWorld(String worldName, WorldConfig worldConfig) {
+    private final MVCoreConfig config;
+    private String colourlessAlias = "";
+
+    MultiverseWorld(String worldName, WorldConfig worldConfig, MVCoreConfig config) {
         this.worldName = worldName;
         this.worldConfig = worldConfig;
+        this.config = config;
         this.worldConfig.setMVWorld(this);
         updateColourlessAlias();
     }
@@ -49,6 +53,15 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      */
     public String getName() {
         return worldName;
+    }
+
+    /**
+     * Gets the tab complete name of this world. Use alias if `resolve-alias-name` config is true, else use world name.
+     *
+     * @return The tab complete name of the world as a String
+     */
+    public String getTabCompleteName() {
+        return config.getResolveAliasName() ? getColourlessAlias() : getName();
     }
 
     /**
