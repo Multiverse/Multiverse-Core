@@ -362,7 +362,7 @@ final class MVPlayerListener implements CoreListener {
     private void handleGameModeAndFlight(final Player player, World world) {
         // We perform this task one tick later to MAKE SURE that the player actually reaches the
         // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
-        this.server.getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
+        this.server.getScheduler().runTaskLater(this.plugin, () -> {
             if (!player.isOnline() || !player.getWorld().equals(world)) {
                 return;
             }
