@@ -57,6 +57,7 @@ public class MVCommandManager extends PaperCommandManager {
 
         MVCommandConditions.load(this, worldManager, worldNameChecker);
         this.enableUnstableAPI("help");
+        this.setDefaultExceptionHandler(new MVDefaultExceptionHandler());
     }
 
     /**
