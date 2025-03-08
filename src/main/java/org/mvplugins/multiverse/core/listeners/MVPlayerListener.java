@@ -8,6 +8,7 @@
 package org.mvplugins.multiverse.core.listeners;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -301,21 +302,21 @@ final class MVPlayerListener implements CoreListener {
      */
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerPortalCheck(PlayerPortalEvent event) {
-        if (event.isCancelled() || event.getFrom() == null) {
+        if (event.isCancelled()) {
+            return;
+        }
+        if (event.getFrom().getWorld() == null) {
+            Logging.warning("PlayerPortalEvent's from world is null!");
+            return;
+        }
+        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() == Material.NETHER_PORTAL) {
             return;
         }
 
-        // REMEMBER! getTo MAY be NULL HERE!!!
-        // If the player was actually outside of the portal, adjust the from location
-        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() != Material.NETHER_PORTAL) {
-            Location newloc = blockSafety.findPortalBlockNextTo(event.getFrom());
-            if (newloc != null) {
-                event.setFrom(newloc);
-            }
-        }
-        // Wait for the adjust, then return!
-        if (event.getTo() == null) {
-            return;
+        // Player was actually outside of the portal, adjust the from location
+        Location newLocation = blockSafety.findPortalBlockNextTo(event.getFrom());
+        if (newLocation != null) {
+            event.setFrom(newLocation);
         }
     }
 
@@ -325,25 +326,30 @@ final class MVPlayerListener implements CoreListener {
      */
     @EventHandler(priority = EventPriority.HIGH)
     public void playerPortal(PlayerPortalEvent event) {
-        if (event.isCancelled() || (event.getFrom() == null)) {
+        if (event.isCancelled()) {
             return;
         }
-        // The adjust should have happened much earlier.
-        if (event.getTo() == null) {
+        if (event.getTo() == null || event.getTo().getWorld() == null) {
+            Logging.finer("PlayerPortalEvent's to world is null!");
             return;
         }
         if (config.isUsingCustomPortalSearch()) {
             event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
-
-        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
-        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld().getName()).getOrNull();
-        if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
+        if (Objects.equals(event.getFrom().getWorld(), event.getTo().getWorld())) {
             // The player is Portaling to the same world.
             Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
             return;
         }
 
+        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld()).getOrNull();
+        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld()).getOrNull();
+        if (toWorld == null) {
+            Logging.fine("Player '" + event.getPlayer().getName() + "' is portaling to world '"
+                    + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
+                    + "actions will be taken by Multiverse-Core.");
+            return;
+        }
         ResultChain entryResult = worldEntryCheckerProvider.forSender(event.getPlayer()).canEnterWorld(fromWorld, toWorld)
                 .onFailure(results -> {
                     event.setCancelled(true);
