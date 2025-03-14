@@ -753,6 +753,7 @@ public class WorldManager implements MVWorldManager {
                 this.plugin.getServer().getPluginManager().removePermission(w.getExemptPermission().getName());
                 // Special namespace for gamemodes
                 this.plugin.getServer().getPluginManager().removePermission("mv.bypass.gamemode." + w.getName());
+                this.plugin.getServer().getPluginManager().removePermission("mv.bypass.fly." + w.getName());
             }
             // Recalc the all permission
             this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(allAccess);
@@ -777,10 +778,15 @@ public class WorldManager implements MVWorldManager {
     }
 
     private void ensureSecondNamespaceIsPrepared() {
-        Permission special = this.plugin.getServer().getPluginManager().getPermission("mv.bypass.gamemode.*");
-        if (special == null) {
-            special = new Permission("mv.bypass.gamemode.*", PermissionDefault.FALSE);
-            this.plugin.getServer().getPluginManager().addPermission(special);
+        Permission specialGameMode = this.plugin.getServer().getPluginManager().getPermission("mv.bypass.gamemode.*");
+        Permission specialFly = this.plugin.getServer().getPluginManager().getPermission("mv.bypass.fly.*");
+        if (specialGameMode == null) {
+            specialGameMode = new Permission("mv.bypass.gamemode.*", PermissionDefault.FALSE);
+            this.plugin.getServer().getPluginManager().addPermission(specialGameMode);
+        }
+        if (specialFly == null) {
+            specialFly = new Permission("mv.bypass.fly.*", PermissionDefault.FALSE);
+            this.plugin.getServer().getPluginManager().addPermission(specialFly);
         }
     }
 
