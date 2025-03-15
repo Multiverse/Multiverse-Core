@@ -98,7 +98,9 @@ public final class MessageReplacement {
         PLAYER(replace("{player}")),
         REASON(replace("{reason}")),
         VALUE(replace("{value}")),
-        WORLD(replace("{world}")),;
+        WORLD(replace("{world}")),
+        ERROR(replace("{error}")),
+        ;
         // END CHECKSTYLE-SUPPRESSION: JavadocVariable
 
         private final Key replaceKey;

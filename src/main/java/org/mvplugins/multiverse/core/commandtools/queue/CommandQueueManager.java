@@ -28,6 +28,9 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
 
 /**
  * <p>Manages the queuing of dangerous commands that require {@code /mv confirm} before executing.</p>
@@ -134,41 +137,43 @@ public class CommandQueueManager {
      * @param issuer    Sender that confirmed the command.
      * @return True if queued command ran successfully, else false.
      */
-    public boolean runQueuedCommand(@NotNull MVCommandIssuer issuer, int otp) {
+    public Attempt<Void, RunQueuedFailedReason> runQueuedCommand(@NotNull MVCommandIssuer issuer, int otpInput) {
         String senderName = parseSenderName(issuer);
-        CommandQueuePayload payload = this.queuedCommandMap.get(senderName);
-        if (payload == null) {
-            issuer.sendMessage(ChatColor.RED + "You do not have any commands in queue.");
-            return false;
+        return Option.of(this.queuedCommandMap.get(senderName)).fold(
+                () -> Attempt.failure(RunQueuedFailedReason.NO_COMMAND_IN_QUEUE),
+                payload -> runPayload(senderName, otpInput, payload));
+    }
+
+    private Attempt<Void, RunQueuedFailedReason> runPayload(String senderName, int otpInput, CommandQueuePayload payload) {
+        if (config.getUseConfirmOtp() && payload.otp() != otpInput) {
+            return Attempt.failure(RunQueuedFailedReason.INVALID_OTP, replace("{otp}").with(otpInput));
         }
-        if (config.getUseConfirmOtp() && payload.otp() != otp) {
-            issuer.sendMessage(ChatColor.RED + "Invalid OTP number. Please try again...");
-            return false;
-        }
+        this.removeFromQueue(senderName);
         Logging.finer("Running queued command...");
-        Try.run(() -> payload.action().run()).onFailure(e -> {
-            issuer.sendMessage(ChatColor.RED + "Failed to run queued command.");
-            Logging.severe("Failed to run queued command: %s", e.getMessage());
-            e.printStackTrace();
-        });
-        return removeFromQueue(senderName);
+        return Try.run(() -> payload.action().run()).fold(
+                throwable -> {
+                    Logging.severe("Error while running queued command: %s", throwable.getMessage());
+                    throwable.printStackTrace();
+                    return Attempt.failure(RunQueuedFailedReason.COMMAND_EXECUTION_ERROR,
+                            Replace.ERROR.with(throwable.getMessage()));
+                },
+                ignore -> Attempt.success(null)
+        );
     }
 
     /**
      * Since only one command is stored in queue per sender, we remove the old one.
      *
      * @param senderName    The sender that executed the command.
-     * @return True if queue command is removed from sender successfully, else false.
      */
-    public boolean removeFromQueue(@NotNull String senderName) {
+    public void removeFromQueue(@NotNull String senderName) {
         CommandQueuePayload payload = this.queuedCommandMap.remove(senderName);
         if (payload == null) {
             Logging.finer("No queue command to remove for sender %s.", senderName);
-            return false;
+            return;
         }
         Option.of(payload.expireTask()).peek(BukkitTask::cancel);
         Logging.finer("Removed queue command for sender %s.", senderName);
-        return true;
     }
 
     private String parseSenderName(MVCommandIssuer issuer) {
