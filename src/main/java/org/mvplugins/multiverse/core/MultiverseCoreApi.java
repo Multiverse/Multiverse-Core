@@ -10,6 +10,7 @@ import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
 import java.util.Objects;
@@ -57,6 +58,15 @@ public class MultiverseCoreApi {
      */
     public @NotNull AnchorManager getAnchorManager() {
         return Objects.requireNonNull(serviceLocator.getActiveService(AnchorManager.class));
+    }
+
+    /**
+     * Gets the instance of BiomeProviderFactory.
+     *
+     * @return The BiomeProviderFactory instance
+     */
+    public @NotNull BiomeProviderFactory getBiomeProviderFactory() {
+        return Objects.requireNonNull(serviceLocator.getActiveService(BiomeProviderFactory.class));
     }
 
     /**

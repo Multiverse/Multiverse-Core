@@ -16,7 +16,6 @@ public final class StringFormatter {
         // no instance
     }
 
-
     /**
      * Concatenates a list of strings into a single string, using a comma and a space as separators,
      * and " and " as the separator before the last element.
@@ -58,6 +57,12 @@ public final class StringFormatter {
         return authors.toString();
     }
 
+    /**
+     * Appends a list of suggestions to the end of the input string, separated by commas.
+     * @param input     The current input
+     * @param addons    The autocomplete suggestions
+     * @return A collection of suggestions with the next suggestion appended
+     */
     public static Collection<String> addonToCommaSeperated(String input, Collection<String> addons) {
         int lastComma = input.lastIndexOf(',');
         String previousInputs = input.substring(0, lastComma + 1);

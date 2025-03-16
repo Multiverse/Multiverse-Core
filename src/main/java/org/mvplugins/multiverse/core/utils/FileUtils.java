@@ -37,7 +37,7 @@ public final class FileUtils {
     private final File serverProperties;
 
     @Inject
-    protected FileUtils(@NotNull MultiverseCore plugin) {
+    FileUtils() {
         this.serverFolder = new File(System.getProperty("user.dir"));
         Logging.finer("Server folder: " + this.serverFolder);
         this.bukkitYml = findFileFromServerDirectory("bukkit.yml");

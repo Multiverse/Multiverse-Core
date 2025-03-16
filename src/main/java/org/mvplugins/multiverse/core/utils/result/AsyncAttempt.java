@@ -10,7 +10,7 @@ import io.vavr.control.Either;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
 /**
- *
+ * Represents an attempt to asynchronous process a value that can fail with a reason that has a localized message.
  *
  * @param <T>   The success value type.
  * @param <F>   The failure reason type.
