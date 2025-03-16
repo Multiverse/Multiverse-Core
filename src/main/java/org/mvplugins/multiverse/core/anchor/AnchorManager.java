@@ -96,9 +96,8 @@ public final class AnchorManager {
      */
     public Try<Void> saveAnchors() {
         return Try.run(() -> anchorConfig.save(new File(plugin.getDataFolder(), ANCHORS_FILE)))
-                .onFailure(failure -> {
-                    Logging.severe("Failed to save anchors.yml. Please check your file permissions.");
-                });
+                .onFailure(failure ->
+                        Logging.severe("Failed to save anchors.yml. Please check your file permissions."));
     }
 
     /**
