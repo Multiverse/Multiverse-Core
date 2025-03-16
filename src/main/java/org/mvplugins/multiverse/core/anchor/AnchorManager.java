@@ -159,9 +159,9 @@ public final class AnchorManager {
      */
     public Set<String> getAnchors(@Nullable Player player) {
         if (player == null) {
-            return anchors.keySet();
+            return Collections.unmodifiableSet(anchors.keySet());
         } else {
-            return getAnchorsForPlayer(player);
+            return Collections.unmodifiableSet(getAnchorsForPlayer(player));
         }
     }
 
