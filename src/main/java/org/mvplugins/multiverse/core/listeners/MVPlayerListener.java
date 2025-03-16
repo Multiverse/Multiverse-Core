@@ -32,12 +32,10 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
-import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
-import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
@@ -55,7 +53,7 @@ import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 @Service
 final class MVPlayerListener implements CoreListener {
     private final Plugin plugin;
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final Provider<WorldManager> worldManagerProvider;
     private final BlockSafety blockSafety;
     private final Server server;
@@ -71,7 +69,7 @@ final class MVPlayerListener implements CoreListener {
     @Inject
     MVPlayerListener(
             MultiverseCore plugin,
-            MVCoreConfig config,
+            CoreConfig config,
             Provider<WorldManager> worldManagerProvider,
             BlockSafety blockSafety,
             Server server,

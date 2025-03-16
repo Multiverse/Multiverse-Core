@@ -5,7 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
@@ -13,13 +13,13 @@ import org.mvplugins.multiverse.core.world.WorldManager;
  */
 @Service
 final class MVChatListener implements CoreListener {
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final WorldManager worldManager;
     private final MVPlayerListener playerListener;
 
     @Inject
     MVChatListener(
-            MVCoreConfig config,
+            CoreConfig config,
             WorldManager worldManager,
             MVPlayerListener playerListener) {
         this.config = config;

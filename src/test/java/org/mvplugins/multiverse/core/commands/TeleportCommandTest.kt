@@ -1,7 +1,7 @@
 package org.mvplugins.multiverse.core.commands
 
 import org.bukkit.Bukkit
-import org.mvplugins.multiverse.core.config.MVCoreConfig
+import org.mvplugins.multiverse.core.config.CoreConfig
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -9,12 +9,12 @@ import kotlin.test.assertTrue
 
 class TeleportCommandTest : AbstractCommandTest() {
 
-    private lateinit var config : MVCoreConfig
+    private lateinit var config : CoreConfig
 
     @BeforeTest
     fun setUp() {
-        config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
-            throw IllegalStateException("MVCoreConfig is not available as a service") }
+        config = serviceLocator.getActiveService(CoreConfig::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("CoreConfig is not available as a service") }
 
         server.addPlayer("Player1")
         server.addPlayer("Player2")

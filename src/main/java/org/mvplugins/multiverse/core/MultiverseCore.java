@@ -25,7 +25,7 @@ import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
@@ -47,7 +47,7 @@ public class MultiverseCore extends MultiversePlugin {
     private PluginServiceLocator serviceLocator;
 
     @Inject
-    private Provider<MVCoreConfig> configProvider;
+    private Provider<CoreConfig> configProvider;
     @Inject
     private Provider<WorldManager> worldManagerProvider;
     @Inject
@@ -355,17 +355,17 @@ public class MultiverseCore extends MultiversePlugin {
      */
     @Override
     public @NotNull FileConfiguration getConfig() {
-        MVCoreConfig mvCoreConfig = this.configProvider.get();
-        var config = mvCoreConfig.getConfig();
-        if (config != null && mvCoreConfig.isLoaded()) {
+        CoreConfig coreConfig = this.configProvider.get();
+        var config = coreConfig.getConfig();
+        if (config != null && coreConfig.isLoaded()) {
             return config;
         }
 
-        var loadSuccess = mvCoreConfig.load().isSuccess();
-        if (!loadSuccess || !mvCoreConfig.isLoaded()) {
+        var loadSuccess = coreConfig.load().isSuccess();
+        if (!loadSuccess || !coreConfig.isLoaded()) {
             throw new RuntimeException("Failed to load configs");
         }
-        return mvCoreConfig.getConfig();
+        return coreConfig.getConfig();
     }
 
     /**

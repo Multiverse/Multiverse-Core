@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.configuration.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
@@ -49,7 +49,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private final MVCommandManager commandManager;
     private final WorldManager worldManager;
     private final DestinationsProvider destinationsProvider;
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final CorePermissionsChecker corePermissionsChecker;
     private final AnchorManager anchorManager;
 
@@ -58,7 +58,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             @NotNull MVCommandManager mvCommandManager,
             @NotNull WorldManager worldManager,
             @NotNull DestinationsProvider destinationsProvider,
-            @NotNull MVCoreConfig config,
+            @NotNull CoreConfig config,
             @NotNull CorePermissionsChecker corePermissionsChecker,
             @NotNull AnchorManager anchorManager) {
         super(mvCommandManager);

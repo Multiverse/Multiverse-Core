@@ -11,15 +11,15 @@ import kotlin.test.*
 
 class ConfigTeleportInterceptTest : TestWithMockBukkit() {
 
-    private lateinit var config: MVCoreConfig
+    private lateinit var config: CoreConfig
     private lateinit var safetyTeleporter: AsyncSafetyTeleporter
     private lateinit var player: PlayerMock
     private lateinit var location: Location
 
     @BeforeTest
     fun setUp() {
-        config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
-            throw IllegalStateException("MVCoreConfig is not available as a service") }
+        config = serviceLocator.getActiveService(CoreConfig::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("CoreConfig is not available as a service") }
 
         safetyTeleporter = serviceLocator.getActiveService(AsyncSafetyTeleporter::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("AsyncSafetyTeleporter is not available as a service") }

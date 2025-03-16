@@ -8,7 +8,6 @@
 package org.mvplugins.multiverse.core.anchor;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
 /**
@@ -47,13 +46,13 @@ public final class AnchorManager {
 
     private final Plugin plugin;
     private final LocationManipulation locationManipulation;
-    private final MVCoreConfig config;
+    private final CoreConfig config;
 
     @Inject
     AnchorManager(
             MultiverseCore plugin,
             LocationManipulation locationManipulation,
-            MVCoreConfig config) {
+            CoreConfig config) {
         this.plugin = plugin;
         this.locationManipulation = locationManipulation;
         this.config = config;

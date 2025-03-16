@@ -2,7 +2,7 @@ package org.mvplugins.multiverse.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
@@ -79,6 +79,15 @@ public class MultiverseCoreApi {
     }
 
     /**
+     * Gets the instance of CoreConfig.
+     *
+     * @return The CoreConfig instance
+     */
+    public @NotNull CoreConfig getCoreConfig() {
+        return Objects.requireNonNull(serviceLocator.getActiveService(CoreConfig.class));
+    }
+
+    /**
      * Gets the instance of DestinationsProvider.
      *
      * @return The DestinationsProvider instance
@@ -103,15 +112,6 @@ public class MultiverseCoreApi {
      */
     public @NotNull LocationManipulation getLocationManipulation() {
         return Objects.requireNonNull(serviceLocator.getActiveService(LocationManipulation.class));
-    }
-
-    /**
-     * Gets the instance of MVCoreConfig.
-     *
-     * @return The MVCoreConfig instance
-     */
-    public @NotNull MVCoreConfig getMVCoreConfig() {
-        return Objects.requireNonNull(serviceLocator.getActiveService(MVCoreConfig.class));
     }
 
     /**

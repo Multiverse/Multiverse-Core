@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
@@ -26,14 +26,14 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.re
  * Checks if a player can enter a world.
  */
 public final class WorldEntryChecker {
-    private final @NotNull MVCoreConfig config;
+    private final @NotNull CoreConfig config;
     private final @NotNull MVEconomist economist;
     private final @NotNull CorePermissionsChecker permissionsChecker;
 
     private final @NotNull CommandSender sender;
 
     WorldEntryChecker(
-            @NotNull MVCoreConfig config,
+            @NotNull CoreConfig config,
             @NotNull CorePermissionsChecker permissionsChecker,
             @NotNull MVEconomist economist,
             @NotNull CommandSender sender) {

@@ -8,7 +8,7 @@ import kotlin.test.*
 
 class ConfigTest : TestWithMockBukkit() {
 
-    private lateinit var config : MVCoreConfig
+    private lateinit var config : CoreConfig
     private lateinit var configFile : File
 
     @BeforeTest
@@ -16,8 +16,8 @@ class ConfigTest : TestWithMockBukkit() {
         configFile = File(Path.of(multiverseCore.dataFolder.absolutePath, "config.yml").absolutePathString())
         if (configFile.exists()) configFile.delete()
 
-        config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
-            throw IllegalStateException("MVCoreConfig is not available as a service") }
+        config = serviceLocator.getActiveService(CoreConfig::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("CoreConfig is not available as a service") }
 
         assertTrue(config.load().isSuccess)
         assertTrue(config.save().isSuccess)

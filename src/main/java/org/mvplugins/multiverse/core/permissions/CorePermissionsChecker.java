@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
@@ -29,7 +29,7 @@ import static org.mvplugins.multiverse.core.permissions.PermissionUtils.hasPermi
 @Service
 public final class CorePermissionsChecker {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final DestinationsProvider destinationsProvider;
     private final WorldManager worldManager;
 
@@ -42,7 +42,7 @@ public final class CorePermissionsChecker {
      */
     @Inject
     CorePermissionsChecker(
-            @NotNull MVCoreConfig config,
+            @NotNull CoreConfig config,
             @NotNull DestinationsProvider destinationsProvider,
             @NotNull WorldManager worldManager) {
         this.config = config;
