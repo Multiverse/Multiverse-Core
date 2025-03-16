@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.config
 
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.commandtools.ConfirmMode
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString

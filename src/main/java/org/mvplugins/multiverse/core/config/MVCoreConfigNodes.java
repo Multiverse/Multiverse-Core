@@ -8,7 +8,6 @@ import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.ConfirmMode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;

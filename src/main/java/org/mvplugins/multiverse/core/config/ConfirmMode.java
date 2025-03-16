@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.commandtools;
+package org.mvplugins.multiverse.core.config;
 
 /**
  * Sets whether the command executor needs to confirm before executing a command.

@@ -1,7 +1,7 @@
 package org.mvplugins.multiverse.core.commands
 
 import org.bukkit.Bukkit
-import org.mvplugins.multiverse.core.commandtools.ConfirmMode
+import org.mvplugins.multiverse.core.config.ConfirmMode
 import org.mvplugins.multiverse.core.config.MVCoreConfig
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
