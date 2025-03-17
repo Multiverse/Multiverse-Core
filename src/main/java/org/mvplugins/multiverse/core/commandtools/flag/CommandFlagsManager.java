@@ -8,6 +8,7 @@ import java.util.Map;
 
 import co.aikar.commands.InvalidCommandArgument;
 import com.dumptruckman.minecraft.util.Logging;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -15,6 +16,7 @@ import org.jvnet.hk2.annotations.Service;
 /**
  * Manages all the flag groups and parsing.
  */
+@ApiStatus.Internal
 @Service
 public class CommandFlagsManager {
     private final Map<String, CommandFlagGroup> flagGroupMap;

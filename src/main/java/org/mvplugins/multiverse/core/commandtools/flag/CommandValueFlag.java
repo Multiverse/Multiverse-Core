@@ -7,6 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.InvalidCommandArgument;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @param <T> The type of the value.
  */
+@ApiStatus.Internal
 public class CommandValueFlag<T> extends CommandFlag {
     /**
      * A builder for a flag.

@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.commandtools.flags;
 import java.util.List;
 import java.util.function.Function;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
@@ -12,6 +13,7 @@ import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
  * <br/>
  * Parses the value of the --page (or -p) flag as an integer.
  */
+@ApiStatus.Internal
 public final class PageCommandFlag extends CommandValueFlag<Integer> {
 
     private static final Function<String, Integer> VALUE_PARSER = value -> {

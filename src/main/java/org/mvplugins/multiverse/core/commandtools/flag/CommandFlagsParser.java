@@ -1,10 +1,12 @@
 package org.mvplugins.multiverse.core.commandtools.flag;
 
 import co.aikar.commands.InvalidCommandArgument;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Parses flags from a string array. Each parser should only be used once.
  */
+@ApiStatus.Internal
 public class CommandFlagsParser {
     private final CommandFlagGroup flagGroup;
     private final String[] flags;

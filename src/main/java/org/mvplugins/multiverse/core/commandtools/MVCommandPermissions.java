@@ -4,6 +4,7 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.CommandPermission;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
@@ -17,6 +18,7 @@ import java.util.function.Predicate;
 /**
  * Maps permission checking to custom logic for commands, to allow more complex permission checking.
  */
+@ApiStatus.Internal
 @Service
 public class MVCommandPermissions {
     private final Map<String, Predicate<CommandIssuer>> permissionsCheckMap;

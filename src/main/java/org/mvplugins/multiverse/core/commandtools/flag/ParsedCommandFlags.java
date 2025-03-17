@@ -3,12 +3,14 @@ package org.mvplugins.multiverse.core.commandtools.flag;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Object to contain the results of the flags present and its values.
  */
+@ApiStatus.Internal
 public class ParsedCommandFlags
 {
     public static final ParsedCommandFlags EMPTY = new ParsedCommandFlags();

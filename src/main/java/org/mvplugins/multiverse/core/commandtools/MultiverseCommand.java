@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.commandtools;
 import co.aikar.commands.BaseCommand;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.annotation.PostConstruct;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Contract;
 
@@ -14,6 +15,7 @@ import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
 /**
  * Base class for all Multiverse commands.
  */
+@ApiStatus.Internal
 @Contract
 public abstract class MultiverseCommand extends BaseCommand {
 

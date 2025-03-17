@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -25,6 +26,7 @@ import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 /**
  * Main class to manage permissions.
  */
+@ApiStatus.Internal
 @Service
 public class MVCommandManager extends PaperCommandManager {
 
