@@ -16,7 +16,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.ConfirmMode;
 import org.mvplugins.multiverse.core.configuration.handle.CommentedConfigurationHandle;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
@@ -28,23 +27,23 @@ import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 
 @Service
-public class MVCoreConfig {
+public class CoreConfig {
     public static final String CONFIG_FILENAME = "config.yml";
 
     private final Path configPath;
-    private final MVCoreConfigNodes configNodes;
+    private final CoreConfigNodes configNodes;
     private final CommentedConfigurationHandle configHandle;
     private final StringPropertyHandle stringPropertyHandle;
 
     @Inject
-    MVCoreConfig(
+    CoreConfig(
             @NotNull MultiverseCore core,
             @NotNull PluginManager pluginManager,
             @NotNull Provider<MVCommandManager> commandManager, // config needs to be instantiated before the command manager
             @NotNull Provider<DestinationsProvider> destinationsProvider
     ) {
         this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
-        this.configNodes = new MVCoreConfigNodes(pluginManager, commandManager, destinationsProvider);
+        this.configNodes = new CoreConfigNodes(pluginManager, commandManager, destinationsProvider);
         this.configHandle = CommentedConfigurationHandle.builder(configPath, configNodes.getNodes())
                 .logger(Logging.getLogger())
                 .migrator(ConfigMigrator.builder(configNodes.version)

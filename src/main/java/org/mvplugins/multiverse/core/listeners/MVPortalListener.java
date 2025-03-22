@@ -19,7 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 import static org.bukkit.PortalType.CUSTOM;
@@ -30,11 +30,11 @@ import static org.bukkit.PortalType.CUSTOM;
 @Service
 final class MVPortalListener implements CoreListener {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final WorldManager worldManager;
 
     @Inject
-    MVPortalListener(@NotNull MVCoreConfig config, @NotNull WorldManager worldManager) {
+    MVPortalListener(@NotNull CoreConfig config, @NotNull WorldManager worldManager) {
         this.config = config;
         this.worldManager = worldManager;
     }

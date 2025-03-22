@@ -8,7 +8,6 @@ import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.ConfirmMode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.configuration.node.ConfigNode;
 import org.mvplugins.multiverse.core.configuration.node.Node;
@@ -23,14 +22,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-final class MVCoreConfigNodes {
+final class CoreConfigNodes {
 
     private final NodeGroup nodes = new NodeGroup();
     private PluginManager pluginManager;
     private Provider<MVCommandManager> commandManager;
     private final Provider<DestinationsProvider> destinationsProvider;
 
-    MVCoreConfigNodes(
+    CoreConfigNodes(
             @NotNull PluginManager pluginManager,
             @NotNull Provider<MVCommandManager> commandManager,
             @NotNull Provider<DestinationsProvider> destinationsProvider) {

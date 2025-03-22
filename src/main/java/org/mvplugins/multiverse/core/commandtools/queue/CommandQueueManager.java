@@ -27,7 +27,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
@@ -46,11 +46,11 @@ public class CommandQueueManager {
     private static final long TICKS_PER_SECOND = 20;
 
     private final Plugin plugin;
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final Map<String, CommandQueuePayload> queuedCommandMap;
 
     @Inject
-    CommandQueueManager(@NotNull MultiverseCore plugin, @NotNull MVCoreConfig config) {
+    CommandQueueManager(@NotNull MultiverseCore plugin, @NotNull CoreConfig config) {
         this.plugin = plugin;
         this.config = config;
         this.queuedCommandMap = new WeakHashMap<>();

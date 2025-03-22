@@ -122,6 +122,11 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         }
     }
 
+    /**
+     * Gets whether the configuration is loaded. i.e. {@link #load()} is called.
+     *
+     * @return Whether the configuration is loaded.
+     */
     public boolean isLoaded() {
         return !nodeValueMap.isEmpty();
     }

@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -82,7 +82,7 @@ public final class WorldManager {
     private final CorePermissions corePermissions;
     private final ServerProperties serverProperties;
     @NotNull
-    private final MVCoreConfig config;
+    private final CoreConfig config;
 
     @Inject
     WorldManager(
@@ -96,7 +96,7 @@ public final class WorldManager {
             @NotNull PluginManager pluginManager,
             @NotNull CorePermissions corePermissions,
             @NotNull ServerProperties serverProperties,
-            @NotNull MVCoreConfig config) {
+            @NotNull CoreConfig config) {
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.biomeProviderFactory = biomeProviderFactory;

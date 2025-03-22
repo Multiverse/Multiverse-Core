@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.context.GameRuleValue;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
@@ -33,14 +33,14 @@ public class MVCommandContexts extends PaperCommandContexts {
     private final MVCommandManager mvCommandManager;
     private final DestinationsProvider destinationsProvider;
     private final WorldManager worldManager;
-    private final MVCoreConfig config;
+    private final CoreConfig config;
 
     @Inject
     MVCommandContexts(
             MVCommandManager mvCommandManager,
             DestinationsProvider destinationsProvider,
             WorldManager worldManager,
-            MVCoreConfig config) {
+            CoreConfig config) {
         super(mvCommandManager);
         this.mvCommandManager = mvCommandManager;
         this.destinationsProvider = destinationsProvider;

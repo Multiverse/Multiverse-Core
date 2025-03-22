@@ -14,7 +14,7 @@ import org.bukkit.entity.Vehicle;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 
 /**
  * Used to check get or find block/location-related information.
@@ -22,11 +22,11 @@ import org.mvplugins.multiverse.core.config.MVCoreConfig;
 @Service
 public final class BlockSafety {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final LocationManipulation locationManipulation;
 
     @Inject
-    BlockSafety(@NotNull MVCoreConfig config, @NotNull LocationManipulation locationManipulation) {
+    BlockSafety(@NotNull CoreConfig config, @NotNull LocationManipulation locationManipulation) {
         this.config = config;
         this.locationManipulation = locationManipulation;
     }

@@ -5,20 +5,20 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 
 @Service
 public final class WorldEntryCheckerProvider {
 
-    private final @NotNull MVCoreConfig config;
+    private final @NotNull CoreConfig config;
     private final @NotNull MVEconomist economist;
     private final @NotNull CorePermissionsChecker permissionsChecker;
 
     @Inject
     WorldEntryCheckerProvider(
-            @NotNull MVCoreConfig config,
+            @NotNull CoreConfig config,
             @NotNull MVEconomist economist,
             @NotNull CorePermissionsChecker permissionsChecker) {
         this.config = config;

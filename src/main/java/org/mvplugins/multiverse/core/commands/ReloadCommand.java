@@ -15,7 +15,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.event.MVConfigReloadEvent;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -24,7 +24,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 @CommandAlias("mv")
 final class ReloadCommand extends CoreCommand {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final AnchorManager anchorManager;
     private final WorldManager worldManager;
     private final PluginManager pluginManager;
@@ -32,7 +32,7 @@ final class ReloadCommand extends CoreCommand {
     @Inject
     ReloadCommand(
             @NotNull MVCommandManager commandManager,
-            @NotNull MVCoreConfig config,
+            @NotNull CoreConfig config,
             @NotNull AnchorManager anchorManager,
             @NotNull WorldManager worldManager,
             @NotNull PluginManager pluginManager) {

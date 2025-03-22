@@ -35,11 +35,11 @@ public final class AsyncSafetyTeleporter {
     }
 
     /**
-         * Sets the location to teleport to.
-         *
-         * @param location The location
-         * @return A new {@link AsyncSafetyTeleporterAction} to be chained
-         */
+     * Sets the location to teleport to.
+     *
+     * @param location The location
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
     public AsyncSafetyTeleporterAction to(@Nullable Location location) {
         return new AsyncSafetyTeleporterAction(
                 multiverseCore,
@@ -51,11 +51,11 @@ public final class AsyncSafetyTeleporter {
     }
 
     /**
-         * Sets the destination to teleport to.
-         *
-         * @param destination The destination
-         * @return A new {@link AsyncSafetyTeleporterAction} to be chained
-         */
+     * Sets the destination to teleport to.
+     *
+     * @param destination The destination
+     * @return A new {@link AsyncSafetyTeleporterAction} to be chained
+     */
     public AsyncSafetyTeleporterAction to(@Nullable DestinationInstance<?, ?> destination) {
         return new AsyncSafetyTeleporterAction(
                 multiverseCore,

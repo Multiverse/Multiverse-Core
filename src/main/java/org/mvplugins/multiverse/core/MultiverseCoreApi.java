@@ -2,7 +2,7 @@ package org.mvplugins.multiverse.core;
 
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
@@ -10,6 +10,7 @@ import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
 import java.util.Objects;
@@ -60,12 +61,30 @@ public class MultiverseCoreApi {
     }
 
     /**
+     * Gets the instance of BiomeProviderFactory.
+     *
+     * @return The BiomeProviderFactory instance
+     */
+    public @NotNull BiomeProviderFactory getBiomeProviderFactory() {
+        return Objects.requireNonNull(serviceLocator.getActiveService(BiomeProviderFactory.class));
+    }
+
+    /**
      * Gets the instance of BlockSafety.
      *
      * @return The BlockSafety instance
      */
     public @NotNull BlockSafety getBlockSafety() {
         return Objects.requireNonNull(serviceLocator.getActiveService(BlockSafety.class));
+    }
+
+    /**
+     * Gets the instance of CoreConfig.
+     *
+     * @return The CoreConfig instance
+     */
+    public @NotNull CoreConfig getCoreConfig() {
+        return Objects.requireNonNull(serviceLocator.getActiveService(CoreConfig.class));
     }
 
     /**
@@ -93,15 +112,6 @@ public class MultiverseCoreApi {
      */
     public @NotNull LocationManipulation getLocationManipulation() {
         return Objects.requireNonNull(serviceLocator.getActiveService(LocationManipulation.class));
-    }
-
-    /**
-     * Gets the instance of MVCoreConfig.
-     *
-     * @return The MVCoreConfig instance
-     */
-    public @NotNull MVCoreConfig getMVCoreConfig() {
-        return Objects.requireNonNull(serviceLocator.getActiveService(MVCoreConfig.class));
     }
 
     /**

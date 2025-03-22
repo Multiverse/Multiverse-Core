@@ -8,6 +8,9 @@ import com.dumptruckman.minecraft.util.Logging;
 
 import java.util.List;
 
+/**
+ * Default handler that will print the stack trace when the command throws an exception.
+ */
 public class MVDefaultExceptionHandler implements ExceptionHandler {
     @Override
     public boolean execute(BaseCommand command, RegisteredCommand registeredCommand, CommandIssuer sender, List<String> args, Throwable t) {

@@ -2,14 +2,13 @@ package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
@@ -23,14 +22,14 @@ import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 @Service
 public final class WorldDestination implements Destination<WorldDestination, WorldDestinationInstance> {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final WorldManager worldManager;
     private final LocationManipulation locationManipulation;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
 
     @Inject
     WorldDestination(
-            @NotNull MVCoreConfig config,
+            @NotNull CoreConfig config,
             @NotNull WorldManager worldManager,
             @NotNull LocationManipulation locationManipulation,
             @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider) {

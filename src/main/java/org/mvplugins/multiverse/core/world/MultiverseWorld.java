@@ -14,7 +14,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
@@ -32,10 +32,10 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      */
     WorldConfig worldConfig;
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private String colourlessAlias = "";
 
-    MultiverseWorld(String worldName, WorldConfig worldConfig, MVCoreConfig config) {
+    MultiverseWorld(String worldName, WorldConfig worldConfig, CoreConfig config) {
         this.worldName = worldName;
         this.worldConfig = worldConfig;
         this.config = config;

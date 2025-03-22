@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
@@ -12,12 +11,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
-import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryChecker;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
 /**
@@ -26,12 +24,12 @@ import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 @Service
 public final class ExactDestination implements Destination<ExactDestination, ExactDestinationInstance> {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final WorldManager worldManager;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
 
     @Inject
-    public ExactDestination(MVCoreConfig config, WorldManager worldManager, WorldEntryCheckerProvider worldEntryCheckerProvider) {
+    public ExactDestination(CoreConfig config, WorldManager worldManager, WorldEntryCheckerProvider worldEntryCheckerProvider) {
         this.config = config;
         this.worldManager = worldManager;
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;

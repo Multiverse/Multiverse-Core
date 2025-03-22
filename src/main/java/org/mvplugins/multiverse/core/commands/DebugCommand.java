@@ -13,17 +13,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 
 @Service
 @CommandAlias("mv")
 final class DebugCommand extends CoreCommand {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
 
     @Inject
-    DebugCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfig config) {
+    DebugCommand(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config) {
         super(commandManager);
         this.config = config;
     }

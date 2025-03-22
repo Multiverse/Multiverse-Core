@@ -2,8 +2,8 @@ package org.mvplugins.multiverse.core.commands
 
 import org.bukkit.Bukkit
 import org.bukkit.GameRule
-import org.mvplugins.multiverse.core.commandtools.ConfirmMode
-import org.mvplugins.multiverse.core.config.MVCoreConfig
+import org.mvplugins.multiverse.core.config.ConfirmMode
+import org.mvplugins.multiverse.core.config.CoreConfig
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import kotlin.test.*
@@ -15,8 +15,8 @@ class RegenCommandTest : AbstractCommandTest() {
     @BeforeTest
     fun setUp() {
         // Disable confirmation to make tests easier
-        val config = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
-            throw IllegalStateException("MVCoreConfig is not available as a service") }
+        val config = serviceLocator.getActiveService(CoreConfig::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("CoreConfig is not available as a service") }
         assertTrue(config.setConfirmMode(ConfirmMode.DISABLE).isSuccess)
 
         testWorld = worldManager.createWorld(CreateWorldOptions.worldName("test")).get()

@@ -14,17 +14,17 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 
 @Service
 @CommandAlias("mv")
 final class ConfigCommand extends CoreCommand {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
 
     @Inject
-    ConfigCommand(@NotNull MVCommandManager commandManager, @NotNull MVCoreConfig config) {
+    ConfigCommand(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config) {
         super(commandManager);
         this.config = config;
     }

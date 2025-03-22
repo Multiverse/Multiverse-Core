@@ -3,7 +3,7 @@ package org.mvplugins.multiverse.core.commands
 import co.aikar.commands.MessageKeys
 import org.bukkit.Bukkit
 import org.junit.jupiter.api.Test
-import org.mvplugins.multiverse.core.config.MVCoreConfig
+import org.mvplugins.multiverse.core.config.CoreConfig
 import org.mvplugins.multiverse.core.locale.MVCorei18n
 import org.mvplugins.multiverse.core.locale.message.Message
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace
@@ -15,8 +15,8 @@ class ConfigCommandTest : AbstractCommandTest() {
     @Test
     fun `Modify config global-debug`() {
         assertTrue(Bukkit.dispatchCommand(console, "mv config global-debug 2"))
-        val coreConfig = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
-            throw IllegalStateException("MVCoreConfig is not available as a service") }
+        val coreConfig = serviceLocator.getActiveService(CoreConfig::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("CoreConfig is not available as a service") }
         assertEquals(2, coreConfig.globalDebug)
     }
 
@@ -25,8 +25,8 @@ class ConfigCommandTest : AbstractCommandTest() {
         assertTrue(player.performCommand("mv config global-debug 2"))
         assertCommandOutput(Message.of(MessageKeys.PERMISSION_DENIED, ""))
 
-        val coreConfig = serviceLocator.getActiveService(MVCoreConfig::class.java).takeIf { it != null } ?: run {
-            throw IllegalStateException("MVCoreConfig is not available as a service") }
+        val coreConfig = serviceLocator.getActiveService(CoreConfig::class.java).takeIf { it != null } ?: run {
+            throw IllegalStateException("CoreConfig is not available as a service") }
         assertEquals(0, coreConfig.globalDebug)
     }
 

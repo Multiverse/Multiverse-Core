@@ -4,7 +4,7 @@ import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.anchor.AnchorManager
 import org.mvplugins.multiverse.core.commands.CoreCommand
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager
-import org.mvplugins.multiverse.core.config.MVCoreConfig
+import org.mvplugins.multiverse.core.config.CoreConfig
 import org.mvplugins.multiverse.core.destination.Destination
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.listeners.CoreListener
@@ -69,9 +69,9 @@ class InjectionTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `MVCoreConfig is available as a service`() {
-        assertNotNull(serviceLocator.getActiveService(MVCoreConfig::class.java))
-        assertNotNull(serviceLocator.getActiveService(MVCoreConfig::class.java))
+    fun `CoreConfig is available as a service`() {
+        assertNotNull(serviceLocator.getActiveService(CoreConfig::class.java))
+        assertNotNull(serviceLocator.getActiveService(CoreConfig::class.java))
     }
 
     @Test

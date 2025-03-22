@@ -14,7 +14,7 @@ class MultiverseCoreApiTest : TestWithMockBukkit() {
         assertNotNull(api.destinationsProvider)
         assertNotNull(api.generatorProvider)
         assertNotNull(api.locationManipulation)
-        assertNotNull(api.mvCoreConfig)
+        assertNotNull(api.coreConfig)
         assertNotNull(api.safetyTeleporter)
         assertNotNull(api.worldManager)
     }
@@ -33,7 +33,7 @@ class MultiverseCoreApiTest : TestWithMockBukkit() {
         assertNotNull(api?.mvEconomist)
         assertNotNull(api?.generatorProvider)
         assertNotNull(api?.locationManipulation)
-        assertNotNull(api?.mvCoreConfig)
+        assertNotNull(api?.coreConfig)
         assertNotNull(api?.safetyTeleporter)
         assertNotNull(api?.worldManager)
     }

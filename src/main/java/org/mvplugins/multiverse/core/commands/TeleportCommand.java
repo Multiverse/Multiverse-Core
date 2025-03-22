@@ -23,7 +23,7 @@ import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
 import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
 import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.config.MVCoreConfig;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
@@ -36,7 +36,7 @@ import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
 @CommandAlias("mv")
 final class TeleportCommand extends CoreCommand {
 
-    private final MVCoreConfig config;
+    private final CoreConfig config;
     private final CorePermissionsChecker permissionsChecker;
     private final AsyncSafetyTeleporter safetyTeleporter;
 
@@ -47,7 +47,7 @@ final class TeleportCommand extends CoreCommand {
     @Inject
     TeleportCommand(
             @NotNull MVCommandManager commandManager,
-            @NotNull MVCoreConfig config,
+            @NotNull CoreConfig config,
             @NotNull CorePermissionsChecker permissionsChecker,
             @NotNull AsyncSafetyTeleporter safetyTeleporter) {
         super(commandManager);

@@ -23,7 +23,7 @@ import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-class DumpsService {
+final class DumpsService {
 
     private final MultiverseCore plugin;
     private final WorldManager worldManager;
@@ -135,7 +135,7 @@ class DumpsService {
 
     }
 
-    String getPluginList() {
+    private String getPluginList() {
         return " - " + StringUtils.join(plugin.getServer().getPluginManager().getPlugins(), "\n - ");
     }
 }
