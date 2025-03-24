@@ -295,7 +295,7 @@ final class CoreConfigNodes {
             .name("per-player-locale")
             .onSetValue((oldValue, newValue) -> {
                 // autoDetectFromClient will be done by MVLocalesListener instead
-                commandManager.get().usePerIssuerLocale(newValue, false);
+                commandManager.get().usePerIssuerLocale(newValue);
             })
             .build());
 
