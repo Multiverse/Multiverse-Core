@@ -16,14 +16,15 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.configuration.handle.CommentedConfigurationHandle;
-import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
-import org.mvplugins.multiverse.core.configuration.migration.BooleanMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.ConfigMigrator;
-import org.mvplugins.multiverse.core.configuration.migration.IntegerMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.InvertBoolMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.MoveMigratorAction;
-import org.mvplugins.multiverse.core.configuration.migration.VersionMigrator;
+import org.mvplugins.multiverse.core.commandtools.queue.ConfirmMode;
+import org.mvplugins.multiverse.core.confighandle.CommentedConfigurationHandle;
+import org.mvplugins.multiverse.core.confighandle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.confighandle.migration.BooleanMigratorAction;
+import org.mvplugins.multiverse.core.confighandle.migration.ConfigMigrator;
+import org.mvplugins.multiverse.core.confighandle.migration.IntegerMigratorAction;
+import org.mvplugins.multiverse.core.confighandle.migration.InvertBoolMigratorAction;
+import org.mvplugins.multiverse.core.confighandle.migration.MoveMigratorAction;
+import org.mvplugins.multiverse.core.confighandle.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 
 @Service

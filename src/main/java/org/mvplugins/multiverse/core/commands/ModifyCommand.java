@@ -17,8 +17,8 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
 import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.configuration.handle.PropertyModifyAction;
-import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.confighandle.PropertyModifyAction;
+import org.mvplugins.multiverse.core.confighandle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 

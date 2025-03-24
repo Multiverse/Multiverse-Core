@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.CoreConfig;
-import org.mvplugins.multiverse.core.configuration.handle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.confighandle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
