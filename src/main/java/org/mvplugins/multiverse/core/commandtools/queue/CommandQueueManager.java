@@ -12,7 +12,6 @@ import java.util.WeakHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
-import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,7 +63,7 @@ public class CommandQueueManager {
     public void addToQueue(CommandQueuePayload payload) {
         String senderName = parseSenderName(payload.issuer());
         if (canRunImmediately(senderName)) {
-            payload.action().run();
+            payload.action().execute();
             return;
         }
 
@@ -150,15 +149,8 @@ public class CommandQueueManager {
         }
         this.removeFromQueue(senderName);
         Logging.finer("Running queued command...");
-        return Try.run(() -> payload.action().run()).fold(
-                throwable -> {
-                    Logging.severe("Error while running queued command: %s", throwable.getMessage());
-                    throwable.printStackTrace();
-                    return Attempt.failure(RunQueuedFailedReason.COMMAND_EXECUTION_ERROR,
-                            Replace.ERROR.with(throwable.getMessage()));
-                },
-                ignore -> Attempt.success(null)
-        );
+        payload.action().execute();
+        return Attempt.success(null);
     }
 
     /**

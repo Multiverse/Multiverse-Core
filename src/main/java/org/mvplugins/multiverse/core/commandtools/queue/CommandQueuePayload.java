@@ -27,7 +27,7 @@ public class CommandQueuePayload {
 
     private final int otp;
     private final MVCommandIssuer issuer;
-    private Runnable action = () -> {};
+    private QueuedCommandAction action = () -> {};
     private Message prompt = Message.of(DEFAULT_PROMPT_MESSAGE);
     private BukkitTask expireTask;
 
@@ -50,7 +50,7 @@ public class CommandQueuePayload {
      * @param action    The logic to execute
      * @return The same {@link CommandQueuePayload} for method chaining
      */
-    public CommandQueuePayload action(@NotNull Runnable action) {
+    public CommandQueuePayload action(@NotNull QueuedCommandAction action) {
         this.action = action;
         return this;
     }
@@ -61,7 +61,7 @@ public class CommandQueuePayload {
      * @return  The logic to execute
      */
     @NotNull
-    public Runnable action() {
+    public QueuedCommandAction action() {
         return action;
     }
 
