@@ -25,14 +25,14 @@ public class CommandQueuePayload {
 
     private static final String DEFAULT_PROMPT_MESSAGE = "The command you are trying to run is deemed dangerous."; // todo: localize
 
-    private final int otp;
     private final MVCommandIssuer issuer;
+    private String otp;
     private QueuedCommandAction action = () -> {};
     private Message prompt = Message.of(DEFAULT_PROMPT_MESSAGE);
     private BukkitTask expireTask;
 
     protected CommandQueuePayload(@NotNull MVCommandIssuer issuer) {
-        this.otp = ACFUtil.rand(100, 999);
+        this.otp = String.valueOf(ACFUtil.rand(100, 999));
         this.issuer = issuer;
     }
 
@@ -66,11 +66,22 @@ public class CommandQueuePayload {
     }
 
     /**
+     * Sets the OTP number for validation.
+     *
+     * @param otp       The OTP number
+     * @return The same {@link CommandQueuePayload} for method chaining
+     */
+    public CommandQueuePayload otp(String otp) {
+        this.otp = otp;
+        return this;
+    }
+
+    /**
      * Gets the OTP number for validation.
      *
      * @return The OTP number
      */
-    public int otp() {
+    public String otp() {
         return otp;
     }
 

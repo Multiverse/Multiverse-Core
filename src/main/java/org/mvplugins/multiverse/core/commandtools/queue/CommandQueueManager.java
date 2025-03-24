@@ -8,6 +8,7 @@
 package org.mvplugins.multiverse.core.commandtools.queue;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -136,15 +137,15 @@ public class CommandQueueManager {
      * @param issuer    Sender that confirmed the command.
      * @return True if queued command ran successfully, else false.
      */
-    public Attempt<Void, RunQueuedFailedReason> runQueuedCommand(@NotNull MVCommandIssuer issuer, int otpInput) {
+    public Attempt<Void, RunQueuedFailedReason> runQueuedCommand(@NotNull MVCommandIssuer issuer, String otpInput) {
         String senderName = parseSenderName(issuer);
         return Option.of(this.queuedCommandMap.get(senderName)).fold(
                 () -> Attempt.failure(RunQueuedFailedReason.NO_COMMAND_IN_QUEUE),
                 payload -> runPayload(senderName, otpInput, payload));
     }
 
-    private Attempt<Void, RunQueuedFailedReason> runPayload(String senderName, int otpInput, CommandQueuePayload payload) {
-        if (config.getUseConfirmOtp() && payload.otp() != otpInput) {
+    private Attempt<Void, RunQueuedFailedReason> runPayload(String senderName, String otpInput, CommandQueuePayload payload) {
+        if (config.getUseConfirmOtp() && !Objects.equals(payload.otp(), otpInput)) {
             return Attempt.failure(RunQueuedFailedReason.INVALID_OTP, replace("{otp}").with(otpInput));
         }
         this.removeFromQueue(senderName);
