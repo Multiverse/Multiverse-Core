@@ -63,9 +63,9 @@ class InjectionTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `MVEntityListener is available as a service`() {
+    fun `CoreListener(s) is available as a service`() {
         val listeners = assertNotNull(serviceLocator.getAllServices(CoreListener::class.java))
-        assertEquals(7, listeners.size)
+        assertEquals(6, listeners.size)
     }
 
     @Test
