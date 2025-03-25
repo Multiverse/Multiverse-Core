@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.queue.ConfirmMode;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.command.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.confighandle.CommentedConfigurationHandle;
 import org.mvplugins.multiverse.core.confighandle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.confighandle.migration.BooleanMigratorAction;

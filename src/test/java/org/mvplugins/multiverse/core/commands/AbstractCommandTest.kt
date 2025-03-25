@@ -5,7 +5,7 @@ import org.bukkit.permissions.PermissionAttachment
 import org.mockbukkit.mockbukkit.command.ConsoleCommandSenderMock
 import org.mockbukkit.mockbukkit.entity.PlayerMock
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.commandtools.MVCommandManager
+import org.mvplugins.multiverse.core.command.MVCommandManager
 import org.mvplugins.multiverse.core.locale.PluginLocales
 import org.mvplugins.multiverse.core.locale.message.Message
 import org.mvplugins.multiverse.core.world.WorldManager

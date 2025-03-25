@@ -4,7 +4,7 @@ import co.aikar.commands.BukkitLocales;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
 
 /**
  * Locale manager with additional methods for loading locales from plugin's locales folder.
