@@ -6,6 +6,7 @@ import java.util.Map;
 
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -83,5 +84,11 @@ public final class DestinationsProvider {
      */
     public @NotNull Collection<Destination<?, ?>> getDestinations() {
         return this.destinationMap.values();
+    }
+
+    public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(@NotNull CommandSender sender, @Nullable String destinationParams) {
+        return this.getDestinations().stream()
+                .flatMap(destination -> destination.suggestDestinations(sender, destinationParams).stream())
+                .toList();
     }
 }

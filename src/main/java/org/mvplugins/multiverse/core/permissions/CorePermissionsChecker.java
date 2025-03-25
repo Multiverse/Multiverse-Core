@@ -150,25 +150,26 @@ public final class CorePermissionsChecker {
      * @return True if the sender has any base spawn permission.
      */
     public boolean hasAnySpawnPermission(@NotNull CommandSender sender) {
-        if (config.getUseFinerTeleportPermissions()) {
-            return worldManager.getLoadedWorlds().stream().anyMatch(world ->
-                    Arrays.stream(Scope.values()).anyMatch(scope -> hasSpawnPermission(sender, scope, world)));
-        }
-        return Arrays.stream(Scope.values()).anyMatch(scope -> hasSpawnPermission(sender, scope, null));
+        return hasAnySpawnPermission(sender, Scope.values());
+    }
+
+    public boolean hasAnySpawnPermission(@NotNull CommandSender sender, @NotNull Scope scope) {
+        return hasAnySpawnPermission(sender, new Scope[]{scope});
     }
 
     /**
      * Checks if the sender has permission to spawn other players in any world.
      *
      * @param sender The command sender.
+     * @param scopes The scopes to check.
      * @return True if the sender has permission, false otherwise.
      */
-    public boolean hasAnySpawnOtherPermission(@NotNull CommandSender sender) {
+    public boolean hasAnySpawnPermission(@NotNull CommandSender sender, @NotNull Scope[] scopes) {
         if (config.getUseFinerTeleportPermissions()) {
-            return worldManager.getLoadedWorlds().stream()
-                    .anyMatch(world -> hasSpawnPermission(sender, Scope.OTHER, world));
+            return worldManager.getLoadedWorlds().stream().anyMatch(world ->
+                    Arrays.stream(scopes).anyMatch(scope -> hasSpawnPermission(sender, scope, world)));
         }
-        return hasSpawnPermission(sender, Scope.OTHER, null);
+        return Arrays.stream(scopes).anyMatch(scope -> hasSpawnPermission(sender, scope, null));
     }
 
     private boolean hasSpawnPermission(@NotNull CommandSender sender, @NotNull Scope scope, @Nullable MultiverseWorld world) {
@@ -183,17 +184,15 @@ public final class CorePermissionsChecker {
      *
      * @param teleporter The sender.
      * @param teleportees The list of entities being teleported.
-     * @param destination The teleport destination.
      * @param packet The destination suggestion packet.
      * @return True if the sender has permission, false otherwise.
      */
     public boolean checkDestinationPacketPermission(
             @NotNull CommandSender teleporter,
             @NotNull List<Entity> teleportees,
-            @NotNull Destination<?, ?> destination,
             @NotNull DestinationSuggestionPacket packet) {
         return Scope.getApplicableScopes(teleporter, teleportees).stream()
-                .allMatch(scope -> checkDestinationPacketPermission(teleporter, scope, destination, packet));
+                .allMatch(scope -> checkDestinationPacketPermission(teleporter, scope, packet));
     }
 
     /**
@@ -201,27 +200,25 @@ public final class CorePermissionsChecker {
      *
      * @param teleporter The sender.
      * @param teleportee The entity being teleported.
-     * @param destination The teleport destination.
      * @param packet The destination suggestion packet.
      * @return True if the sender has permission, false otherwise.
      */
     public boolean checkDestinationPacketPermission(
             @NotNull CommandSender teleporter,
             @NotNull Entity teleportee,
-            @NotNull Destination<?, ?> destination,
             @NotNull DestinationSuggestionPacket packet) {
-        return checkDestinationPacketPermission(teleporter, Scope.getApplicableScope(teleporter, teleportee), destination, packet);
+        return checkDestinationPacketPermission(teleporter, Scope.getApplicableScope(teleporter, teleportee), packet);
     }
 
     public boolean checkDestinationPacketPermission(
             @NotNull CommandSender teleporter,
             @NotNull Scope scope,
-            @NotNull Destination<?, ?> destination,
             @NotNull DestinationSuggestionPacket packet) {
-        if (config.getUseFinerTeleportPermissions()) {
-            return hasTeleportPermission(teleporter, scope, destination.getIdentifier(), packet.finerPermissionSuffix());
-        }
-        return hasTeleportPermission(teleporter, scope, destination.getIdentifier(), null);
+        return hasTeleportPermission(
+                teleporter,
+                scope,
+                packet.destination().getIdentifier(),
+                config.getUseFinerTeleportPermissions() ? packet.finerPermissionSuffix() : null);
     }
 
     /**
@@ -279,43 +276,47 @@ public final class CorePermissionsChecker {
      * @param sender    The sender to check.
      * @return True if the issuer has permission, false otherwise.
      */
-    public boolean hasAnyTeleportPermission(CommandSender sender) {
-        for (Destination<?, ?> destination : destinationsProvider.getDestinations()) {
-            for (Scope scope : Scope.values()) {
-                if (config.getUseFinerTeleportPermissions()) {
-                    for (DestinationSuggestionPacket suggestion : destination.suggestDestinations(sender, null)) {
-                        if (hasTeleportPermission(sender, scope, destination.getIdentifier(), suggestion.finerPermissionSuffix())) {
-                            return true;
-                        }
-                    }
-                    continue;
-                }
-                if (hasTeleportPermission(sender, scope, destination.getIdentifier(), null)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public boolean hasAnyTeleportPermission(@NotNull CommandSender sender) {
+        return hasAnyTeleportPermission(sender, Scope.values());
     }
 
     /**
-     * Checks if the sender has permission to teleport other players to any destination.
+     * Checks if the issuer has permission to teleport to at least one destination.
      *
-     * @param sender The sender.
-     * @return True if the sender has teleport permission for others, false otherwise.
+     * @param sender    The sender to check.
+     * @param scope    The scope to check.
+     * @return True if the issuer has permission, false otherwise.
      */
-    public boolean hasTeleportOtherPermission(CommandSender sender) {
-        for (Destination<?, ?> destination : destinationsProvider.getDestinations()) {
-            if (config.getUseFinerTeleportPermissions()) {
-                for (DestinationSuggestionPacket suggestion : destination.suggestDestinations(sender, null)) {
-                    if (hasTeleportPermission(sender, Scope.OTHER, destination.getIdentifier(), suggestion.finerPermissionSuffix())) {
+    public boolean hasAnyTeleportPermission(@NotNull CommandSender sender, @NotNull Scope scope) {
+        return hasAnyTeleportPermission(sender, new Scope[]{scope});
+    }
+
+    /**
+     * Checks if the issuer has permission to teleport to at least one destination.
+     *
+     * @param sender    The sender to check.
+     * @param scopes    The scopes to check.
+     * @return True if the issuer has permission, false otherwise.
+     */
+    public boolean hasAnyTeleportPermission(@NotNull CommandSender sender, @NotNull Scope[] scopes) {
+        if (!config.getUseFinerTeleportPermissions()) {
+            // Just loop over the destination
+            for (Destination<?, ?> destination : destinationsProvider.getDestinations()) {
+                for (Scope scope : scopes) {
+                    if (hasTeleportPermission(sender, scope, destination.getIdentifier(), null)) {
                         return true;
                     }
                 }
-                continue;
             }
-            if (hasTeleportPermission(sender, Scope.OTHER, destination.getIdentifier(), null)) {
-                return true;
+            return false;
+        }
+
+        // Loop through all finer possibilities
+        for (DestinationSuggestionPacket suggestion : destinationsProvider.suggestDestinations(sender, null)) {
+            for (Scope scope : scopes) {
+                if (hasTeleportPermission(sender, scope, suggestion.destination().getIdentifier(), suggestion.finerPermissionSuffix())) {
+                    return true;
+                }
             }
         }
         return false;

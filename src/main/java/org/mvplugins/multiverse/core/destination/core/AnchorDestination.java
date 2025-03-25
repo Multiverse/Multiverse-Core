@@ -59,7 +59,7 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
             @NotNull CommandSender sender, @Nullable String destinationParams) {
         return this.anchorManager.getAnchors(sender instanceof Player ? (Player)sender : null)
                 .stream()
-                .map(anchorName -> new DestinationSuggestionPacket(anchorName, anchorName))
+                .map(anchorName -> new DestinationSuggestionPacket(this, anchorName, anchorName))
                 .toList();
     }
 }

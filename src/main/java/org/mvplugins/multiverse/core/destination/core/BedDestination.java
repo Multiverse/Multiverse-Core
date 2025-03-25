@@ -53,10 +53,10 @@ public final class BedDestination implements Destination<BedDestination, BedDest
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
         List<DestinationSuggestionPacket> collect = Bukkit.getOnlinePlayers().stream()
-                .map(player -> new DestinationSuggestionPacket(player.getName(), player.getName()))
+                .map(player -> new DestinationSuggestionPacket(this, player.getName(), player.getName()))
                 .collect(Collectors.toList());
         if (sender instanceof Player) {
-            collect.add(new DestinationSuggestionPacket(OWN_BED_STRING, OWN_BED_STRING));
+            collect.add(new DestinationSuggestionPacket(this, OWN_BED_STRING, OWN_BED_STRING));
         }
         return collect;
     }

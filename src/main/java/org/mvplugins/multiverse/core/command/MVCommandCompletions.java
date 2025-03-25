@@ -189,14 +189,12 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, Player[] players, String deststring) {
-        return destinationsProvider.getDestinations().stream()
-                .flatMap(destination -> destination.suggestDestinations(teleporter, deststring)
-                        .stream()
-                        .filter(packet -> corePermissionsChecker
-                                .checkDestinationPacketPermission(teleporter, Arrays.asList(players), destination, packet))
-                        .map(packet -> destination instanceof WorldDestination
+        return destinationsProvider.suggestDestinations(teleporter, deststring).stream()
+                .filter(packet -> corePermissionsChecker
+                        .checkDestinationPacketPermission(teleporter, Arrays.asList(players), packet))
+                .map(packet -> packet.destination() instanceof WorldDestination
                                 ? packet.destinationString()
-                                : destination.getIdentifier() + ":" + packet.destinationString()))
+                                : packet.destination().getIdentifier() + ":" + packet.destinationString())
                 .toList();
     }
 

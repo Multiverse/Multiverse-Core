@@ -36,7 +36,8 @@ public interface Destination<D extends Destination<D, T>, T extends DestinationI
     @Nullable T getDestinationInstance(@Nullable String destinationParams);
 
     /**
-     * Returns a list of possible destinations for the given destination parameters.
+     * Returns a list of possible destinations for the given destination parameters. This packet's destination
+     * should be this instance and not other destinations.
      *
      * @param commandSender     The command sender
      * @param destinationParams The destination parameters. ex: p:MyPortal:nw

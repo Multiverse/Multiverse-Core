@@ -52,7 +52,7 @@ public final class PlayerDestination implements Destination<PlayerDestination, P
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
         return Bukkit.getOnlinePlayers().stream()
-                .map(p -> new DestinationSuggestionPacket(p.getName(), p.getName()))
+                .map(p -> new DestinationSuggestionPacket(this, p.getName(), p.getName()))
                 .toList();
     }
 }
