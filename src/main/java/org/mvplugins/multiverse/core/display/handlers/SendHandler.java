@@ -4,6 +4,7 @@ import java.util.List;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 
 /**
  * Handles the sending of all content to the command sender.
@@ -16,5 +17,5 @@ public interface SendHandler {
      * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content);
+    void send(@NotNull MVCommandIssuer issuer, @NotNull List<String> content);
 }

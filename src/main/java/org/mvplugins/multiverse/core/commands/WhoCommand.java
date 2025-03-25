@@ -33,6 +33,8 @@ import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -104,8 +106,8 @@ final class WhoCommand extends CoreCommand {
                 .send(issuer);
     }
 
-    private String phrasePlayerList(List<Player> players) {
-        return players.stream().map(Player::getName).collect(Collectors.joining(", "));
+    private Message phrasePlayerList(List<Player> players) {
+        return Message.of(players.stream().map(Player::getName).collect(Collectors.joining(", ")));
     }
 
     private ContentDisplay getListDisplay(LoadedMultiverseWorld world, int page,
@@ -117,7 +119,7 @@ final class WhoCommand extends CoreCommand {
 
     private ContentDisplay getListDisplay(Collection<LoadedMultiverseWorld> worlds, int page,
                                           ContentFilter filter, boolean ignoreEmptyWorlds) {
-        Map<String, String> outMap = new HashMap<>();
+        Map<String, Message> outMap = new HashMap<>();
 
         // Add all the worlds to our hashmap
         for (LoadedMultiverseWorld world : worlds) {
@@ -127,14 +129,14 @@ final class WhoCommand extends CoreCommand {
                 outMap.put(world.getAlias(), phrasePlayerList(players));
             } else if (!ignoreEmptyWorlds) {
                 // If the world has 0 players in it, say that it is empty
-                outMap.put(world.getAlias(), ChatColor.RED + "Empty");
+                outMap.put(world.getAlias(), Message.of(MVCorei18n.WHO_EMPTY));
             }
         }
 
         return ContentDisplay.create()
                 .addContent(MapContentProvider.forContent(outMap))
                 .withSendHandler(PagedSendHandler.create()
-                        .withHeader("%s====[ Multiverse World Players List ]====", ChatColor.AQUA)
+                        .withHeader(Message.of(MVCorei18n.WHO_HEADER))
                         .doPagination(true)
                         .withTargetPage(page)
                         .withFilter(filter));

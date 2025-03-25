@@ -4,6 +4,7 @@ import java.util.List;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 
 /**
  * Most basic implementation of {@link SendHandler} that just sends content with no formatting.
@@ -31,7 +32,7 @@ public final class DefaultSendHandler implements SendHandler {
      * {@inheritDoc}
      */
     @Override
-    public void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    public void send(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         content.forEach(issuer::sendMessage);
     }
 }

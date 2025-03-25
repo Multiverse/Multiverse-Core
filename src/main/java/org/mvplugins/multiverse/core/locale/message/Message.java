@@ -148,6 +148,19 @@ public sealed class Message permits LocalizedMessage {
      * This is the localized message with replacements applied. The message is localized using the locale of the given
      * command issuer, if not null.
      *
+     * @param commandIssuer The command issuer the message is for, or null for the console (default locale)
+     * @return The formatted, localized message
+     */
+    public @NotNull String formatted(@NotNull CommandIssuer commandIssuer) {
+        return formatted();
+    }
+
+    /**
+     * Gets the formatted message from localization data.
+     * <br/>
+     * This is the localized message with replacements applied. The message is localized using the locale of the given
+     * command issuer, if not null.
+     *
      * @param locales The MultiverseCore locales provider
      * @param commandIssuer The command issuer the message is for, or null for the console (default locale)
      * @return The formatted, localized message

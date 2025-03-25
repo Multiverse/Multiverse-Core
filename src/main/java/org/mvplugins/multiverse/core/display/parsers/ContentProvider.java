@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 
 /**
  * Parse objects into string or list of strings.
@@ -16,5 +17,5 @@ public interface ContentProvider {
      * @param issuer    The target which the content will be displayed to.
      * @return          The parsed content list.
      */
-    Collection<String> parse(@NotNull BukkitCommandIssuer issuer);
+    Collection<String> parse(@NotNull MVCommandIssuer issuer);
 }

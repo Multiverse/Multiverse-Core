@@ -9,8 +9,11 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 
 /**
  * Base implementation of {@link SendHandler} with some common parameters.
@@ -22,7 +25,7 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
     /**
      * Header to be displayed.
      */
-    protected String header = "";
+    protected Message header = null;
 
     /**
      * Filter to keep only contents that matches the filter.
@@ -32,16 +35,16 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
     /**
      * Fallback message to be displayed when there is no content to display.
      */
-    protected String noContentMessage = String.format("%sThere is no content to display.", ChatColor.RED);
+    protected Message noContentMessage = Message.of(MVCorei18n.CONTENTDISPLAY_NOCONTENT);
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void send(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    public void send(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         sendHeader(issuer);
         List<String> filteredContent = filterContent(content);
-        if (filteredContent.isEmpty() && !Strings.isNullOrEmpty(noContentMessage)) {
+        if (filteredContent.isEmpty() && noContentMessage != null) {
             issuer.sendMessage(noContentMessage);
             return;
         }
@@ -53,8 +56,8 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      *
      * @param issuer    The target which the header will be displayed to.
      */
-    protected void sendHeader(BukkitCommandIssuer issuer) {
-        if (!Strings.isNullOrEmpty(header)) {
+    protected void sendHeader(MVCommandIssuer issuer) {
+        if (header != null) {
             issuer.sendMessage(header);
         }
     }
@@ -78,7 +81,7 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    protected abstract void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content);
+    protected abstract void sendContent(@NotNull MVCommandIssuer issuer, @NotNull List<String> content);
 
     /**
      * Sets header to be displayed.
@@ -88,7 +91,17 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      * @return Same {@link T} for method chaining.
      */
     public T withHeader(@NotNull String header, @NotNull Object... replacements) {
-        this.header = String.format(header, replacements);
+        return withHeader(Message.of(String.format(header, replacements)));
+    }
+
+    /**
+     * Sets header to be displayed.
+     *
+     * @param header    The header message.
+     * @return Same {@link T} for method chaining.
+     */
+    public T withHeader(@NotNull Message header) {
+        this.header = header;
         return getT();
     }
 
@@ -110,6 +123,16 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
      * @return Same {@link T} for method chaining.
      */
     public T noContentMessage(@Nullable String message) {
+        return noContentMessage(message == null ? null : Message.of(message));
+    }
+
+    /**
+     * Sets the message to be displayed when there is no content to display.
+     *
+     * @param message   The message to display. Null to disable.
+     * @return Same {@link T} for method chaining.
+     */
+    public T noContentMessage(@Nullable Message message) {
         this.noContentMessage = message;
         return getT();
     }
@@ -119,7 +142,7 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
         return (T) this;
     }
 
-    public String getHeader() {
+    public Message getHeader() {
         return header;
     }
 
@@ -127,7 +150,7 @@ public abstract class BaseSendHandler<T extends BaseSendHandler<?>> implements S
         return filter;
     }
 
-    public String getNoContentMessage() {
+    public Message getNoContentMessage() {
         return noContentMessage;
     }
 }

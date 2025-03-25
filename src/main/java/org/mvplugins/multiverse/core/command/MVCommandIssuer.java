@@ -24,16 +24,24 @@ public class MVCommandIssuer extends BukkitCommandIssuer {
         return commandManager;
     }
 
-    public void sendError(String message) {
-        sendMessage(MessageType.INFO, MessageKeys.INFO_MESSAGE, "{message}", message);
+    public void sendError(String message, MessageReplacement... replacements) {
+        sendMessage(MessageType.INFO, message, replacements);
     }
 
-    public void sendSyntax(String message) {
-        sendMessage(MessageType.SYNTAX, MessageKeys.INFO_MESSAGE, "{message}", message);
+    public void sendSyntax(String message, MessageReplacement... replacements) {
+        sendMessage(MessageType.SYNTAX, message, replacements);
     }
 
-    public void sendInfo(String message) {
-        sendMessage(MessageType.INFO, MessageKeys.INFO_MESSAGE, "{message}", message);
+    public void sendInfo(String message, MessageReplacement... replacements) {
+        sendMessage(MessageType.INFO, message, replacements);
+    }
+
+    public void sendMessage(String message, MessageReplacement... replacements) {
+        sendMessage(null, Message.of(message, replacements));
+    }
+
+    public void sendMessage(MessageType type, String message, MessageReplacement... replacements) {
+        sendMessage(type, Message.of(message, replacements));
     }
 
     public void sendMessage(MessageType messageType, String message) {
@@ -68,12 +76,12 @@ public class MVCommandIssuer extends BukkitCommandIssuer {
     public void sendInfo(MessageKeyProvider key, MessageReplacement... replacements) {
         sendMessage(MessageType.INFO, key, replacements);
     }
+    public void sendMessage(MessageKeyProvider key, MessageReplacement... replacements) {
+        sendMessage(null, Message.of(key, replacements));
+    }
 
-    private void sendMessage(MessageType messageType, MessageKeyProvider key, MessageReplacement... replacements) {
-        sendMessage(messageType, Message.of(
-                key,
-                "{error_key: %s}".formatted(key.getMessageKey().getKey()),
-                replacements));
+    public void sendMessage(MessageType messageType, MessageKeyProvider key, MessageReplacement... replacements) {
+        sendMessage(messageType, Message.of(key, replacements));
     }
 
     public void sendError(Message message) {
@@ -86,6 +94,10 @@ public class MVCommandIssuer extends BukkitCommandIssuer {
 
     public void sendInfo(Message message) {
         sendMessage(MessageType.INFO, message);
+    }
+
+    public void sendMessage(Message message) {
+        sendMessage(null, message);
     }
 
     public void sendMessage(MessageType messageType, Message message) {

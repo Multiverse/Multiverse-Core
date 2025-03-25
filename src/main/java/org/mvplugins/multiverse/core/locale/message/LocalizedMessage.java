@@ -33,6 +33,11 @@ final class LocalizedMessage extends Message implements MessageKeyProvider {
     }
 
     @Override
+    public @NotNull String formatted(@NotNull CommandIssuer commandIssuer) {
+        return formatted(commandIssuer.getManager().getLocales(), commandIssuer);
+    }
+
+    @Override
     public @NotNull String formatted(@NotNull Locales locales, @Nullable CommandIssuer commandIssuer) {
         Objects.requireNonNull(locales, "locales must not be null");
 

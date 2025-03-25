@@ -2,11 +2,15 @@ package org.mvplugins.multiverse.core.display.parsers;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 import co.aikar.commands.BukkitCommandIssuer;
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 
 /**
  * Simple parser for map object.
@@ -43,17 +47,23 @@ public class MapContentProvider<K, V> implements ContentProvider {
      * {@inheritDoc}
      */
     @Override
-    public Collection<String> parse(@NotNull BukkitCommandIssuer issuer) {
+    public Collection<String> parse(@NotNull MVCommandIssuer issuer) {
         return map.entrySet().stream()
-                .map(e -> String.format(format, keyColor, e.getKey(), separator, valueColor, formatValue(e.getValue())))
+                .map(e -> String.format(format,
+                        keyColor, formatValue(issuer, e.getKey()), separator, valueColor, formatValue(issuer, e.getValue())))
                 .toList();
     }
 
-    private String formatValue(V value) {
-        if (value instanceof String stringValue) {
-            return Strings.isNullOrEmpty(stringValue) ? "&7&onull" : stringValue;
+    private String formatValue(MVCommandIssuer issuer, Object value) {
+        String stringValue;
+        if (value instanceof Message message) {
+            stringValue = message.formatted(issuer);
+        } else if (value instanceof String string) {
+            stringValue = string.isEmpty() ? Message.of(MVCorei18n.CONTENTDISPLAY_EMPTY).formatted(issuer) : string;
+        } else {
+            stringValue = value == null ? null : String.valueOf(value);
         }
-        return value == null ? "&7&onull" : String.valueOf(value);
+        return stringValue == null ? Message.of(MVCorei18n.CONTENTDISPLAY_NULL).formatted(issuer) : stringValue;
     }
 
     /**

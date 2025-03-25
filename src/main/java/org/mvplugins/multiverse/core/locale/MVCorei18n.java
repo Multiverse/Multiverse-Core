@@ -81,6 +81,14 @@ public enum MVCorei18n implements MessageKeyProvider {
     IMPORT_IMPORTING,
     IMPORT_SUCCESS,
 
+    // info command
+    INFO_HEADER,
+    INFO_NOCONTENT,
+
+    // list command
+    LIST_HEADER,
+    LIST_NOCONTENT,
+
     // load command
     LOAD_LOADING,
     LOAD_SUCCESS,
@@ -124,6 +132,7 @@ public enum MVCorei18n implements MessageKeyProvider {
     WHO_WORLD_DESCRIPTION,
     WHO_FLAGS_DESCRIPTION,
     WHO_EMPTY,
+    WHO_HEADER,
 
     // version command
     VERSION_MV,
@@ -194,6 +203,14 @@ public enum MVCorei18n implements MessageKeyProvider {
     QUEUECOMMAND_NOCOMMANDINQUEUE,
     QUEUECOMMAND_INVALIDOTP,
     QUEUECOMMAND_COMMANDEXECUTIONERROR,
+
+    // content display messages
+    CONTENTDISPLAY_NOCONTENT,
+    CONTENTDISPLAY_FILTER,
+    CONTENTDISPLAY_PAGE,
+    CONTENTDISPLAY_INVALIDPAGE,
+    CONTENTDISPLAY_NULL,
+    CONTENTDISPLAY_EMPTY,
 
     // generic
     GENERIC_SUCCESS,

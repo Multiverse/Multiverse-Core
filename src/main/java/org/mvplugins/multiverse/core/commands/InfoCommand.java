@@ -28,9 +28,13 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @CommandAlias("mv")
@@ -59,7 +63,7 @@ final class InfoCommand extends CoreCommand {
     @CommandPermission("multiverse.core.info")
     @CommandCompletion("@mvworlds:scope=both|@flags:groupName=mvinfocommand @flags:groupName=mvinfocommand")
     @Syntax("[world] [--page <page>] [--filter <filter>]")
-    @Description("{@@mv-core.info.description")
+    @Description("{@@mv-core.info.description}")
     public void onInfoCommand(
             MVCommandIssuer issuer,
 
@@ -69,8 +73,7 @@ final class InfoCommand extends CoreCommand {
             LoadedMultiverseWorld world,
 
             @Optional
-            @Syntax("[--page <page>]")
-            @Description("{@@mv-core.info.description.page}")
+            @Syntax("[--page <page>] [--filter <filter>]")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
@@ -79,15 +82,12 @@ final class InfoCommand extends CoreCommand {
                         .withKeyColor(ChatColor.AQUA)
                         .withValueColor(ChatColor.WHITE))
                 .withSendHandler(PagedSendHandler.create()
-                        .withHeader(getTitle(world))
+                        .withHeader(Message.of(MVCorei18n.INFO_HEADER, replace("{world}").with(world.getName())))
+                        .noContentMessage(Message.of(MVCorei18n.INFO_NOCONTENT))
                         .doPagination(true)
                         .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
                         .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
                 .send(issuer);
-    }
-
-    private String getTitle(MultiverseWorld world) {
-        return "&a&l---- World Info: &f&l%s&a&l ----".formatted(world.getName());
     }
 
     private Map<String, String> getInfo(LoadedMultiverseWorld world) {
@@ -96,9 +96,12 @@ final class InfoCommand extends CoreCommand {
         outMap.put("World Name", world.getName());
         outMap.put("World Alias", world.getAlias());
         outMap.put("World UID", world.getUID().toString());
+        outMap.put("Auto Load", String.valueOf(world.getAutoLoad()));
         outMap.put("Game Mode", world.getGameMode().toString());
         outMap.put("Difficulty", world.getDifficulty().toString());
         outMap.put("Spawn Location", locationManipulation.strCoords(world.getSpawnLocation()));
+        outMap.put("Bed Respawn", String.valueOf(world.getBedRespawn()));
+        outMap.put("Anchor Respawn", String.valueOf(world.getAnchorRespawn()));
         outMap.put("Seed", String.valueOf(world.getSeed()));
         getEntryFeeInfo(outMap, world);
         outMap.put("Respawn World", world.getRespawnWorldName());
@@ -108,6 +111,7 @@ final class InfoCommand extends CoreCommand {
         outMap.put("Generate Structures", world.canGenerateStructures().get().toString());
         outMap.put("World Scale", String.valueOf(world.getScale()));
         outMap.put("Weather Enabled", String.valueOf(world.getAllowWeather()));
+        outMap.put("Allow Flight", String.valueOf(world.getAllowFlight()));
         outMap.put("Hunger Depletes", String.valueOf(world.getHunger()));
         outMap.put("Keep Spawn In Memory", String.valueOf(world.getKeepSpawnInMemory()));
         outMap.put("PVP Enabled", String.valueOf(world.getPvp()));

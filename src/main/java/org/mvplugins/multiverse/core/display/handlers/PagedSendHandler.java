@@ -6,6 +6,11 @@ import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Display content as a list with optional pagination.
@@ -34,7 +39,7 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
      * {@inheritDoc}
      */
     @Override
-    public void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    public void sendContent(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         if (!paginate || (issuer.getIssuer() instanceof ConsoleCommandSender && !paginateInConsole)) {
             sendNormal(issuer, content);
             return;
@@ -48,9 +53,9 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
      * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    private void sendNormal(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    private void sendNormal(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         if (filter.needToFilter()) {
-            issuer.sendMessage(String.format("%s[Filter '%s']", ChatColor.GRAY, filter));
+            issuer.sendMessage(MVCorei18n.CONTENTDISPLAY_FILTER, replace("{filter}").with(filter));
         }
         content.forEach(issuer::sendMessage);
     }
@@ -61,7 +66,7 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
      * @param issuer    The target which the content will be displayed to.
      * @param content   The content to display.
      */
-    private void sendPaged(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    private void sendPaged(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         int totalPages = (content.size() + linesPerPage - 1) / linesPerPage; // Basically just divide round up
         if (targetPage < 1 || targetPage > totalPages) {
             issuer.sendMessage(String.format("%sInvalid page number. Please enter a page number between 1 and %s", ChatColor.RED, totalPages));
@@ -69,9 +74,16 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
         }
 
         if (filter.needToFilter()) {
-            issuer.sendMessage(String.format("%s[Page %s of %s] [Filter '%s']", ChatColor.GRAY, targetPage, totalPages, filter));
+            issuer.sendMessage("{page} {filter}",
+                    replace("{page}").with(Message.of(MVCorei18n.CONTENTDISPLAY_PAGE,
+                            replace("{current}").with(targetPage),
+                            replace("{total}").with(totalPages))),
+                    replace("{filter}").with(Message.of(MVCorei18n.CONTENTDISPLAY_FILTER,
+                            replace("{filter}").with(filter))));
         } else {
-            issuer.sendMessage(String.format("%s[Page %s of %s]", ChatColor.GRAY, targetPage, totalPages));
+            issuer.sendMessage(MVCorei18n.CONTENTDISPLAY_PAGE,
+                    replace("{current}").with(targetPage),
+                    replace("{total}").with(totalPages));
         }
 
         int startIndex = (targetPage - 1) * linesPerPage;

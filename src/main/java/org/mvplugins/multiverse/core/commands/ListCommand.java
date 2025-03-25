@@ -27,6 +27,8 @@ import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryChecker;
@@ -62,7 +64,7 @@ final class ListCommand extends CoreCommand {
     @CommandPermission("multiverse.core.list.worlds")
     @CommandCompletion("@flags:groupName=mvlistcommand")
     @Syntax("--filter [filter] --page [page] --raw")
-    @Description("Displays a listing of all worlds that you can enter.")
+    @Description("{{@mv-core.list.description}}")
     public void onListCommand(
             MVCommandIssuer issuer,
 
@@ -73,7 +75,8 @@ final class ListCommand extends CoreCommand {
         ContentDisplay.create()
                 .addContent(ListContentProvider.forContent(getListContents(issuer, parsedFlags.hasFlag(rawFlag))))
                 .withSendHandler(PagedSendHandler.create()
-                        .withHeader("%s====[ Multiverse World List ]====", ChatColor.GOLD)
+                        .noContentMessage(Message.of(MVCorei18n.LIST_NOCONTENT))
+                        .withHeader(Message.of(MVCorei18n.LIST_HEADER))
                         .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
                         .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
                 .send(issuer);

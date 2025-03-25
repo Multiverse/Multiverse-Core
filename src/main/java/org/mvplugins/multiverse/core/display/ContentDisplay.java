@@ -7,6 +7,7 @@ import java.util.Objects;
 import co.aikar.commands.BukkitCommandIssuer;
 import org.jetbrains.annotations.NotNull;
 
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.display.handlers.DefaultSendHandler;
 import org.mvplugins.multiverse.core.display.handlers.SendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ContentProvider;
@@ -61,7 +62,7 @@ public class ContentDisplay {
      *
      * @param issuer    The target command sender to show the display to.
      */
-    public void send(@NotNull BukkitCommandIssuer issuer) {
+    public void send(@NotNull MVCommandIssuer issuer) {
         Objects.requireNonNull(sendHandler, "No send handler set for content display");
         List<String> parsedContent = new ArrayList<>();
         contentParsers.forEach(parser -> parsedContent.addAll(parser.parse(issuer)));

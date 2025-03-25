@@ -5,6 +5,11 @@ import java.util.List;
 import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Display the contents in a single line.
@@ -30,9 +35,9 @@ public class InlineSendHandler extends BaseSendHandler<InlineSendHandler> {
      * {@inheritDoc}
      */
     @Override
-    public void sendContent(@NotNull BukkitCommandIssuer issuer, @NotNull List<String> content) {
+    public void sendContent(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         if (filter.needToFilter()) {
-            issuer.sendMessage(String.format("%s[Filter '%s']", ChatColor.GRAY, filter));
+            issuer.sendMessage(MVCorei18n.CONTENTDISPLAY_FILTER, replace("{filter}").with(filter));
         }
         String message = String.join(delimiter, content);
         if (prefix != null) {
