@@ -150,25 +150,26 @@ public final class CorePermissionsChecker {
      * @return True if the sender has any base spawn permission.
      */
     public boolean hasAnySpawnPermission(@NotNull CommandSender sender) {
-        if (config.getUseFinerTeleportPermissions()) {
-            return worldManager.getLoadedWorlds().stream().anyMatch(world ->
-                    Arrays.stream(Scope.values()).anyMatch(scope -> hasSpawnPermission(sender, scope, world)));
-        }
-        return Arrays.stream(Scope.values()).anyMatch(scope -> hasSpawnPermission(sender, scope, null));
+        return hasAnySpawnPermission(sender, Scope.values());
+    }
+
+    public boolean hasAnySpawnPermission(@NotNull CommandSender sender, @NotNull Scope scope) {
+        return hasAnySpawnPermission(sender, new Scope[]{scope});
     }
 
     /**
      * Checks if the sender has permission to spawn other players in any world.
      *
      * @param sender The command sender.
+     * @param scopes The scopes to check.
      * @return True if the sender has permission, false otherwise.
      */
-    public boolean hasAnySpawnOtherPermission(@NotNull CommandSender sender) {
+    public boolean hasAnySpawnPermission(@NotNull CommandSender sender, @NotNull Scope[] scopes) {
         if (config.getUseFinerTeleportPermissions()) {
-            return worldManager.getLoadedWorlds().stream()
-                    .anyMatch(world -> hasSpawnPermission(sender, Scope.OTHER, world));
+            return worldManager.getLoadedWorlds().stream().anyMatch(world ->
+                    Arrays.stream(scopes).anyMatch(scope -> hasSpawnPermission(sender, scope, world)));
         }
-        return hasSpawnPermission(sender, Scope.OTHER, null);
+        return Arrays.stream(scopes).anyMatch(scope -> hasSpawnPermission(sender, scope, null));
     }
 
     private boolean hasSpawnPermission(@NotNull CommandSender sender, @NotNull Scope scope, @Nullable MultiverseWorld world) {
@@ -275,7 +276,7 @@ public final class CorePermissionsChecker {
      * @param sender    The sender to check.
      * @return True if the issuer has permission, false otherwise.
      */
-    public boolean hasAnyTeleportPermission(CommandSender sender) {
+    public boolean hasAnyTeleportPermission(@NotNull CommandSender sender) {
         return hasAnyTeleportPermission(sender, Scope.values());
     }
 
@@ -286,7 +287,7 @@ public final class CorePermissionsChecker {
      * @param scope    The scope to check.
      * @return True if the issuer has permission, false otherwise.
      */
-    public boolean hasAnyTeleportPermission(CommandSender sender, Scope scope) {
+    public boolean hasAnyTeleportPermission(@NotNull CommandSender sender, @NotNull Scope scope) {
         return hasAnyTeleportPermission(sender, new Scope[]{scope});
     }
 
@@ -297,7 +298,7 @@ public final class CorePermissionsChecker {
      * @param scopes    The scopes to check.
      * @return True if the issuer has permission, false otherwise.
      */
-    public boolean hasAnyTeleportPermission(CommandSender sender, Scope[] scopes) {
+    public boolean hasAnyTeleportPermission(@NotNull CommandSender sender, @NotNull Scope[] scopes) {
         if (!config.getUseFinerTeleportPermissions()) {
             // Just loop over the destination
             for (Destination<?, ?> destination : destinationsProvider.getDestinations()) {

@@ -30,7 +30,7 @@ public class MVCommandPermissions {
         registerPermissionChecker("mvteleport", issuer -> permissionsChecker.hasAnyTeleportPermission(issuer.getIssuer()));
         registerPermissionChecker("mvteleportother", issuer -> permissionsChecker.hasAnyTeleportPermission(issuer.getIssuer(), Scope.OTHER));
         registerPermissionChecker("mvspawn", issuer -> permissionsChecker.hasAnySpawnPermission(issuer.getIssuer()));
-        registerPermissionChecker("mvspawnother", issuer -> permissionsChecker.hasAnySpawnOtherPermission(issuer.getIssuer()));
+        registerPermissionChecker("mvspawnother", issuer -> permissionsChecker.hasAnySpawnPermission(issuer.getIssuer(), Scope.OTHER));
     }
 
     /**
