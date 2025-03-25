@@ -22,7 +22,7 @@ public final class MVEconomist {
     private final ItemEconomy itemEconomy;
 
     @Inject
-    public MVEconomist(MultiverseCore plugin, ItemEconomy itemEconomy) {
+    MVEconomist(MultiverseCore plugin, ItemEconomy itemEconomy) {
         vaultHandler = new VaultHandler(plugin);
         this.itemEconomy = itemEconomy;
     }

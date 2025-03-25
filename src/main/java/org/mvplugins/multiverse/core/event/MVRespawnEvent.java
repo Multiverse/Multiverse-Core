@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when a player is respawning.
@@ -31,7 +32,7 @@ public final class MVRespawnEvent extends PlayerEvent implements Cancellable {
      * {@inheritDoc}
      */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

@@ -64,7 +64,7 @@ final class MVPlayerListener implements CoreListener {
     private final DestinationsProvider destinationsProvider;
     private final EnforcementHandler enforcementHandler;
 
-    private final Map<String, String> playerWorld = new ConcurrentHashMap<String, String>();
+    private final Map<String, String> playerWorld = new ConcurrentHashMap<>();
 
     @Inject
     MVPlayerListener(
@@ -257,8 +257,8 @@ final class MVPlayerListener implements CoreListener {
         Logging.finer("Teleporter %s is teleporting %s from %s to %s", teleporter.getName(), teleportee.getName(),
                 event.getFrom(), event.getTo());
 
-        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld().getName()).getOrNull();
-        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld().getName()).getOrNull();
+        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld()).getOrNull();
+        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld()).getOrNull();
         if (toWorld == null) {
             Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
                     + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "

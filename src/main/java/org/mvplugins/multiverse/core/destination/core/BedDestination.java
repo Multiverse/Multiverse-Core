@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -40,7 +39,7 @@ public final class BedDestination implements Destination<BedDestination, BedDest
     @Override
     public @Nullable BedDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
         Player player = PlayerFinder.get(destinationParams);
-        if (player == null && !destinationParams.equals(OWN_BED_STRING)) {
+        if (player == null && !OWN_BED_STRING.equals(destinationParams)) {
             return null;
         }
         return new BedDestinationInstance(this, player);

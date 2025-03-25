@@ -470,7 +470,7 @@ public final class WorldManager {
     private Attempt<String, RemoveFailureReason> removeWorldFromConfig(@NotNull MultiverseWorld world) {
         // Remove world from config
         worldsMap.remove(world.getName());
-        ((MultiverseWorld) world).getWorldConfig().deferenceMVWorld();
+        world.getWorldConfig().deferenceMVWorld();
         worldsConfigManager.deleteWorldConfig(world.getName());
         saveWorldsConfig();
         corePermissions.removeWorldPermissions(world);
@@ -782,7 +782,7 @@ public final class WorldManager {
     public Collection<MultiverseWorld> getWorlds() {
         return worldsMap.values().stream()
                 .map(world -> getLoadedWorld(world)
-                        .fold(() -> (MultiverseWorld) world, loadedWorld -> loadedWorld))
+                        .fold(() -> world, loadedWorld -> loadedWorld))
                 .toList();
     }
 
@@ -831,7 +831,6 @@ public final class WorldManager {
     public Collection<MultiverseWorld> getUnloadedWorlds() {
         return worldsMap.values().stream()
                 .filter(world -> !world.isLoaded())
-                .map(world -> (MultiverseWorld) world)
                 .toList();
     }
 
@@ -948,9 +947,9 @@ public final class WorldManager {
     }
 
     /**
-     * Saves the worlds.yml config.
+     * Saves the worlds.yml config to disk.
      *
-     * @return true if it had successfully saved the file.
+     * @return A successful try if the file is saved to disk, else the exception object throw.
      */
     public Try<Void> saveWorldsConfig() {
         return worldsConfigManager.save()

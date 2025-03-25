@@ -48,7 +48,7 @@ public interface GeneratorPlugin {
      * <p>Gets a link with more information on your generator plugin. Returning null means you do not wish to link
      * users to any website related to your generator plugin.</p>
      *
-     * <p>An example info: 'Click on https://www.amazinggenerator.io ;)'</p>
+     * <p>An example info: 'Click on <a href="https://www.amazinggenerator.io">https://www.amazinggenerator.io</a> ;)'</p>
      *
      * <p>Some suggested places you can link to are: spigot resource page, github repo or your own plugin site.</p>
      *

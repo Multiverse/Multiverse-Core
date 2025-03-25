@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.destination;
 
 import java.util.Collection;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

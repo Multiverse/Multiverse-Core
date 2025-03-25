@@ -67,7 +67,7 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      */
     @Override
     public void setWorld(World world) {
-        this.worldRef = new WeakReference<World>(world);
+        this.worldRef = new WeakReference<>(world);
     }
 
     /**
@@ -114,7 +114,7 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
      * @param args The map.
      * @return The deserialized object.
      */
-    public static SpawnLocation deserialize(Map<String, Object> args) {
+    public static @NotNull SpawnLocation deserialize(Map<String, Object> args) {
         double x = ((Number) args.get("x")).doubleValue();
         double y = ((Number) args.get("y")).doubleValue();
         double z = ((Number) args.get("z")).doubleValue();

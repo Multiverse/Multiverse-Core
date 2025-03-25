@@ -26,7 +26,7 @@ final class PasteGGPasteService extends PasteService {
      */
     @Override
     String encodeData(String data) {
-        Map<String, String> mapData = new HashMap<String, String>();
+        Map<String, String> mapData = new HashMap<>();
         mapData.put("multiverse.txt", data);
         return this.encodeData(mapData);
     }
@@ -61,7 +61,7 @@ final class PasteGGPasteService extends PasteService {
     public String postData(String data) throws PasteFailedException {
         try {
             String stringJSON = this.exec(encodeData(data), ContentType.JSON);
-            return (String) ((JSONObject) ((JSONObject) new JSONParser().parse(stringJSON)).get("result")).get("id");
+            return (String) ((JSONObject) ((JSONObject) new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE).parse(stringJSON)).get("result")).get("id");
         } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
         }
@@ -74,7 +74,7 @@ final class PasteGGPasteService extends PasteService {
     public String postData(Map<String, String> data) throws PasteFailedException {
         try {
             String stringJSON = this.exec(encodeData(data), ContentType.JSON);
-            return "https://paste.gg/" + ((JSONObject) ((JSONObject) new JSONParser().parse(stringJSON)).get("result")).get("id");
+            return "https://paste.gg/" + ((JSONObject) ((JSONObject) new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE).parse(stringJSON)).get("result")).get("id");
         } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
         }

@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when the Multiverse-config should be reloaded.
@@ -28,7 +29,7 @@ public final class MVConfigReloadEvent extends Event {
      * {@inheritDoc}
      */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

@@ -12,6 +12,7 @@ import java.util.Map;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when somebody requests version information about Multiverse.
@@ -32,7 +33,7 @@ public final class MVDumpsDebugInfoEvent extends Event {
      * {@inheritDoc}
      */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

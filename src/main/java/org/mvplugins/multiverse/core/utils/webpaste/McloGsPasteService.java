@@ -34,7 +34,7 @@ final class McloGsPasteService extends PasteService {
     public String postData(String data) throws PasteFailedException {
         try {
             String stringJSON = this.exec(encodeData(data), ContentType.URLENCODED); // Execute request
-            return String.valueOf(((JSONObject) new JSONParser().parse(stringJSON)).get("url")); // Interpret result
+            return String.valueOf(((JSONObject) new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE).parse(stringJSON)).get("url")); // Interpret result
         } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
         }
@@ -44,7 +44,7 @@ final class McloGsPasteService extends PasteService {
     public String postData(Map<String, String> data) throws PasteFailedException {
         try {
             String stringJSON = this.exec(encodeData(data), ContentType.JSON); // Execute request
-            return String.valueOf(((JSONObject) new JSONParser().parse(stringJSON)).get("url")); // Interpret result
+            return String.valueOf(((JSONObject) new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE).parse(stringJSON)).get("url")); // Interpret result
         } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
         }

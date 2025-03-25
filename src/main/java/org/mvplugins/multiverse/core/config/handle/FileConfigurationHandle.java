@@ -99,7 +99,7 @@ public abstract class FileConfigurationHandle<C extends FileConfiguration> exten
     public abstract static class Builder<C extends FileConfiguration, B extends Builder<C, B>>
             extends BaseConfigurationHandle.Builder<C, B> {
 
-        protected @NotNull Path configPath;
+        protected final @NotNull Path configPath;
 
         protected Builder(@NotNull Path configPath, @NotNull NodeGroup nodes) {
             super(nodes);

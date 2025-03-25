@@ -47,10 +47,9 @@ public final class EnforcementHandler {
             Logging.finer("Handling gamemode for player in world '%s': %s, Changing to %s",
                     world.getName(), player.getName(), world.getGameMode());
             player.setGameMode(world.getGameMode());
-        }).onEmpty(() -> {
-            Logging.fine("Player %s is not in a Multiverse world, gamemode enforcement will not apply",
-                    player.getName());
-        });
+        }).onEmpty(() ->
+                Logging.fine("Player %s is not in a Multiverse world, gamemode enforcement will not apply",
+                        player.getName()));
     }
 
     /**
@@ -89,9 +88,8 @@ public final class EnforcementHandler {
                 }
                 player.setAllowFlight(false);
             }
-        }).onEmpty(() -> {
-            Logging.fine("Player %s is not in a Multiverse world, flight enforcement will not apply",
-                    player.getName());
-        });
+        }).onEmpty(() ->
+                Logging.fine("Player %s is not in a Multiverse world, flight enforcement will not apply",
+                        player.getName()));
     }
 }

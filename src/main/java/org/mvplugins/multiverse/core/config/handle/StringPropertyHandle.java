@@ -13,6 +13,10 @@ import org.mvplugins.multiverse.core.config.node.ListValueNode;
 import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.ValueNode;
 
+/**
+ * Used to map property string name to config node and parse string value to node's class type.
+ */
+@SuppressWarnings("unchecked")
 public class StringPropertyHandle {
     private final @NotNull BaseConfigurationHandle<?> handle;
 
@@ -101,7 +105,7 @@ public class StringPropertyHandle {
      * @return A Try containing the property value if found.
      */
     public Try<Object> getProperty(@Nullable String name) {
-        return findNode(name, ValueNode.class).map(node -> handle.get(node));
+        return findNode(name, ValueNode.class).map(handle::get);
     }
 
     /**
@@ -144,7 +148,7 @@ public class StringPropertyHandle {
      * @return A Try indicating success or failure.
      */
     public Try<Void> resetProperty(@Nullable String name) {
-        return findNode(name, ValueNode.class).flatMap(node -> handle.reset(node));
+        return findNode(name, ValueNode.class).flatMap(handle::reset);
     }
 
     /**

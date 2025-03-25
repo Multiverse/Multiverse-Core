@@ -101,10 +101,9 @@ public interface DataStore<T> {
             this.configMap = new HashMap<>();
             StringPropertyHandle worldPropertyHandler = world.getStringPropertyHandle();
             worldPropertyHandler.getAllPropertyNames().forEach(name -> worldPropertyHandler.getProperty(name)
-                    .peek(value -> configMap.put(name, value)).onFailure(e -> {
-                        Logging.warning("Failed to get property " + name + " from world "
-                                + world.getName() + ": " + e.getMessage());
-                    }));
+                    .peek(value -> configMap.put(name, value)).onFailure(e ->
+                            Logging.warning("Failed to get property " + name + " from world "
+                                    + world.getName() + ": " + e.getMessage())));
             return this;
         }
 
@@ -117,10 +116,9 @@ public interface DataStore<T> {
                 return this;
             }
             StringPropertyHandle worldPropertyHandler = world.getStringPropertyHandle();
-            configMap.forEach((name, value) -> worldPropertyHandler.setProperty(name, value).onFailure(e -> {
-                Logging.warning("Failed to set property %s to %s for world %s: %s",
-                        name, value, world.getName(), e.getMessage());
-            }));
+            configMap.forEach((name, value) -> worldPropertyHandler.setProperty(name, value).onFailure(e ->
+                    Logging.warning("Failed to set property %s to %s for world %s: %s",
+                            name, value, world.getName(), e.getMessage())));
             return this;
         }
     }

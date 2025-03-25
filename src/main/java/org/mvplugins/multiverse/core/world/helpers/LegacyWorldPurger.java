@@ -109,8 +109,8 @@ public final class LegacyWorldPurger {
         boolean specifiedAnimals = thingsToKill.contains("ANIMALS") || specifiedAll;
         boolean specifiedMonsters = thingsToKill.contains("MONSTERS") || specifiedAll;
         List<Entity> worldEntities = bukkitWorld.getEntities();
-        List<LivingEntity> livingEntities = new ArrayList<LivingEntity>(worldEntities.size());
-        List<Projectile> projectiles = new ArrayList<Projectile>(worldEntities.size());
+        List<LivingEntity> livingEntities = new ArrayList<>(worldEntities.size());
+        List<Projectile> projectiles = new ArrayList<>(worldEntities.size());
         for (final Entity e : worldEntities) {
             if (e instanceof Projectile p) {
                 if (p.getShooter() != null) {

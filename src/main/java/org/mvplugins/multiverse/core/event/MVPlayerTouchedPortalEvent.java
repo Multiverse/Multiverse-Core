@@ -12,19 +12,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * This event is thrown when a portal is touched.
  */
 public final class MVPlayerTouchedPortalEvent extends Event implements Cancellable {
-    private Player p;
-    private Location l;
+    private final Player player;
+    private final Location location;
     private boolean isCancelled;
     private boolean canUse = true;
 
     public MVPlayerTouchedPortalEvent(Player p, Location l) {
-        this.p = p;
-        this.l = l;
+        this.player = p;
+        this.location = l;
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
@@ -33,7 +34,7 @@ public final class MVPlayerTouchedPortalEvent extends Event implements Cancellab
      * {@inheritDoc}
      */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 
@@ -52,7 +53,7 @@ public final class MVPlayerTouchedPortalEvent extends Event implements Cancellab
      * @return The {@link Location} of the portal-block that was touched.
      */
     public Location getBlockTouched() {
-        return this.l;
+        return this.location;
     }
 
     /**
@@ -61,7 +62,7 @@ public final class MVPlayerTouchedPortalEvent extends Event implements Cancellab
      * @return The {@link Player} that's touching the portal.
      */
     public Player getPlayer() {
-        return this.p;
+        return this.player;
     }
 
     /**

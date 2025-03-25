@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.world.options;
 
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

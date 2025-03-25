@@ -25,7 +25,7 @@ public final class MVWorldDeleteEvent extends Event implements Cancellable {
      * {@inheritDoc}
      */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

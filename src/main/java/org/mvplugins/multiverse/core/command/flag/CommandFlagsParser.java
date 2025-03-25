@@ -68,9 +68,7 @@ public class CommandFlagsParser {
 
         this.currentFlag = potentialFlag;
 
-        if (this.currentFlag instanceof CommandValueFlag) {
-            CommandValueFlag<?> valueFlag = (CommandValueFlag<?>) this.currentFlag;
-
+        if (this.currentFlag instanceof CommandValueFlag<?> valueFlag) {
             if (valueFlag.isOptional()) {
                 parsedFlags.addFlagResult(valueFlag.getKey(), valueFlag.getDefaultValue());
                 this.nextArgMayBeKey = true;
@@ -98,7 +96,7 @@ public class CommandFlagsParser {
      */
     private boolean parseValue(String flag) {
         if (this.currentFlag == null) {
-            throw new InvalidCommandArgument("Some flag logic error occurred at " + flag + "");
+            throw new InvalidCommandArgument("Some flag logic error occurred at '" + flag + "'!");
         }
         if (flagGroup.hasKey(flag)) {
             throw new InvalidCommandArgument(currentFlag.getKey() + " requires a value!");

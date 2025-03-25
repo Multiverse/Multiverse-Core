@@ -24,6 +24,7 @@ import org.mvplugins.multiverse.core.config.node.ValueNode;
  *
  * @param <C>   The configuration type.
  */
+@SuppressWarnings("rawtypes,unchecked")
 public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
 
     protected final @Nullable Logger logger;
@@ -69,7 +70,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      */
     protected void setUpNodes() {
         nodeValueMap.clear();
-        if (nodes == null || nodes.isEmpty()) {
+        if (nodes.isEmpty()) {
             return;
         }
 

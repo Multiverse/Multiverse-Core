@@ -72,7 +72,7 @@ dependencies {
 
 ext.bitlyAccessToken = System.getenv('BITLY_ACCESS_TOKEN') ?: 'bitly-access-token'
 
-task prepareSource(type: Sync) {
+tasks.register('prepareSource', Sync) {
     inputs.property 'bitlyAccessToken', bitlyAccessToken
     from sourceSets.main.java
     into "$buildDir/src"

@@ -52,6 +52,9 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
      */
     @Override
     public @Nullable WorldDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
+        if (destinationParams == null) {
+            return null;
+        }
         String[] items = destinationParams.split(":");
         if (items.length > 3) {
             return null;

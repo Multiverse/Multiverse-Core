@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.utils.webpaste;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -83,20 +85,7 @@ abstract sealed class HttpAPIClient permits PasteService, URLShortener {
         OutputStreamWriter streamWriter = null;
 
         try {
-            HttpsURLConnection connection = (HttpsURLConnection) new URL(this.url).openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-
-            // we can receive anything!
-            connection.addRequestProperty("Accept", "*/*");
-            // set a dummy User-Agent
-            connection.addRequestProperty("User-Agent", "multiverse/dumps");
-            // this isn't required, but is technically correct
-            connection.addRequestProperty("Content-Type", getContentHeader(type));
-            // only some API requests require an access token
-            if (this.accessToken != null) {
-                connection.addRequestProperty("Authorization", this.accessToken);
-            }
+            HttpsURLConnection connection = getHttpsURLConnection(type);
 
             streamWriter = new OutputStreamWriter(connection.getOutputStream(), StandardCharsets.UTF_8.newEncoder());
             streamWriter.write(payload);
@@ -124,5 +113,23 @@ abstract sealed class HttpAPIClient permits PasteService, URLShortener {
                 } catch (IOException ignore) { }
             }
         }
+    }
+
+    private @NotNull HttpsURLConnection getHttpsURLConnection(ContentType type) throws IOException {
+        HttpsURLConnection connection = (HttpsURLConnection) new URL(this.url).openConnection();
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+
+        // we can receive anything!
+        connection.addRequestProperty("Accept", "*/*");
+        // set a dummy User-Agent
+        connection.addRequestProperty("User-Agent", "multiverse/dumps");
+        // this isn't required, but is technically correct
+        connection.addRequestProperty("Content-Type", getContentHeader(type));
+        // only some API requests require an access token
+        if (this.accessToken != null) {
+            connection.addRequestProperty("Authorization", this.accessToken);
+        }
+        return connection;
     }
 }

@@ -29,28 +29,27 @@ public final class LocationManipulation {
     private static final Map<String, Integer> ORIENTATION_INTS;
 
     static {
-        Map<String, Integer> orientationInts = new HashMap<String, Integer>();
         // BEGIN CHECKSTYLE-SUPPRESSION: MagicNumberCheck
-        orientationInts.put("n", 180);
-        orientationInts.put("ne", 225);
-        orientationInts.put("e", 270);
-        orientationInts.put("se", 315);
-        orientationInts.put("s", 0);
-        orientationInts.put("sw", 45);
-        orientationInts.put("w", 90);
-        orientationInts.put("nw", 135);
-
-        orientationInts.put("north", 180);
-        orientationInts.put("northeast", 225);
-        orientationInts.put("east", 270);
-        orientationInts.put("southeast", 315);
-        orientationInts.put("south", 0);
-        orientationInts.put("southwest", 45);
-        orientationInts.put("west", 90);
-        orientationInts.put("northwest", 135);
 
         // "freeze" the map:
-        ORIENTATION_INTS = Collections.unmodifiableMap(orientationInts);
+        ORIENTATION_INTS = Map.ofEntries(
+                Map.entry("n", 180),
+                Map.entry("ne", 225),
+                Map.entry("e", 270),
+                Map.entry("se", 315),
+                Map.entry("s", 0),
+                Map.entry("sw", 45),
+                Map.entry("w", 90),
+                Map.entry("nw", 135),
+                Map.entry("north", 180),
+                Map.entry("northeast", 225),
+                Map.entry("east", 270),
+                Map.entry("southeast", 315),
+                Map.entry("south", 0),
+                Map.entry("southwest", 45),
+                Map.entry("west", 90),
+                Map.entry("northwest", 135)
+        );
         // END CHECKSTYLE-SUPPRESSION: MagicNumberCheck
     }
 
@@ -90,7 +89,7 @@ public final class LocationManipulation {
      * <p>
      * WORLD:X,Y,Z:yaw:pitch
      * <p>
-     * The corresponding Location2String function is {@link #stringToLocation}
+     * The corresponding Location2String function is {@link #locationToString(Location)}
      *
      * @param locationString The location represented as a string (WORLD:X,Y,Z:yaw:pitch)
      * @return A new location defined by the string or null if the string was invalid.

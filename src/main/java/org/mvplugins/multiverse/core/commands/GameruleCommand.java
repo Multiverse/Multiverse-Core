@@ -15,6 +15,7 @@ import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
@@ -105,6 +106,7 @@ final class GameruleCommand extends CoreCommand {
         }
     }
 
+    @SuppressWarnings("rawtypes,unchecked")
     @Subcommand("reset")
     @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules @mvworlds:multiple|*")
@@ -124,13 +126,14 @@ final class GameruleCommand extends CoreCommand {
         AtomicBoolean success = new AtomicBoolean(true);
         Arrays.stream(worlds)
                 .forEach(world -> world.getBukkitWorld()
-                .peek(bukkitWorld -> bukkitWorld.setGameRule(gamerule, bukkitWorld.getGameRuleDefault(gamerule)))
-                .onEmpty(() -> {
-                    success.set(false);
-                    issuer.sendError(MVCorei18n.GAMERULE_RESET_FAILED,
-                            Replace.GAMERULE.with(gamerule.getName()),
-                            Replace.WORLD.with(world.getName()));
-                }));
+                        .flatMap(bukkitWorld -> Option.of(bukkitWorld.getGameRuleDefault(gamerule))
+                                .map(value -> bukkitWorld.setGameRule(gamerule, value)))
+                        .onEmpty(() -> {
+                            success.set(false);
+                            issuer.sendError(MVCorei18n.GAMERULE_RESET_FAILED,
+                                    Replace.GAMERULE.with(gamerule.getName()),
+                                    Replace.WORLD.with(world.getName()));
+                        }));
 
         // Tell user if it was successful
         if (success.get()) {

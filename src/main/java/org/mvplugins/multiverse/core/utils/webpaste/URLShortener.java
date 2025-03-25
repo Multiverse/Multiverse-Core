@@ -4,7 +4,7 @@ package org.mvplugins.multiverse.core.utils.webpaste;
  * An interface to a web-based URL Shortener. Classes extending this should
  * implement its methods to shorten links using the service. Given some
  * URLShortener instance us, a URL is shortened by:
- *
+ * <br />
  * {@code us.shorten(longUrl);}
  *
  * An example of this, is the BitlyURLShortener.

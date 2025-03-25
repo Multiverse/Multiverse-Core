@@ -58,10 +58,9 @@ final class MVPortalListener implements CoreListener {
                 Logging.fine("Cancelling creation of %s portal because portalForm disallows.", targetType);
                 event.setCancelled(true);
             }
-        }).onEmpty(() -> {
-            Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.",
-                    event.getWorld().getName());
-        });
+        }).onEmpty(() ->
+                Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.",
+                        event.getWorld().getName()));
     }
 
     private PortalType getPortalType(PortalCreateEvent event) {
@@ -75,12 +74,8 @@ final class MVPortalListener implements CoreListener {
                 }
                 yield CUSTOM;
             }
-            case NETHER_PAIR -> {
-                yield PortalType.NETHER;
-            }
-            case END_PLATFORM -> {
-                yield PortalType.ENDER;
-            }
+            case NETHER_PAIR -> PortalType.NETHER;
+            case END_PLATFORM -> PortalType.ENDER;
             default -> {
                 Logging.fine("Portal created is not NETHER or ENDER type. Ignoring...");
                 yield CUSTOM;
@@ -104,10 +99,9 @@ final class MVPortalListener implements CoreListener {
                 Logging.fine("Cancelling creation of ENDER portal because portalForm disallows.");
                 event.setCancelled(true);
             }
-        }).onEmpty(() -> {
-            Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
-                    event.getPlayer().getWorld().getName());
-        });
+        }).onEmpty(() ->
+                Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
+                        event.getPlayer().getWorld().getName()));
     }
 
     private boolean isCreateEndPortalInteraction(PlayerInteractEvent event) {

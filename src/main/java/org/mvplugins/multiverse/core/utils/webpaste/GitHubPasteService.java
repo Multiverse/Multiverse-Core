@@ -31,7 +31,7 @@ final class GitHubPasteService extends PasteService {
      */
     @Override
     String encodeData(String data) {
-        Map<String, String> mapData = new HashMap<String, String>();
+        Map<String, String> mapData = new HashMap<>();
         mapData.put("multiverse.txt", data);
         return this.encodeData(mapData);
     }

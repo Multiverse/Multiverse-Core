@@ -22,7 +22,6 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
-import org.mvplugins.multiverse.core.MultiverseCore;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 
@@ -107,7 +106,11 @@ public final class FileUtils {
      */
     public Try<Void> deleteFolder(Path path) {
         try (Stream<Path> files = Files.walk(path)) {
-            files.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+            files.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(file -> {
+                if (!file.delete()) {
+                    Logging.warning("Failed to delete file: " + file);
+                }
+            });
             return Try.success(null);
         } catch (IOException e) {
             Logging.severe("Failed to delete folder: " + path.toAbsolutePath());
@@ -183,7 +186,7 @@ public final class FileUtils {
         }
 
         @Override
-        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+        public @NotNull FileVisitResult preVisitDirectory(Path dir, @NotNull BasicFileAttributes attrs) throws IOException {
             Path newDir = targetDir.resolve(sourceDir.relativize(dir));
             if (!Files.isDirectory(newDir)) {
                 Files.createDirectory(newDir);
@@ -192,7 +195,7 @@ public final class FileUtils {
         }
 
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        public @NotNull FileVisitResult visitFile(Path file, @NotNull BasicFileAttributes attrs) throws IOException {
             // Pass files that are set to ignore
             if (excludeFiles.contains(file.getFileName().toString())) {
                 Logging.finest("Ignoring file: " + file.getFileName());

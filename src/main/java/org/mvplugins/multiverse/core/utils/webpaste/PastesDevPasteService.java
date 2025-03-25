@@ -40,7 +40,7 @@ final class PastesDevPasteService extends PasteService {
     public String postData(String data) throws PasteFailedException {
         try {
             String stringJSON = this.exec(encodeData(data), ContentType.PLAINTEXT_YAML);
-            return "https://pastes.dev/" + ((JSONObject) new JSONParser().parse(stringJSON)).get("key");
+            return "https://pastes.dev/" + ((JSONObject) new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE).parse(stringJSON)).get("key");
         } catch (IOException | ParseException e) {
             throw new PasteFailedException(e);
         }

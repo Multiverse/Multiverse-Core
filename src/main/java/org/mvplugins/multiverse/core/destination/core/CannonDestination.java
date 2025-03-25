@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.destination.core;
 
-import co.aikar.commands.BukkitCommandIssuer;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -43,6 +42,10 @@ public final class CannonDestination implements Destination<CannonDestination, C
      */
     @Override
     public @Nullable CannonDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
+        if (destinationParams == null) {
+            return null;
+        }
+        //todo: Common class to compile regex
         String[] params = destinationParams.split(":");
         if (params.length != 5) {
             return null;

@@ -41,7 +41,7 @@ public final class MVWorldPropertyChangeEvent<T> extends Event {
      * {@inheritDoc}
      */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

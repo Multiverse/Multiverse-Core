@@ -89,7 +89,7 @@ public final class AsyncSafetyTeleporterAction {
      * Teleport multiple entities
      *
      * @param teleportees The entities to teleport
-     * @param <T>
+     * @param <T>   The entity type
      * @return A list of async futures that represent the teleportation result of each entity
      */
     public <T extends Entity> Async<List<Attempt<Void, TeleportFailureReason>>> teleport(@NotNull List<T> teleportees) {

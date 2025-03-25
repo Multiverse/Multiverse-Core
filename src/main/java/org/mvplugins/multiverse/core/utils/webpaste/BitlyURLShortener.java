@@ -46,7 +46,7 @@ final class BitlyURLShortener extends URLShortener {
     public String shorten(String longUrl) {
         try {
             String stringJSON = this.exec(encodeData(longUrl), ContentType.JSON);
-            return (String) ((JSONObject) new JSONParser().parse(stringJSON)).get("link");
+            return (String) ((JSONObject) new JSONParser(JSONParser.DEFAULT_PERMISSIVE_MODE).parse(stringJSON)).get("link");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
             return longUrl;

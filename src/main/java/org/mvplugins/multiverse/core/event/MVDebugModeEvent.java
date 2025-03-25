@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.event;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when Core's debug level is changed.
@@ -20,7 +21,7 @@ public final class MVDebugModeEvent extends Event {
      * {@inheritDoc}
      */
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return HANDLERS;
     }
 

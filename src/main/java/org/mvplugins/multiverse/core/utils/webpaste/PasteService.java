@@ -6,7 +6,7 @@ import java.util.Map;
  * An interface to a web-based text-pasting service. Classes extending this
  * should implement its methods to send data to an online text-sharing service,
  * such as pastebin.com. Given some PasteService instance ps, a paste is accomplished by:
- *
+ * <br />
  * {@code ps.postData(someString);}
  *
  * Services that provide a distinction between "public" and "private" pastes
@@ -47,7 +47,7 @@ public abstract sealed class PasteService extends HttpAPIClient
 
     /**
      * Does this service support uploading multiple files.
-     *
+     * <br />
      * Newer services like GitHub's Gist support multi-file pastes,
      * which allows us to upload configs in addition to the standard logs.
      *

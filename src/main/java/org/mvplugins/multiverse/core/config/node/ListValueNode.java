@@ -50,7 +50,7 @@ public interface ListValueNode<I> extends ValueNode<List<I>> {
      * Validates the value of this node.
      *
      * @param value The value to validate.
-     * @return True if the value is valid, false otherwise.
+     * @return A successful try if validation passed, else the exception object throw.
      */
     Try<Void> validateItem(@Nullable I value);
 

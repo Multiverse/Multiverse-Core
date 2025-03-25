@@ -58,6 +58,9 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
      */
     @Override
     public @Nullable ExactDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
+        if (destinationParams == null) {
+            return null;
+        }
         String[] items = destinationParams.split(":");
         if (items.length < 2) {
             return null;

@@ -282,9 +282,8 @@ final class CoreConfigNodes {
             .comment("This config option defines the default language Multiverse should use.")
             .defaultValue(Locale.ENGLISH)
             .name("default-locale")
-            .onSetValue((oldValue, newValue) -> {
-                commandManager.get().getLocales().setDefaultLocale(newValue);
-            })
+            .onSetValue((oldValue, newValue) ->
+                    commandManager.get().getLocales().setDefaultLocale(newValue))
             .build());
 
     final ConfigNode<Boolean> perPlayerLocale = node(ConfigNode.builder("messaging.per-player-locale", Boolean.class)

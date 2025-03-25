@@ -144,8 +144,7 @@ public final class PlayerFinder {
     }
 
     /**
-     * Get a {@link Player} based on vanilla selectors.
-     * https://minecraft.gamepedia.com/Commands#Target_selectors
+     * Get a {@link Player} based on <a href="https://minecraft.gamepedia.com/Commands#Target_selectors">vanilla selectors</a>.
      *
      * @param playerSelector    A target selector, usually starts with an '@'.
      * @param sender            Target sender for selector.
@@ -168,8 +167,7 @@ public final class PlayerFinder {
     }
 
     /**
-     * Get multiple {@link Player} based on selector.
-     * https://minecraft.gamepedia.com/Commands#Target_selectors
+     * Get multiple {@link Player} based on <a href="https://minecraft.gamepedia.com/Commands#Target_selectors">vanilla selectors</a>.
      *
      * @param playerSelector    A target selector, usually starts with an '@'.
      * @param sender            Target sender for selector.
