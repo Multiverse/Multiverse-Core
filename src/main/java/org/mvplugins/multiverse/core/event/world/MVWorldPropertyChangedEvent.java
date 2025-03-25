@@ -5,9 +5,8 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package org.mvplugins.multiverse.core.event;
+package org.mvplugins.multiverse.core.event.world;
 
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import org.jetbrains.annotations.NotNull;
@@ -22,36 +21,18 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
  *
  * @param <T> The type of the property that was set.
  */
-public final class MVWorldPropertyChangeEvent<T> extends Event {
-    private final MultiverseWorld world;
+public final class MVWorldPropertyChangedEvent<T> extends MultiverseWorldEvent<MultiverseWorld> {
+    private static final HandlerList HANDLERS = new HandlerList();
+
     private final String name;
     private final T oldValue;
     private final T newValue;
 
-    public MVWorldPropertyChangeEvent(@NotNull MultiverseWorld world, @NotNull String name, T oldValue, T value) {
-        this.world = world;
+    public MVWorldPropertyChangedEvent(@NotNull MultiverseWorld world, @NotNull String name, T oldValue, T value) {
+        super(world);
         this.name = name;
         this.oldValue = oldValue;
         this.newValue = value;
-    }
-
-    private static final HandlerList HANDLERS = new HandlerList();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @NotNull HandlerList getHandlers() {
-        return HANDLERS;
-    }
-
-    /**
-     * Gets the handler list. This is required by the event system.
-     *
-     * @return A list of handlers.
-     */
-    public static HandlerList getHandlerList() {
-        return HANDLERS;
     }
 
     /**
@@ -82,11 +63,19 @@ public final class MVWorldPropertyChangeEvent<T> extends Event {
     }
 
     /**
-     * Get the world targeted because of this change.
-     *
-     * @return A valid MultiverseWorld.
+     * {@inheritDoc}
      */
-    public @NotNull MultiverseWorld getWorld() {
-        return this.world;
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return HANDLERS;
+    }
+
+    /**
+     * Gets the handler list. This is required by the event system.
+     *
+     * @return A list of HANDLERS.
+     */
+    public static HandlerList getHandlerList() {
+        return HANDLERS;
     }
 }

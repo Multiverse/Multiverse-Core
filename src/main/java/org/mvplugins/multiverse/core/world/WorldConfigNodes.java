@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
-import org.mvplugins.multiverse.core.event.MVWorldPropertyChangeEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldPropertyChangedEvent;
 import org.mvplugins.multiverse.core.config.node.ConfigNode;
 import org.mvplugins.multiverse.core.config.node.ListConfigNode;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
@@ -58,7 +58,7 @@ final class WorldConfigNodes {
         nodeBuilder.onSetValue((oldValue, newValue) -> {
             if (Objects.equals(oldValue, newValue)) return;
             if (world == null) return;
-            MVWorldPropertyChangeEvent<?> mvWorldPropertyChangeEvent = new MVWorldPropertyChangeEvent<>(
+            MVWorldPropertyChangedEvent<?> mvWorldPropertyChangeEvent = new MVWorldPropertyChangedEvent<>(
                     world, Option.of(nodeBuilder.name()).getOrElse(nodeBuilder.path()), oldValue, newValue);
             Bukkit.getPluginManager().callEvent(mvWorldPropertyChangeEvent);
             Logging.finer("MVWorldPropertyChangeEvent fired for world '%s' with name '%s' and value '%s'",

@@ -68,6 +68,7 @@ dependencies {
     testImplementation('com.googlecode.json-simple:json-simple:1.1.1') {
         exclude group: 'junit', module: 'junit'
     }
+    testImplementation("org.hamcrest:hamcrest:3.0")
 }
 
 ext.bitlyAccessToken = System.getenv('BITLY_ACCESS_TOKEN') ?: 'bitly-access-token'

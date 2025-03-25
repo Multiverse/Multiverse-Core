@@ -3,7 +3,10 @@ package org.mvplugins.multiverse.core.world
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.WorldType
+import org.hamcrest.MatcherAssert.assertThat
+import org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventClassMatcher.hasFiredEventInstance
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.event.world.*
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions
@@ -57,6 +60,9 @@ class WorldManagerTest : TestWithMockBukkit() {
         assertEquals(WorldType.FLAT, world.worldType.get())
         assertEquals("", world.generator)
         assertEquals(8.0, world.scale)
+
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldLoadedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldCreatedEvent::class.java))
     }
 
     @Test
@@ -99,12 +105,19 @@ class WorldManagerTest : TestWithMockBukkit() {
         assertFalse(worldManager.getWorld("world").isDefined)
         assertFalse(worldManager.getLoadedWorld("world").isDefined)
         assertFalse(worldManager.getUnloadedWorld("world").isDefined)
+
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldUnloadedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldRemovedEvent::class.java))
     }
 
     @Test
     fun `Delete world`() {
         assertTrue(worldManager.deleteWorld(world).isSuccess)
         assertFalse(worldManager.getLoadedWorld("world").isDefined)
+
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldDeleteEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldUnloadedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldRemovedEvent::class.java))
     }
 
     @Test
@@ -154,6 +167,13 @@ class WorldManagerTest : TestWithMockBukkit() {
         val world = getWorld.get()
         assertNotNull(world)
         assertEquals(4321L, world.seed)
+
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldDeleteEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldUnloadedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldRemovedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldLoadedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldCreatedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldRegeneratedEvent::class.java))
     }
 
     @Test
@@ -164,6 +184,10 @@ class WorldManagerTest : TestWithMockBukkit() {
         val world = getWorld.get()
         assertNotNull(world)
         assertEquals("cloneworld", world.name)
+
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldLoadedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldImportedEvent::class.java))
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldClonedEvent::class.java))
     }
 
     @Test

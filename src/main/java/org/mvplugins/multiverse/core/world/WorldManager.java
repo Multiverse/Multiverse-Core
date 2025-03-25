@@ -28,7 +28,14 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.CoreConfig;
-import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldClonedEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldCreatedEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldDeleteEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldImportedEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldLoadedEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldRegeneratedEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldRemovedEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldUnloadedEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
@@ -224,6 +231,7 @@ public final class WorldManager {
                             parsedGenerator,
                             options.biome(),
                             options.useSpawnAdjust());
+                    pluginManager.callEvent(new MVWorldCreatedEvent(loadedWorld));
                     return worldActionResult(loadedWorld);
                 });
     }
@@ -265,10 +273,12 @@ public final class WorldManager {
                 exception -> worldActionResult(ImportFailureReason.BUKKIT_CREATION_FAILED,
                         options.worldName(), exception),
                 world -> {
-                    LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(world,
+                    LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
+                            world,
                             parsedGenerator,
                             options.biome(),
                             options.useSpawnAdjust());
+                    pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
                     return worldActionResult(loadedWorld);
                 });
     }
@@ -318,6 +328,7 @@ public final class WorldManager {
         setDefaultEnvironmentScale(mvWorld);
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
+        pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return loadedWorld;
     }
 
@@ -385,6 +396,7 @@ public final class WorldManager {
                                     config);
                             loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
                             saveWorldsConfig();
+                            pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
                             return worldActionResult(loadedWorld);
                         });
     }
@@ -417,6 +429,7 @@ public final class WorldManager {
                             var unloadedWorld = Objects.requireNonNull(worldsMap.get(world.getName()),
                                     "For some reason, the unloaded world isn't in the map... BUGGG");
                             mvWorld.getWorldConfig().setMVWorld(unloadedWorld);
+                            pluginManager.callEvent(new MVWorldUnloadedEvent(mvWorld));
                             return worldActionResult(unloadedWorld);
                         }));
     }
@@ -474,6 +487,7 @@ public final class WorldManager {
         worldsConfigManager.deleteWorldConfig(world.getName());
         saveWorldsConfig();
         corePermissions.removeWorldPermissions(world);
+        pluginManager.callEvent(new MVWorldRemovedEvent(world));
         return worldActionResult(world.getName());
     }
 
@@ -562,6 +576,7 @@ public final class WorldManager {
                         newWorld.setSpawnLocation(options.world().getSpawnLocation());
                     }
                     saveWorldsConfig();
+                    pluginManager.callEvent(new MVWorldClonedEvent(newWorld, options.world()));
                 });
     }
 
@@ -649,6 +664,7 @@ public final class WorldManager {
                         newWorld.setSpawnLocation(spawnLocation);
                     }
                     saveWorldsConfig();
+                    pluginManager.callEvent(new MVWorldRegeneratedEvent(newWorld));
                 });
     }
 

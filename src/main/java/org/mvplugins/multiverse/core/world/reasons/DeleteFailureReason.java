@@ -3,7 +3,7 @@ package org.mvplugins.multiverse.core.world.reasons;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 
-import org.mvplugins.multiverse.core.event.MVWorldDeleteEvent;
+import org.mvplugins.multiverse.core.event.world.MVWorldDeleteEvent;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
