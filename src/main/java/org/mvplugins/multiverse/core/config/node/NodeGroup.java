@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.confighandle.node;
+package org.mvplugins.multiverse.core.config.node;
 
 import java.util.ArrayList;
 import java.util.Collection;

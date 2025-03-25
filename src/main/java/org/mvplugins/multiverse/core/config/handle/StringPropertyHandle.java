@@ -8,10 +8,10 @@ import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.confighandle.node.ConfigNodeNotFoundException;
-import org.mvplugins.multiverse.core.confighandle.node.ListValueNode;
-import org.mvplugins.multiverse.core.confighandle.node.Node;
-import org.mvplugins.multiverse.core.confighandle.node.ValueNode;
+import org.mvplugins.multiverse.core.config.node.ConfigNodeNotFoundException;
+import org.mvplugins.multiverse.core.config.node.ListValueNode;
+import org.mvplugins.multiverse.core.config.node.Node;
+import org.mvplugins.multiverse.core.config.node.ValueNode;
 
 public class StringPropertyHandle {
     private final @NotNull BaseConfigurationHandle<?> handle;

@@ -7,7 +7,7 @@ import java.util.List;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 
-import org.mvplugins.multiverse.core.confighandle.node.ValueNode;
+import org.mvplugins.multiverse.core.config.node.ValueNode;
 
 /**
  * Helper class for migrating configs to the latest config version.

@@ -14,10 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.migration.ConfigMigrator;
-import org.mvplugins.multiverse.core.confighandle.node.ListValueNode;
-import org.mvplugins.multiverse.core.confighandle.node.Node;
-import org.mvplugins.multiverse.core.confighandle.node.NodeGroup;
-import org.mvplugins.multiverse.core.confighandle.node.ValueNode;
+import org.mvplugins.multiverse.core.config.node.ListValueNode;
+import org.mvplugins.multiverse.core.config.node.Node;
+import org.mvplugins.multiverse.core.config.node.NodeGroup;
+import org.mvplugins.multiverse.core.config.node.ValueNode;
 
 /**
  * Generic configuration handle for all ConfigurationSection types.

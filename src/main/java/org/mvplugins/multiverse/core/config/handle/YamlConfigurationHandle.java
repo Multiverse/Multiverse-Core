@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.migration.ConfigMigrator;
-import org.mvplugins.multiverse.core.confighandle.node.NodeGroup;
+import org.mvplugins.multiverse.core.config.node.NodeGroup;
 
 /**
  * Configuration handle for YAML files.
