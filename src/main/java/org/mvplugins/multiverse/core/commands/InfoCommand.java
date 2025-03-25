@@ -13,6 +13,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
 import org.bukkit.ChatColor;
+import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -96,27 +97,36 @@ final class InfoCommand extends CoreCommand {
         outMap.put("World Name", world.getName());
         outMap.put("World Alias", world.getAlias());
         outMap.put("World UID", world.getUID().toString());
-        outMap.put("Auto Load", String.valueOf(world.getAutoLoad()));
         outMap.put("Game Mode", world.getGameMode().toString());
         outMap.put("Difficulty", world.getDifficulty().toString());
+
         outMap.put("Spawn Location", locationManipulation.strCoords(world.getSpawnLocation()));
+        outMap.put("Respawn World", world.getRespawnWorldName());
         outMap.put("Bed Respawn", String.valueOf(world.getBedRespawn()));
         outMap.put("Anchor Respawn", String.valueOf(world.getAnchorRespawn()));
+
         outMap.put("Seed", String.valueOf(world.getSeed()));
-        getEntryFeeInfo(outMap, world);
-        outMap.put("Respawn World", world.getRespawnWorldName());
-        outMap.put("World Type", world.getWorldType().get().toString());
+        outMap.put("Environment", String.valueOf(world.getEnvironment()));
+        outMap.put("World Type", world.getWorldType().map(WorldType::getName).getOrNull());
         outMap.put("Biome", world.getBiome());
         outMap.put("Generator", world.getGenerator());
-        outMap.put("Generate Structures", world.canGenerateStructures().get().toString());
+        outMap.put("Generate Structures", world.canGenerateStructures().map(String::valueOf).getOrNull());
+
+        outMap.put("Auto Load", String.valueOf(world.getAutoLoad()));
+        outMap.put("Keep Spawn In Memory", String.valueOf(world.getKeepSpawnInMemory()));
+
+        getEntryFeeInfo(outMap, world);
         outMap.put("World Scale", String.valueOf(world.getScale()));
         outMap.put("Weather Enabled", String.valueOf(world.getAllowWeather()));
         outMap.put("Allow Flight", String.valueOf(world.getAllowFlight()));
         outMap.put("Hunger Depletes", String.valueOf(world.getHunger()));
         outMap.put("Keep Spawn In Memory", String.valueOf(world.getKeepSpawnInMemory()));
         outMap.put("PVP Enabled", String.valueOf(world.getPvp()));
+        outMap.put("Portal Form", String.valueOf(world.getPortalForm()));
+        outMap.put("Player Limit", String.valueOf(world.getPlayerLimit()));
         getAnimalSpawningInfo(outMap, world);
         getMonsterSpawningInfo(outMap, world);
+        outMap.put("World Blacklist", String.join(", ", world.getWorldBlacklist()));
 
         return outMap;
     }
