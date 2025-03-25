@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.event.MVConfigReloadEvent;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;

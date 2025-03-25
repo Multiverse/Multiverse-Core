@@ -19,10 +19,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
-import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
-import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;

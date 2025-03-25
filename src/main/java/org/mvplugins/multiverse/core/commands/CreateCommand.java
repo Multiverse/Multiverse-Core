@@ -17,11 +17,11 @@ import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
-import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.flag.CommandFlag;
-import org.mvplugins.multiverse.core.commandtools.flag.CommandValueFlag;
-import org.mvplugins.multiverse.core.commandtools.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
+import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.Attempt.Failure;

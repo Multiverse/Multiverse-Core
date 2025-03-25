@@ -15,11 +15,11 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.confighandle.functions.NodeSerializer;
+import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.event.MVWorldPropertyChangeEvent;
-import org.mvplugins.multiverse.core.confighandle.node.ConfigNode;
-import org.mvplugins.multiverse.core.confighandle.node.ListConfigNode;
-import org.mvplugins.multiverse.core.confighandle.node.NodeGroup;
+import org.mvplugins.multiverse.core.config.node.ConfigNode;
+import org.mvplugins.multiverse.core.config.node.ListConfigNode;
+import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.utils.MaterialConverter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;

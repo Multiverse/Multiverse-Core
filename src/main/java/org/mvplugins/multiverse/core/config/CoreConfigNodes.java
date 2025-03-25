@@ -7,12 +7,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
-import org.mvplugins.multiverse.core.commandtools.MVCommandManager;
-import org.mvplugins.multiverse.core.commandtools.queue.ConfirmMode;
-import org.mvplugins.multiverse.core.confighandle.node.ConfigHeaderNode;
-import org.mvplugins.multiverse.core.confighandle.node.ConfigNode;
-import org.mvplugins.multiverse.core.confighandle.node.Node;
-import org.mvplugins.multiverse.core.confighandle.node.NodeGroup;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.command.queue.ConfirmMode;
+import org.mvplugins.multiverse.core.config.node.ConfigHeaderNode;
+import org.mvplugins.multiverse.core.config.node.ConfigNode;
+import org.mvplugins.multiverse.core.config.node.Node;
+import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;

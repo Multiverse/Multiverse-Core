@@ -16,7 +16,7 @@ import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.MultiversePluginsRegistration;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.LogsType;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
-import org.mvplugins.multiverse.core.commandtools.MVCommandIssuer;
+import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
 import org.mvplugins.multiverse.core.utils.FileUtils;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
