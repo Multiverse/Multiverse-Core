@@ -20,7 +20,7 @@ import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
-import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
@@ -66,12 +66,13 @@ final class RemoveCommand extends CoreCommand {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
         var future = parsedFlags.hasFlag(removePlayersFlag)
-                ? worldManager.getLoadedWorld(world)
-                .map(playerWorldTeleporter::removeFromWorld)
-                .getOrElse(Async.completedFuture(Collections.emptyList()))
-                : Async.completedFuture(Collections.emptyList());
+                ? worldManager.getLoadedWorld(world).map(playerWorldTeleporter::removeFromWorld).getOrElse(AsyncAttemptsAggregate::emptySuccess)
+                : AsyncAttemptsAggregate.emptySuccess();
 
-        future.thenRun(() -> doWorldRemoving(issuer, world));
+        future.onSuccess(ignore -> doWorldRemoving(issuer, world))
+                .onFailure(ignore -> {
+                    Logging.warning("Failed to teleport one or more players out of the world!");
+                });
     }
 
     private void doWorldRemoving(MVCommandIssuer issuer, MultiverseWorld world) {

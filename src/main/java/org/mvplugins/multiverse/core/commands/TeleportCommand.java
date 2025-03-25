@@ -129,38 +129,22 @@ final class TeleportCommand extends CoreCommand {
             issuer.sendMessage("You do not have permission to teleport all these players!");
             return;
         }
+
         safetyTeleporter.to(destination)
                 .by(issuer)
                 .checkSafety(!parsedFlags.hasFlag(unsafeFlag) && destination.checkTeleportSafety())
                 .teleport(List.of(players))
-                .thenAccept(attempts -> {
-                    int successCount = 0;
-                    Map<TeleportFailureReason, Integer> failures = new EnumMap<>(TeleportFailureReason.class);
-                    for (var attempt : attempts) {
-                        if (attempt.isSuccess()) {
-                            successCount++;
-                        } else {
-                            failures.compute(attempt.getFailureReason(),
-                                    (reason, count) -> count == null ? 1 : count + 1);
-                        }
-                    }
-                    if (successCount > 0) {
-                        Logging.finer("Teleported %s players to %s", successCount, destination);
-                        issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                                // TODO should use {count} instead of {player} most likely
-                                Replace.PLAYER.with(successCount + " players"),
-                                Replace.DESTINATION.with(destination.toString()));
-                    }
-                    if (!failures.isEmpty()) {
-                        for (var entry : failures.entrySet()) {
-                            Logging.finer("Failed to teleport %s players to %s: %s",
-                                    entry.getValue(), destination, entry.getKey());
-                            issuer.sendError(MVCorei18n.TELEPORT_FAILED,
-                                    // TODO should use {count} instead of {player} most likely
-                                    Replace.PLAYER.with(entry.getValue() + " players"),
-                                    Replace.DESTINATION.with(destination.toString()),
-                                    Replace.REASON.with(Message.of(entry.getKey(), "")));
-                        }
+                .onSuccessCount(successCount -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                        Replace.PLAYER.with(successCount + " players"),
+                        Replace.DESTINATION.with(destination.toString())))
+                .onFailureCount(reasonsCountMap -> {
+                    for (var entry : reasonsCountMap.entrySet()) {
+                        Logging.finer("Failed to teleport %s players to %s: %s",
+                                entry.getValue(), destination, entry.getKey());
+                        issuer.sendError(MVCorei18n.TELEPORT_FAILED,
+                                Replace.PLAYER.with(entry.getValue() + " players"),
+                                Replace.DESTINATION.with(destination.toString()),
+                                Replace.REASON.with(Message.of(entry.getKey())));
                     }
                 });
     }

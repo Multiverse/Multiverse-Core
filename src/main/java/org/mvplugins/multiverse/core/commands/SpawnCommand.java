@@ -14,6 +14,7 @@ import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -128,30 +129,17 @@ final class SpawnCommand extends CoreCommand {
                 .by(issuer)
                 .checkSafety(checkSafety)
                 .teleport(entities)
-                .thenAccept(attempts -> {
-                    int successCount = 0;
-                    Map<TeleportFailureReason, Integer> failures = new EnumMap<>(TeleportFailureReason.class);
-                    for (var attempt : attempts) {
-                        if (attempt.isSuccess()) {
-                            successCount++;
-                        } else {
-                            failures.compute(attempt.getFailureReason(),
-                                    (reason, count) -> count == null ? 1 : count + 1);
-                        }
-                    }
-                    if (successCount > 0) {
-                        issuer.sendInfo(MVCorei18n.SPAWN_SUCCESS,
-                                // TODO should use {count} instead of {player} most likely
-                                Replace.PLAYER.with(successCount + " players"),
-                                Replace.WORLD.with(mvWorld.getName()));
-                    } else {
-                        for (var entry : failures.entrySet()) {
-                            issuer.sendError(MVCorei18n.SPAWN_FAILED,
-                                    // TODO should use {count} instead of {player} most likely
-                                    Replace.PLAYER.with(entry.getValue() + " players"),
-                                    Replace.WORLD.with(mvWorld.getName()),
-                                    Replace.REASON.with(entry.getKey().getMessageKey()));
-                        }
+                .onSuccessCount(successCount ->  issuer.sendMessage(MVCorei18n.SPAWN_SUCCESS,
+                        Replace.PLAYER.with(successCount + " players"), //todo: replace this with localised "{count} players"
+                        Replace.WORLD.with(mvWorld.getName())))
+                .onFailureCount(reasonsCountMap -> {
+                    for (var entry : reasonsCountMap.entrySet()) {
+                        Logging.finer("Failed to teleport %s players to %s: %s",
+                                entry.getValue(), mvWorld.getName(), entry.getKey());
+                        issuer.sendError(MVCorei18n.SPAWN_FAILED,
+                                Replace.PLAYER.with(entry.getValue() + " players"),
+                                Replace.WORLD.with(mvWorld.getName()),
+                                Replace.REASON.with(entry.getKey().getMessageKey()));
                     }
                 });
     }

@@ -140,4 +140,8 @@ public final class AsyncAttempt<T, F extends FailureReason> {
     public Attempt<T, F> toAttempt() {
         return future.join();
     }
+
+    CompletableFuture<Attempt<T, F>> getFuture() {
+        return future;
+    }
 }

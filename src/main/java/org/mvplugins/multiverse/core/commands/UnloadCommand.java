@@ -21,6 +21,7 @@ import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
@@ -74,9 +75,12 @@ final class UnloadCommand extends CoreCommand {
 
         var future = parsedFlags.hasFlag(removePlayersFlag)
                 ? playerWorldTeleporter.removeFromWorld(world)
-                : Async.completedFuture(Collections.emptyList());
+                : AsyncAttemptsAggregate.emptySuccess();
 
-        future.thenRun(() -> doWorldUnloading(issuer, world, parsedFlags));
+        future.onSuccess(ignore -> doWorldUnloading(issuer, world, parsedFlags))
+                .onFailure(ignore -> {
+                    Logging.warning("Failed to teleport one or more players out of the world!");
+                });
     }
 
     private void doWorldUnloading(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {

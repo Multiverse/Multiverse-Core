@@ -13,6 +13,8 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
 import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
@@ -38,7 +40,7 @@ public final class PlayerWorldTeleporter {
      * @param world The world to remove all players from.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportFailureReason>>> removeFromWorld(@NotNull LoadedMultiverseWorld world) {
+    public AsyncAttemptsAggregate<Void, TeleportFailureReason> removeFromWorld(@NotNull LoadedMultiverseWorld world) {
         World toWorld = worldManager.getDefaultWorld().flatMap(LoadedMultiverseWorld::getBukkitWorld)
                 .getOrElse(Bukkit.getWorlds().get(0));
         return transferFromWorldTo(world, toWorld);
@@ -51,7 +53,7 @@ public final class PlayerWorldTeleporter {
      * @param to    The location to transfer players to.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportFailureReason>>> transferFromWorldTo(
+    public AsyncAttemptsAggregate<Void, TeleportFailureReason> transferFromWorldTo(
             @NotNull LoadedMultiverseWorld from,
             @NotNull MultiverseWorld to) {
         return transferAllFromWorldToLocation(from, to.getSpawnLocation());
@@ -64,7 +66,7 @@ public final class PlayerWorldTeleporter {
      * @param to    The world to transfer players to.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportFailureReason>>> transferFromWorldTo(
+    public AsyncAttemptsAggregate<Void, TeleportFailureReason> transferFromWorldTo(
             @NotNull LoadedMultiverseWorld from,
             @NotNull World to) {
         return transferAllFromWorldToLocation(from, to.getSpawnLocation());
@@ -77,13 +79,12 @@ public final class PlayerWorldTeleporter {
      * @param location The location to transfer players to.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportFailureReason>>> transferAllFromWorldToLocation(
+    public AsyncAttemptsAggregate<Void, TeleportFailureReason> transferAllFromWorldToLocation(
             @NotNull LoadedMultiverseWorld world,
             @NotNull Location location) {
         return world.getPlayers()
                 .map(players -> safetyTeleporter.to(location).teleport(players))
-                .getOrElse(() -> Async.failedFuture(
-                        new IllegalStateException("Unable to get players from world" + world.getName())));
+                .getOrElse(AsyncAttemptsAggregate::emptySuccess);
     }
 
     /**
@@ -93,7 +94,7 @@ public final class PlayerWorldTeleporter {
      * @param world     The world to teleport players to.
      * @return A list of async futures that represent the teleportation result of each player.
      */
-    public Async<List<Attempt<Void, TeleportFailureReason>>> teleportPlayersToWorld(
+    public AsyncAttemptsAggregate<Void, TeleportFailureReason> teleportPlayersToWorld(
             @NotNull List<Player> players,
             @NotNull MultiverseWorld world) {
         Location spawnLocation = world.getSpawnLocation();

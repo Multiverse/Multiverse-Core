@@ -25,6 +25,7 @@ import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -88,9 +89,12 @@ final class DeleteCommand extends CoreCommand {
                         && world.isLoaded()
                         && world instanceof LoadedMultiverseWorld loadedWorld
                 ? playerWorldTeleporter.removeFromWorld(loadedWorld)
-                : Async.completedFuture(Collections.emptyList());
+                : AsyncAttemptsAggregate.emptySuccess();
 
-        future.thenRun(() -> worldTickDeferrer.deferWorldTick(() -> doWorldDeleting(issuer, world)));
+        future.onSuccess(ignore -> worldTickDeferrer.deferWorldTick(() -> doWorldDeleting(issuer, world)))
+                .onFailure(ignore -> {
+                    Logging.warning("Failed to teleport one or more players out of the world!");
+                });
     }
 
     private void doWorldDeleting(MVCommandIssuer issuer, MultiverseWorld world) {

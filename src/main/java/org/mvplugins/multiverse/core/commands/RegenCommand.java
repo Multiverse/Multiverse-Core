@@ -28,6 +28,7 @@ import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.utils.result.Async;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
@@ -107,11 +108,14 @@ final class RegenCommand extends CoreCommand {
 
         var future = parsedFlags.hasFlag(removePlayersFlag)
                 ? playerWorldTeleporter.removeFromWorld(world)
-                : Async.completedFuture(Collections.emptyList());
+                : AsyncAttemptsAggregate.emptySuccess();
 
         // todo: using future will hide stacktrace
-        future.thenRun(() -> worldTickDeferrer.deferWorldTick(() ->
-                doWorldRegening(issuer, world, parsedFlags, worldPlayers)));
+        future.onSuccess(ignore -> worldTickDeferrer
+                        .deferWorldTick(() -> doWorldRegening(issuer, world, parsedFlags, worldPlayers)))
+                .onFailure(ignore -> {
+                    Logging.warning("Failed to teleport one or more players out of the world!");
+                });
     }
 
     private void doWorldRegening(

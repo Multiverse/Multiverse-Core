@@ -17,6 +17,7 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.event.MVTeleportDestinationEvent;
 import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
+import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 
 import java.util.List;
@@ -92,8 +93,8 @@ public final class AsyncSafetyTeleporterAction {
      * @param <T>   The entity type
      * @return A list of async futures that represent the teleportation result of each entity
      */
-    public <T extends Entity> Async<List<Attempt<Void, TeleportFailureReason>>> teleport(@NotNull List<T> teleportees) {
-        return AsyncAttempt.allOf(teleportees.stream().map(this::teleport).toList());
+    public <T extends Entity> AsyncAttemptsAggregate<Void, TeleportFailureReason> teleport(@NotNull List<T> teleportees) {
+        return AsyncAttemptsAggregate.allOf(teleportees.stream().map(this::teleport).toList());
     }
 
     /**
