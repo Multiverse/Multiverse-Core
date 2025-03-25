@@ -7,7 +7,7 @@ import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.config.functions.NodeSerializer;
+import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 
 /**
  * A node that holds a list of values of a specific type.

@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.config.functions;
+package org.mvplugins.multiverse.core.config.node.serializer;
 
 /**
  * A function that serializes and deserializes objects to and from YAML.

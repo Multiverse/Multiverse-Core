@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.config.functions;
+package org.mvplugins.multiverse.core.config.node.serializer;
 
 import java.util.HashMap;
 import java.util.Locale;
