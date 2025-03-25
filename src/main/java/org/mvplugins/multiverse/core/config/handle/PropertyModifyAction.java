@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.confighandle;
+package org.mvplugins.multiverse.core.config.handle;
 
 /**
  * The type of modification to a config.

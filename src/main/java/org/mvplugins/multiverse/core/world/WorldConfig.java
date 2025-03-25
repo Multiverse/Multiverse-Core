@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.confighandle.MemoryConfigurationHandle;
-import org.mvplugins.multiverse.core.confighandle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.config.handle.MemoryConfigurationHandle;
+import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.confighandle.migration.BooleanMigratorAction;
 import org.mvplugins.multiverse.core.confighandle.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.confighandle.migration.DeleteMigratorAction;

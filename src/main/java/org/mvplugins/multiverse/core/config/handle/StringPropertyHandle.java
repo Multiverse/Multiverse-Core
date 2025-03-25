@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.confighandle;
+package org.mvplugins.multiverse.core.config.handle;
 
 import java.util.Collection;
 import java.util.Collections;

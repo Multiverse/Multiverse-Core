@@ -17,7 +17,7 @@ import org.mvplugins.multiverse.core.confighandle.functions.DefaultSuggesterProv
 import org.mvplugins.multiverse.core.confighandle.functions.NodeSerializer;
 import org.mvplugins.multiverse.core.confighandle.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.confighandle.functions.NodeSuggester;
-import org.mvplugins.multiverse.core.confighandle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 
 /**
  * A node that contains a value.
