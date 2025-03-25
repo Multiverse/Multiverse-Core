@@ -46,7 +46,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     /**
      * Gets the name of this world. The name cannot be changed.
      * <br/>
-     * Note for plugin developers: Usually {@link #getAlias()}
+     * Note for plugin developers: Usually {@link #getAliasOrName()}
      * is what you want to use instead of this method.
      *
      * @return The name of the world as a String.
@@ -101,15 +101,8 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
         return worldConfig.setAdjustSpawn(adjustSpawn);
     }
 
-    /**
-     * Gets the alias of this world.
-     * <br/>
-     * This alias allows users to have a world named "world" but show up in the list as "FernIsland"
-     *
-     * @return The alias of the world as a String.
-     */
     public String getAlias() {
-        return Strings.isNullOrEmpty(worldConfig.getAlias()) ? worldName : worldConfig.getAlias();
+        return worldConfig.getAlias();
     }
 
     /**
@@ -123,6 +116,17 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
+     * Gets the alias of this world or defaults to world name if no alias is set.
+     * <br/>
+     * This alias allows users to have a world named "world" but show up in the list as "FernIsland"
+     *
+     * @return The alias of the world as a String.
+     */
+    public String getAliasOrName() {
+        return Strings.isNullOrEmpty(worldConfig.getAlias()) ? worldName : worldConfig.getAlias();
+    }
+
+    /**
      * Gets the alias without any colour codes
      *
      * @return The colourless alias
@@ -132,7 +136,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     void updateColourlessAlias() {
-        colourlessAlias = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', getAlias()));
+        colourlessAlias = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', getAliasOrName()));
     }
 
     /**

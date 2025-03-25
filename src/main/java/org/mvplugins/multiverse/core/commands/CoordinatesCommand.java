@@ -47,7 +47,7 @@ final class CoordinatesCommand extends CoreCommand {
             MultiverseWorld world) {
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_TITLE);
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLD, Replace.WORLD.with(world.getName()));
-        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_ALIAS, replace("{alias}").with(world.getAlias()));
+        issuer.sendInfo(MVCorei18n.COORDINATES_INFO_ALIAS, replace("{alias}").with(world.getAliasOrName()));
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_WORLDSCALE,
                 replace("{scale}").with(String.valueOf(world.getScale())));
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_COORDINATES,

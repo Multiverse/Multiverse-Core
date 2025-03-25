@@ -95,7 +95,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
         // Switch to find what specific placeholder we want
         switch (placeholder.toLowerCase()) {
             case "alias" -> {
-                return world.getAlias();
+                return world.getAliasOrName();
             }
             case "animalspawn" -> {
                 return String.valueOf(world.getSpawningAnimals());

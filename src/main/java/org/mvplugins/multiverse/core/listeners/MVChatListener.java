@@ -51,7 +51,7 @@ final class MVChatListener implements CoreListener {
         }
 
         String prefix = this.worldManager.getLoadedWorld(world)
-                .map(mvworld -> mvworld.isHidden() ? "" : mvworld.getAlias())
+                .map(mvworld -> mvworld.isHidden() ? "" : mvworld.getAliasOrName())
                 .getOrElse("");
         String chat = event.getFormat();
 

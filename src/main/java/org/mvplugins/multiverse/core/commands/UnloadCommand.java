@@ -70,7 +70,7 @@ final class UnloadCommand extends CoreCommand {
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
 
-        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, Replace.WORLD.with(world.getAlias()));
+        issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, Replace.WORLD.with(world.getAliasOrName()));
 
         var future = parsedFlags.hasFlag(removePlayersFlag)
                 ? playerWorldTeleporter.removeFromWorld(world)

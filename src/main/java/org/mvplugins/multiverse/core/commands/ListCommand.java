@@ -115,7 +115,7 @@ final class ListCommand extends CoreCommand {
             return world.getName();
         }
 
-        return world.getAlias();
+        return world.getAliasOrName();
     }
 
     private boolean canSeeWorld(MVCommandIssuer issuer, MultiverseWorld world) {

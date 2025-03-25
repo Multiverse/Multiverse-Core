@@ -16,7 +16,6 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -126,10 +125,10 @@ final class WhoCommand extends CoreCommand {
             @Nullable List<Player> players = world.getPlayers().getOrNull();
 
             if (players != null && !players.isEmpty()) {
-                outMap.put(world.getAlias(), phrasePlayerList(players));
+                outMap.put(world.getAliasOrName(), phrasePlayerList(players));
             } else if (!ignoreEmptyWorlds) {
                 // If the world has 0 players in it, say that it is empty
-                outMap.put(world.getAlias(), Message.of(MVCorei18n.WHO_EMPTY));
+                outMap.put(world.getAliasOrName(), Message.of(MVCorei18n.WHO_EMPTY));
             }
         }
 

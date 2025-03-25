@@ -124,7 +124,7 @@ public final class WorldEntryChecker {
             return Result.success(BlacklistResult.Success.UNKNOWN_FROM_WORLD);
         }
         return toWorld.getWorldBlacklist().contains(fromWorld.getName())
-                ? Result.failure(BlacklistResult.Failure.BLACKLISTED, Replace.WORLD.with(fromWorld.getAlias()))
+                ? Result.failure(BlacklistResult.Failure.BLACKLISTED, Replace.WORLD.with(fromWorld.getAliasOrName()))
                 : Result.success(BlacklistResult.Success.NOT_BLACKLISTED);
     }
 
