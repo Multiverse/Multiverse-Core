@@ -5,14 +5,12 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.ExceptionHandler;
 import co.aikar.commands.RegisteredCommand;
 import com.dumptruckman.minecraft.util.Logging;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.List;
 
 /**
  * Default handler that will print the stack trace when the command throws an exception.
  */
-@ApiStatus.Internal
 public class MVDefaultExceptionHandler implements ExceptionHandler {
     @Override
     public boolean execute(BaseCommand command, RegisteredCommand registeredCommand, CommandIssuer sender, List<String> args, Throwable t) {

@@ -26,7 +26,6 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -44,7 +43,6 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 
 import static org.mvplugins.multiverse.core.utils.StringFormatter.addonToCommaSeperated;
 
-@ApiStatus.Internal
 @Service
 public class MVCommandCompletions extends PaperCommandCompletions {
 

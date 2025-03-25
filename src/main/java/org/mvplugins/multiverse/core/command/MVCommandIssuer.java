@@ -5,13 +5,11 @@ import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MessageType;
 import co.aikar.locales.MessageKeyProvider;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
-@ApiStatus.Internal
 public class MVCommandIssuer extends BukkitCommandIssuer {
 
     private final MVCommandManager commandManager;

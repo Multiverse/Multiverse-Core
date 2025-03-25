@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.command.queue;
 
 import co.aikar.commands.ACFUtil;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
@@ -12,7 +11,6 @@ import org.mvplugins.multiverse.core.locale.message.Message;
  * Represents a single command used in {@link CommandQueueManager} for confirming before running potentially
  * dangerous action.
  */
-@ApiStatus.Internal
 public class CommandQueuePayload {
 
     /**

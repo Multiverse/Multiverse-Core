@@ -2,11 +2,9 @@ package org.mvplugins.multiverse.core.command.queue;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
-import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
-@ApiStatus.Internal
 public enum RunQueuedFailedReason implements FailureReason {
     NO_COMMAND_IN_QUEUE(MVCorei18n.QUEUECOMMAND_NOCOMMANDINQUEUE),
     INVALID_OTP(MVCorei18n.QUEUECOMMAND_INVALIDOTP),

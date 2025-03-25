@@ -7,14 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * A group of flags.
  */
-@ApiStatus.Internal
 public class CommandFlagGroup {
     /**
      * A builder for a flag group.

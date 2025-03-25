@@ -22,7 +22,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -39,7 +38,6 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
  * <p>Each sender can only have one command in queue at any given time. When a queued command is added
  * for a sender that already has a command in queue, it will replace the old queued command.</p>
  */
-@ApiStatus.Internal
 @Service
 public class CommandQueueManager {
 

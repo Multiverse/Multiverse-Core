@@ -6,13 +6,11 @@ import co.aikar.commands.BukkitConditionContext;
 import co.aikar.commands.CommandConditions;
 import co.aikar.commands.ConditionContext;
 import co.aikar.commands.ConditionFailedException;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 
-@ApiStatus.Internal
 public class MVCommandConditions {
     static void load(
             @NotNull MVCommandManager commandManager,

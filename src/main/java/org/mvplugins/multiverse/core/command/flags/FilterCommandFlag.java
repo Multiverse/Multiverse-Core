@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import co.aikar.commands.InvalidCommandArgument;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
@@ -16,7 +15,6 @@ import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
  * <br/>
  * Parses the value of the --filter (or -f) flag as a {@link ContentFilter}.
  */
-@ApiStatus.Internal
 public final class FilterCommandFlag extends CommandValueFlag<ContentFilter> {
 
     private static final Function<String, ContentFilter> VALUE_PARSER = value -> {
