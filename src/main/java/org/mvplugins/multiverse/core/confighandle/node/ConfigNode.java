@@ -11,12 +11,12 @@ import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.confighandle.functions.DefaultSerializerProvider;
-import org.mvplugins.multiverse.core.confighandle.functions.DefaultStringParserProvider;
-import org.mvplugins.multiverse.core.confighandle.functions.DefaultSuggesterProvider;
-import org.mvplugins.multiverse.core.confighandle.functions.NodeSerializer;
-import org.mvplugins.multiverse.core.confighandle.functions.NodeStringParser;
-import org.mvplugins.multiverse.core.confighandle.functions.NodeSuggester;
+import org.mvplugins.multiverse.core.config.functions.DefaultSerializerProvider;
+import org.mvplugins.multiverse.core.config.functions.DefaultStringParserProvider;
+import org.mvplugins.multiverse.core.config.functions.DefaultSuggesterProvider;
+import org.mvplugins.multiverse.core.config.functions.NodeSerializer;
+import org.mvplugins.multiverse.core.config.functions.NodeStringParser;
+import org.mvplugins.multiverse.core.config.functions.NodeSuggester;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 
 /**

@@ -15,7 +15,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.confighandle.functions.NodeSerializer;
+import org.mvplugins.multiverse.core.config.functions.NodeSerializer;
 import org.mvplugins.multiverse.core.event.MVWorldPropertyChangeEvent;
 import org.mvplugins.multiverse.core.confighandle.node.ConfigNode;
 import org.mvplugins.multiverse.core.confighandle.node.ListConfigNode;

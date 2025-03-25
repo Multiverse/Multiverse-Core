@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.confighandle.functions;
+package org.mvplugins.multiverse.core.config.functions;
 
 import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;

@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.confighandle.functions;
+package org.mvplugins.multiverse.core.config.functions;
 
 import java.util.Arrays;
 import java.util.HashMap;
