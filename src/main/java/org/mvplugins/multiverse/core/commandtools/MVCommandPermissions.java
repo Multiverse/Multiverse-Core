@@ -14,6 +14,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import static org.mvplugins.multiverse.core.permissions.CorePermissionsChecker.*;
+
 /**
  * Maps permission checking to custom logic for commands, to allow more complex permission checking.
  */
@@ -26,7 +28,7 @@ public class MVCommandPermissions {
         this.permissionsCheckMap = new HashMap<>();
 
         registerPermissionChecker("mvteleport", issuer -> permissionsChecker.hasAnyTeleportPermission(issuer.getIssuer()));
-        registerPermissionChecker("mvteleportother", issuer -> permissionsChecker.hasTeleportOtherPermission(issuer.getIssuer()));
+        registerPermissionChecker("mvteleportother", issuer -> permissionsChecker.hasAnyTeleportPermission(issuer.getIssuer(), Scope.OTHER));
         registerPermissionChecker("mvspawn", issuer -> permissionsChecker.hasAnySpawnPermission(issuer.getIssuer()));
         registerPermissionChecker("mvspawnother", issuer -> permissionsChecker.hasAnySpawnOtherPermission(issuer.getIssuer()));
     }
