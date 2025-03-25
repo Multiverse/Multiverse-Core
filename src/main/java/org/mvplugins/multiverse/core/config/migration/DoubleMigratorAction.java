@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.confighandle.migration;
+package org.mvplugins.multiverse.core.config.migration;
 
 import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;

@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.confighandle.migration.ConfigMigrator;
+import org.mvplugins.multiverse.core.config.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.confighandle.node.NodeGroup;
 
 /**

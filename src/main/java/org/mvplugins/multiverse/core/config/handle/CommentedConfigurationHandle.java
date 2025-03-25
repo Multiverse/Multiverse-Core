@@ -9,7 +9,7 @@ import io.vavr.control.Try;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.mvplugins.multiverse.core.confighandle.migration.ConfigMigrator;
+import org.mvplugins.multiverse.core.config.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.confighandle.node.CommentedNode;
 import org.mvplugins.multiverse.core.confighandle.node.NodeGroup;
 import org.mvplugins.multiverse.core.confighandle.node.ValueNode;
