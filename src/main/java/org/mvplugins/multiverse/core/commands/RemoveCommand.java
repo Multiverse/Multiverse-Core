@@ -69,10 +69,8 @@ final class RemoveCommand extends CoreCommand {
                 ? worldManager.getLoadedWorld(world).map(playerWorldTeleporter::removeFromWorld).getOrElse(AsyncAttemptsAggregate::emptySuccess)
                 : AsyncAttemptsAggregate.emptySuccess();
 
-        future.onSuccess(ignore -> doWorldRemoving(issuer, world))
-                .onFailure(ignore -> {
-                    Logging.warning("Failed to teleport one or more players out of the world!");
-                });
+        future.onSuccess(() -> doWorldRemoving(issuer, world))
+                .onFailure(() -> issuer.sendError("Failed to teleport one or more players out of the world!"));
     }
 
     private void doWorldRemoving(MVCommandIssuer issuer, MultiverseWorld world) {

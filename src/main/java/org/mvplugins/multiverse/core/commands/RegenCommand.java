@@ -111,11 +111,9 @@ final class RegenCommand extends CoreCommand {
                 : AsyncAttemptsAggregate.emptySuccess();
 
         // todo: using future will hide stacktrace
-        future.onSuccess(ignore -> worldTickDeferrer
+        future.onSuccess(() -> worldTickDeferrer
                         .deferWorldTick(() -> doWorldRegening(issuer, world, parsedFlags, worldPlayers)))
-                .onFailure(ignore -> {
-                    Logging.warning("Failed to teleport one or more players out of the world!");
-                });
+                .onFailure(() -> issuer.sendError("Failed to teleport one or more players out of the world!"));
     }
 
     private void doWorldRegening(

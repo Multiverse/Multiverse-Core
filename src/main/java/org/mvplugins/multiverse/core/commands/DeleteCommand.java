@@ -91,10 +91,8 @@ final class DeleteCommand extends CoreCommand {
                 ? playerWorldTeleporter.removeFromWorld(loadedWorld)
                 : AsyncAttemptsAggregate.emptySuccess();
 
-        future.onSuccess(ignore -> worldTickDeferrer.deferWorldTick(() -> doWorldDeleting(issuer, world)))
-                .onFailure(ignore -> {
-                    Logging.warning("Failed to teleport one or more players out of the world!");
-                });
+        future.onSuccess(() -> worldTickDeferrer.deferWorldTick(() -> doWorldDeleting(issuer, world)))
+                .onFailure(() -> issuer.sendError("Failed to teleport one or more players out of the world!"));
     }
 
     private void doWorldDeleting(MVCommandIssuer issuer, MultiverseWorld world) {
