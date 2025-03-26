@@ -26,11 +26,11 @@ public abstract class MultiversePlugin extends JavaPlugin {
     }
 
     /**
-     * The minimum protocol version that this plugin is compatible with Multiverse-Core.
+     * The minimum version that this plugin is compatible with Multiverse-Core.
      *
-     * @return The Integer protocol version.
+     * @return The version number.
      */
-    public abstract int getTargetCoreProtocolVersion();
+    public abstract double getTargetCoreVersion();
 
     /**
      * Gets the {@link PluginServiceLocator} for this plugin.
@@ -38,4 +38,12 @@ public abstract class MultiversePlugin extends JavaPlugin {
      * @return The {@link PluginServiceLocator}
      */
     public abstract PluginServiceLocator getServiceLocator();
+
+    protected double getVersionAsNumber() {
+        String[] split = this.getDescription().getVersion().split("\\.");
+        if (split.length < 2) {
+            return -1;
+        }
+        return Double.parseDouble(split[0] + "." + split[1]);
+    }
 }
