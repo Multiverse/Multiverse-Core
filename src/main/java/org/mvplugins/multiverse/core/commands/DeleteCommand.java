@@ -1,7 +1,5 @@
 package org.mvplugins.multiverse.core.commands;
 
-import java.util.Collections;
-
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -24,7 +22,6 @@ import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
-import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;

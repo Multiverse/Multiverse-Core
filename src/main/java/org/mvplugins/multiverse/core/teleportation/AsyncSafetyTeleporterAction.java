@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.event.MVTeleportDestinationEvent;
-import org.mvplugins.multiverse.core.utils.result.Async;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.utils.result.Attempt;

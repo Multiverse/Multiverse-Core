@@ -12,10 +12,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
-import org.mvplugins.multiverse.core.utils.result.Async;
-import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
-import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
