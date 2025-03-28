@@ -55,16 +55,6 @@ public class MultiversePluginsRegistration {
             core.getServer().getPluginManager().disablePlugin(plugin);
             return;
         }
-        if (core.getMinBackwardsCompatibleVersion() > plugin.getTargetCoreVersion()) {
-            Logging.severe("Your %s is OUT OF DATE!", plugin.getDescription().getName());
-            Logging.severe("This version of %s only supports up to Multiverse-Core version %s", plugin.getDescription().getName(), plugin.getTargetCoreVersion());
-            Logging.severe("But your current Multiverse-Core version is: %s", core.getVersionAsNumber());
-            Logging.severe("Grab an updated copy at: ");
-            Logging.severe(plugin.getDescription().getWebsite());
-            Logging.severe("Disabling!");
-            core.getServer().getPluginManager().disablePlugin(plugin);
-            return;
-        }
         registeredPlugins.add(plugin.getDescription().getName());
         pluginCount++;
     }

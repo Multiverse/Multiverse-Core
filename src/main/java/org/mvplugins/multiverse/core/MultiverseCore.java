@@ -41,8 +41,6 @@ import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 @Service
 public class MultiverseCore extends MultiversePlugin {
 
-    private static final double MIN_BACKWARDS_COMPATIBLE_VERSION = 5.0;
-
     private PluginServiceLocator serviceLocator;
 
     @Inject
@@ -304,15 +302,6 @@ public class MultiverseCore extends MultiversePlugin {
             Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
             Logging.config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
         }
-    }
-
-    /**
-     * The minimum api version that submodules must target.
-     *
-     * @return The minimum api version
-     */
-    double getMinBackwardsCompatibleVersion() {
-        return MIN_BACKWARDS_COMPATIBLE_VERSION;
     }
 
     /**
