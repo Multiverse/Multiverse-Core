@@ -64,7 +64,7 @@ public class CommandQueueManager {
     public void addToQueue(CommandQueuePayload payload) {
         String senderName = parseSenderName(payload.issuer());
         if (canRunImmediately(senderName)) {
-            payload.action().execute();
+            payload.action().run();
             return;
         }
 
@@ -150,7 +150,7 @@ public class CommandQueueManager {
         }
         this.removeFromQueue(senderName);
         Logging.finer("Running queued command...");
-        payload.action().execute();
+        payload.action().run();
         return Attempt.success(null);
     }
 
