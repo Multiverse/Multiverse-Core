@@ -14,6 +14,7 @@ import org.bstats.charts.MultiLineChart;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -59,7 +60,9 @@ final class BstatsMetricsConfigurator {
 
     private String getGeneratorName(MultiverseWorld world) {
         String gen = world.getGenerator();
-        return (gen != null && !gen.equalsIgnoreCase("null")) ? gen.split(":")[0] : NO_GENERATOR_NAME;
+        return (gen != null && !gen.equalsIgnoreCase("null"))
+                ? REPatterns.COLON.split(gen)[0]
+                : NO_GENERATOR_NAME;
     }
 
     private void addEnvironmentsMetric() {

@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -66,7 +67,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
     @Override
     public @Nullable String onRequest(OfflinePlayer offlinePlayer, @NotNull String params) {
         // Split string in to an Array with underscores
-        String[] paramsArray = params.split("_", 2);
+        String[] paramsArray = REPatterns.UNDERSCORE.split(params, 2);
 
         // No placeholder defined
         if (paramsArray.length < 1) {

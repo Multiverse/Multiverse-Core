@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 
 /**
  * Common plugin class for all Multiverse plugins.
@@ -40,7 +41,7 @@ public abstract class MultiversePlugin extends JavaPlugin {
     public abstract PluginServiceLocator getServiceLocator();
 
     protected double getVersionAsNumber() {
-        String[] split = this.getDescription().getVersion().split("\\.");
+        String[] split = REPatterns.DOT.split(this.getDescription().getVersion());
         if (split.length < 2) {
             return -1;
         }

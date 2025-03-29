@@ -12,6 +12,7 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
@@ -55,7 +56,7 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
         if (destinationParams == null) {
             return null;
         }
-        String[] items = destinationParams.split(":");
+        String[] items = REPatterns.COLON.split(destinationParams);
         if (items.length > 3) {
             return null;
         }

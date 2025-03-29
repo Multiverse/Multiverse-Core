@@ -28,6 +28,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.utils.FileUtils;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 
 /**
  * Parse the default world generators from the bukkit config and load any generator plugins.
@@ -165,7 +166,7 @@ public final class GeneratorProvider implements Listener {
      * @return A collection of suggestions.
      */
     public Collection<String> suggestGeneratorString(@Nullable String currentInput) {
-        String[] genSpilt = currentInput == null ? new String[0] : currentInput.split(":", 2);
+        String[] genSpilt = currentInput == null ? new String[0] : REPatterns.COLON.split(currentInput, 2);
         List<String> suggestions = new ArrayList<>(generatorPlugins.keySet());
         if (genSpilt.length < 2) {
             return suggestions;

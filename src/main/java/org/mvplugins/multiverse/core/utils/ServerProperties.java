@@ -32,7 +32,7 @@ public final class ServerProperties {
             Files.readAllLines(fileUtils.getServerProperties().toPath()).stream()
                     .map(String::strip)
                     .filter(line -> !line.startsWith("#"))
-                    .map(line -> line.split("=", 2))
+                    .map(line -> REPatterns.EQUALS.split(line, 2))
                     .filter(line -> line.length == 2)
                     .forEach(line -> properties.put(line[0], line[1]));
         } catch (IOException e) {

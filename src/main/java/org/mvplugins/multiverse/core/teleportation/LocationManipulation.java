@@ -20,6 +20,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 
 /**
  * Used to manipulate locations.
@@ -103,13 +104,13 @@ public final class LocationManipulation {
 
         // Split the whole string, format is:
         // {'world', 'x,y,z'[, 'pitch', 'yaw']}
-        String[] split = locationString.split(":");
+        String[] split = REPatterns.COLON.split(locationString);
         if (split.length < 2 || split.length > 4) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
             return null;
         }
         // Split the xyz string, format is:
         // {'x', 'y', 'z'}
-        String[] xyzsplit = split[1].split(",");
+        String[] xyzsplit = REPatterns.COMMA.split(split[1]);
         if (xyzsplit.length != 3) {
             return null;
         }

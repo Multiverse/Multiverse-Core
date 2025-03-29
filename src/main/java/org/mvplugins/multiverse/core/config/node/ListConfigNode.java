@@ -22,6 +22,7 @@ import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 
 /**
  * A config node that contains a list of values.
@@ -113,7 +114,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
 
             String lastInput = input.substring(lastIndexOf + 1);
             String inputBeforeLast = input.substring(0, lastIndexOf + 1);
-            Set<String> inputs = Set.of(inputBeforeLast.split(","));
+            Set<String> inputs = Set.of(REPatterns.COMMA.split(inputBeforeLast));
             return itemSuggester.suggest(lastInput).stream()
                     .filter(item -> !inputs.contains(item))
                     .map(item -> inputBeforeLast + item)
@@ -126,7 +127,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             if (input == null) {
                 return Try.failure(new IllegalArgumentException("Input cannot be null"));
             }
-            return Try.sequence(Arrays.stream(input.split(","))
+            return Try.sequence(Arrays.stream(REPatterns.COMMA.split(input))
                     .map(inputItem -> itemStringParser.parse(inputItem, itemType))
                     .toList()).map(Value::toJavaList);
         };

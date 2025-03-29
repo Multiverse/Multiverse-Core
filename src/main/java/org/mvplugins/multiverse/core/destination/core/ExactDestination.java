@@ -14,6 +14,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
@@ -61,14 +62,14 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
         if (destinationParams == null) {
             return null;
         }
-        String[] items = destinationParams.split(":");
+        String[] items = REPatterns.COLON.split(destinationParams);
         if (items.length < 2) {
             return null;
         }
 
         String worldName = items[0];
         String coordinates = items[1];
-        String[] coordinatesParams = coordinates.split(",");
+        String[] coordinatesParams = REPatterns.COMMA.split(coordinates);
         if (coordinatesParams.length != 3) {
             return null;
         }

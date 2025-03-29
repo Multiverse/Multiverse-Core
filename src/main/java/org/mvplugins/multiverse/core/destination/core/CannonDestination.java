@@ -10,6 +10,7 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.destination.Destination;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -45,8 +46,7 @@ public final class CannonDestination implements Destination<CannonDestination, C
         if (destinationParams == null) {
             return null;
         }
-        //todo: Common class to compile regex
-        String[] params = destinationParams.split(":");
+        String[] params = REPatterns.COLON.split(destinationParams);
         if (params.length != 5) {
             return null;
         }
@@ -57,7 +57,7 @@ public final class CannonDestination implements Destination<CannonDestination, C
         String yaw = params[3];
         String speed = params[4];
 
-        String[] coordinatesParams = coordinates.split(",");
+        String[] coordinatesParams = REPatterns.COMMA.split(coordinates);
         if (coordinatesParams.length != 3) {
             return null;
         }

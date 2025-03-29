@@ -7,6 +7,7 @@ import java.util.Map;
 import com.dumptruckman.minecraft.util.Logging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 
 /**
  * Provides default serializers for common types.
@@ -161,7 +162,7 @@ public final class DefaultSerializerProvider {
             if (object instanceof Locale) {
                 return (Locale) object;
             }
-            String[] split = String.valueOf(object).split("_", 2);
+            String[] split = REPatterns.UNDERSCORE.split(String.valueOf(object), 2);
             return split.length > 1 ? new Locale(split[0], split[1]) : new Locale(split[0]);
         }
 

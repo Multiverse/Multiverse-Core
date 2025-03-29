@@ -37,6 +37,7 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -119,7 +120,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             }
         }
         if (context.hasConfig("checkPermissions")) {
-            for (String permission : context.getConfig("checkPermissions").split(";")) {
+            for (String permission : REPatterns.SEMICOLON.split(context.getConfig("checkPermissions"))) {
                 if (!commandManager.getCommandPermissions().hasPermission(context.getIssuer(), permission)) {
                     return Collections.emptyList();
                 }

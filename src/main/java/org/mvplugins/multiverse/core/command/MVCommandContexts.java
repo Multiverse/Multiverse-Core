@@ -23,6 +23,7 @@ import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -184,7 +185,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String worldStrings = context.getFirstArg();
-        String[] worldNames = worldStrings == null ? new String[0] : worldStrings.split(",");
+        String[] worldNames = worldStrings == null ? new String[0] : REPatterns.COMMA.split(worldStrings);
         Set<LoadedMultiverseWorld> worlds = new HashSet<>(worldNames.length);
         for (String worldName : worldNames) {
             if ("*".equals(worldName)) {
@@ -294,7 +295,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         String worldStrings = context.getFirstArg();
-        String[] worldNames = worldStrings == null ? new String[0] : worldStrings.split(",");
+        String[] worldNames = worldStrings == null ? new String[0] : REPatterns.COMMA.split(worldStrings);
         Set<MultiverseWorld> worlds = new HashSet<>(worldNames.length);
         for (String worldName : worldNames) {
             if ("*".equals(worldName)) {

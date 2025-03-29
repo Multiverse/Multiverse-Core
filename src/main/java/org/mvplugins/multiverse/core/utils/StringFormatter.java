@@ -66,7 +66,7 @@ public final class StringFormatter {
     public static Collection<String> addonToCommaSeperated(String input, Collection<String> addons) {
         int lastComma = input.lastIndexOf(',');
         String previousInputs = input.substring(0, lastComma + 1);
-        Set<String> inputSet = Sets.newHashSet(input.split(","));
+        Set<String> inputSet = Sets.newHashSet(REPatterns.COMMA.split(input));
         return addons.stream()
                 .filter(suggestion -> !inputSet.contains(suggestion))
                 .map(suggestion -> previousInputs + suggestion)

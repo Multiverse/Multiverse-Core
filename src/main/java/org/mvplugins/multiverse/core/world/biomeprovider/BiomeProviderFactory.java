@@ -5,6 +5,7 @@ import org.bukkit.WorldCreator;
 import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -50,7 +51,7 @@ public final class BiomeProviderFactory {
             return null;
         }
         if (biomeProviderString.startsWith("@")) {
-            String[] split = biomeProviderString.split(":", 2);
+            String[] split = REPatterns.COLON.split(biomeProviderString, 2);
             BiomeProviderParser biomeProviderParser = biomeProviderParsers.get(split[0]);
             if (biomeProviderParser != null) {
                 return biomeProviderParser.parseBiomeProvider(worldName, split.length > 1 ? split[1] : "");
@@ -75,7 +76,7 @@ public final class BiomeProviderFactory {
      * @return a collection of suggested biome provider strings
      */
     public Collection<String> suggestBiomeString(@NotNull String currentInput) {
-        String[] split = currentInput.split(":", 2);
+        String[] split = REPatterns.COLON.split(currentInput, 2);
         if (split.length < 2) {
             return biomeProviderParsers.keySet().stream()
                     .map(key -> currentInput.equals(key) ? key + ":" : key)
