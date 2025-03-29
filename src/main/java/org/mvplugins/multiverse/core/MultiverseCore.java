@@ -41,9 +41,6 @@ import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 @Service
 public class MultiverseCore extends MultiversePlugin {
 
-    private static final int MIN_TARGET_CORE_PROTOCOL_VERSION = 50;
-    private static final int CORE_PROTOCOL_VERSION = 50;
-
     private PluginServiceLocator serviceLocator;
 
     @Inject
@@ -299,7 +296,7 @@ public class MultiverseCore extends MultiversePlugin {
      */
     private void logEnableMessage() {
         Logging.config("Version %s (API v%s) Enabled - By %s",
-                this.getDescription().getVersion(), getCoreProtocolVersion(), StringFormatter.joinAnd(getDescription().getAuthors()));
+                this.getDescription().getVersion(), getVersionAsNumber(), StringFormatter.joinAnd(getDescription().getAuthors()));
 
         if (configProvider.get().isShowingDonateMessage()) {
             Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
@@ -308,29 +305,11 @@ public class MultiverseCore extends MultiversePlugin {
     }
 
     /**
-     * The current core's protocol version.
-     *
-     * @return The current core's protocol version
-     */
-    int getCoreProtocolVersion() {
-        return CORE_PROTOCOL_VERSION;
-    }
-
-    /**
-     * The minimum protocol version that submodules must target.
-     *
-     * @return The minimum protocol version
-     */
-    int getMinTargetCoreProtocolVersion() {
-        return MIN_TARGET_CORE_PROTOCOL_VERSION;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
-    public int getTargetCoreProtocolVersion() {
-        return CORE_PROTOCOL_VERSION;
+    public double getTargetCoreVersion() {
+        return getVersionAsNumber();
     }
 
     /**

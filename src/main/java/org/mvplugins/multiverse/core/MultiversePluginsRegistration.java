@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Handle loading sub-modules of the Multiverse-Core and checking for compatibility with protocol versions.
+ * Handle loading sub-modules of the Multiverse-Core and checking for compatibility with api versions.
  */
 public class MultiversePluginsRegistration {
 
@@ -40,22 +40,17 @@ public class MultiversePluginsRegistration {
         if (core == null) {
             throw new IllegalStateException("MultiverseCore has not been initialized!");
         }
-        if (core.getCoreProtocolVersion() < plugin.getTargetCoreProtocolVersion()) {
-            Logging.severe("Your Multiverse-Core is OUT OF DATE!");
-            Logging.severe("This version of %s requires Protocol Level: %d", plugin.getDescription().getName(), plugin.getTargetCoreProtocolVersion());
-            Logging.severe("Your of Core Protocol Level is: %s", core.getTargetCoreProtocolVersion());
-            Logging.severe("Grab an updated copy at: ");
-            Logging.severe(core.getDescription().getWebsite());
-            Logging.severe("Disabling!");
-            core.getServer().getPluginManager().disablePlugin(plugin);
+        Logging.fine("Registering %s version api %s", plugin.getDescription().getName(), plugin.getVersionAsNumber());
+        if (core.getVersionAsNumber() == -1) {
+            // Probably a development build, so we dont check for version compatibility
             return;
         }
-        if (core.getMinTargetCoreProtocolVersion() > plugin.getTargetCoreProtocolVersion()) {
-            Logging.severe("Your %s is OUT OF DATE!", plugin.getDescription().getName());
-            Logging.severe("This version of Multiverse-Core requires AT LEAST Protocol Level: " + core.getCoreProtocolVersion());
-            Logging.severe("Your of %s Protocol Level is: %s", plugin.getDescription().getName(), plugin.getTargetCoreProtocolVersion());
+        if (core.getVersionAsNumber() < plugin.getTargetCoreVersion()) {
+            Logging.severe("Your Multiverse-Core is OUT OF DATE!");
+            Logging.severe("This version of %s requires at least Multiverse-Core version %s", plugin.getDescription().getName(), plugin.getTargetCoreVersion());
+            Logging.severe("Your current Multiverse-Core version is: %s", core.getVersionAsNumber());
             Logging.severe("Grab an updated copy at: ");
-            Logging.severe(plugin.getDescription().getWebsite());
+            Logging.severe(core.getDescription().getWebsite());
             Logging.severe("Disabling!");
             core.getServer().getPluginManager().disablePlugin(plugin);
             return;
