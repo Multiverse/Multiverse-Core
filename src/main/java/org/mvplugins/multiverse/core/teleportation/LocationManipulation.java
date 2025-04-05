@@ -8,19 +8,19 @@
 package org.mvplugins.multiverse.core.teleportation;
 
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
+import com.google.common.base.Strings;
+import io.vavr.control.Try;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
  * Used to manipulate locations.
@@ -68,7 +68,13 @@ public final class LocationManipulation {
         if (location == null) {
             return "";
         }
-        return String.format(Locale.ENGLISH, "%s:%.2f,%.2f,%.2f:%.2f:%.2f", location.getWorld().getName(),
+        String worldName = location instanceof UnloadedWorldLocation unloadedWorldLocation
+                ? unloadedWorldLocation.getWorldName()
+                : Try.of(() -> location.getWorld().getName()).getOrNull();
+        if (worldName == null) {
+            return "";
+        }
+        return String.format(Locale.ENGLISH, "%s:%.2f,%.2f,%.2f:%.2f:%.2f", worldName,
                 location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
@@ -95,6 +101,7 @@ public final class LocationManipulation {
      * @param locationString The location represented as a string (WORLD:X,Y,Z:yaw:pitch)
      * @return A new location defined by the string or null if the string was invalid.
      */
+    @Nullable
     public Location stringToLocation(String locationString) {
         //format:
         //world:x,y,z:pitch:yaw
@@ -116,8 +123,8 @@ public final class LocationManipulation {
         }
 
         // Verify the world is valid
-        World w = Bukkit.getWorld(split[0]);
-        if (w == null) {
+        String worldName = split[0];
+        if (Strings.isNullOrEmpty(worldName)) {
             return null;
         }
 
@@ -130,7 +137,7 @@ public final class LocationManipulation {
             if (split.length == 4) { // SUPPRESS CHECKSTYLE: MagicNumberCheck
                 pitch = (float) Double.parseDouble(split[3]);
             }
-            return new Location(w, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), yaw, pitch);
+            return new UnloadedWorldLocation(worldName, Double.parseDouble(xyzsplit[0]), Double.parseDouble(xyzsplit[1]), Double.parseDouble(xyzsplit[2]), yaw, pitch);
         } catch (NumberFormatException e) {
             return null;
         }
