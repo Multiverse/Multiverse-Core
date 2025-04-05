@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
+import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 
@@ -36,9 +37,9 @@ final class AnchorDeleteCommand extends CoreCommand {
 
             @Syntax("<name>")
             @Description("")
-            String anchorName) {
-        if (anchorManager.deleteAnchor(anchorName).isSuccess()) {
-            issuer.sendMessage("&aAnchor &f" + anchorName + "&a deleted.");
+            MultiverseAnchor anchor) {
+        if (anchorManager.deleteAnchor(anchor).isSuccess()) {
+            issuer.sendMessage("&aAnchor &f" + anchor.getName() + "&a deleted.");
         } else {
             issuer.sendMessage("&cFailed to delete anchor.");
         }

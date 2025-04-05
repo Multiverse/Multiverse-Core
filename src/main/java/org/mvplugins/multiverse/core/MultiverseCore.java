@@ -171,7 +171,7 @@ public class MultiverseCore extends MultiversePlugin {
 
     private void loadAnchors() {
         Try.of(() -> anchorManagerProvider.get())
-                .onSuccess(AnchorManager::loadAnchors)
+                .flatMap(AnchorManager::loadAnchors)
                 .onFailure(e -> {
                     Logging.severe("Failed to load anchors");
                     e.printStackTrace();
@@ -288,7 +288,7 @@ public class MultiverseCore extends MultiversePlugin {
     private Try<Void> saveAllConfigs() {
         Try<Void> saveConfig = configProvider.get().save();
         Try<Void> saveWorld = worldManagerProvider.get().saveWorldsConfig();
-        Try<Void> saveAnchor = anchorManagerProvider.get().saveAnchors();
+        Try<Void> saveAnchor = anchorManagerProvider.get().saveAllAnchors();
         return saveConfig.flatMap(ignore ->saveWorld).flatMap(ignore ->saveAnchor)
                 .onFailure(e -> Logging.severe("Failed to save configs, things may not work as expected."));
     }

@@ -74,9 +74,10 @@ final class AnchorListCommand extends CoreCommand {
     }
 
     private List<String> getAnchors(Player player) {
-        return anchorManager.getAnchors(player).stream().map(anchorName -> {
-            Location anchorLocation = anchorManager.getAnchorLocation(anchorName);
-            return "&a" + anchorName + "&7 - &f" + locationManipulation.locationToString(anchorLocation);
-        }).toList();
+        return anchorManager.getAnchors(player).stream()
+                .map(anchor ->
+                        "&a%s&7 - &f%s".formatted(
+                                anchor.getName(), locationManipulation.locationToString(anchor.getLocation())))
+                .toList();
     }
 }

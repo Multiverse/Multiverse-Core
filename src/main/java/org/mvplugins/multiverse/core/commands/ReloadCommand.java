@@ -50,10 +50,9 @@ final class ReloadCommand extends CoreCommand {
     void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
         issuer.sendInfo(MVCorei18n.RELOAD_RELOADING);
         try {
-            // TODO: Make this all Try<Void>
             this.config.load().getOrElseThrow(e -> new RuntimeException("Failed to load config", e));
             this.worldManager.initAllWorlds().getOrElseThrow(e -> new RuntimeException("Failed to init worlds", e));
-            this.anchorManager.loadAnchors();
+            this.anchorManager.loadAnchors().getOrElseThrow(e -> new RuntimeException("Failed to load anchors", e));
         } catch (Exception e) {
             e.printStackTrace();
         }

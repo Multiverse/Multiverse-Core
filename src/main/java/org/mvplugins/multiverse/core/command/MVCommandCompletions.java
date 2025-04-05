@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
+import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
@@ -144,7 +145,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestAnchorNames(BukkitCommandCompletionContext context) {
-        return anchorManager.getAnchors(context.getPlayer());
+        return anchorManager.getAnchors(context.getPlayer()).stream()
+                .map(MultiverseAnchor::getName)
+                .toList();
     }
 
     private Collection<String> suggestCommands(BukkitCommandCompletionContext context) {

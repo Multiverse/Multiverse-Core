@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.world.location;
 
+import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Utility;
@@ -12,7 +13,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+/**
+ * A location that store a world name instead of a world object.
+ * It only gets the world from bukkit during the {@link #getWorld()} call.
+ * <br />
+ * This is useful to store location with world that may not be loaded yet or have been unloaded at some point.
+ */
 @SerializableAs("UnloadedWorldLocation")
 public final class UnloadedWorldLocation extends Location {
 
@@ -101,5 +109,62 @@ public final class UnloadedWorldLocation extends Location {
                 NumberConversions.toFloat(args.get("yaw")),
                 NumberConversions.toFloat(args.get("pitch"))
         );
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Location other)) {
+            return false;
+        }
+        String otherWorldName = Try.of(() -> other instanceof UnloadedWorldLocation unloadedWorldLocation
+                        ? unloadedWorldLocation.worldName
+                        : other.getWorld().getName())
+                .getOrNull();
+        if (!Objects.equals(this.worldName, otherWorldName)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.getX()) != Double.doubleToLongBits(other.getX())) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.getY()) != Double.doubleToLongBits(other.getY())) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.getZ()) != Double.doubleToLongBits(other.getZ())) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.getPitch()) != Float.floatToIntBits(other.getPitch())) {
+            return false;
+        }
+        if (Float.floatToIntBits(this.getYaw()) != Float.floatToIntBits(other.getYaw())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 19 * hash + worldName.hashCode();
+        hash = 19 * hash + (int) (Double.doubleToLongBits(this.getX()) ^ (Double.doubleToLongBits(this.getX()) >>> 32));
+        hash = 19 * hash + (int) (Double.doubleToLongBits(this.getY()) ^ (Double.doubleToLongBits(this.getY()) >>> 32));
+        hash = 19 * hash + (int) (Double.doubleToLongBits(this.getZ()) ^ (Double.doubleToLongBits(this.getZ()) >>> 32));
+        hash = 19 * hash + Float.floatToIntBits(this.getPitch());
+        hash = 19 * hash + Float.floatToIntBits(this.getYaw());
+        return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "world=" + worldName +
+                ",x=" + getX() +
+                ",y=" + getY() +
+                ",z=" + getZ() +
+                ",pitch=" + getPitch() +
+                ",yaw=" + getYaw() +
+                '}';
     }
 }
