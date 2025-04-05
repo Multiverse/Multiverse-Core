@@ -4,6 +4,7 @@ import co.aikar.commands.BukkitCommandIssuer;
 import com.dumptruckman.minecraft.util.Logging;
 import io.papermc.lib.PaperLib;
 import io.vavr.control.Either;
+import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -129,22 +130,23 @@ public final class AsyncSafetyTeleporterAction {
         if (location == null) {
             return Attempt.failure(TeleportFailureReason.NULL_LOCATION);
         }
-        return Attempt.success(location);
+        //todo: if its a UnloadedWorldLocation, check worldManager if it an unloadedWorld
+        return Try.of(() -> location.getWorld().getName())
+                .map(ignore -> Attempt.<Location, TeleportFailureReason>success(location))
+                .getOrElse(Attempt.failure(TeleportFailureReason.NULL_WORLD));
     }
 
     private Attempt<Location, TeleportFailureReason> parseDestination(
             @NotNull Entity teleportee, @Nullable DestinationInstance<?, ?> destination) {
         if (destination == null) {
-            return Attempt.failure(TeleportFailureReason.NULL_LOCATION);
+            return Attempt.failure(TeleportFailureReason.NULL_DESTINATION);
         }
         MVTeleportDestinationEvent event = new MVTeleportDestinationEvent(destination, teleportee, teleporter);
         this.pluginManager.callEvent(event);
         if (event.isCancelled()) {
             return Attempt.failure(TeleportFailureReason.EVENT_CANCELLED);
         }
-        return destination.getLocation(teleportee)
-                .map(Attempt::<Location, TeleportFailureReason>success)
-                .getOrElse(Attempt.failure(TeleportFailureReason.NULL_LOCATION));
+        return parseLocation(destination.getLocation(teleportee).getOrNull());
     }
 
     private Attempt<Location, TeleportFailureReason> doSafetyCheck(@NotNull Location location) {

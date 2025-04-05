@@ -31,6 +31,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
  * Manages anchors.
@@ -41,7 +42,7 @@ public final class AnchorManager {
     private static final String ANCHORS_FILE = "anchors.yml";
     private static final String ANCHORS_CONFIG_SECTION = "anchors";
 
-    private Map<String, Location> anchors;
+    private Map<String, UnloadedWorldLocation> anchors;
     private FileConfiguration anchorConfig;
 
     private final Plugin plugin;
@@ -73,7 +74,7 @@ public final class AnchorManager {
             Location anchorLocation = locationManipulation.stringToLocation(anchorsSection.getString(key, ""));
             if (anchorLocation != null) {
                 Logging.config("Loading anchor:  '%s'...", key);
-                anchors.put(key, anchorLocation);
+                anchors.put(key, UnloadedWorldLocation.fromLocation(anchorLocation));
             } else {
                 Logging.warning("The location for anchor '%s' is INVALID.", key);
             }
@@ -129,15 +130,15 @@ public final class AnchorManager {
      * Saves an anchor.
      *
      * @param anchor The name of the anchor.
-     * @param l The {@link Location} of the anchor.
+     * @param location The {@link Location} of the anchor.
      * @return True if the anchor was successfully saved.
      */
-    public Try<Void> saveAnchorLocation(String anchor, Location l) {
-        if (l == null) {
+    public Try<Void> saveAnchorLocation(String anchor, Location location) {
+        if (location == null) {
             return Try.failure(new IllegalArgumentException("Location cannot be null"));
         }
-        getAnchorsConfigSection().set(anchor, locationManipulation.locationToString(l));
-        anchors.put(anchor, l);
+        getAnchorsConfigSection().set(anchor, locationManipulation.locationToString(location));
+        anchors.put(anchor, UnloadedWorldLocation.fromLocation(location));
         return saveAnchors();
     }
 

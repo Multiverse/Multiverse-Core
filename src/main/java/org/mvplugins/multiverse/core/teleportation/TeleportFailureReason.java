@@ -21,6 +21,11 @@ public enum TeleportFailureReason implements FailureReason {
     NULL_LOCATION(MVCorei18n.TELEPORTFAILUREREASON_NULL_LOCATION),
 
     /**
+     * The location was null.
+     */
+    NULL_WORLD(MVCorei18n.TELEPORTFAILUREREASON_NULL_WORLD),
+
+    /**
      * The location was unsafe.
      */
     UNSAFE_LOCATION(MVCorei18n.TELEPORTFAILUREREASON_UNSAFE_LOCATION),

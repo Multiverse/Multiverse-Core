@@ -34,6 +34,7 @@ import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.location.NullLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
+import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
  * The start of the Multiverse-Core plugin
@@ -80,6 +81,7 @@ public class MultiverseCore extends MultiversePlugin {
         // Register our config classes
         ConfigurationSerialization.registerClass(NullLocation.class);
         ConfigurationSerialization.registerClass(SpawnLocation.class);
+        ConfigurationSerialization.registerClass(UnloadedWorldLocation.class);
 
         // Setup our MultiversePluginsRegistration
         MultiversePluginsRegistration.get().setCore(this);
