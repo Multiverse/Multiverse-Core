@@ -1,15 +1,17 @@
 package org.mvplugins.multiverse.core.exceptions;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.locale.message.LocalizableMessage;
 import org.mvplugins.multiverse.core.locale.message.Message;
 
 /**
  * A base exception for Multiverse.
  * <br/>
- * {@link #getMVMessage()} provides access to a {@link Message} which can be used to provide a localized message.
+ * {@link #getLocalizableMessage()} provides access to a {@link Message} which can be used to provide a localized message.
  */
-public class MultiverseException extends Exception {
+public class MultiverseException extends Exception implements LocalizableMessage {
 
     private final transient @Nullable Message message;
 
@@ -17,7 +19,7 @@ public class MultiverseException extends Exception {
      * Creates a new exception with the given message.
      * <br/>
      * If the message is not null, this exception will also contain a {@link Message} which can be accessed via
-     * {@link #getMVMessage()}. This message will just be the given message wrapped in a {@link Message}.
+     * {@link #getLocalizableMessage()}. This message will just be the given message wrapped in a {@link Message}.
      *
      * @param message   The message for the exception
      */
@@ -43,7 +45,7 @@ public class MultiverseException extends Exception {
      * Creates a new exception with the given message and cause.
      * <br/>
      * If the message is not null, this exception will also contain a {@link Message} which can be accessed via
-     * {@link #getMVMessage()}. This message will just be the given message wrapped in a {@link Message}.
+     * {@link #getLocalizableMessage()}. This message will just be the given message wrapped in a {@link Message}.
      *
      * @param message The message for the exception
      * @param cause The cause of the exception
@@ -71,7 +73,7 @@ public class MultiverseException extends Exception {
      *
      * @return The message, or null if none was provided
      */
-    public final @Nullable Message getMVMessage() {
+    public final @Nullable Message getLocalizableMessage() {
         return message;
     }
 }

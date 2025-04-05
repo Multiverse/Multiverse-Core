@@ -31,7 +31,9 @@ public final class MessageReplacement {
 
     private MessageReplacement(@NotNull String key, @Nullable Object replacement) {
         this.key = key;
-        this.replacement = Either.left(String.valueOf(replacement));
+        this.replacement = (replacement instanceof Message message)
+                ? Either.right(message)
+                : Either.left(String.valueOf(replacement));
     }
 
     /**
@@ -122,12 +124,21 @@ public final class MessageReplacement {
 
         /**
          * Creates a replacement for this key.
+         * Gets the localized message if the replacement is a {@link LocalizableMessage}.
+         * Handles throwable messages with {@link Throwable#getLocalizedMessage()}.
          *
          * @param replacement The replacement value, if null it will be replaced with a string equal to "null"
          * @return A new message replacement
          */
         @Contract(value = "_ -> new", pure = true)
         public MessageReplacement with(@Nullable Object replacement) {
+            if (replacement instanceof LocalizableMessage localizableMessage
+                    && localizableMessage.getLocalizableMessage() != null) {
+                return replaceKey.with(localizableMessage.getLocalizableMessage());
+            }
+            if (replacement instanceof Throwable throwable) {
+                return replaceKey.with(throwable.getLocalizedMessage());
+            }
             return replaceKey.with(replacement);
         }
     }

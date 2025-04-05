@@ -36,6 +36,9 @@ import org.mvplugins.multiverse.core.event.world.MVWorldRegeneratedEvent;
 import org.mvplugins.multiverse.core.event.world.MVWorldRemovedEvent;
 import org.mvplugins.multiverse.core.event.world.MVWorldUnloadedEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.exceptions.world.MultiverseWorldException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
@@ -667,8 +670,7 @@ public final class WorldManager {
 
     private <T, F extends FailureReason> Attempt<T, F> worldActionResult(
             @NotNull F failureReason, @NotNull String worldName, @NotNull Throwable error) {
-        // TODO: Localize error message if its a MultiverseException
-        return Attempt.failure(failureReason, Replace.WORLD.with(worldName), Replace.ERROR.with(error.getMessage()));
+        return Attempt.failure(failureReason, Replace.WORLD.with(worldName), Replace.ERROR.with(error));
     }
 
     private Attempt<WorldCreator, WorldCreatorFailureReason> addBiomeProviderToCreator(
@@ -679,7 +681,7 @@ public final class WorldManager {
                             throwable.printStackTrace();
                             return Attempt.failure(WorldCreatorFailureReason.INVALID_BIOME_PROVIDER,
                                     replace("{biome}").with(biomeString),
-                                    Replace.ERROR.with(throwable.getMessage()));
+                                    Replace.ERROR.with(throwable));
                         },
                         Attempt::success
                 );
@@ -693,7 +695,7 @@ public final class WorldManager {
                             throwable.printStackTrace();
                             return Attempt.failure(WorldCreatorFailureReason.INVALID_CHUNK_GENERATOR,
                                     replace("{generator}").with(generatorString),
-                                    Replace.ERROR.with(throwable.getMessage()));
+                                    Replace.ERROR.with(throwable));
                         },
                         Attempt::success);
     }
@@ -709,8 +711,7 @@ public final class WorldManager {
             this.loadTracker.add(worldCreator.name());
             World world = worldCreator.createWorld();
             if (world == null) {
-                // TODO: Localize this
-                throw new MultiverseException("World created returned null!");
+                throw new MultiverseWorldException(Message.of(MVCorei18n.EXCEPTION_MULTIVERSEWORLD_CREATENULL));
             }
             Logging.fine("Bukkit created world: " + world.getName());
             return world;
@@ -720,7 +721,7 @@ public final class WorldManager {
         }).andFinally(() -> {
             this.loadTracker.remove(worldCreator.name());
         }).fold(throwable -> Attempt.failure(WorldCreatorFailureReason.BUKKIT_CREATION_FAILED,
-                        Replace.ERROR.with(throwable.getMessage())),
+                        Replace.ERROR.with(throwable)),
                 Attempt::success);
     }
 
@@ -737,20 +738,23 @@ public final class WorldManager {
             }
             unloadTracker.add(world.getName());
             if (!Bukkit.unloadWorld(world, save)) {
-                // TODO: Localize this, maybe with MultiverseException
-                var defaultWorldName = getDefaultWorld().map(LoadedMultiverseWorld::getName).getOrElse("");
-                if (Objects.equals(world.getName(), defaultWorldName)) {
-                    throw new MultiverseException("You can't unload the default world! World " + world.getName() +
-                            " is the default world defined in server.properties `level-name`.");
-                }
-                if (!world.getPlayers().isEmpty()) {
-                    throw new MultiverseException("There are still players in the world! Please use --remove-players flag to "
-                            + "your command if wish to teleport all players out of the world.");
-                }
-                throw new MultiverseException("An unknown error occurred while unloading world: " + world.getName());
+                throwUnloadException(world);
             }
             Logging.fine("Bukkit unloaded world: " + world.getName());
         }).andFinally(() -> unloadTracker.remove(world.getName()));
+    }
+
+    private void throwUnloadException(World world) throws MultiverseWorldException {
+        var defaultWorldName = getDefaultWorld().map(LoadedMultiverseWorld::getName).getOrElse("");
+        if (Objects.equals(world.getName(), defaultWorldName)) {
+            throw new MultiverseWorldException(Message.of(MVCorei18n.EXCEPTION_MULTIVERSEWORLD_UNLOADDEFAULTWORLD,
+                    Replace.WORLD.with(world.getName())));
+        }
+        if (!world.getPlayers().isEmpty()) {
+            throw new MultiverseWorldException(Message.of(MVCorei18n.EXCEPTION_MULTIVERSEWORLD_UNLOADPLAYERSINWORLD,
+                    replace("{count}").with(world.getPlayers().size())));
+        }
+        throw new MultiverseWorldException(Message.of(MVCorei18n.EXCEPTION_MULTIVERSEWORLD_UNLOADERROR));
     }
 
     /**

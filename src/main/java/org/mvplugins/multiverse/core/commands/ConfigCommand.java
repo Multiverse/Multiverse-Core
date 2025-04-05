@@ -67,6 +67,6 @@ final class ConfigCommand extends CoreCommand {
                     issuer.sendMessage("Successfully set " + name + " to " + value);
                 })
                 .onFailure(ignore -> issuer.sendMessage("Unable to set " + name + " to " + value + "."))
-                .onFailure(MultiverseException.class, e -> Option.of(e.getMVMessage()).peek(issuer::sendError));
+                .onFailure(MultiverseException.class, e -> Option.of(e.getLocalizableMessage()).peek(issuer::sendMessage));
     }
 }
