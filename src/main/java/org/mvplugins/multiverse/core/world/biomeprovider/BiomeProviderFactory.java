@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.world.biomeprovider;
 
 import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
 import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +58,7 @@ public final class BiomeProviderFactory {
                 return biomeProviderParser.parseBiomeProvider(worldName, split.length > 1 ? split[1] : "");
             }
         }
-        return WorldCreator.getBiomeProviderForName(worldName, biomeProviderString, null);
+        return WorldCreator.getBiomeProviderForName(worldName, biomeProviderString, Bukkit.getConsoleSender());
     }
 
     /**

@@ -33,7 +33,8 @@ public enum CreateFailureReason implements FailureReason {
     /**
      * Bukkit API failed to create the world.
      */
-    BUKKIT_CREATION_FAILED(MVCorei18n.CREATEWORLD_BUKKITCREATIONFAILED);
+    WORLD_CREATOR_FAILED(MVCorei18n.GENERIC_FAILURE),
+    ;
 
     private final MessageKeyProvider message;
 

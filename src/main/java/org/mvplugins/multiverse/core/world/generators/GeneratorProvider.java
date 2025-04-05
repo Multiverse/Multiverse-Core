@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.base.Strings;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
@@ -122,6 +123,13 @@ public final class GeneratorProvider implements Listener {
         }
         Logging.severe("Generator plugin with name %s is already registered!", generatorPlugin.getPluginName());
         return false;
+    }
+
+    @Nullable
+    public String parseGeneratorString(@NotNull String worldName, @Nullable String generatorString) {
+        return Strings.isNullOrEmpty(generatorString)
+                ? getDefaultGeneratorForWorld(worldName)
+                : generatorString;
     }
 
     /**

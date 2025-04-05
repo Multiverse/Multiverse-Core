@@ -12,7 +12,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.dumptruckman.minecraft.util.Logging;
-import com.google.common.base.Strings;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
@@ -64,6 +63,7 @@ import org.mvplugins.multiverse.core.world.reasons.LoadFailureReason;
 import org.mvplugins.multiverse.core.world.reasons.RegenFailureReason;
 import org.mvplugins.multiverse.core.world.reasons.RemoveFailureReason;
 import org.mvplugins.multiverse.core.world.reasons.UnloadFailureReason;
+import org.mvplugins.multiverse.core.world.reasons.WorldCreatorFailureReason;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 import static org.mvplugins.multiverse.core.world.helpers.DataStore.WorldBorderStore;
@@ -194,7 +194,7 @@ public final class WorldManager {
      * @return The result of the creation.
      */
     public Attempt<LoadedMultiverseWorld, CreateFailureReason> createWorld(CreateWorldOptions options) {
-        return validateCreateWorldOptions(options).mapAttempt(this::createValidatedWorld);
+        return validateCreateWorldOptions(options).mapAttempt(this::doCreateWorld);
     }
 
     private Attempt<CreateWorldOptions, CreateFailureReason> validateCreateWorldOptions(
@@ -211,28 +211,28 @@ public final class WorldManager {
         return worldActionResult(options);
     }
 
-    private Attempt<LoadedMultiverseWorld, CreateFailureReason> createValidatedWorld(
+    private Attempt<LoadedMultiverseWorld, CreateFailureReason> doCreateWorld(
             CreateWorldOptions options) {
-        String parsedGenerator = parseGenerator(options.worldName(), options.generator());
+        String generatorString = generatorProvider.parseGeneratorString(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
-                .biomeProvider(biomeProviderFactory.parseBiomeProvider(options.worldName(), options.biome()))
                 .environment(options.environment())
                 .generateStructures(options.generateStructures())
-                .generator(parsedGenerator)
                 .generatorSettings(options.generatorSettings())
                 .seed(options.seed())
                 .type(options.worldType());
-        return createBukkitWorld(worldCreator).fold(
-                exception -> worldActionResult(CreateFailureReason.BUKKIT_CREATION_FAILED,
-                        options.worldName(), exception),
-                world -> {
+
+        return addBiomeProviderToCreator(worldCreator, options.worldName(), options.biome())
+                .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
+                .mapAttempt(this::createBukkitWorld)
+                .transform(CreateFailureReason.WORLD_CREATOR_FAILED)
+                .map(bukkitWorld -> {
                     LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
-                            world,
-                            parsedGenerator,
+                            bukkitWorld,
+                            generatorString,
                             options.biome(),
                             options.useSpawnAdjust());
                     pluginManager.callEvent(new MVWorldCreatedEvent(loadedWorld));
-                    return worldActionResult(loadedWorld);
+                    return loadedWorld;
                 });
     }
 
@@ -264,36 +264,23 @@ public final class WorldManager {
 
     private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportWorld(
             ImportWorldOptions options) {
-        String parsedGenerator = parseGenerator(options.worldName(), options.generator());
+        String generatorString = generatorProvider.parseGeneratorString(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
-                .biomeProvider(biomeProviderFactory.parseBiomeProvider(options.worldName(), options.biome()))
-                .environment(options.environment())
-                .generator(parsedGenerator);
-        return createBukkitWorld(worldCreator).fold(
-                exception -> worldActionResult(ImportFailureReason.BUKKIT_CREATION_FAILED,
-                        options.worldName(), exception),
-                world -> {
+                .environment(options.environment());
+
+        return addBiomeProviderToCreator(worldCreator, options.worldName(), options.biome())
+                .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
+                .mapAttempt(this::createBukkitWorld)
+                .transform(ImportFailureReason.WORLD_CREATOR_FAILED)
+                .map(bukkitWorld -> {
                     LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
-                            world,
-                            parsedGenerator,
+                            bukkitWorld,
+                            generatorString,
                             options.biome(),
                             options.useSpawnAdjust());
                     pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
-                    return worldActionResult(loadedWorld);
+                    return loadedWorld;
                 });
-    }
-
-    /**
-     * Parses generator string and defaults to generator in bukkit.yml if not specified.
-     *
-     * @param worldName The name of the world.
-     * @param generator The input generator string.
-     * @return The parsed generator string.
-     */
-    private @Nullable String parseGenerator(@NotNull String worldName, @Nullable String generator) {
-        return Strings.isNullOrEmpty(generator)
-                ? generatorProvider.getDefaultGeneratorForWorld(worldName)
-                : generator;
     }
 
     private MultiverseWorld newMultiverseWorld(String worldName, WorldConfig worldConfig) {
@@ -379,26 +366,27 @@ public final class WorldManager {
     }
 
     private Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadWorld(@NotNull MultiverseWorld mvWorld) {
-        return createBukkitWorld(WorldCreator.name(mvWorld.getName())
-                .biomeProvider(biomeProviderFactory.parseBiomeProvider(mvWorld.getName(), mvWorld.getBiome()))
+        WorldCreator worldCreator = WorldCreator.name(mvWorld.getName())
                 .environment(mvWorld.getEnvironment())
-                .generator(Strings.isNullOrEmpty(mvWorld.getGenerator()) ? null : mvWorld.getGenerator())
-                .seed(mvWorld.getSeed())).fold(
-                        exception -> worldActionResult(LoadFailureReason.BUKKIT_CREATION_FAILED,
-                                mvWorld.getName(), exception),
-                        world -> {
-                            WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName()).get();
-                            LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
-                                    world,
-                                    worldConfig,
-                                    blockSafety,
-                                    locationManipulation,
-                                    config);
-                            loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
-                            saveWorldsConfig();
-                            pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
-                            return worldActionResult(loadedWorld);
-                        });
+                .seed(mvWorld.getSeed());
+
+        return addBiomeProviderToCreator(worldCreator, mvWorld.getName(), mvWorld.getBiome())
+                .mapAttempt(creator -> addGeneratorToCreator(creator, mvWorld.getGenerator()))
+                .mapAttempt(this::createBukkitWorld)
+                .transform(LoadFailureReason.WORLD_CREATOR_FAILED)
+                .map(bukkitWorld -> {
+                    WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName()).get(); //TODO: null check here
+                    LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
+                            bukkitWorld,
+                            worldConfig,
+                            blockSafety,
+                            locationManipulation,
+                            config);
+                    loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
+                    saveWorldsConfig();
+                    pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
+                    return loadedWorld;
+                });
     }
 
     /**
@@ -680,7 +668,34 @@ public final class WorldManager {
     private <T, F extends FailureReason> Attempt<T, F> worldActionResult(
             @NotNull F failureReason, @NotNull String worldName, @NotNull Throwable error) {
         // TODO: Localize error message if its a MultiverseException
-        return Attempt.failure(failureReason, Replace.WORLD.with(worldName), replace("{error}").with(error.getMessage()));
+        return Attempt.failure(failureReason, Replace.WORLD.with(worldName), Replace.ERROR.with(error.getMessage()));
+    }
+
+    private Attempt<WorldCreator, WorldCreatorFailureReason> addBiomeProviderToCreator(
+            WorldCreator worldCreator, String worldName, String biomeString) {
+        return Try.of(() -> worldCreator.biomeProvider(biomeProviderFactory.parseBiomeProvider(worldName, biomeString)))
+                .fold(
+                        throwable -> {
+                            throwable.printStackTrace();
+                            return Attempt.failure(WorldCreatorFailureReason.INVALID_BIOME_PROVIDER,
+                                    replace("{biome}").with(biomeString),
+                                    Replace.ERROR.with(throwable.getMessage()));
+                        },
+                        Attempt::success
+                );
+    }
+
+    private Attempt<WorldCreator, WorldCreatorFailureReason> addGeneratorToCreator(
+            WorldCreator worldCreator, String generatorString) {
+        return Try.of(() -> worldCreator.generator(generatorString))
+                .fold(
+                        throwable -> {
+                            throwable.printStackTrace();
+                            return Attempt.failure(WorldCreatorFailureReason.INVALID_CHUNK_GENERATOR,
+                                    replace("{generator}").with(generatorString),
+                                    Replace.ERROR.with(throwable.getMessage()));
+                        },
+                        Attempt::success);
     }
 
     /**
@@ -689,20 +704,24 @@ public final class WorldManager {
      * @param worldCreator  The world parameters.
      * @return The created world.
      */
-    private Try<World> createBukkitWorld(WorldCreator worldCreator) {
+    private Attempt<World, WorldCreatorFailureReason> createBukkitWorld(WorldCreator worldCreator) {
         return Try.of(() -> {
             this.loadTracker.add(worldCreator.name());
             World world = worldCreator.createWorld();
             if (world == null) {
                 // TODO: Localize this
-                throw new Exception("World created returned null!");
+                throw new MultiverseException("World created returned null!");
             }
             Logging.fine("Bukkit created world: " + world.getName());
             return world;
         }).onFailure(exception -> {
             Logging.severe("Failed to create bukkit world: " + worldCreator.name());
             exception.printStackTrace();
-        }).andFinally(() -> this.loadTracker.remove(worldCreator.name()));
+        }).andFinally(() -> {
+            this.loadTracker.remove(worldCreator.name());
+        }).fold(throwable -> Attempt.failure(WorldCreatorFailureReason.BUKKIT_CREATION_FAILED,
+                        Replace.ERROR.with(throwable.getMessage())),
+                Attempt::success);
     }
 
     /**

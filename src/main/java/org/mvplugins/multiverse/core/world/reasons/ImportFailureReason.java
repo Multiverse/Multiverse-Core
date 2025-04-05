@@ -33,7 +33,7 @@ public enum ImportFailureReason implements FailureReason {
     /**
      * Bukkit API failed to create the world.
      */
-    BUKKIT_CREATION_FAILED(MVCorei18n.IMPORTWORLD_BUKKITCREATIONFAILED);
+    WORLD_CREATOR_FAILED(MVCorei18n.GENERIC_FAILURE);
 
     private final MessageKeyProvider message;
 
