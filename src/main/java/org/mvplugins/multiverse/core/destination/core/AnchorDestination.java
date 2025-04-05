@@ -3,7 +3,6 @@ package org.mvplugins.multiverse.core.destination.core;
 import java.util.Collection;
 
 import jakarta.inject.Inject;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -43,11 +42,10 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
         if (destinationParams == null) {
             return null;
         }
-        Location anchorLocation = this.anchorManager.getAnchorLocation(destinationParams);
-        if (anchorLocation == null) {
-            return null;
-        }
-        return new AnchorDestinationInstance(this, destinationParams, anchorLocation);
+        return this.anchorManager.getAnchor(destinationParams)
+                .map(anchor -> new AnchorDestinationInstance(
+                        this, destinationParams, anchor.getLocation()))
+                .getOrNull();
     }
 
     /**
@@ -58,7 +56,7 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
             @NotNull CommandSender sender, @Nullable String destinationParams) {
         return this.anchorManager.getAnchors(sender instanceof Player ? (Player)sender : null)
                 .stream()
-                .map(anchorName -> new DestinationSuggestionPacket(this, anchorName, anchorName))
+                .map(anchor -> new DestinationSuggestionPacket(this, anchor.getName(), anchor.getName()))
                 .toList();
     }
 }
