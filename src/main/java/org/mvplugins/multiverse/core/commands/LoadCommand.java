@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
@@ -20,8 +21,7 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-@CommandAlias("mv")
-final class LoadCommand extends CoreCommand {
+class LoadCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
@@ -31,7 +31,6 @@ final class LoadCommand extends CoreCommand {
         this.worldManager = worldManager;
     }
 
-    @CommandAlias("mvload")
     @Subcommand("load")
     @CommandPermission("multiverse.core.load")
     @CommandCompletion("@mvworlds:scope=unloaded")
@@ -54,5 +53,24 @@ final class LoadCommand extends CoreCommand {
                     Logging.fine("World load failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());
                 });
+    }
+
+    @Service
+    private static final class LegacyAlias extends LoadCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+            super(commandManager, worldManager);
+        }
+
+        @Override
+        @CommandAlias("mvload")
+        void onLoadCommand(MVCommandIssuer issuer, String worldName) {
+            super.onLoadCommand(issuer, worldName);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

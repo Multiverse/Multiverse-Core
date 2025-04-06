@@ -6,33 +6,57 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
 
 @Service
-@CommandAlias("mv")
-final class ConfirmCommand extends CoreCommand {
+class ConfirmCommand extends CoreCommand {
+
+    @NotNull
+    private final CommandQueueManager commandQueueManager;
 
     @Inject
-    ConfirmCommand(@NotNull MVCommandManager commandManager) {
+    ConfirmCommand(@NotNull MVCommandManager commandManager, @NotNull CommandQueueManager commandQueueManager) {
         super(commandManager);
+        this.commandQueueManager = commandQueueManager;
     }
 
-    @CommandAlias("mvconfirm")
     @Subcommand("confirm")
     @CommandPermission("multiverse.core.confirm")
     @Syntax("[otp]")
     @Description("{@@mv-core.confirm.description}")
     void onConfirmCommand(
-            @NotNull MVCommandIssuer issuer,
+            MVCommandIssuer issuer,
 
             @Default("0")
             String otp) {
-        this.commandManager.getCommandQueueManager().runQueuedCommand(issuer, otp)
+        this.commandQueueManager.runQueuedCommand(issuer, otp)
                 .onFailure(failure -> issuer.sendError(failure.getFailureMessage()));
+    }
+
+    @Service
+    private final static class LegacyAlias extends ConfirmCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CommandQueueManager commandQueueCommand) {
+            super(commandManager, commandQueueCommand);
+        }
+
+        @Override
+        @CommandAlias("mvconfirm")
+        void onConfirmCommand(MVCommandIssuer issuer, String otp) {
+            super.onConfirmCommand(issuer, otp);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

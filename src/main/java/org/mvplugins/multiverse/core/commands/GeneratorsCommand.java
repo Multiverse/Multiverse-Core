@@ -15,6 +15,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
@@ -33,8 +34,7 @@ import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
  * List all gamerules in your current or specified world.
  */
 @Service
-@CommandAlias("mv")
-final class GeneratorsCommand extends CoreCommand {
+class GeneratorsCommand extends CoreCommand {
 
     private final GeneratorProvider generatorProvider;
 
@@ -48,7 +48,6 @@ final class GeneratorsCommand extends CoreCommand {
         this.generatorProvider = generatorProvider;
     }
 
-    @CommandAlias("mvgenerators|mvgens")
     @Subcommand("generators|gens")
     @CommandPermission("multiverse.core.generator")
     @CommandCompletion("@flags:groupName=mvgeneratorscommand @flags:groupName=mvgeneratorscommand")
@@ -80,5 +79,24 @@ final class GeneratorsCommand extends CoreCommand {
                         .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
                         .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
                 .send(issuer);
+    }
+
+    @Service
+    private static final class LegacyAlias extends GeneratorsCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull GeneratorProvider generatorProvider) {
+            super(commandManager, generatorProvider);
+        }
+
+        @Override
+        @CommandAlias("mvgenerators|mvgens")
+        void onGamerulesCommand(@NotNull MVCommandIssuer issuer, String[] flags) {
+            super.onGamerulesCommand(issuer, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

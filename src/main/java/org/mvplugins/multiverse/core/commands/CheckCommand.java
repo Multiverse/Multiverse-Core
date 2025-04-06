@@ -6,11 +6,13 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
@@ -20,11 +22,15 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
-@CommandAlias("mv")
-final class CheckCommand extends CoreCommand {
+class CheckCommand extends CoreCommand {
 
     private final CorePermissionsChecker corePermissionsChecker;
     private final LocationManipulation locationManipulation;
@@ -38,7 +44,6 @@ final class CheckCommand extends CoreCommand {
         this.locationManipulation = locationManipulation;
     }
 
-    @CommandAlias("mvcheck")
     @Subcommand("check")
     @CommandPermission("multiverse.core.check")
     @CommandCompletion("@players @destinations")
@@ -66,5 +71,24 @@ final class CheckCommand extends CoreCommand {
                         .getOrElse(() -> Message.of(MVCorei18n.GENERIC_NULL, "Null!"))));
 
         // TODO: Show permission required for this particular destination
+    }
+
+    @Service
+    private final static class LegacyAlias extends CheckCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CorePermissionsChecker corePermissionsChecker, @NotNull LocationManipulation locationManipulation) {
+            super(commandManager, corePermissionsChecker, locationManipulation);
+        }
+
+        @Override
+        @CommandAlias("mvcheck")
+        void onCheckCommand(MVCommandIssuer issuer, Player player, DestinationInstance<?, ?> destination) {
+            super.onCheckCommand(issuer, player, destination);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

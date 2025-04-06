@@ -341,6 +341,15 @@ final class CoreConfigNodes {
                     : Try.success(null))
             .build());
 
+    final ConfigNode<Boolean> showLegacyAliases = node(ConfigNode.builder("command.show-legacy-aliases", Boolean.class)
+            .comment("")
+            .comment("If this is set to true, legacy aliases will be shown in tab completion.")
+            .comment("These are old mv4 aliases such as `/mvclone` in addition to `/mv clone` which crowds the tab completion.")
+            .comment("!!!NOTE: This will only apply after a server restart!")
+            .defaultValue(true)
+            .name("show-legacy-aliases")
+            .build());
+
     private final ConfigHeaderNode miscHeader = node(ConfigHeaderNode.builder("misc")
             .comment("")
             .comment("")

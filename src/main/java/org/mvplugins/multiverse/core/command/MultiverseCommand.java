@@ -37,7 +37,7 @@ public abstract class MultiverseCommand extends BaseCommand {
 
     @PostConstruct
     private void postConstruct() {
-        if (flagGroupBuilder != null) {
+        if (flagGroupBuilder != null && doFlagRegistration()) {
             registerFlagGroup(flagGroupBuilder.build());
             flagGroupBuilder = null;
         }
@@ -76,5 +76,14 @@ public abstract class MultiverseCommand extends BaseCommand {
      */
     protected @NotNull ParsedCommandFlags parseFlags(@NotNull String[] flags) {
         return flagsManager.parse(flagGroupName, flags);
+    }
+
+    /**
+     * Override this if you do not want to register flags for this class.
+     *
+     * @return True to register flags, false to not register flags.
+     */
+    protected boolean doFlagRegistration() {
+        return true;
     }
 }

@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
@@ -20,8 +21,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
-@CommandAlias("mv")
-final class CoordinatesCommand extends CoreCommand {
+class CoordinatesCommand extends CoreCommand {
 
     private final LocationManipulation locationManipulation;
 
@@ -33,8 +33,7 @@ final class CoordinatesCommand extends CoreCommand {
         this.locationManipulation = locationManipulation;
     }
 
-    @CommandAlias("mvcoord|mvco")
-    @Subcommand("coordinates|coords|coord|co")
+    @Subcommand("coordinates")
     @CommandPermission("multiverse.core.coord")
     @Description("{@@mv-core.coordinates.description}")
     void onCoordinatesCommand(
@@ -54,5 +53,25 @@ final class CoordinatesCommand extends CoreCommand {
                 replace("{coordinates}").with(locationManipulation.strCoords(player.getLocation())));
         issuer.sendInfo(MVCorei18n.COORDINATES_INFO_DIRECTION,
                 replace("{direction}").with(locationManipulation.getDirection(player.getLocation())));
+    }
+
+    @Service
+    private static final class LegacyAlias extends CoordinatesCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull LocationManipulation locationManipulation) {
+            super(commandManager, locationManipulation);
+        }
+
+        @Override
+        @CommandAlias("mvcoord|mvco")
+        @Subcommand("coords|coord|co")
+        void onCoordinatesCommand(MVCommandIssuer issuer, Player player, MultiverseWorld world) {
+            super.onCoordinatesCommand(issuer, player, world);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

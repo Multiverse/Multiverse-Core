@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.event.MVConfigReloadEvent;
@@ -21,8 +22,7 @@ import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-@CommandAlias("mv")
-final class ReloadCommand extends CoreCommand {
+class ReloadCommand extends CoreCommand {
 
     private final CoreConfig config;
     private final AnchorManager anchorManager;
@@ -43,7 +43,6 @@ final class ReloadCommand extends CoreCommand {
         this.pluginManager = pluginManager;
     }
 
-    @CommandAlias("mvreload|mvr")
     @Subcommand("reload")
     @CommandPermission("multiverse.core.reload")
     @Description("{@@mv-core.reload.description}")
@@ -67,5 +66,24 @@ final class ReloadCommand extends CoreCommand {
 
         configReload.getAllConfigsLoaded().forEach(issuer::sendMessage);
         issuer.sendInfo(MVCorei18n.RELOAD_SUCCESS);
+    }
+
+    @Service
+    private static final class LegacyAlias extends ReloadCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config, @NotNull AnchorManager anchorManager, @NotNull WorldManager worldManager, @NotNull PluginManager pluginManager) {
+            super(commandManager, config, anchorManager, worldManager, pluginManager);
+        }
+
+        @Override
+        @CommandAlias("mvreload|mvr")
+        void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
+            super.onReloadCommand(issuer);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

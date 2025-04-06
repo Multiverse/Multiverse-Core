@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
@@ -25,8 +26,7 @@ import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
-@CommandAlias("mv")
-final class CloneCommand extends CoreCommand {
+class CloneCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
@@ -48,11 +48,11 @@ final class CloneCommand extends CoreCommand {
         this.worldManager = worldManager;
     }
 
-    @CommandAlias("mvcl|mvclone")
+
     @Subcommand("clone")
     @CommandPermission("multiverse.core.clone")
     @CommandCompletion("@mvworlds:scope=loaded @empty @flags:groupName=mvclonecommand")
-    @Syntax("<world> <new world name>")
+    @Syntax("<world> <new world name> [--reset-world-config --reset-gamerules --reset-world-border]")
     @Description("{@@mv-core.clone.description}")
     void onCloneCommand(
             MVCommandIssuer issuer,
@@ -66,7 +66,7 @@ final class CloneCommand extends CoreCommand {
             String newWorldName,
 
             @Optional
-            @Syntax(/* TODO */ "")
+            @Syntax("[--reset-world-config --reset-gamerules --reset-world-border]")
             @Description("{@@mv-core.regen.other.description}")
             String[] flags) {
         ParsedCommandFlags parsedFlags = parseFlags(flags);
@@ -86,5 +86,24 @@ final class CloneCommand extends CoreCommand {
                     Logging.fine("World clone failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());
                 });
+    }
+
+    @Service
+    private final static class LegacyAlias extends CloneCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+            super(commandManager, worldManager);
+        }
+
+        @Override
+        @CommandAlias("mvcl|mvclone")
+        void onCloneCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String newWorldName, String[] flags) {
+            super.onCloneCommand(issuer, world, newWorldName, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

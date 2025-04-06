@@ -12,14 +12,14 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 
 @Service
-@CommandAlias("mv")
-final class ConfigCommand extends CoreCommand {
+class ConfigCommand extends CoreCommand {
 
     private final CoreConfig config;
 
@@ -29,7 +29,6 @@ final class ConfigCommand extends CoreCommand {
         this.config = config;
     }
 
-    @CommandAlias("mvconfig|mvconf")
     @Subcommand("config")
     @CommandPermission("multiverse.core.config")
     @CommandCompletion("@mvconfigs @mvconfigvalues")
@@ -68,5 +67,24 @@ final class ConfigCommand extends CoreCommand {
                 })
                 .onFailure(ignore -> issuer.sendMessage("Unable to set " + name + " to " + value + "."))
                 .onFailure(MultiverseException.class, e -> Option.of(e.getLocalizableMessage()).peek(issuer::sendMessage));
+    }
+
+    @Service
+    private final static class LegacyAlias extends ConfigCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config) {
+            super(commandManager, config);
+        }
+
+        @Override
+        @CommandAlias("mvconfig|mvconf")
+        void onConfigCommand(MVCommandIssuer issuer, String name, String value) {
+            super.onConfigCommand(issuer, name, value);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

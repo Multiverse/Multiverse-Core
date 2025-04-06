@@ -38,8 +38,7 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-@CommandAlias("mv")
-final class WhoCommand extends CoreCommand {
+class WhoCommand extends CoreCommand {
 
     private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
 
@@ -53,7 +52,6 @@ final class WhoCommand extends CoreCommand {
         this.worldManager = worldManager;
     }
 
-    @CommandAlias("mvwhoall")
     @Subcommand("whoall")
     @CommandPermission("multiverse.core.list.who.all")
     @CommandCompletion("@flags:groupName=mvwhocommand")
@@ -77,7 +75,6 @@ final class WhoCommand extends CoreCommand {
 
     }
 
-    @CommandAlias("mvwho|mvw")
     @Subcommand("who")
     @CommandPermission("multiverse.core.list.who")
     @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvwhocommand")
@@ -139,5 +136,30 @@ final class WhoCommand extends CoreCommand {
                         .doPagination(true)
                         .withTargetPage(page)
                         .withFilter(filter));
+    }
+
+    @Service
+    private static final class LegacyAlias extends WhoCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+            super(commandManager, worldManager);
+        }
+
+        @Override
+        @CommandAlias("mvwhoall")
+        void onWhoAllCommand(MVCommandIssuer issuer, String[] flags) {
+            super.onWhoAllCommand(issuer, flags);
+        }
+
+        @Override
+        @CommandAlias("mvwho|mvw")
+        void onWhoCommand(MVCommandIssuer issuer, LoadedMultiverseWorld inputtedWorld, String[] flags) {
+            super.onWhoCommand(issuer, inputtedWorld, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

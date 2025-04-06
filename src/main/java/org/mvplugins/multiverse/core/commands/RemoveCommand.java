@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
@@ -26,8 +27,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 
 @Service
-@CommandAlias("mv")
-final class RemoveCommand extends CoreCommand {
+class RemoveCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
@@ -46,7 +46,6 @@ final class RemoveCommand extends CoreCommand {
         this.playerWorldTeleporter = playerWorldTeleporter;
     }
 
-    @CommandAlias("mvremove")
     @Subcommand("remove")
     @CommandPermission("multiverse.core.remove")
     @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvremovecommand")
@@ -82,5 +81,24 @@ final class RemoveCommand extends CoreCommand {
                     Logging.fine("World remove failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());
                 });
+    }
+
+    @Service
+    private static final class LegacyAlias extends RemoveCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
+            super(commandManager, worldManager, playerWorldTeleporter);
+        }
+
+        @Override
+        @CommandAlias("mvremove")
+        void onRemoveCommand(MVCommandIssuer issuer, MultiverseWorld world, String[] flags) {
+            super.onRemoveCommand(issuer, world, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

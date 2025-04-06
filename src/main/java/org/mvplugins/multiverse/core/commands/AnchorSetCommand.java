@@ -20,7 +20,6 @@ import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
 @Service
-@CommandAlias("mv")
 final class AnchorSetCommand extends CoreCommand {
 
     private final AnchorManager anchorManager;

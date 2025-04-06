@@ -11,12 +11,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 
 @Service
-@CommandAlias("mv")
-final class VersionCommand extends CoreCommand {
+class VersionCommand extends CoreCommand {
 
     private final MultiverseCore plugin;
 
@@ -26,7 +26,6 @@ final class VersionCommand extends CoreCommand {
         this.plugin = plugin;
     }
 
-    @CommandAlias("mvversion")
     @Subcommand("version")
     @CommandPermission("multiverse.core.version")
     @Description("{@@mv-core.version.description}")
@@ -36,5 +35,24 @@ final class VersionCommand extends CoreCommand {
                 "{authors}", String.join(", ", plugin.getDescription().getAuthors()));
         // An in joke I don't get...
         issuer.sendMessage(MessageType.INFO, MVCorei18n.VERSION_SECRETCODE);
+    }
+
+    @Service
+    private static final class LegacyAlias extends VersionCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, MultiverseCore plugin) {
+            super(commandManager, plugin);
+        }
+
+        @Override
+        @CommandAlias("mvversion")
+        void versionCommand(BukkitCommandIssuer issuer) {
+            super.versionCommand(issuer);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

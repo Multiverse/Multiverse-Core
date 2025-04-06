@@ -13,12 +13,12 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-@CommandAlias("mv")
-final class SetSpawnCommand extends CoreCommand {
+class SetSpawnCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
@@ -30,7 +30,7 @@ final class SetSpawnCommand extends CoreCommand {
         this.worldManager = worldManager;
     }
 
-    @CommandAlias("mvsetspawn|mvss")
+    @CommandAlias("mvsetspawn")
     @Subcommand("setspawn")
     @CommandPermission("multiverse.core.spawn.set")
     @Syntax("[x],[y],[z],[pitch],[yaw]")
@@ -43,23 +43,42 @@ final class SetSpawnCommand extends CoreCommand {
             @Description("{@@mv-core.setspawn.location.description}")
             Location location) {
         Option.of(location).orElse(() -> {
-            if (issuer.isPlayer()) {
-                return Option.of(issuer.getPlayer().getLocation());
-            }
-            return Option.none();
-        }).peek(finalLocation ->
-            worldManager.getLoadedWorld(finalLocation.getWorld())
-                    .peek(mvWorld -> mvWorld.setSpawnLocation(finalLocation)
-                            .onSuccess(ignore -> issuer.sendMessage(
-                                    "Successfully set spawn in " + mvWorld.getName() + " to "
-                                            + prettyLocation(mvWorld.getSpawnLocation())))
-                            .onFailure(e -> issuer.sendMessage(e.getLocalizedMessage())))
-                    .onEmpty(() -> issuer.sendMessage("That world is not loaded or does not exist!")))
+                    if (issuer.isPlayer()) {
+                        return Option.of(issuer.getPlayer().getLocation());
+                    }
+                    return Option.none();
+                }).peek(finalLocation ->
+                        worldManager.getLoadedWorld(finalLocation.getWorld())
+                                .peek(mvWorld -> mvWorld.setSpawnLocation(finalLocation)
+                                        .onSuccess(ignore -> issuer.sendMessage(
+                                                "Successfully set spawn in " + mvWorld.getName() + " to "
+                                                        + prettyLocation(mvWorld.getSpawnLocation())))
+                                        .onFailure(e -> issuer.sendMessage(e.getLocalizedMessage())))
+                                .onEmpty(() -> issuer.sendMessage("That world is not loaded or does not exist!")))
                 .onEmpty(() -> issuer.sendMessage("You must specify a location in the format: worldname:x,y,z"));
     }
 
     private String prettyLocation(Location location) {
         return location.getX() + ", " + location.getY() + ", " + location.getZ() + ". pitch:" + location.getPitch()
                 + ", yaw:" + location.getYaw();
+    }
+
+    @Service
+    private static final class LegacyAlias extends SetSpawnCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
+            super(commandManager, worldManager);
+        }
+
+        @Override
+        @CommandAlias("mvss")
+        void onSetSpawnCommand(BukkitCommandIssuer issuer, Location location) {
+            super.onSetSpawnCommand(issuer, location);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

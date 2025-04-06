@@ -33,7 +33,6 @@ import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
 
 @Service
-@CommandAlias("mv")
 final class TeleportCommand extends CoreCommand {
 
     private final CoreConfig config;

@@ -13,6 +13,7 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
@@ -29,8 +30,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 
 @Service
-@CommandAlias("mv")
-final class DeleteCommand extends CoreCommand {
+class DeleteCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
@@ -52,7 +52,6 @@ final class DeleteCommand extends CoreCommand {
         this.worldTickDeferrer = worldTickDeferrer;
     }
 
-    @CommandAlias("mvdelete")
     @Subcommand("delete")
     @CommandPermission("multiverse.core.delete")
     @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvdeletecommand")
@@ -101,5 +100,28 @@ final class DeleteCommand extends CoreCommand {
                     Logging.fine("World delete failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());
                 });
+    }
+
+    @Service
+    private static final class LegacyAlias extends DeleteCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(
+                @NotNull MVCommandManager commandManager,
+                @NotNull WorldManager worldManager,
+                @NotNull PlayerWorldTeleporter playerWorldTeleporter,
+                @NotNull WorldTickDeferrer worldTickDeferrer) {
+            super(commandManager, worldManager, playerWorldTeleporter, worldTickDeferrer);
+        }
+
+        @Override
+        @CommandAlias("mvdelete")
+        void onDeleteCommand(MVCommandIssuer issuer, MultiverseWorld world, String[] flags) {
+            super.onDeleteCommand(issuer, world, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

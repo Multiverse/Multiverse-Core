@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
@@ -23,8 +24,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-@CommandAlias("mv")
-final class ModifyCommand extends CoreCommand {
+class ModifyCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
@@ -34,7 +34,6 @@ final class ModifyCommand extends CoreCommand {
         this.worldManager = worldManager;
     }
 
-    @CommandAlias("mvmodify|mvm")
     @Subcommand("modify")
     @CommandPermission("multiverse.core.modify")
     @CommandCompletion("@mvworlds:scope=both @propsmodifyaction @mvworldpropsname @mvworldpropsvalue")
@@ -79,5 +78,24 @@ final class ModifyCommand extends CoreCommand {
                     propertyValue, ChatColor.BLUE, world.getName(), ChatColor.BLUE));
             issuer.sendMessage(exception.getMessage());
         });
+    }
+
+    @Service
+    private static final class LegacyAlias extends ModifyCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, WorldManager worldManager) {
+            super(commandManager, worldManager);
+        }
+
+        @Override
+        @CommandAlias("mvmodify|mvm")
+        void onModifyCommand(MVCommandIssuer issuer, @NotNull MultiverseWorld world, @NotNull PropertyModifyAction action, @NotNull String propertyName, @Nullable String propertyValue) {
+            super.onModifyCommand(issuer, world, action, propertyName, propertyValue);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

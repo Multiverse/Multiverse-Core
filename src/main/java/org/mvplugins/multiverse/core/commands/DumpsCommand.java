@@ -20,7 +20,6 @@ import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 
 @Service
-@CommandAlias("mv")
 final class DumpsCommand extends CoreCommand {
 
     private final DumpsService dumpsService;

@@ -75,6 +75,7 @@ public class CoreConfig {
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.idonotwanttodonate", "misc.show-donation-message"))
                                 .addAction(BooleanMigratorAction.of("misc.show-donation-message"))
                                 .addAction(InvertBoolMigratorAction.of("misc.show-donation-message"))
+                                .addAction(SetMigratorAction.of("command.show-legacy-aliases", true))
                                 .build())
                         .addVersionMigrator(VersionMigrator.builder(5.1)
                                 .addAction(MoveMigratorAction.of("world.teleport-intercept", "teleport.teleport-intercept"))
@@ -476,6 +477,14 @@ public class CoreConfig {
 
     public Try<Void> setConfirmTimeout(int confirmTimeout) {
         return configHandle.set(configNodes.confirmTimeout, confirmTimeout);
+    }
+
+    public boolean getShowLegacyAliases() {
+        return configHandle.get(configNodes.showLegacyAliases);
+    }
+
+    public Try<Void> setShowLegacyAliases(boolean showLegacyAliases) {
+        return configHandle.set(configNodes.showLegacyAliases, showLegacyAliases);
     }
 
     /**

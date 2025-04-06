@@ -2,11 +2,13 @@ package org.mvplugins.multiverse.core.command;
 
 import java.util.List;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
+import co.aikar.commands.MVPaperCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -18,6 +20,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
@@ -26,13 +29,14 @@ import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
  * Main class to manage permissions.
  */
 @Service
-public class MVCommandManager extends PaperCommandManager {
+public class MVCommandManager extends MVPaperCommandManager {
 
     private final CommandFlagsManager flagsManager;
     private final CommandQueueManager commandQueueManager;
     private final Provider<MVCommandContexts> commandContextsProvider;
     private final Provider<MVCommandCompletions> commandCompletionsProvider;
     private final MVCommandPermissions commandPermissions;
+    private final CoreConfig config;
     private final PluginLocales pluginLocales;
 
     @Inject
@@ -44,13 +48,16 @@ public class MVCommandManager extends PaperCommandManager {
             @NotNull Provider<MVCommandCompletions> commandCompletionsProvider,
             @NotNull WorldManager worldManager,
             @NotNull WorldNameChecker worldNameChecker,
-            @NotNull MVCommandPermissions commandPermissions) {
+            @NotNull MVCommandPermissions commandPermissions,
+            @NotNull CoreConfig config
+            ) {
         super(plugin);
         this.flagsManager = flagsManager;
         this.commandQueueManager = commandQueueManager;
         this.commandContextsProvider = commandContextsProvider;
         this.commandCompletionsProvider = commandCompletionsProvider;
         this.commandPermissions = commandPermissions;
+        this.config = config;
         this.pluginLocales = new PluginLocales(this);
         this.locales = this.pluginLocales;
         this.pluginLocales.loadLanguages();
@@ -58,6 +65,14 @@ public class MVCommandManager extends PaperCommandManager {
         MVCommandConditions.load(this, worldManager, worldNameChecker);
         this.enableUnstableAPI("help");
         this.setDefaultExceptionHandler(new MVDefaultExceptionHandler());
+    }
+
+    @Override
+    public void registerCommand(BaseCommand command, boolean force) {
+        if (command instanceof LegacyAliasCommand && !config.getShowLegacyAliases()) {
+            return;
+        }
+        super.registerCommand(command, force);
     }
 
     /**

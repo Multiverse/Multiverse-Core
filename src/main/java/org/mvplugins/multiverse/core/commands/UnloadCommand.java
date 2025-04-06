@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
@@ -25,8 +26,7 @@ import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
 
 @Service
-@CommandAlias("mv")
-final class UnloadCommand extends CoreCommand {
+class UnloadCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
@@ -49,7 +49,6 @@ final class UnloadCommand extends CoreCommand {
         this.playerWorldTeleporter = playerWorldTeleporter;
     }
 
-    @CommandAlias("mvunload")
     @Subcommand("unload")
     @CommandPermission("multiverse.core.unload")
     @CommandCompletion("@mvworlds @flags:groupName=mvunloadcommand")
@@ -89,5 +88,24 @@ final class UnloadCommand extends CoreCommand {
                     Logging.fine("World unload failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());
                 });
+    }
+
+    @Service
+    private static final class LegacyAlias extends UnloadCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
+            super(commandManager, worldManager, playerWorldTeleporter);
+        }
+
+        @Override
+        @CommandAlias("mvunload")
+        void onUnloadCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String[] flags) {
+            super.onUnloadCommand(issuer, world, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

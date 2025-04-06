@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
@@ -34,8 +35,7 @@ import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
 
 @Service
-@CommandAlias("mv")
-final class RegenCommand extends CoreCommand {
+class RegenCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
@@ -75,7 +75,6 @@ final class RegenCommand extends CoreCommand {
         this.worldTickDeferrer = worldTickDeferrer;
     }
 
-    @CommandAlias("mvregen")
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
     @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvregencommand")
@@ -138,5 +137,24 @@ final class RegenCommand extends CoreCommand {
             Logging.warning("World regen failure: " + failure);
             issuer.sendError(failure.getFailureMessage());
         });
+    }
+
+    @Service
+    private static final class LegacyAlias extends RegenCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull PlayerWorldTeleporter playerWorldTeleporter, @NotNull WorldTickDeferrer worldTickDeferrer) {
+            super(commandManager, worldManager, playerWorldTeleporter, worldTickDeferrer);
+        }
+
+        @Override
+        @CommandAlias("mvregen")
+        void onRegenCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String[] flags) {
+            super.onRegenCommand(issuer, world, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

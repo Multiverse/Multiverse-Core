@@ -23,6 +23,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.context.GameRuleValue;
@@ -30,6 +31,7 @@ import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.command.flags.FilterCommandFlag;
 import org.mvplugins.multiverse.core.command.flags.PageCommandFlag;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
@@ -42,9 +44,8 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
-@CommandAlias("mv")
-@Subcommand("gamerule|rule|gamerules|rules")
-final class GameruleCommand extends CoreCommand {
+@Subcommand("gamerule|rule")
+class GameruleCommand extends CoreCommand {
 
     private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
 
@@ -55,7 +56,6 @@ final class GameruleCommand extends CoreCommand {
         super(commandManager);
     }
 
-    @CommandAlias("mvrule|mvgamerule")
     @Subcommand("set")
     @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules @gamerulesvalues @mvworlds:multiple|*")
@@ -112,7 +112,7 @@ final class GameruleCommand extends CoreCommand {
     @CommandCompletion("@gamerules @mvworlds:multiple|*")
     @Syntax("<Gamerule> [World or *]")
     @Description("{@@mv-core.gamerule.reset.description}")
-    void onGameruleSetCommand(
+    void onGameruleResetCommand(
             MVCommandIssuer issuer,
 
             @Syntax("<Gamerule>")
@@ -149,7 +149,6 @@ final class GameruleCommand extends CoreCommand {
         }
     }
 
-    @CommandAlias("mvrules|mvgamerules")
     @Subcommand("list")
     @CommandPermission("multiverse.core.gamerule.list")
     @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulecommand @flags:groupName=mvgamerulecommand")
@@ -214,5 +213,30 @@ final class GameruleCommand extends CoreCommand {
                 MessageType.INFO,
                 MVCorei18n.GAMERULE_LIST_TITLE,
                 "{world}", world.getName());
+    }
+
+    @Service
+    private static final class LegacyAlias extends GameruleCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config /* TODO: remove after pr merge */) {
+            super(commandManager);
+        }
+
+        @Override
+        @CommandAlias("mvrule|mvgamerule")
+        void onGameruleSetCommand(MVCommandIssuer issuer, GameRule gamerule, GameRuleValue gameRuleValue, LoadedMultiverseWorld[] worlds) {
+            super.onGameruleSetCommand(issuer, gamerule, gameRuleValue, worlds);
+        }
+
+        @Override
+        @CommandAlias("mvrules|mvgamerules")
+        void onGameruleListCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String[] flags) {
+            super.onGameruleListCommand(issuer, world, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

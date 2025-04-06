@@ -36,7 +36,6 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-@CommandAlias("mv")
 final class SpawnCommand extends CoreCommand {
 
     private final WorldManager worldManager;

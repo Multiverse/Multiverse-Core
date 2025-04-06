@@ -15,6 +15,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
@@ -35,8 +36,7 @@ import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryChecker;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 
 @Service
-@CommandAlias("mv")
-final class ListCommand extends CoreCommand {
+class ListCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
@@ -59,7 +59,6 @@ final class ListCommand extends CoreCommand {
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
     }
 
-    @CommandAlias("mvlist|mvl")
     @Subcommand("list")
     @CommandPermission("multiverse.core.list.worlds")
     @CommandCompletion("@flags:groupName=mvlistcommand")
@@ -136,5 +135,24 @@ final class ListCommand extends CoreCommand {
             default -> ChatColor.GOLD;
         };
         return color + env.toString();
+    }
+
+    @Service
+    private static final class LegacyAlias extends ListCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider) {
+            super(commandManager, worldManager, worldEntryCheckerProvider);
+        }
+
+        @Override
+        @CommandAlias("mvlist|mvl")
+        public void onListCommand(MVCommandIssuer issuer, String[] flags) {
+            super.onListCommand(issuer, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

@@ -17,6 +17,7 @@ import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
@@ -35,8 +36,7 @@ import org.mvplugins.multiverse.core.world.reasons.CreateFailureReason;
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
-@CommandAlias("mv")
-final class CreateCommand extends CoreCommand {
+class CreateCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private GeneratorProvider generatorProvider;
@@ -88,7 +88,6 @@ final class CreateCommand extends CoreCommand {
         this.biomeProviderFactory = biomeProviderFactory;
     }
 
-    @CommandAlias("mvcreate|mvc")
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
     @CommandCompletion("@empty @environments @flags:groupName=mvcreatecommand")
@@ -166,5 +165,28 @@ final class CreateCommand extends CoreCommand {
     private void messageFailure(MVCommandIssuer issuer, Failure<LoadedMultiverseWorld, CreateFailureReason> failure) {
         Logging.fine("World create failure: " + failure);
         issuer.sendError(failure.getFailureMessage());
+    }
+
+    @Service
+    private static final class LegacyAlias extends CreateCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(
+                @NotNull MVCommandManager commandManager,
+                @NotNull WorldManager worldManager,
+                @NotNull GeneratorProvider generatorProvider,
+                @NotNull BiomeProviderFactory biomeProviderFactory) {
+            super(commandManager, worldManager, generatorProvider, biomeProviderFactory);
+        }
+
+        @Override
+        @CommandAlias("mvcreate|mvc")
+        void onCreateCommand(MVCommandIssuer issuer, String worldName, World.Environment environment, String[] flags) {
+            super.onCreateCommand(issuer, worldName, environment, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

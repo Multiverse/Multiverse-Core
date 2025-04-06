@@ -12,13 +12,13 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 
 @Service
-@CommandAlias("mv")
-final class DebugCommand extends CoreCommand {
+class DebugCommand extends CoreCommand {
 
     private final CoreConfig config;
 
@@ -35,7 +35,6 @@ final class DebugCommand extends CoreCommand {
         this.displayDebugMode(issuer);
     }
 
-    @CommandAlias("mvdebug")
     @Subcommand("debug")
     @CommandPermission("multiverse.core.debug")
     @CommandCompletion("@range:3")
@@ -61,5 +60,24 @@ final class DebugCommand extends CoreCommand {
         }
         issuer.sendInfo(MVCorei18n.DEBUG_INFO_ON, "{level}", String.valueOf(debugLevel));
         Logging.fine("Multiverse Debug ENABLED.");
+    }
+
+    @Service
+    private static final class LegacyAlias extends DebugCommand implements LegacyAliasCommand {
+        @Inject
+        public LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config) {
+            super(commandManager, config);
+        }
+
+        @Override
+        @CommandAlias("mvdebug")
+        void onChangeDebugCommand(BukkitCommandIssuer issuer, int level) {
+            super.onChangeDebugCommand(issuer, level);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }

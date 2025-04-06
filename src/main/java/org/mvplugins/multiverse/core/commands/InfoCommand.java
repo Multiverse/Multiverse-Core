@@ -17,6 +17,7 @@ import org.bukkit.WorldType;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
@@ -38,8 +39,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
-@CommandAlias("mv")
-final class InfoCommand extends CoreCommand {
+class InfoCommand extends CoreCommand {
 
     private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
 
@@ -59,7 +59,6 @@ final class InfoCommand extends CoreCommand {
     }
 
     // TODO: support info for unloaded worlds
-    @CommandAlias("mvinfo|mvi")
     @Subcommand("info")
     @CommandPermission("multiverse.core.info")
     @CommandCompletion("@mvworlds:scope=both|@flags:groupName=mvinfocommand @flags:groupName=mvinfocommand")
@@ -163,6 +162,25 @@ final class InfoCommand extends CoreCommand {
             } else {
                 outMap.put("Spawning Monsters", "NONE");
             }
+        }
+    }
+
+    @Service
+    private static final class LegacyAlias extends InfoCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull LocationManipulation locationManipulation, @NotNull MVEconomist economist) {
+            super(commandManager, locationManipulation, economist);
+        }
+
+        @Override
+        @CommandAlias("mvinfo|mvi")
+        public void onInfoCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String[] flags) {
+            super.onInfoCommand(issuer, world, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
         }
     }
 }

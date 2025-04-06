@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
@@ -26,8 +27,7 @@ import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 
 @Service
-@CommandAlias("mv")
-final class ImportCommand extends CoreCommand {
+class ImportCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
@@ -56,7 +56,6 @@ final class ImportCommand extends CoreCommand {
         this.generatorProvider = generatorProvider;
     }
 
-    @CommandAlias("mvimport|mvim")
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @CommandCompletion("@mvworlds:scope=potential @environments @flags:groupName=mvimportcommand")
@@ -82,10 +81,10 @@ final class ImportCommand extends CoreCommand {
 
         issuer.sendInfo(MVCorei18n.IMPORT_IMPORTING, Replace.WORLD.with(worldName));
         worldManager.importWorld(ImportWorldOptions.worldName(worldName)
-                .biome(parsedFlags.flagValue(biomeFlag, ""))
-                .environment(environment)
-                .generator(parsedFlags.flagValue(generatorFlag, String.class))
-                .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag)))
+                        .biome(parsedFlags.flagValue(biomeFlag, ""))
+                        .environment(environment)
+                        .generator(parsedFlags.flagValue(generatorFlag, String.class))
+                        .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag)))
                 .onSuccess(newWorld -> {
                     Logging.fine("World import success: " + newWorld);
                     issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS, Replace.WORLD.with(newWorld.getName()));
@@ -94,5 +93,24 @@ final class ImportCommand extends CoreCommand {
                     Logging.fine("World import failure: " + failure);
                     issuer.sendError(failure.getFailureMessage());
                 });
+    }
+
+    @Service
+    private static final class LegacyAlias extends ImportCommand implements LegacyAliasCommand {
+        @Inject
+        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull GeneratorProvider generatorProvider) {
+            super(commandManager, worldManager, generatorProvider);
+        }
+
+        @Override
+        @CommandAlias("mvimport|mvim")
+        void onImportCommand(MVCommandIssuer issuer, String worldName, World.Environment environment, String[] flags) {
+            super.onImportCommand(issuer, worldName, environment, flags);
+        }
+
+        @Override
+        public boolean doFlagRegistration() {
+            return false;
+        }
     }
 }
