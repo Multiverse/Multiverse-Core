@@ -15,6 +15,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.anchor.AnchorManager;
+import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
 import org.mvplugins.multiverse.core.command.context.GameRuleValue;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
@@ -35,18 +37,22 @@ public class MVCommandContexts extends PaperCommandContexts {
     private final DestinationsProvider destinationsProvider;
     private final WorldManager worldManager;
     private final CoreConfig config;
+    private final AnchorManager anchorManager;
 
     @Inject
     MVCommandContexts(
             MVCommandManager mvCommandManager,
             DestinationsProvider destinationsProvider,
             WorldManager worldManager,
-            CoreConfig config) {
+            CoreConfig config,
+            AnchorManager anchorManager
+    ) {
         super(mvCommandManager);
         this.mvCommandManager = mvCommandManager;
         this.destinationsProvider = destinationsProvider;
         this.worldManager = worldManager;
         this.config = config;
+        this.anchorManager = anchorManager;
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
         registerIssuerOnlyContext(MVCommandIssuer.class, this::parseMVCommandIssuer);
@@ -58,6 +64,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseLoadedMultiverseWorldArray);
         registerIssuerAwareContext(MultiverseWorld.class, this::parseMultiverseWorld);
         registerIssuerAwareContext(MultiverseWorld[].class, this::parseMultiverseWorldArray);
+        registerContext(MultiverseAnchor.class, this::parseMultiverseAnchor);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
     }
@@ -342,6 +349,12 @@ public class MVCommandContexts extends PaperCommandContexts {
         return config.getResolveAliasName()
                 ? worldManager.getWorldByNameOrAlias(worldName).getOrNull()
                 : worldManager.getWorld(worldName).getOrNull();
+    }
+
+    private MultiverseAnchor parseMultiverseAnchor(BukkitCommandExecutionContext context) {
+        String anchorName = context.popFirstArg();
+        return anchorManager.getAnchor(anchorName)
+                .getOrElseThrow(() -> new InvalidCommandArgument("The anchor '" +anchorName + "' does not exist."));
     }
 
     private Player parsePlayer(BukkitCommandExecutionContext context) {

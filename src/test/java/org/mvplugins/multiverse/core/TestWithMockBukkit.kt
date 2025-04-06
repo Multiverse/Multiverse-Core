@@ -35,6 +35,12 @@ abstract class TestWithMockBukkit {
 
     fun getResourceAsText(path: String): String? = object {}.javaClass.getResource(path)?.readText()
 
+    fun writeResourceFileToPluginDataFolder(resourcePath: String, dataPath: String) {
+        val resourceString = getResourceAsText(resourcePath)
+        assertNotNull(resourceString)
+        multiverseCore.dataFolder.toPath().resolve(dataPath).toFile().writeText(resourceString)
+    }
+
     fun assertConfigEquals(expectedPath: String, actualPath: String) {
         val actualString = multiverseCore.dataFolder.toPath().resolve(actualPath).toFile().readText()
         val expectedString = getResourceAsText(expectedPath)
