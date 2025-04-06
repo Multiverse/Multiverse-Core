@@ -346,7 +346,7 @@ final class CoreConfigNodes {
             .comment("If this is set to true, legacy aliases will be shown in tab completion.")
             .comment("These are old mv4 aliases such as `/mvclone` in addition to `/mv clone` which crowds the tab completion.")
             .comment("!!!NOTE: This will only apply after a server restart!")
-            .defaultValue(true)
+            .defaultValue(false)
             .name("show-legacy-aliases")
             .build());
 
