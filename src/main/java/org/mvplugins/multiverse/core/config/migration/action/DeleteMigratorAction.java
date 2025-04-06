@@ -1,9 +1,9 @@
-package org.mvplugins.multiverse.core.config.migration;
+package org.mvplugins.multiverse.core.config.migration.action;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class DeleteMigratorAction implements MigratorAction {
+public final class DeleteMigratorAction implements MigratorAction {
 
     public static DeleteMigratorAction of(String path) {
         return new DeleteMigratorAction(path);
@@ -11,13 +11,13 @@ public class DeleteMigratorAction implements MigratorAction {
 
     private final String path;
 
-    DeleteMigratorAction(String path) {
+    private DeleteMigratorAction(String path) {
         this.path = path;
     }
 
     @Override
     public void migrate(ConfigurationSection config) {
         config.set(path, null);
-        Logging.info("Deleted %s", path);
+        Logging.config("Deleted %s", path);
     }
 }

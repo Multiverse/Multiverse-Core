@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.config.migration;
+package org.mvplugins.multiverse.core.config.migration.action;
 
 import java.util.Optional;
 
@@ -8,7 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * Single migrator action that moves a value from one path to another.
  */
-public class MoveMigratorAction implements MigratorAction {
+public final class MoveMigratorAction implements MigratorAction {
 
     /**
      * Creates a new migrator action that moves a value from one path to another.
@@ -24,7 +24,7 @@ public class MoveMigratorAction implements MigratorAction {
     private final String fromPath;
     private final String toPath;
 
-    protected MoveMigratorAction(String fromPath, String toPath) {
+    private MoveMigratorAction(String fromPath, String toPath) {
         this.fromPath = fromPath;
         this.toPath = toPath;
     }

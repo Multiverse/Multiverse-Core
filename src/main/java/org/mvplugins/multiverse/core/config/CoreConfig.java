@@ -19,12 +19,13 @@ import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.config.handle.CommentedConfigurationHandle;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
-import org.mvplugins.multiverse.core.config.migration.BooleanMigratorAction;
+import org.mvplugins.multiverse.core.config.migration.action.BooleanMigratorAction;
 import org.mvplugins.multiverse.core.config.migration.ConfigMigrator;
-import org.mvplugins.multiverse.core.config.migration.IntegerMigratorAction;
-import org.mvplugins.multiverse.core.config.migration.InvertBoolMigratorAction;
-import org.mvplugins.multiverse.core.config.migration.MoveMigratorAction;
+import org.mvplugins.multiverse.core.config.migration.action.IntegerMigratorAction;
+import org.mvplugins.multiverse.core.config.migration.action.InvertBoolMigratorAction;
+import org.mvplugins.multiverse.core.config.migration.action.MoveMigratorAction;
 import org.mvplugins.multiverse.core.config.migration.VersionMigrator;
+import org.mvplugins.multiverse.core.config.migration.action.SetMigratorAction;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 
 @Service

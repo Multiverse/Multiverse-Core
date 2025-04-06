@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.config.migration.action.MigratorAction;
 
 /**
  * A version migrator is a collection of migrator actions that are performed when migrating a config to a specific version.

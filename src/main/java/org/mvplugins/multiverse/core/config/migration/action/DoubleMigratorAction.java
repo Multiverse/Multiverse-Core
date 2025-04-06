@@ -1,10 +1,10 @@
-package org.mvplugins.multiverse.core.config.migration;
+package org.mvplugins.multiverse.core.config.migration.action;
 
 import co.aikar.commands.ACFUtil;
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 
-public class DoubleMigratorAction implements MigratorAction {
+public final class DoubleMigratorAction implements MigratorAction {
 
     public static DoubleMigratorAction of(String path) {
         return new DoubleMigratorAction(path);
@@ -12,13 +12,13 @@ public class DoubleMigratorAction implements MigratorAction {
 
     private final String path;
 
-    public DoubleMigratorAction(String path) {
+    private DoubleMigratorAction(String path) {
         this.path = path;
     }
 
     @Override
     public void migrate(ConfigurationSection config) {
         config.set(path, ACFUtil.parseDouble(config.getString(path)));
-        Logging.info("Converted %s to double %s", path, config.getDouble(path));
+        Logging.config("Converted %s to double %s", path, config.getDouble(path));
     }
 }
