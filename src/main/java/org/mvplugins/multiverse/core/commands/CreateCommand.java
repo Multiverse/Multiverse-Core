@@ -21,7 +21,9 @@ import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
+import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -39,58 +41,22 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.re
 class CreateCommand extends CoreCommand {
 
     private final WorldManager worldManager;
-    private GeneratorProvider generatorProvider;
-    private BiomeProviderFactory biomeProviderFactory;
-
-    private final CommandValueFlag<String> seedFlag = flag(CommandValueFlag.builder("--seed", String.class)
-            .addAlias("-s")
-            .completion(input -> Collections.singleton(String.valueOf(ACFUtil.RANDOM.nextLong())))
-            .build());
-
-    private final CommandValueFlag<String> generatorFlag = flag(CommandValueFlag
-            .builder("--generator", String.class)
-            .addAlias("-g")
-            .completion(input -> generatorProvider.suggestGeneratorString(input))
-            .build());
-
-    private final CommandValueFlag<String> generatorSettingsFlag = flag(CommandValueFlag
-            .builder("--generator-settings", String.class)
-            .addAlias("-gs")
-            .build());
-
-    private final CommandValueFlag<WorldType> worldTypeFlag = flag(CommandValueFlag
-            .enumBuilder("--world-type", WorldType.class)
-            .addAlias("-t")
-            .build());
-
-    private final CommandFlag noAdjustSpawnFlag = flag(CommandFlag.builder("--no-adjust-spawn")
-            .addAlias("-n")
-            .build());
-
-    private final CommandFlag noStructuresFlag = flag(CommandFlag.builder("--no-structures")
-            .addAlias("-a")
-            .build());
-
-    private final CommandValueFlag<String> biomeFlag = flag(CommandValueFlag.builder("--biome", String.class)
-            .addAlias("-b")
-            .completion(input -> biomeProviderFactory.suggestBiomeString(input))
-            .build());
+    private final CreateCommand.Flags flags;
 
     @Inject
     CreateCommand(
             @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull GeneratorProvider generatorProvider,
-            @NotNull BiomeProviderFactory biomeProviderFactory) {
+            @NotNull Flags flags
+    ) {
         super(commandManager);
         this.worldManager = worldManager;
-        this.generatorProvider = generatorProvider;
-        this.biomeProviderFactory = biomeProviderFactory;
+        this.flags = flags;
     }
 
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
-    @CommandCompletion("@empty @environments @flags:groupName=mvcreatecommand")
+    @CommandCompletion("@empty @environments @flags:groupName=mvcreate")
     @Syntax("<name> <environment> [--seed <seed> --generator <generator[:id]> --world-type <worldtype> --adjust-spawn "
             + "--no-structures --biome <biome>]")
     @Description("{@@mv-core.create.description}")
@@ -109,22 +75,23 @@ class CreateCommand extends CoreCommand {
             @Syntax("[--seed <seed> --generator <generator[:id]> --world-type <worldtype> --adjust-spawn "
                     + "--no-structures --biome <biome>]")
             @Description("{@@mv-core.create.flags.description}")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagStrings) {
+        Logging.severe("Running /mv create");
+        ParsedCommandFlags parsedFlags = flags.parse(flagStrings);
 
         messageWorldDetails(issuer, worldName, environment, parsedFlags);
 
         issuer.sendInfo(MVCorei18n.CREATE_LOADING);
 
         worldManager.createWorld(CreateWorldOptions.worldName(worldName)
-                .biome(parsedFlags.flagValue(biomeFlag, ""))
+                .biome(parsedFlags.flagValue(flags.biomeFlag, ""))
                 .environment(environment)
-                .seed(parsedFlags.flagValue(seedFlag))
-                .worldType(parsedFlags.flagValue(worldTypeFlag, WorldType.NORMAL))
-                .useSpawnAdjust(!parsedFlags.hasFlag(noAdjustSpawnFlag))
-                .generator(parsedFlags.flagValue(generatorFlag, ""))
-                .generatorSettings(parsedFlags.flagValue(generatorSettingsFlag, ""))
-                .generateStructures(!parsedFlags.hasFlag(noStructuresFlag)))
+                .seed(parsedFlags.flagValue(flags.seedFlag))
+                .worldType(parsedFlags.flagValue(flags.worldTypeFlag, WorldType.NORMAL))
+                .useSpawnAdjust(!parsedFlags.hasFlag(flags.noAdjustSpawnFlag))
+                .generator(parsedFlags.flagValue(flags.generatorFlag, ""))
+                .generatorSettings(parsedFlags.flagValue(flags.generatorSettingsFlag, ""))
+                .generateStructures(!parsedFlags.hasFlag(flags.noStructuresFlag)))
                 .onSuccess(newWorld -> messageSuccess(issuer, newWorld))
                 .onFailure(failure -> messageFailure(issuer, failure));
     }
@@ -136,25 +103,25 @@ class CreateCommand extends CoreCommand {
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ENVIRONMENT,
                 replace("{environment}").with(environment.name()));
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_SEED,
-                replace("{seed}").with(parsedFlags.flagValue(seedFlag, "RANDOM")));
+                replace("{seed}").with(parsedFlags.flagValue(flags.seedFlag, "RANDOM")));
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_WORLDTYPE,
-                replace("{worldType}").with(parsedFlags.flagValue(worldTypeFlag, WorldType.NORMAL).name()));
+                replace("{worldType}").with(parsedFlags.flagValue(flags.worldTypeFlag, WorldType.NORMAL).name()));
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_ADJUSTSPAWN,
-                replace("{adjustSpawn}").with(String.valueOf(!parsedFlags.hasFlag(noAdjustSpawnFlag))));
-        if (parsedFlags.hasFlag(biomeFlag)) {
+                replace("{adjustSpawn}").with(String.valueOf(!parsedFlags.hasFlag(flags.noAdjustSpawnFlag))));
+        if (parsedFlags.hasFlag(flags.biomeFlag)) {
             issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_BIOME,
-                    replace("{biome}").with(parsedFlags.flagValue(biomeFlag)));
+                    replace("{biome}").with(parsedFlags.flagValue(flags.biomeFlag)));
         }
-        if (parsedFlags.hasFlag(generatorFlag)) {
+        if (parsedFlags.hasFlag(flags.generatorFlag)) {
             issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATOR,
-                    replace("{generator}").with(parsedFlags.flagValue(generatorFlag)));
+                    replace("{generator}").with(parsedFlags.flagValue(flags.generatorFlag)));
         }
-        if (parsedFlags.hasFlag(generatorSettingsFlag)) {
+        if (parsedFlags.hasFlag(flags.generatorSettingsFlag)) {
             issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_GENERATORSETTINGS,
-                    replace("{generatorSettings}").with(parsedFlags.flagValue(generatorSettingsFlag)));
+                    replace("{generatorSettings}").with(parsedFlags.flagValue(flags.generatorSettingsFlag)));
         }
         issuer.sendInfo(MVCorei18n.CREATE_PROPERTIES_STRUCTURES,
-                replace("{structures}").with(String.valueOf(!parsedFlags.hasFlag(noStructuresFlag))));
+                replace("{structures}").with(String.valueOf(!parsedFlags.hasFlag(flags.noStructuresFlag))));
     }
 
     private void messageSuccess(MVCommandIssuer issuer, LoadedMultiverseWorld newWorld) {
@@ -168,19 +135,72 @@ class CreateCommand extends CoreCommand {
     }
 
     @Service
+    private static final class Flags extends FlagBuilder {
+
+        private GeneratorProvider generatorProvider;
+        private BiomeProviderFactory biomeProviderFactory;
+
+        @Inject
+        private Flags(
+                @NotNull CommandFlagsManager flagsManager,
+                @NotNull GeneratorProvider generatorProvider,
+                @NotNull BiomeProviderFactory biomeProviderFactory
+        ) {
+            super("mvcreate", flagsManager);
+            this.generatorProvider = generatorProvider;
+            this.biomeProviderFactory = biomeProviderFactory;
+        }
+
+        private final CommandValueFlag<String> seedFlag = flag(CommandValueFlag.builder("--seed", String.class)
+                .addAlias("-s")
+                .completion(input -> Collections.singleton(String.valueOf(ACFUtil.RANDOM.nextLong())))
+                .build());
+
+        private final CommandValueFlag<String> generatorFlag = flag(CommandValueFlag
+                .builder("--generator", String.class)
+                .addAlias("-g")
+                .completion(input -> generatorProvider.suggestGeneratorString(input))
+                .build());
+
+        private final CommandValueFlag<String> generatorSettingsFlag = flag(CommandValueFlag
+                .builder("--generator-settings", String.class)
+                .addAlias("-gs")
+                .build());
+
+        private final CommandValueFlag<WorldType> worldTypeFlag = flag(CommandValueFlag
+                .enumBuilder("--world-type", WorldType.class)
+                .addAlias("-t")
+                .build());
+
+        private final CommandFlag noAdjustSpawnFlag = flag(CommandFlag.builder("--no-adjust-spawn")
+                .addAlias("-n")
+                .build());
+
+        private final CommandFlag noStructuresFlag = flag(CommandFlag.builder("--no-structures")
+                .addAlias("-a")
+                .build());
+
+        private final CommandValueFlag<String> biomeFlag = flag(CommandValueFlag.builder("--biome", String.class)
+                .addAlias("-b")
+                .completion(input -> biomeProviderFactory.suggestBiomeString(input))
+                .build());
+    }
+
+    @Service
     private static final class LegacyAlias extends CreateCommand implements LegacyAliasCommand {
         @Inject
         LegacyAlias(
                 @NotNull MVCommandManager commandManager,
                 @NotNull WorldManager worldManager,
-                @NotNull GeneratorProvider generatorProvider,
-                @NotNull BiomeProviderFactory biomeProviderFactory) {
-            super(commandManager, worldManager, generatorProvider, biomeProviderFactory);
+                @NotNull Flags flags
+        ) {
+            super(commandManager, worldManager, flags);
         }
 
         @Override
         @CommandAlias("mvcreate|mvc")
         void onCreateCommand(MVCommandIssuer issuer, String worldName, World.Environment environment, String[] flags) {
+            Logging.severe("Legacy alias used: /mvcreate");
             super.onCreateCommand(issuer, worldName, environment, flags);
         }
 
