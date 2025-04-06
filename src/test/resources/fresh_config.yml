@@ -34,6 +34,7 @@ command:
   confirm-mode: enable
   use-confirm-otp: true
   confirm-timeout: 30
+  show-legacy-aliases: false
 
 misc:
   global-debug: 0
