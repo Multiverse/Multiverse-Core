@@ -21,8 +21,11 @@ import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
+import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
@@ -37,47 +40,31 @@ import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
 @Service
 class RegenCommand extends CoreCommand {
 
+    @NotNull
+    private final CommandQueueManager commandQueueManager;
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
     private final WorldTickDeferrer worldTickDeferrer;
-
-    private final CommandValueFlag<String> seedFlag = flag(CommandValueFlag.builder("--seed", String.class)
-            .addAlias("-s")
-            .completion(input -> Collections.singleton(String.valueOf(ACFUtil.RANDOM.nextLong())))
-            .optional()
-            .build());
-
-    private final CommandFlag resetWorldConfigFlag = flag(CommandFlag.builder("--reset-world-config")
-            .addAlias("-wc")
-            .build());
-
-    private final CommandFlag resetGamerulesFlag = flag(CommandFlag.builder("--reset-gamerules")
-            .addAlias("-gm")
-            .build());
-
-    private final CommandFlag resetWorldBorderFlag = flag(CommandFlag.builder("--reset-world-border")
-            .addAlias("-wb")
-            .build());
-
-    private final CommandFlag removePlayersFlag = flag(CommandFlag.builder("--remove-players")
-            .addAlias("-r")
-            .build());
+    private final RegenCommand.Flags flags;
 
     @Inject
     RegenCommand(
-            @NotNull MVCommandManager commandManager,
+            @NotNull CommandQueueManager commandQueueManager,
             @NotNull WorldManager worldManager,
             @NotNull PlayerWorldTeleporter playerWorldTeleporter,
-            @NotNull WorldTickDeferrer worldTickDeferrer) {
-        super(commandManager);
+            @NotNull WorldTickDeferrer worldTickDeferrer,
+            @NotNull Flags flags
+    ) {
+        this.commandQueueManager = commandQueueManager;
         this.worldManager = worldManager;
         this.playerWorldTeleporter = playerWorldTeleporter;
         this.worldTickDeferrer = worldTickDeferrer;
+        this.flags = flags;
     }
 
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
-    @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvregencommand")
+    @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=" + Flags.NAME)
     @Syntax("<world> [--seed [seed] --reset-world-config --reset-gamerules --reset-world-border --remove-players]")
     @Description("{@@mv-core.regen.description}")
     void onRegenCommand(
@@ -90,10 +77,10 @@ class RegenCommand extends CoreCommand {
             @Optional
             @Syntax("[--seed [seed] --reset-world-config --reset-gamerules --reset-world-border --remove-players]")
             @Description("{@@mv-core.regen.other.description}")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
-        this.commandManager.getCommandQueueManager().addToQueue(CommandQueuePayload
+        commandQueueManager.addToQueue(CommandQueuePayload
                 .issuer(issuer)
                 .action(() -> runRegenCommand(issuer, world, parsedFlags))
                 .prompt(Message.of(MVCorei18n.REGEN_PROMPT, "",
@@ -104,7 +91,7 @@ class RegenCommand extends CoreCommand {
         issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, Replace.WORLD.with(world.getName()));
         List<Player> worldPlayers = world.getPlayers().getOrElse(Collections.emptyList());
 
-        var future = parsedFlags.hasFlag(removePlayersFlag)
+        var future = parsedFlags.hasFlag(flags.removePlayers)
                 ? playerWorldTeleporter.removeFromWorld(world)
                 : AsyncAttemptsAggregate.emptySuccess();
 
@@ -121,16 +108,16 @@ class RegenCommand extends CoreCommand {
             List<Player> worldPlayers) {
         //todo: Change biome on regen
         RegenWorldOptions regenWorldOptions = RegenWorldOptions.world(world)
-                .randomSeed(parsedFlags.hasFlag(seedFlag))
-                .seed(parsedFlags.flagValue(seedFlag))
-                .keepWorldConfig(!parsedFlags.hasFlag(resetWorldConfigFlag))
-                .keepGameRule(!parsedFlags.hasFlag(resetGamerulesFlag))
-                .keepWorldBorder(!parsedFlags.hasFlag(resetWorldBorderFlag));
+                .randomSeed(parsedFlags.hasFlag(flags.seed))
+                .seed(parsedFlags.flagValue(flags.seed))
+                .keepWorldConfig(!parsedFlags.hasFlag(flags.resetWorldConfig))
+                .keepGameRule(!parsedFlags.hasFlag(flags.resetGamerules))
+                .keepWorldBorder(!parsedFlags.hasFlag(flags.resetWorldBorder));
 
         worldManager.regenWorld(regenWorldOptions).onSuccess(newWorld -> {
             Logging.fine("World regen success: " + newWorld);
             issuer.sendInfo(MVCorei18n.REGEN_SUCCESS, Replace.WORLD.with(newWorld.getName()));
-            if (parsedFlags.hasFlag(removePlayersFlag)) {
+            if (parsedFlags.hasFlag(flags.removePlayers)) {
                 playerWorldTeleporter.teleportPlayersToWorld(worldPlayers, newWorld);
             }
         }).onFailure(failure -> {
@@ -140,21 +127,51 @@ class RegenCommand extends CoreCommand {
     }
 
     @Service
+    private static final class Flags extends RemovePlayerFlags {
+
+        private static final String NAME = "mvregen";
+
+        @Inject
+        private Flags(@NotNull CommandFlagsManager flagsManager) {
+            super(NAME, flagsManager);
+        }
+
+        private final CommandValueFlag<String> seed = flag(CommandValueFlag.builder("--seed", String.class)
+                .addAlias("-s")
+                .completion(input -> Collections.singleton(String.valueOf(ACFUtil.RANDOM.nextLong())))
+                .optional()
+                .build());
+
+        private final CommandFlag resetWorldConfig = flag(CommandFlag.builder("--reset-world-config")
+                .addAlias("-wc")
+                .build());
+
+        private final CommandFlag resetGamerules = flag(CommandFlag.builder("--reset-gamerules")
+                .addAlias("-gm")
+                .build());
+
+        private final CommandFlag resetWorldBorder = flag(CommandFlag.builder("--reset-world-border")
+                .addAlias("-wb")
+                .build());
+    }
+
+    @Service
     private static final class LegacyAlias extends RegenCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull PlayerWorldTeleporter playerWorldTeleporter, @NotNull WorldTickDeferrer worldTickDeferrer) {
-            super(commandManager, worldManager, playerWorldTeleporter, worldTickDeferrer);
+        LegacyAlias(
+                @NotNull CommandQueueManager commandQueueManager,
+                @NotNull WorldManager worldManager,
+                @NotNull PlayerWorldTeleporter playerWorldTeleporter,
+                @NotNull WorldTickDeferrer worldTickDeferrer,
+                @NotNull Flags flags
+        ) {
+            super(commandQueueManager, worldManager, playerWorldTeleporter, worldTickDeferrer, flags);
         }
 
         @Override
         @CommandAlias("mvregen")
         void onRegenCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String[] flags) {
             super.onRegenCommand(issuer, world, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

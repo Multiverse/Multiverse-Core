@@ -23,6 +23,7 @@ import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.flags.UnsafeFlags;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
@@ -38,21 +39,19 @@ final class TeleportCommand extends CoreCommand {
     private final CoreConfig config;
     private final CorePermissionsChecker permissionsChecker;
     private final AsyncSafetyTeleporter safetyTeleporter;
-
-    private final CommandFlag unsafeFlag = flag(CommandFlag.builder("--unsafe")
-            .addAlias("-u")
-            .build());
+    private final UnsafeFlags flags;
 
     @Inject
     TeleportCommand(
-            @NotNull MVCommandManager commandManager,
             @NotNull CoreConfig config,
             @NotNull CorePermissionsChecker permissionsChecker,
-            @NotNull AsyncSafetyTeleporter safetyTeleporter) {
-        super(commandManager);
+            @NotNull AsyncSafetyTeleporter safetyTeleporter,
+            @NotNull UnsafeFlags flags
+    ) {
         this.config = config;
         this.permissionsChecker = permissionsChecker;
         this.safetyTeleporter = safetyTeleporter;
+        this.flags = flags;
     }
 
     @CommandAlias("mvtp")
@@ -60,8 +59,8 @@ final class TeleportCommand extends CoreCommand {
     @CommandPermission("@mvteleport")
     @CommandCompletion(
             "@destinations:playerOnly|@playersarray:checkPermissions=@mvteleportother "
-                    + "@destinations:othersOnly|@flags:groupName=mvteleportcommand,resolveUntil=arg2 "
-                    + "@flags:groupName=mvteleportcommand")
+                    + "@destinations:othersOnly|@flags:groupName=" + UnsafeFlags.NAME + ",resolveUntil=arg2 "
+                    + "@flags:groupName=" + UnsafeFlags.NAME)
     @Syntax("[player] <destination> [--unsafe]")
     @Description("{@@mv-core.teleport.description}")
     void onTeleportCommand(
@@ -79,8 +78,8 @@ final class TeleportCommand extends CoreCommand {
             @Optional
             @Syntax("[--unsafe]")
             @Description("")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         if (players.length == 1) {
             teleportSinglePlayer(issuer, players[0], destination, parsedFlags);
@@ -105,7 +104,7 @@ final class TeleportCommand extends CoreCommand {
 
         safetyTeleporter.to(destination)
                 .by(issuer)
-                .checkSafety(!parsedFlags.hasFlag(unsafeFlag) && destination.checkTeleportSafety())
+                .checkSafety(!parsedFlags.hasFlag(flags.unsafe) && destination.checkTeleportSafety())
                 .teleport(player)
                 .onSuccess(() -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                         Replace.PLAYER.with(getYouOrName(issuer, player)),
@@ -131,7 +130,7 @@ final class TeleportCommand extends CoreCommand {
 
         safetyTeleporter.to(destination)
                 .by(issuer)
-                .checkSafety(!parsedFlags.hasFlag(unsafeFlag) && destination.checkTeleportSafety())
+                .checkSafety(!parsedFlags.hasFlag(flags.unsafe) && destination.checkTeleportSafety())
                 .teleport(List.of(players))
                 .onSuccessCount(successCount -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                         Replace.PLAYER.with(successCount + " players"),

@@ -23,10 +23,7 @@ class SetSpawnCommand extends CoreCommand {
     private final WorldManager worldManager;
 
     @Inject
-    SetSpawnCommand(
-            @NotNull MVCommandManager commandManager,
-            @NotNull WorldManager worldManager) {
-        super(commandManager);
+    SetSpawnCommand(@NotNull WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 
@@ -66,19 +63,14 @@ class SetSpawnCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends SetSpawnCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
-            super(commandManager, worldManager);
+        LegacyAlias(@NotNull WorldManager worldManager) {
+            super(worldManager);
         }
 
         @Override
         @CommandAlias("mvss")
         void onSetSpawnCommand(BukkitCommandIssuer issuer, Location location) {
             super.onSetSpawnCommand(issuer, location);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

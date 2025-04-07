@@ -26,10 +26,7 @@ class CoordinatesCommand extends CoreCommand {
     private final LocationManipulation locationManipulation;
 
     @Inject
-    CoordinatesCommand(
-            @NotNull MVCommandManager commandManager,
-            @NotNull LocationManipulation locationManipulation) {
-        super(commandManager);
+    CoordinatesCommand(@NotNull LocationManipulation locationManipulation) {
         this.locationManipulation = locationManipulation;
     }
 
@@ -58,8 +55,8 @@ class CoordinatesCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends CoordinatesCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull LocationManipulation locationManipulation) {
-            super(commandManager, locationManipulation);
+        LegacyAlias(@NotNull LocationManipulation locationManipulation) {
+            super(locationManipulation);
         }
 
         @Override
@@ -67,11 +64,6 @@ class CoordinatesCommand extends CoreCommand {
         @Subcommand("coords|coord|co")
         void onCoordinatesCommand(MVCommandIssuer issuer, Player player, MultiverseWorld world) {
             super.onCoordinatesCommand(issuer, player, world);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

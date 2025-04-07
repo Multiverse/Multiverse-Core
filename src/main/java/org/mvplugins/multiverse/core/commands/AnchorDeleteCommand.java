@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.commands;
 
-import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -13,7 +12,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 
 @Service
 final class AnchorDeleteCommand extends CoreCommand {
@@ -21,8 +19,7 @@ final class AnchorDeleteCommand extends CoreCommand {
     private final AnchorManager anchorManager;
 
     @Inject
-    AnchorDeleteCommand(@NotNull MVCommandManager commandManager, @NotNull AnchorManager anchorManager) {
-        super(commandManager);
+    AnchorDeleteCommand(@NotNull AnchorManager anchorManager) {
         this.anchorManager = anchorManager;
     }
 

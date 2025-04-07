@@ -18,9 +18,11 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 @Service
 class HelpCommand extends CoreCommand {
 
+    private final MVCommandManager commandManager;
+
     @Inject
     HelpCommand(@NotNull MVCommandManager commandManager) {
-        super(commandManager);
+        this.commandManager = commandManager;
     }
 
     @co.aikar.commands.annotation.HelpCommand
@@ -40,7 +42,7 @@ class HelpCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends HelpCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config /* TODO: remove after pr merge */) {
+        LegacyAlias(@NotNull MVCommandManager commandManager) {
             super(commandManager);
         }
 
@@ -48,11 +50,6 @@ class HelpCommand extends CoreCommand {
         @CommandAlias("mvhelp")
         public void onHelpCommand(CommandHelp help) {
             super.onHelpCommand(help);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

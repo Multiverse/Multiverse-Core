@@ -29,8 +29,7 @@ class ModifyCommand extends CoreCommand {
     private final WorldManager worldManager;
 
     @Inject
-    ModifyCommand(@NotNull MVCommandManager commandManager, WorldManager worldManager) {
-        super(commandManager);
+    ModifyCommand(WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 
@@ -83,19 +82,14 @@ class ModifyCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends ModifyCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, WorldManager worldManager) {
-            super(commandManager, worldManager);
+        LegacyAlias(WorldManager worldManager) {
+            super(worldManager);
         }
 
         @Override
         @CommandAlias("mvmodify|mvm")
         void onModifyCommand(MVCommandIssuer issuer, @NotNull MultiverseWorld world, @NotNull PropertyModifyAction action, @NotNull String propertyName, @Nullable String propertyValue) {
             super.onModifyCommand(issuer, world, action, propertyName, propertyValue);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

@@ -31,12 +31,11 @@ class ReloadCommand extends CoreCommand {
 
     @Inject
     ReloadCommand(
-            @NotNull MVCommandManager commandManager,
             @NotNull CoreConfig config,
             @NotNull AnchorManager anchorManager,
             @NotNull WorldManager worldManager,
-            @NotNull PluginManager pluginManager) {
-        super(commandManager);
+            @NotNull PluginManager pluginManager
+    ) {
         this.config = config;
         this.anchorManager = anchorManager;
         this.worldManager = worldManager;
@@ -71,19 +70,14 @@ class ReloadCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends ReloadCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config, @NotNull AnchorManager anchorManager, @NotNull WorldManager worldManager, @NotNull PluginManager pluginManager) {
-            super(commandManager, config, anchorManager, worldManager, pluginManager);
+        LegacyAlias(@NotNull CoreConfig config, @NotNull AnchorManager anchorManager, @NotNull WorldManager worldManager, @NotNull PluginManager pluginManager) {
+            super(config, anchorManager, worldManager, pluginManager);
         }
 
         @Override
         @CommandAlias("mvreload|mvr")
         void onReloadCommand(@NotNull BukkitCommandIssuer issuer) {
             super.onReloadCommand(issuer);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

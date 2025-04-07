@@ -20,12 +20,9 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
-import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.FilterCommandFlag;
-import org.mvplugins.multiverse.core.command.flags.PageCommandFlag;
+import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
-import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
@@ -41,27 +38,25 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.re
 @Service
 class InfoCommand extends CoreCommand {
 
-    private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
-
-    private final CommandValueFlag<ContentFilter> filterFlag = flag(FilterCommandFlag.create());
-
     private final LocationManipulation locationManipulation;
     private final MVEconomist economist;
+    private final PageFilterFlags flags;
 
     @Inject
     InfoCommand(
-            @NotNull MVCommandManager commandManager,
             @NotNull LocationManipulation locationManipulation,
-            @NotNull MVEconomist economist) {
-        super(commandManager);
+            @NotNull MVEconomist economist,
+            @NotNull PageFilterFlags flags
+    ) {
         this.locationManipulation = locationManipulation;
         this.economist = economist;
+        this.flags = flags;
     }
 
     // TODO: support info for unloaded worlds
     @Subcommand("info")
     @CommandPermission("multiverse.core.info")
-    @CommandCompletion("@mvworlds:scope=both|@flags:groupName=mvinfocommand @flags:groupName=mvinfocommand")
+    @CommandCompletion("@mvworlds:scope=both|@flags:groupName=" + PageFilterFlags.NAME + " @flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.info.description}")
     public void onInfoCommand(
@@ -74,8 +69,8 @@ class InfoCommand extends CoreCommand {
 
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         ContentDisplay.create()
                 .addContent(MapContentProvider.forContent(getInfo(world))
@@ -85,8 +80,8 @@ class InfoCommand extends CoreCommand {
                         .withHeader(Message.of(MVCorei18n.INFO_HEADER, replace("{world}").with(world.getName())))
                         .noContentMessage(Message.of(MVCorei18n.INFO_NOCONTENT))
                         .doPagination(true)
-                        .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
-                        .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
+                        .withTargetPage(parsedFlags.flagValue(flags.page, 1))
+                        .withFilter(parsedFlags.flagValue(flags.filter, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
@@ -168,19 +163,18 @@ class InfoCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends InfoCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull LocationManipulation locationManipulation, @NotNull MVEconomist economist) {
-            super(commandManager, locationManipulation, economist);
+        LegacyAlias(
+                @NotNull LocationManipulation locationManipulation,
+                @NotNull MVEconomist economist,
+                @NotNull PageFilterFlags flags
+        ) {
+            super(locationManipulation, economist, flags);
         }
 
         @Override
         @CommandAlias("mvinfo|mvi")
         public void onInfoCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String[] flags) {
             super.onInfoCommand(issuer, world, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

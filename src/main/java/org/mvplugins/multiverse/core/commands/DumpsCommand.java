@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.commands;
 
-import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -11,6 +10,8 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
+import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.LogsType;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
@@ -23,31 +24,17 @@ import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 final class DumpsCommand extends CoreCommand {
 
     private final DumpsService dumpsService;
-
-    private final CommandValueFlag<LogsType> logsFlag = flag(CommandValueFlag
-            .enumBuilder("--logs", LogsType.class)
-            .addAlias("-l")
-            .build());
-
-    private final CommandValueFlag<UploadType> uploadFlag = flag(CommandValueFlag
-            .enumBuilder("--upload", UploadType.class)
-            .addAlias("-u")
-            .build());
-
-    // Does not upload logs or plugin list (except if --logs mclogs is there)
-    private final CommandFlag paranoidFlag = flag(CommandFlag.builder("--paranoid")
-            .addAlias("-p")
-            .build());
+    private final DumpsCommand.Flags flags;
 
     @Inject
-    DumpsCommand(@NotNull MVCommandManager commandManager, @NotNull DumpsService dumpsService) {
-        super(commandManager);
+    DumpsCommand(@NotNull DumpsService dumpsService, @NotNull Flags flags) {
         this.dumpsService = dumpsService;
+        this.flags = flags;
     }
 
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
-    @CommandCompletion("@flags:groupName=mvdumpscommand")
+    @CommandCompletion("@flags:groupName=" + Flags.NAME)
     @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
     @Description("{@@mv-core.dumps.description}")
     void onDumpsCommand(
@@ -55,14 +42,40 @@ final class DumpsCommand extends CoreCommand {
 
             @Optional
             @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         // Grab all our flags
-        boolean paranoid = parsedFlags.hasFlag(paranoidFlag);
-        LogsType logsType = parsedFlags.flagValue(logsFlag, LogsType.MCLOGS);
-        UploadType servicesType = parsedFlags.flagValue(uploadFlag, UploadType.PASTESDEV);
+        boolean paranoid = parsedFlags.hasFlag(flags.paranoid);
+        LogsType logsType = parsedFlags.flagValue(flags.logs, LogsType.MCLOGS);
+        UploadType servicesType = parsedFlags.flagValue(flags.upload, UploadType.PASTESDEV);
 
         dumpsService.postLogs(issuer, logsType, servicesType, paranoid);
+    }
+
+    @Service
+    private static final class Flags extends FlagBuilder {
+
+        private static final String NAME = "mvdumps";
+
+        @Inject
+        private Flags(@NotNull CommandFlagsManager flagsManager) {
+            super(NAME, flagsManager);
+        }
+
+        private final CommandValueFlag<LogsType> logs = flag(CommandValueFlag
+                .enumBuilder("--logs", LogsType.class)
+                .addAlias("-l")
+                .build());
+
+        private final CommandValueFlag<UploadType> upload = flag(CommandValueFlag
+                .enumBuilder("--upload", UploadType.class)
+                .addAlias("-u")
+                .build());
+
+        // Does not upload logs or plugin list (except if --logs mclogs is there)
+        private final CommandFlag paranoid = flag(CommandFlag.builder("--paranoid")
+                .addAlias("-p")
+                .build());
     }
 }

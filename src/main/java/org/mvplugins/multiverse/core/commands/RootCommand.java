@@ -18,8 +18,7 @@ final class RootCommand extends CoreCommand {
     private final Plugin plugin;
 
     @Inject
-    RootCommand(@NotNull MVCommandManager commandManager, @NotNull MultiverseCore plugin) {
-        super(commandManager);
+    RootCommand(@NotNull MultiverseCore plugin) {
         this.plugin = plugin;
     }
 

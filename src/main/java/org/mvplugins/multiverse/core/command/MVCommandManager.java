@@ -9,7 +9,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.MVPaperCommandManager;
-import co.aikar.commands.PaperCommandManager;
+import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
@@ -20,6 +20,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
+import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -65,6 +66,28 @@ public class MVCommandManager extends MVPaperCommandManager {
         MVCommandConditions.load(this, worldManager, worldNameChecker);
         this.enableUnstableAPI("help");
         this.setDefaultExceptionHandler(new MVDefaultExceptionHandler());
+    }
+
+    /**
+     * Registers a list of commands and handles {@link LegacyAliasCommand} based on config option.
+     * @param commands  The commands to register
+     * @param <T>       The type of the commands
+     */
+    public <T extends BaseCommand> void registerAllCommands(List<T> commands) {
+        List<T> noLegacy = commands.stream().filter(command -> !(command instanceof LegacyAliasCommand)).toList();
+        if (!config.getShowLegacyAliases()) {
+            noLegacy.forEach(this::registerCommand);
+            return;
+        }
+
+        List<T> legacy = commands.stream().filter(command -> command instanceof LegacyAliasCommand).toList();
+        List<T> noLegacyInheritance = noLegacy.stream()
+                .filter(command -> legacy.stream().noneMatch(
+                        legacyAliasCommand -> command.getClass().isAssignableFrom(legacyAliasCommand.getClass())))
+                .toList();
+
+        legacy.forEach(this::registerCommand);
+        noLegacyInheritance.forEach(this::registerCommand);
     }
 
     @Override

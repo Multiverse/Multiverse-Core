@@ -19,12 +19,10 @@ import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
-import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
+import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.FilterCommandFlag;
-import org.mvplugins.multiverse.core.command.flags.PageCommandFlag;
+import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
-import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
@@ -40,28 +38,22 @@ class ListCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final WorldEntryCheckerProvider worldEntryCheckerProvider;
-
-    private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
-
-    private final CommandValueFlag<ContentFilter> filterFlag = flag(FilterCommandFlag.create());
-
-    private final CommandFlag rawFlag = flag(CommandFlag.builder("--raw")
-            .addAlias("-r")
-            .build());
+    private final ListCommand.Flags flags;
 
     @Inject
     ListCommand(
-            @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider) {
-        super(commandManager);
+            @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider,
+            @NotNull Flags flags
+    ) {
         this.worldManager = worldManager;
         this.worldEntryCheckerProvider = worldEntryCheckerProvider;
+        this.flags = flags;
     }
 
     @Subcommand("list")
     @CommandPermission("multiverse.core.list.worlds")
-    @CommandCompletion("@flags:groupName=mvlistcommand")
+    @CommandCompletion("@flags:groupName=" + Flags.NAME)
     @Syntax("--filter [filter] --page [page] --raw")
     @Description("{{@mv-core.list.description}}")
     public void onListCommand(
@@ -69,15 +61,15 @@ class ListCommand extends CoreCommand {
 
             @Syntax("[--filter <filter>] [--page <page>]")
             @Description("Filters the list of worlds by the given regex and displays the given page.")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
         ContentDisplay.create()
-                .addContent(ListContentProvider.forContent(getListContents(issuer, parsedFlags.hasFlag(rawFlag))))
+                .addContent(ListContentProvider.forContent(getListContents(issuer, parsedFlags.hasFlag(flags.raw))))
                 .withSendHandler(PagedSendHandler.create()
                         .noContentMessage(Message.of(MVCorei18n.LIST_NOCONTENT))
                         .withHeader(Message.of(MVCorei18n.LIST_HEADER))
-                        .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
-                        .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
+                        .withTargetPage(parsedFlags.flagValue(flags.page, 1))
+                        .withFilter(parsedFlags.flagValue(flags.filter, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
@@ -138,21 +130,35 @@ class ListCommand extends CoreCommand {
     }
 
     @Service
+    private static final class Flags extends PageFilterFlags {
+
+        private static final String NAME = "mvlist";
+
+        @Inject
+        private Flags(@NotNull CommandFlagsManager flagsManager) {
+            super(NAME, flagsManager);
+        }
+
+        private final CommandFlag raw = flag(CommandFlag.builder("--raw")
+                .addAlias("-r")
+                .build());
+    }
+
+    @Service
     private static final class LegacyAlias extends ListCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider) {
-            super(commandManager, worldManager, worldEntryCheckerProvider);
+        LegacyAlias(
+                @NotNull WorldManager worldManager,
+                @NotNull WorldEntryCheckerProvider worldEntryCheckerProvider,
+                @NotNull Flags flags
+        ) {
+            super(worldManager, worldEntryCheckerProvider, flags);
         }
 
         @Override
         @CommandAlias("mvlist|mvl")
         public void onListCommand(MVCommandIssuer issuer, String[] flags) {
             super.onListCommand(issuer, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

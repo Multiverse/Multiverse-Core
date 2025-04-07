@@ -23,8 +23,7 @@ class DebugCommand extends CoreCommand {
     private final CoreConfig config;
 
     @Inject
-    DebugCommand(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config) {
-        super(commandManager);
+    DebugCommand(@NotNull CoreConfig config) {
         this.config = config;
     }
 
@@ -65,19 +64,14 @@ class DebugCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends DebugCommand implements LegacyAliasCommand {
         @Inject
-        public LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config) {
-            super(commandManager, config);
+        public LegacyAlias(@NotNull CoreConfig config) {
+            super(config);
         }
 
         @Override
         @CommandAlias("mvdebug")
         void onChangeDebugCommand(BukkitCommandIssuer issuer, int level) {
             super.onChangeDebugCommand(issuer, level);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

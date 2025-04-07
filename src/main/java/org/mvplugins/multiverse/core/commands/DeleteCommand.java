@@ -16,8 +16,9 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
-import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
+import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
@@ -32,29 +33,30 @@ import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 @Service
 class DeleteCommand extends CoreCommand {
 
+    private final CommandQueueManager commandQueueManager;
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
     private final WorldTickDeferrer worldTickDeferrer;
-
-    private final CommandFlag removePlayersFlag = flag(CommandFlag.builder("--remove-players")
-            .addAlias("-r")
-            .build());
+    private final RemovePlayerFlags flags;
 
     @Inject
     DeleteCommand(
-            @NotNull MVCommandManager commandManager,
+            @NotNull CommandQueueManager commandQueueManager,
             @NotNull WorldManager worldManager,
             @NotNull PlayerWorldTeleporter playerWorldTeleporter,
-            @NotNull WorldTickDeferrer worldTickDeferrer) {
-        super(commandManager);
+            @NotNull WorldTickDeferrer worldTickDeferrer,
+            @NotNull RemovePlayerFlags flags
+    ) {
+        this.commandQueueManager = commandQueueManager;
         this.worldManager = worldManager;
         this.playerWorldTeleporter = playerWorldTeleporter;
         this.worldTickDeferrer = worldTickDeferrer;
+        this.flags = flags;
     }
 
     @Subcommand("delete")
     @CommandPermission("multiverse.core.delete")
-    @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=mvdeletecommand")
+    @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=" + RemovePlayerFlags.NAME)
     @Syntax("<world>")
     @Description("{@@mv-core.delete.description}")
     void onDeleteCommand(
@@ -68,10 +70,10 @@ class DeleteCommand extends CoreCommand {
             @Optional
             @Syntax("[--remove-players]")
             @Description("")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
-        this.commandManager.getCommandQueueManager().addToQueue(CommandQueuePayload
+        commandQueueManager.addToQueue(CommandQueuePayload
                 .issuer(issuer)
                 .action(() -> runDeleteCommand(issuer, world, parsedFlags))
                 .prompt(Message.of(MVCorei18n.DELETE_PROMPT, "",
@@ -81,7 +83,7 @@ class DeleteCommand extends CoreCommand {
     private void runDeleteCommand(MVCommandIssuer issuer, MultiverseWorld world, ParsedCommandFlags parsedFlags) {
         issuer.sendInfo(MVCorei18n.DELETE_DELETING, Replace.WORLD.with(world.getName()));
 
-        var future = parsedFlags.hasFlag(removePlayersFlag)
+        var future = parsedFlags.hasFlag(flags.removePlayers)
                         && world.isLoaded()
                         && world instanceof LoadedMultiverseWorld loadedWorld
                 ? playerWorldTeleporter.removeFromWorld(loadedWorld)
@@ -106,22 +108,18 @@ class DeleteCommand extends CoreCommand {
     private static final class LegacyAlias extends DeleteCommand implements LegacyAliasCommand {
         @Inject
         LegacyAlias(
-                @NotNull MVCommandManager commandManager,
+                @NotNull CommandQueueManager commandQueueManager,
                 @NotNull WorldManager worldManager,
                 @NotNull PlayerWorldTeleporter playerWorldTeleporter,
-                @NotNull WorldTickDeferrer worldTickDeferrer) {
-            super(commandManager, worldManager, playerWorldTeleporter, worldTickDeferrer);
+                @NotNull WorldTickDeferrer worldTickDeferrer,
+                @NotNull RemovePlayerFlags flags) {
+            super(commandQueueManager, worldManager, playerWorldTeleporter, worldTickDeferrer, flags);
         }
 
         @Override
         @CommandAlias("mvdelete")
         void onDeleteCommand(MVCommandIssuer issuer, MultiverseWorld world, String[] flags) {
             super.onDeleteCommand(issuer, world, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

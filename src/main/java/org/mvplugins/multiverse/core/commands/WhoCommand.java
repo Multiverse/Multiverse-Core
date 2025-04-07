@@ -21,12 +21,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
-import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.FilterCommandFlag;
-import org.mvplugins.multiverse.core.command.flags.PageCommandFlag;
+import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
@@ -40,21 +39,18 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 @Service
 class WhoCommand extends CoreCommand {
 
-    private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
-
-    private final CommandValueFlag<ContentFilter> filterFlag = flag(FilterCommandFlag.create());
-
     private final WorldManager worldManager;
+    private final PageFilterFlags flags;
 
     @Inject
-    WhoCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
-        super(commandManager);
+    WhoCommand(@NotNull WorldManager worldManager, @NotNull PageFilterFlags flags) {
         this.worldManager = worldManager;
+        this.flags = flags;
     }
 
     @Subcommand("whoall")
     @CommandPermission("multiverse.core.list.who.all")
-    @CommandCompletion("@flags:groupName=mvwhocommand")
+    @CommandCompletion("@flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("[--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.who.all.description}")
     void onWhoAllCommand(
@@ -63,13 +59,13 @@ class WhoCommand extends CoreCommand {
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
             @Description("{@@mv-core.who.flags.description}")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         // Send the display
         getListDisplay(worldManager.getLoadedWorlds(),
-                        parsedFlags.flagValue(pageFlag, 1),
-                        parsedFlags.flagValue(filterFlag, DefaultContentFilter.get()),
+                        parsedFlags.flagValue(flags.page, 1),
+                        parsedFlags.flagValue(flags.filter, DefaultContentFilter.get()),
                         true)
                 .send(issuer);
 
@@ -77,7 +73,7 @@ class WhoCommand extends CoreCommand {
 
     @Subcommand("who")
     @CommandPermission("multiverse.core.list.who")
-    @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvwhocommand")
+    @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("<world> [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.who.description}")
     void onWhoCommand(
@@ -91,13 +87,13 @@ class WhoCommand extends CoreCommand {
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
             @Description("{@@mv-core.who.flags.description}")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         // Send the display
         getListDisplay(inputtedWorld,
-                        parsedFlags.flagValue(pageFlag, 1),
-                        parsedFlags.flagValue(filterFlag, DefaultContentFilter.get()),
+                        parsedFlags.flagValue(flags.page, 1),
+                        parsedFlags.flagValue(flags.filter, DefaultContentFilter.get()),
                         false)
                 .send(issuer);
     }
@@ -139,10 +135,10 @@ class WhoCommand extends CoreCommand {
     }
 
     @Service
-    private static final class LegacyAlias extends WhoCommand {
+    private static final class LegacyAlias extends WhoCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
-            super(commandManager, worldManager);
+        LegacyAlias(@NotNull WorldManager worldManager, @NotNull PageFilterFlags flags) {
+            super(worldManager, flags);
         }
 
         @Override
@@ -155,11 +151,6 @@ class WhoCommand extends CoreCommand {
         @CommandAlias("mvwho|mvw")
         void onWhoCommand(MVCommandIssuer issuer, LoadedMultiverseWorld inputtedWorld, String[] flags) {
             super.onWhoCommand(issuer, inputtedWorld, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

@@ -18,12 +18,9 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
-import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.FilterCommandFlag;
-import org.mvplugins.multiverse.core.command.flags.PageCommandFlag;
+import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
-import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
@@ -37,20 +34,17 @@ import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 class GeneratorsCommand extends CoreCommand {
 
     private final GeneratorProvider generatorProvider;
-
-    private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
-
-    private final CommandValueFlag<ContentFilter> filterFlag = flag(FilterCommandFlag.create());
+    private final PageFilterFlags flags;
 
     @Inject
-    GeneratorsCommand(@NotNull MVCommandManager commandManager, @NotNull GeneratorProvider generatorProvider) {
-        super(commandManager);
+    GeneratorsCommand(@NotNull GeneratorProvider generatorProvider, @NotNull PageFilterFlags flags) {
         this.generatorProvider = generatorProvider;
+        this.flags = flags;
     }
 
     @Subcommand("generators|gens")
     @CommandPermission("multiverse.core.generator")
-    @CommandCompletion("@flags:groupName=mvgeneratorscommand @flags:groupName=mvgeneratorscommand")
+    @CommandCompletion("@flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("")
     @Description("{@@mv-core.generators.description}")
     void onGamerulesCommand(
@@ -59,15 +53,15 @@ class GeneratorsCommand extends CoreCommand {
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
             @Description("{@@mv-core.generators.description.flags}")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         // Get the generators loaded using the command suggestions
         List<String> generators = (List<String>) generatorProvider.suggestGeneratorString("");
 
         // Tell the user if we cannot find any generator plugins, then abort
         if (generators.isEmpty()) {
-            issuer.sendMessage(commandManager.formatMessage(issuer, MessageType.INFO, MVCorei18n.GENERATORS_EMPTY));
+            issuer.sendMessage(MVCorei18n.GENERATORS_EMPTY);
             return;
         }
 
@@ -76,27 +70,22 @@ class GeneratorsCommand extends CoreCommand {
                 .withSendHandler(PagedSendHandler.create()
                         .withHeader("%s====[ Multiverse Generator List ]====", ChatColor.AQUA)
                         .doPagination(true)
-                        .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
-                        .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
+                        .withTargetPage(parsedFlags.flagValue(flags.page, 1))
+                        .withFilter(parsedFlags.flagValue(flags.filter, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
     @Service
     private static final class LegacyAlias extends GeneratorsCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull GeneratorProvider generatorProvider) {
-            super(commandManager, generatorProvider);
+        LegacyAlias(@NotNull GeneratorProvider generatorProvider, @NotNull PageFilterFlags flags) {
+            super(generatorProvider, flags);
         }
 
         @Override
         @CommandAlias("mvgenerators|mvgens")
         void onGamerulesCommand(@NotNull MVCommandIssuer issuer, String[] flags) {
             super.onGamerulesCommand(issuer, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

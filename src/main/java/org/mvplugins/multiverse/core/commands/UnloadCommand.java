@@ -16,7 +16,9 @@ import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
@@ -30,28 +32,22 @@ class UnloadCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
-
-    private final CommandFlag removePlayersFlag = flag(CommandFlag.builder("--remove-players")
-            .addAlias("-r")
-            .build());
-
-    private final CommandFlag noSaveFlag = flag(CommandFlag.builder("--no-save")
-            .addAlias("-n")
-            .build());
+    private final UnloadCommand.Flags flags;
 
     @Inject
     UnloadCommand(
-            @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
-        super(commandManager);
+            @NotNull PlayerWorldTeleporter playerWorldTeleporter,
+            @NotNull Flags flags
+    ) {
         this.worldManager = worldManager;
         this.playerWorldTeleporter = playerWorldTeleporter;
+        this.flags = flags;
     }
 
     @Subcommand("unload")
     @CommandPermission("multiverse.core.unload")
-    @CommandCompletion("@mvworlds @flags:groupName=mvunloadcommand")
+    @CommandCompletion("@mvworlds @flags:groupName=" + Flags.NAME)
     @Syntax("<world>")
     @Description("{@@mv-core.unload.description}")
     void onUnloadCommand(
@@ -64,12 +60,12 @@ class UnloadCommand extends CoreCommand {
             @Optional
             @Syntax("[--remove-players] [--no-save]")
             @Description("{@@mv-core.gamerules.description.page}")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, Replace.WORLD.with(world.getAliasOrName()));
 
-        var future = parsedFlags.hasFlag(removePlayersFlag)
+        var future = parsedFlags.hasFlag(flags.removePlayers)
                 ? playerWorldTeleporter.removeFromWorld(world)
                 : AsyncAttemptsAggregate.emptySuccess();
 
@@ -79,7 +75,7 @@ class UnloadCommand extends CoreCommand {
 
     private void doWorldUnloading(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {
         UnloadWorldOptions unloadWorldOptions = UnloadWorldOptions.world(world)
-                .saveBukkitWorld(!parsedFlags.hasFlag(noSaveFlag));
+                .saveBukkitWorld(!parsedFlags.hasFlag(flags.noSave));
         worldManager.unloadWorld(unloadWorldOptions)
                 .onSuccess(loadedWorld -> {
                     Logging.fine("World unload success: " + loadedWorld);
@@ -91,21 +87,35 @@ class UnloadCommand extends CoreCommand {
     }
 
     @Service
+    private static final class Flags extends RemovePlayerFlags {
+
+        private static final String NAME = "mvunload";
+
+        @Inject
+        private Flags(@NotNull CommandFlagsManager flagsManager) {
+            super(NAME, flagsManager);
+        }
+
+        private final CommandFlag noSave = flag(CommandFlag.builder("--no-save")
+                .addAlias("-n")
+                .build());
+    }
+
+    @Service
     private static final class LegacyAlias extends UnloadCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
-            super(commandManager, worldManager, playerWorldTeleporter);
+        LegacyAlias(
+                @NotNull WorldManager worldManager,
+                @NotNull PlayerWorldTeleporter playerWorldTeleporter,
+                @NotNull Flags flags
+        ) {
+            super(worldManager, playerWorldTeleporter, flags);
         }
 
         @Override
         @CommandAlias("mvunload")
         void onUnloadCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String[] flags) {
             super.onUnloadCommand(issuer, world, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

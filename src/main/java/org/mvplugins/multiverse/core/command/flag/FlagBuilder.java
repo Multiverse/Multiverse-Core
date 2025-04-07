@@ -33,7 +33,7 @@ public abstract class FlagBuilder {
 
     private void registerFlagGroup(@NotNull CommandFlagGroup flagGroup) {
         flagsManager.registerFlagGroup(flagGroup);
-        Logging.warning("Registered flag group: " + flagGroup.getName());
+        Logging.finer("Registered flag group: " + flagGroup.getName());
     }
 
     /**
@@ -45,7 +45,7 @@ public abstract class FlagBuilder {
      */
     protected <T extends CommandFlag> T flag(T flag) {
         flags.add(flag);
-        Logging.warning("Added flag: " + flag);
+        Logging.finer("Added flag: " + flag);
         return flag;
     }
 

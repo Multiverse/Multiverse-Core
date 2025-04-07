@@ -1,7 +1,5 @@
 package org.mvplugins.multiverse.core.commands;
 
-import java.util.Collections;
-
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -17,8 +15,8 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
-import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
@@ -31,24 +29,22 @@ class RemoveCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
-
-    private final CommandFlag removePlayersFlag = flag(CommandFlag.builder("--remove-players")
-            .addAlias("-r")
-            .build());
+    private final RemovePlayerFlags flags;
 
     @Inject
     RemoveCommand(
-            @NotNull MVCommandManager commandManager,
             @NotNull WorldManager worldManager,
-            @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
-        super(commandManager);
+            @NotNull PlayerWorldTeleporter playerWorldTeleporter,
+            @NotNull RemovePlayerFlags flags
+    ) {
         this.worldManager = worldManager;
         this.playerWorldTeleporter = playerWorldTeleporter;
+        this.flags = flags;
     }
 
     @Subcommand("remove")
     @CommandPermission("multiverse.core.remove")
-    @CommandCompletion("@mvworlds:scope=both @flags:groupName=mvremovecommand")
+    @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + RemovePlayerFlags.NAME)
     @Syntax("<world>")
     @Description("{@@mv-core.remove.description}")
     void onRemoveCommand(
@@ -61,10 +57,10 @@ class RemoveCommand extends CoreCommand {
             @Optional
             @Syntax("[--remove-players]")
             @Description("")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
-        var future = parsedFlags.hasFlag(removePlayersFlag)
+        var future = parsedFlags.hasFlag(flags.removePlayers)
                 ? worldManager.getLoadedWorld(world).map(playerWorldTeleporter::removeFromWorld).getOrElse(AsyncAttemptsAggregate::emptySuccess)
                 : AsyncAttemptsAggregate.emptySuccess();
 
@@ -86,19 +82,18 @@ class RemoveCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends RemoveCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager, @NotNull PlayerWorldTeleporter playerWorldTeleporter) {
-            super(commandManager, worldManager, playerWorldTeleporter);
+        LegacyAlias(
+                @NotNull WorldManager worldManager,
+                @NotNull PlayerWorldTeleporter playerWorldTeleporter,
+                RemovePlayerFlags flags
+        ) {
+            super(worldManager, playerWorldTeleporter, flags);
         }
 
         @Override
         @CommandAlias("mvremove")
         void onRemoveCommand(MVCommandIssuer issuer, MultiverseWorld world, String[] flags) {
             super.onRemoveCommand(issuer, world, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

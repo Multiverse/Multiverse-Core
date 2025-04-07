@@ -7,6 +7,7 @@
 
 package org.mvplugins.multiverse.core;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -21,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
-import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
@@ -197,8 +197,9 @@ public class MultiverseCore extends MultiversePlugin {
      */
     private void registerCommands() {
         Try.of(() -> commandManagerProvider.get())
-                .andThenTry(commandManager -> serviceLocator.getAllServices(CoreCommand.class)
-                        .forEach(commandManager::registerCommand))
+                .andThenTry(commandManager -> {
+                    commandManager.registerAllCommands(serviceLocator.getAllServices(CoreCommand.class));
+                })
                 .onFailure(e -> {
                     Logging.severe("Failed to register commands");
                     e.printStackTrace();

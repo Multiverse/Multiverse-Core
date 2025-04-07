@@ -26,6 +26,7 @@ import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.flags.UnsafeFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -41,27 +42,26 @@ final class SpawnCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final AsyncSafetyTeleporter safetyTeleporter;
     private final CorePermissionsChecker permissionsChecker;
-
-    private final CommandFlag unsafeFlag = flag(CommandFlag.builder("--unsafe")
-            .addAlias("-u")
-            .build());
+    private final UnsafeFlags flags;
 
     @Inject
-    SpawnCommand(@NotNull MVCommandManager commandManager,
-                 @NotNull WorldManager worldManager,
-                 @NotNull AsyncSafetyTeleporter safetyTeleporter,
-                 @NotNull CorePermissionsChecker permissionsChecker) {
-        super(commandManager);
+    SpawnCommand(
+            @NotNull WorldManager worldManager,
+            @NotNull AsyncSafetyTeleporter safetyTeleporter,
+            @NotNull CorePermissionsChecker permissionsChecker,
+            @NotNull UnsafeFlags flags
+    ) {
         this.worldManager = worldManager;
         this.safetyTeleporter = safetyTeleporter;
         this.permissionsChecker = permissionsChecker;
+        this.flags = flags;
     }
 
     @CommandAlias("mvspawn")
     @Subcommand("spawn")
     @CommandPermission("@mvspawn")
-    @CommandCompletion("@playersarray:checkPermissions=@mvspawnother|@flags:groupName=mvspawncommand,resolveUntil=arg1"
-            + " @flags:groupName=mvspawncommand")
+    @CommandCompletion("@playersarray:checkPermissions=@mvspawnother|@flags:groupName=" + UnsafeFlags.NAME + ",resolveUntil=arg1"
+            + " @flags:groupName=" + UnsafeFlags.NAME)
     @Syntax("[player]")
     @Description("{@@mv-core.spawn.description}")
     void onSpawnTpCommand(
@@ -75,13 +75,13 @@ final class SpawnCommand extends CoreCommand {
             @Optional
             @Syntax("[--unsafe]")
             @Description("")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         Map<World, List<Entity>> playersByWorld = Arrays.stream(players)
                 .collect(Collectors.groupingBy(Entity::getWorld));
         playersByWorld.forEach((world, entities) ->
-                teleportPlayersToSpawn(issuer, world, entities, !parsedFlags.hasFlag(unsafeFlag)));
+                teleportPlayersToSpawn(issuer, world, entities, !parsedFlags.hasFlag(flags.unsafe)));
     }
 
     private void teleportPlayersToSpawn(MVCommandIssuer issuer, World world,

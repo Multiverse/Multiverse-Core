@@ -21,8 +21,7 @@ class VersionCommand extends CoreCommand {
     private final MultiverseCore plugin;
 
     @Inject
-    VersionCommand(@NotNull MVCommandManager commandManager, MultiverseCore plugin) {
-        super(commandManager);
+    VersionCommand(MultiverseCore plugin) {
         this.plugin = plugin;
     }
 
@@ -40,19 +39,14 @@ class VersionCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends VersionCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, MultiverseCore plugin) {
-            super(commandManager, plugin);
+        LegacyAlias(MultiverseCore plugin) {
+            super(plugin);
         }
 
         @Override
         @CommandAlias("mvversion")
         void versionCommand(BukkitCommandIssuer issuer) {
             super.versionCommand(issuer);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

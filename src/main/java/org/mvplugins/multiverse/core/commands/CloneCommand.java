@@ -14,8 +14,9 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
+import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -29,29 +30,17 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.re
 class CloneCommand extends CoreCommand {
 
     private final WorldManager worldManager;
-
-    private final CommandFlag resetWorldConfigFlag = flag(CommandFlag.builder("--reset-world-config")
-            .addAlias("-wc")
-            .build());
-
-    private final CommandFlag resetGamerulesFlag = flag(CommandFlag.builder("--reset-gamerules")
-            .addAlias("-gm")
-            .build());
-
-    private final CommandFlag resetWorldBorderFlag = flag(CommandFlag.builder("--reset-world-border")
-            .addAlias("-wb")
-            .build());
+    private final CloneCommand.Flags flags;
 
     @Inject
-    CloneCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
-        super(commandManager);
+    CloneCommand(@NotNull WorldManager worldManager, @NotNull Flags flags) {
         this.worldManager = worldManager;
+        this.flags = flags;
     }
-
 
     @Subcommand("clone")
     @CommandPermission("multiverse.core.clone")
-    @CommandCompletion("@mvworlds:scope=loaded @empty @flags:groupName=mvclonecommand")
+    @CommandCompletion("@mvworlds:scope=loaded @empty @flags:groupName=" + Flags.NAME)
     @Syntax("<world> <new world name> [--reset-world-config --reset-gamerules --reset-world-border]")
     @Description("{@@mv-core.clone.description}")
     void onCloneCommand(
@@ -68,16 +57,16 @@ class CloneCommand extends CoreCommand {
             @Optional
             @Syntax("[--reset-world-config --reset-gamerules --reset-world-border]")
             @Description("{@@mv-core.regen.other.description}")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         issuer.sendInfo(MVCorei18n.CLONE_CLONING,
                 Replace.WORLD.with(world.getName()),
                 replace("{newworld}").with(newWorldName));
         CloneWorldOptions cloneWorldOptions = CloneWorldOptions.fromTo(world, newWorldName)
-                .keepWorldConfig(!parsedFlags.hasFlag(resetWorldConfigFlag))
-                .keepGameRule(!parsedFlags.hasFlag(resetGamerulesFlag))
-                .keepWorldBorder(!parsedFlags.hasFlag(resetWorldBorderFlag));
+                .keepWorldConfig(!parsedFlags.hasFlag(flags.resetWorldConfig))
+                .keepGameRule(!parsedFlags.hasFlag(flags.resetGamerules))
+                .keepWorldBorder(!parsedFlags.hasFlag(flags.resetWorldBorder));
         worldManager.cloneWorld(cloneWorldOptions)
                 .onSuccess(newWorld -> {
                     Logging.fine("World clone success: " + newWorld);
@@ -89,21 +78,39 @@ class CloneCommand extends CoreCommand {
     }
 
     @Service
+    private static final class Flags extends FlagBuilder {
+
+        private static final String NAME = "mvclone";
+
+        @Inject
+        private Flags(@NotNull CommandFlagsManager flagsManager) {
+            super(NAME, flagsManager);
+        }
+
+        private final CommandFlag resetWorldConfig = flag(CommandFlag.builder("--reset-world-config")
+                .addAlias("-wc")
+                .build());
+
+        private final CommandFlag resetGamerules = flag(CommandFlag.builder("--reset-gamerules")
+                .addAlias("-gm")
+                .build());
+
+        private final CommandFlag resetWorldBorder = flag(CommandFlag.builder("--reset-world-border")
+                .addAlias("-wb")
+                .build());
+    }
+
+    @Service
     private final static class LegacyAlias extends CloneCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
-            super(commandManager, worldManager);
+        LegacyAlias(@NotNull WorldManager worldManager, @NotNull Flags flags) {
+            super(worldManager, flags);
         }
 
         @Override
         @CommandAlias("mvcl|mvclone")
         void onCloneCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String newWorldName, String[] flags) {
             super.onCloneCommand(issuer, world, newWorldName, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

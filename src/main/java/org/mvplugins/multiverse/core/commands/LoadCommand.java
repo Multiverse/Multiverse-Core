@@ -26,8 +26,7 @@ class LoadCommand extends CoreCommand {
     private final WorldManager worldManager;
 
     @Inject
-    LoadCommand(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
-        super(commandManager);
+    LoadCommand(@NotNull WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 
@@ -58,19 +57,14 @@ class LoadCommand extends CoreCommand {
     @Service
     private static final class LegacyAlias extends LoadCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull WorldManager worldManager) {
-            super(commandManager, worldManager);
+        LegacyAlias(@NotNull WorldManager worldManager) {
+            super(worldManager);
         }
 
         @Override
         @CommandAlias("mvload")
         void onLoadCommand(MVCommandIssuer issuer, String worldName) {
             super.onLoadCommand(issuer, worldName);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

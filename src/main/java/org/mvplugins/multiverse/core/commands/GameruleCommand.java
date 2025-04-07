@@ -21,23 +21,21 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.context.GameRuleValue;
-import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.FilterCommandFlag;
-import org.mvplugins.multiverse.core.command.flags.PageCommandFlag;
-import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
-import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.MapContentProvider;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
@@ -47,13 +45,11 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.re
 @Subcommand("gamerule|rule")
 class GameruleCommand extends CoreCommand {
 
-    private final CommandValueFlag<Integer> pageFlag = flag(PageCommandFlag.create());
-
-    private final CommandValueFlag<ContentFilter> filterFlag = flag(FilterCommandFlag.create());
+    private final PageFilterFlags flags;
 
     @Inject
-    GameruleCommand(@NotNull MVCommandManager commandManager) {
-        super(commandManager);
+    GameruleCommand(@NotNull PageFilterFlags flags) {
+        this.flags = flags;
     }
 
     @Subcommand("set")
@@ -151,7 +147,7 @@ class GameruleCommand extends CoreCommand {
 
     @Subcommand("list")
     @CommandPermission("multiverse.core.gamerule.list")
-    @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulecommand @flags:groupName=mvgamerulecommand")
+    @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulecommand @flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.gamerule.list.description}")
     void onGameruleListCommand(
@@ -165,18 +161,18 @@ class GameruleCommand extends CoreCommand {
             @Optional
             @Syntax("[--page <page>] [--filter <filter>]")
             @Description("{@@mv-core.gamerule.list.description.page}")
-            String[] flags) {
-        ParsedCommandFlags parsedFlags = parseFlags(flags);
+            String[] flagArray) {
+        ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         ContentDisplay.create()
                 .addContent(MapContentProvider.forContent(getGameRuleMap(world.getBukkitWorld().getOrNull()))
                         .withKeyColor(ChatColor.AQUA)
                         .withValueColor(ChatColor.WHITE))
                 .withSendHandler(PagedSendHandler.create()
-                        .withHeader(this.getListTitle(issuer, world.getBukkitWorld().getOrNull()))
+                        .withHeader(this.getListTitle(world.getBukkitWorld().getOrNull()))
                         .doPagination(true)
-                        .withTargetPage(parsedFlags.flagValue(pageFlag, 1))
-                        .withFilter(parsedFlags.flagValue(filterFlag, DefaultContentFilter.get())))
+                        .withTargetPage(parsedFlags.flagValue(flags.page, 1))
+                        .withFilter(parsedFlags.flagValue(flags.filter, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
@@ -207,19 +203,15 @@ class GameruleCommand extends CoreCommand {
         return gameRuleMap;
     }
 
-    private String getListTitle(CommandIssuer issuer, World world) {
-        return this.commandManager.formatMessage(
-                issuer,
-                MessageType.INFO,
-                MVCorei18n.GAMERULE_LIST_TITLE,
-                "{world}", world.getName());
+    private Message getListTitle(@Nullable World world) {
+        return Message.of(MVCorei18n.GAMERULE_LIST_TITLE, Replace.WORLD.with(world == null ? "null" : world.getName()));
     }
 
     @Service
     private static final class LegacyAlias extends GameruleCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CoreConfig config /* TODO: remove after pr merge */) {
-            super(commandManager);
+        LegacyAlias(@NotNull PageFilterFlags flags) {
+            super(flags);
         }
 
         @Override
@@ -232,11 +224,6 @@ class GameruleCommand extends CoreCommand {
         @CommandAlias("mvrules|mvgamerules")
         void onGameruleListCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String[] flags) {
             super.onGameruleListCommand(issuer, world, flags);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

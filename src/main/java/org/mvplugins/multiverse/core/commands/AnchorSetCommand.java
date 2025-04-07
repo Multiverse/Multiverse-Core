@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.commands;
 
-import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
@@ -16,7 +15,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 
 @Service
@@ -27,10 +25,9 @@ final class AnchorSetCommand extends CoreCommand {
 
     @Inject
     AnchorSetCommand(
-            @NotNull MVCommandManager commandManager,
             @NotNull AnchorManager anchorManager,
-            @NotNull LocationManipulation locationManipulation) {
-        super(commandManager);
+            @NotNull LocationManipulation locationManipulation
+    ) {
         this.anchorManager = anchorManager;
         this.locationManipulation = locationManipulation;
     }

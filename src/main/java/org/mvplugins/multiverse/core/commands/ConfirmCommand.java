@@ -6,14 +6,12 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
 
 @Service
@@ -23,8 +21,7 @@ class ConfirmCommand extends CoreCommand {
     private final CommandQueueManager commandQueueManager;
 
     @Inject
-    ConfirmCommand(@NotNull MVCommandManager commandManager, @NotNull CommandQueueManager commandQueueManager) {
-        super(commandManager);
+    ConfirmCommand(@NotNull CommandQueueManager commandQueueManager) {
         this.commandQueueManager = commandQueueManager;
     }
 
@@ -44,19 +41,14 @@ class ConfirmCommand extends CoreCommand {
     @Service
     private final static class LegacyAlias extends ConfirmCommand implements LegacyAliasCommand {
         @Inject
-        LegacyAlias(@NotNull MVCommandManager commandManager, @NotNull CommandQueueManager commandQueueCommand) {
-            super(commandManager, commandQueueCommand);
+        LegacyAlias(@NotNull CommandQueueManager commandQueueCommand) {
+            super(commandQueueCommand);
         }
 
         @Override
         @CommandAlias("mvconfirm")
         void onConfirmCommand(MVCommandIssuer issuer, String otp) {
             super.onConfirmCommand(issuer, otp);
-        }
-
-        @Override
-        public boolean doFlagRegistration() {
-            return false;
         }
     }
 }

@@ -13,7 +13,4 @@ import org.mvplugins.multiverse.core.command.MultiverseCommand;
 @Contract
 @CommandAlias("mv")
 public abstract class CoreCommand extends MultiverseCommand {
-    protected CoreCommand(@NotNull MVCommandManager commandManager) {
-        super(commandManager, "mv");
-    }
 }
