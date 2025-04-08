@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.dumptruckman.minecraft.util.Logging;
+import com.google.common.base.Strings;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
@@ -688,6 +689,9 @@ public final class WorldManager {
 
     private Attempt<WorldCreator, WorldCreatorFailureReason> addGeneratorToCreator(
             WorldCreator worldCreator, String generatorString) {
+        if (Strings.isNullOrEmpty(generatorString)) {
+            return Attempt.success(worldCreator);
+        }
         return Try.of(() -> worldCreator.generator(generatorString))
                 .fold(
                         throwable -> {
