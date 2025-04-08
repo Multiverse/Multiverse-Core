@@ -24,14 +24,14 @@ class SpawnCommandTest : AbstractCommandTest() {
     @Test
     fun `Teleport player to spawn location`() {
         assertTrue(Bukkit.dispatchCommand(console, "mv spawn Player1 --unsafe"))
-        Thread.sleep(100) // wait for the player to teleport asynchronously
+        Thread.sleep(10) // wait for the player to teleport asynchronously
         assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player1")?.location)
     }
 
     @Test
     fun `Teleport multiple players to spawn location`() {
         assertTrue(Bukkit.dispatchCommand(console, "mv spawn Player1,Player2,Player3 --unsafe"))
-        Thread.sleep(100) // wait for the player to teleport asynchronously
+        Thread.sleep(10) // wait for the player to teleport asynchronously
         assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player1")?.location)
         assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player2")?.location)
         assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player3")?.location)
@@ -40,7 +40,7 @@ class SpawnCommandTest : AbstractCommandTest() {
     @Test
     fun `No permission to teleport to spawn`() {
         assertTrue(player.performCommand("mv spawn"))
-        Thread.sleep(100) // wait for the player to teleport asynchronously
+        Thread.sleep(10) // wait for the player to teleport asynchronously
         assertLocationEquals(Location(server.getWorld("world"), 0.0, 5.0, 0.0), player.location)
     }
 
@@ -48,7 +48,7 @@ class SpawnCommandTest : AbstractCommandTest() {
     fun `Self permission to teleport to spawn`() {
         addPermission("multiverse.core.spawn.self.world")
         assertTrue(player.performCommand("mv spawn --unsafe"))
-        Thread.sleep(100) // wait for the player to teleport asynchronously
+        Thread.sleep(10) // wait for the player to teleport asynchronously
         assertLocationEquals(server.getWorld("world")?.spawnLocation, player.location)
     }
 
@@ -56,7 +56,7 @@ class SpawnCommandTest : AbstractCommandTest() {
     fun `Other permission to teleport to spawn`() {
         addPermission("multiverse.core.spawn.other.world")
         assertTrue(player.performCommand("mv spawn Player1,Player2 --unsafe"))
-        Thread.sleep(100) // wait for the player to teleport asynchronously
+        Thread.sleep(10) // wait for the player to teleport asynchronously
         assertLocationEquals(Location(server.getWorld("otherworld"), 0.0, 5.0, 0.0), server.getPlayer("Player1")?.location)
         assertLocationEquals(server.getWorld("world")?.spawnLocation, server.getPlayer("Player2")?.location)
     }
@@ -64,7 +64,7 @@ class SpawnCommandTest : AbstractCommandTest() {
     fun `Teleport others to spawn but not self`() {
         addPermission("multiverse.core.spawn.other.otherworld")
         assertTrue(player.performCommand("mv spawn benwoo1110,Player1 --unsafe"))
-        Thread.sleep(100) // wait for the player to teleport asynchronously
+        Thread.sleep(10) // wait for the player to teleport asynchronously
         assertLocationEquals(Location(server.getWorld("world"), 0.0, 5.0, 0.0), server.getPlayer("benwoo1110")?.location)
         assertLocationEquals(server.getWorld("otherworld")?.spawnLocation, server.getPlayer("Player1")?.location)
     }
