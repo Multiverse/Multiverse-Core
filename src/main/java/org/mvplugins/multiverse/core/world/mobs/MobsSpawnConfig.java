@@ -6,7 +6,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.SpawnCategory;
+import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +26,8 @@ public class MobsSpawnConfig {
     }
 
     public SpawnCategoryConfig getSpawnCategoryConfig(SpawnCategory spawnCategory) {
-        return spawnCategoriesConfig.computeIfAbsent(spawnCategory, SpawnCategoryConfig::new);
+        return spawnCategoriesConfig.computeIfAbsent(spawnCategory,
+                computeSpawnCategory -> new SpawnCategoryConfig(computeSpawnCategory, new MemoryConfiguration()));
     }
 
     public boolean shouldAllowSpawn(Entity entity) {
@@ -46,11 +49,12 @@ public class MobsSpawnConfig {
     public ConfigurationSection toSection() {
         MemoryConfiguration section = new MemoryConfiguration();
         spawnCategoriesConfig.forEach((spawnCategory, spawnCategoryConfig) -> {
-            section.set(spawnCategory.toString().toLowerCase(), spawnCategoryConfig.toSection());
+            section.set(spawnCategory.toString().toLowerCase(), spawnCategoryConfig.saveSection());
         });
         return section;
     }
 
+    @ApiStatus.Internal
     public static MobsSpawnConfig fromSection(ConfigurationSection section) {
         Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig = new HashMap<>();
         section.getValues(false).forEach((key, value) -> {
@@ -59,8 +63,15 @@ public class MobsSpawnConfig {
                 return;
             }
             SpawnCategory spawnCategory = SpawnCategory.valueOf(key.toUpperCase());
-            spawnCategoriesConfig.put(spawnCategory, SpawnCategoryConfig.fromSection(spawnCategory, sectionPart));
+            spawnCategoriesConfig.put(spawnCategory, new SpawnCategoryConfig(spawnCategory, sectionPart));
         });
         return new MobsSpawnConfig(spawnCategoriesConfig);
+    }
+
+    @ApiStatus.Internal
+    public void setWorldRef(MultiverseWorld world) {
+        spawnCategoriesConfig.forEach((spawnCategory, spawnCategoryConfig) -> {
+            spawnCategoryConfig.setWorldRef(world);
+        });
     }
 }

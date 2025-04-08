@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.world;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -246,17 +245,16 @@ final class WorldConfigNodes {
             .serializer(new NodeSerializer<>() {
                 @Override
                 public MobsSpawnConfig deserialize(Object object, Class<MobsSpawnConfig> type) {
-                    MobsSpawnConfig mobsSpawnConfig = (object instanceof ConfigurationSection section) ? MobsSpawnConfig.fromSection(section) : new MobsSpawnConfig();
-                    return mobsSpawnConfig;
+                    return (object instanceof ConfigurationSection section) ? MobsSpawnConfig.fromSection(section) : new MobsSpawnConfig();
                 }
 
                 @Override
                 public Object serialize(MobsSpawnConfig object, Class<MobsSpawnConfig> type) {
-                    ConfigurationSection section = object.toSection();
-                    return section;
+                    return object.toSection();
                 }
             })
             .onSetValue((oldValue, newValue) -> {
+                newValue.setWorldRef(world);
                 if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
                 loadedWorld.getBukkitWorld().peek(newValue::applyConfigToWorld);
             }));

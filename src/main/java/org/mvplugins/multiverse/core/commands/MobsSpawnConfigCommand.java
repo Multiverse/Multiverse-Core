@@ -7,15 +7,24 @@ import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
+import jakarta.inject.Inject;
 import org.bukkit.entity.SpawnCategory;
 import org.jvnet.hk2.annotations.Optional;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
+import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
 final class MobsSpawnConfigCommand extends CoreCommand {
+
+    private final WorldManager worldManager;
+
+    @Inject
+    MobsSpawnConfigCommand(WorldManager worldManager) {
+        this.worldManager = worldManager;
+    }
 
     @Subcommand("mobsspawnconfig info")
     @CommandPermission("multiverse.core.mobsspawnconfig")
@@ -34,24 +43,39 @@ final class MobsSpawnConfigCommand extends CoreCommand {
 
     @Subcommand("mobsspawnconfig modify")
     @CommandPermission("multiverse.core.mobsspawnconfig")
-    @CommandCompletion("@mvworlds:scope=both")
-    @Syntax("[world] <spawn-category> <set|add|reset|remove> <key> [value]")
+    @CommandCompletion("@mvworlds:scope=both @spawncategories @propsmodifyaction @spawncategorypropsname @spawncategorypropsvalue")
+    @Syntax("[world(s)] <spawn-category> <set|add|reset|remove> <property> [value]")
     @Description("")
     void onMobsSpawnConfigModifyCommand(
             MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
-            @Syntax("[world]")
+            @Syntax("[world(s)]")
             MultiverseWorld world,
 
+            @Syntax("<spawn-category>")
             SpawnCategory spawnCategory,
+
+            @Syntax("<set|add|reset|remove>")
             PropertyModifyAction action,
-            String key,
+
+            @Syntax("<property")
+            String property,
 
             @Single
             @Optional
+            @Syntax("[value]")
             String value
     ) {
+        world.getMobsSpawnConfig()
+                .getSpawnCategoryConfig(spawnCategory)
+                .getStringPropertyHandle()
+                .modifyPropertyString(property, value, action)
+                .onSuccess(ignore -> issuer.sendMessage("Successfully set " + property + " to " + value
+                        + " for " + spawnCategory.name() + " in " + world.getName()))
+                .onFailure(e -> issuer.sendMessage("Unable to set " + property + " to " + value
+                        + " for " + spawnCategory.name() + " in " + world.getName() + ": " + e.getMessage()));
 
+        worldManager.saveWorldsConfig();
     }
 }

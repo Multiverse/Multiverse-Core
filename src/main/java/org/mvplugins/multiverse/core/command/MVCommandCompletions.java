@@ -26,6 +26,7 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -87,6 +88,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
         registerAsyncCompletion("playersarray", this::suggestPlayersArray);
         registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
+        registerStaticCompletion("spawncategories", suggestEnums(SpawnCategory.class));
+        registerAsyncCompletion("spawncategorypropsname", this::suggestSpawnCategoryPropsName);
+        registerAsyncCompletion("spawncategorypropsvalue", this::suggestSpawnCategoryPropsValue);
 
         setDefaultCompletion("destinations", DestinationInstance.class);
         setDefaultCompletion("difficulties", Difficulty.class);
@@ -95,6 +99,31 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         setDefaultCompletion("gamemodes", GameMode.class);
         setDefaultCompletion("gamerules", GameRule.class);
         setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
+    }
+
+    private Collection<String> suggestSpawnCategoryPropsName(BukkitCommandCompletionContext context) {
+        return Try.of(() -> {
+            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
+            SpawnCategory spawnCategory = context.getContextValue(SpawnCategory.class);
+            PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
+            return world.getMobsSpawnConfig()
+                    .getSpawnCategoryConfig(spawnCategory)
+                    .getStringPropertyHandle()
+                    .getModifiablePropertyNames(action);
+        }).getOrElse(Collections.emptyList());
+    }
+
+    private Collection<String> suggestSpawnCategoryPropsValue(BukkitCommandCompletionContext context) {
+        return Try.of(() -> {
+            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
+            SpawnCategory spawnCategory = context.getContextValue(SpawnCategory.class);
+            PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
+            String propertyName = context.getContextValue(String.class);
+            return world.getMobsSpawnConfig()
+                    .getSpawnCategoryConfig(spawnCategory)
+                    .getStringPropertyHandle()
+                    .getSuggestedPropertyValue(propertyName, context.getInput(), action);
+        }).getOrElse(Collections.emptyList());
     }
 
     @Override

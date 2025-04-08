@@ -4,29 +4,52 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.SpawnCategory;
-import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
+import org.mvplugins.multiverse.core.config.handle.MemoryConfigurationHandle;
+import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.config.node.ConfigNode;
+import org.mvplugins.multiverse.core.config.node.ListConfigNode;
+import org.mvplugins.multiverse.core.config.node.Node;
+import org.mvplugins.multiverse.core.config.node.NodeGroup;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SpawnCategoryConfig {
 
     private final SpawnCategory spawnCategory;
-    private boolean spawn;
-    private int tickRate;
-    private List<EntityType> exceptions;
+    private final MemoryConfigurationHandle handle;
+    private final StringPropertyHandle stringPropertyHandle;
+    private final Nodes nodes;
 
-    public SpawnCategoryConfig(SpawnCategory spawnCategory) {
+    private MultiverseWorld world;
+
+    SpawnCategoryConfig(SpawnCategory spawnCategory, ConfigurationSection section) {
         this.spawnCategory = spawnCategory;
-        this.spawn = true;
-        this.tickRate = -1;
-        this.exceptions = new ArrayList<>();
+        this.nodes = new Nodes();
+        this.handle = MemoryConfigurationHandle.builder(section, nodes.nodes)
+                .build();
+        this.stringPropertyHandle = new StringPropertyHandle(handle);
+        this.handle.load();
+    }
+
+    ConfigurationSection saveSection() {
+        handle.save().onFailure(throwable -> {
+            Logging.warning("Failed to save SpawnCategoryConfig. " + throwable.getLocalizedMessage());
+        });
+        return handle.getConfig();
+    }
+
+    void setWorldRef(MultiverseWorld world) {
+        this.world = world;
+    }
+
+    public StringPropertyHandle getStringPropertyHandle() {
+        return stringPropertyHandle;
     }
 
     public SpawnCategory getSpawnCategory() {
@@ -34,38 +57,41 @@ public class SpawnCategoryConfig {
     }
 
     public boolean isSpawn() {
-        return spawn;
+        return handle.get(nodes.spawn);
     }
 
-    public void setSpawn(boolean spawn) {
-        this.spawn = spawn;
+    public Try<Void> setSpawn(boolean spawn) {
+        return handle.set(nodes.spawn, spawn);
     }
 
     public int getTickRate() {
-        return tickRate;
+        return handle.get(nodes.tickRate);
     }
 
-    public void setTickRate(int tickRate) {
-        this.tickRate = tickRate;
+    public Try<Void> setTickRate(int tickRate) {
+        return handle.set(nodes.tickRate, tickRate);
     }
 
     public List<EntityType> getExceptions() {
-        return exceptions;
+        return handle.get(nodes.exceptions);
     }
 
-    public void setExceptions(List<EntityType> exceptions) {
-        this.exceptions = exceptions;
+    public Try<Void> setExceptions(List<EntityType> exceptions) {
+        return handle.set(nodes.exceptions, exceptions);
     }
 
     public void applyConfigToWorld(World bukkitWorld) {
-        if (!spawn) {
-            if (exceptions.isEmpty()) {
+        if (!isSpawn()) {
+            if (getExceptions().isEmpty()) {
+                Logging.finer("World %s %s setTicksPerSpawns: 0", world.getName(), spawnCategory);
                 bukkitWorld.setTicksPerSpawns(spawnCategory, 0);
             } else {
+                Logging.finer("World %s %s setTicksPerSpawns: -1", world.getName(), spawnCategory);
                 bukkitWorld.setTicksPerSpawns(spawnCategory, -1);
             }
         } else {
-            bukkitWorld.setTicksPerSpawns(spawnCategory, tickRate);
+            Logging.finer("World %s %s setTicksPerSpawns: %d", world.getName(), spawnCategory, getTickRate());
+            bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
         }
     }
 
@@ -74,56 +100,49 @@ public class SpawnCategoryConfig {
     }
 
     public boolean shouldAllowSpawn(EntityType entityType) {
-        return this.spawn != this.exceptions.contains(entityType);
+        return isSpawn() != getExceptions().contains(entityType);
     }
 
     @Override
     public String toString() {
         return "SpawnCategoryConfig{" +
                 "spawnCategory=" + spawnCategory +
-                ", spawn=" + spawn +
-                ", tickRate=" + tickRate +
-                ", exceptions=" + exceptions +
+                ", spawn=" + isSpawn() +
+                ", tickRate=" + getTickRate() +
+                ", exceptions=" + getExceptions() +
                 '}';
     }
 
-    public ConfigurationSection toSection() {
-        MemoryConfiguration section = new MemoryConfiguration();
-        section.set("spawn", DefaultSerializerProvider.getDefaultSerializer(Boolean.class)
-                .serialize(spawn, Boolean.class));
-        section.set("tick-rate", DefaultSerializerProvider.getDefaultSerializer(Integer.class)
-                .serialize(tickRate, Integer.class));
-        section.set("exceptions", exceptions.stream()
-                .map(entityType -> DefaultSerializerProvider.getDefaultSerializer(EntityType.class)
-                        .serialize(entityType, EntityType.class))
-                .collect(Collectors.toList()));
-        return section;
-    }
+    private final class Nodes {
+        private final NodeGroup nodes = new NodeGroup();
 
-    @SuppressWarnings("unchecked,rawtypes")
-    public static SpawnCategoryConfig fromSection(SpawnCategory spawnCategory, ConfigurationSection section) {
-        SpawnCategoryConfig spawnCategoryConfig = new SpawnCategoryConfig(spawnCategory);
-        Try.run(() -> {
-            if (section.get("spawn") != null) {
-                spawnCategoryConfig.setSpawn(DefaultSerializerProvider.getDefaultSerializer(Boolean.class)
-                        .deserialize(section.get("spawn"), Boolean.class));
-            }
+        private <N extends Node> N node(N node) {
+            nodes.add(node);
+            return node;
+        }
 
-            if (section.get("tick-rate") != null) {
-                spawnCategoryConfig.setTickRate(DefaultSerializerProvider.getDefaultSerializer(Integer.class)
-                        .deserialize(section.get("tick-rate"), Integer.class));
-            }
+        final ConfigNode<Boolean> spawn = node(ConfigNode.builder("spawn", Boolean.class)
+                .defaultValue(true)
+                .onSetValue((oldValue, newValue) -> {
+                    if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                    loadedWorld.getBukkitWorld().peek(SpawnCategoryConfig.this::applyConfigToWorld);
+                })
+                .build());
 
-            List<EntityType> exceptions = new ArrayList<>();
-            if (section.getList("exceptions") != null) {
-                section.getList("exceptions").forEach(entityTypeName -> {
-                    exceptions.add(EntityType.valueOf(entityTypeName.toString().toUpperCase()));
-                });
-            }
-            spawnCategoryConfig.setExceptions(exceptions);
-        }).onFailure(throwable -> {
-            Logging.severe("Error parsing SpawnCategoryConfig. " + throwable.getLocalizedMessage());
-        });
-        return spawnCategoryConfig;
+        final ConfigNode<Integer> tickRate = node(ConfigNode.builder("tick-rate", Integer.class)
+                .defaultValue(-1)
+                .onSetValue((oldValue, newValue) -> {
+                    if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                    loadedWorld.getBukkitWorld().peek(SpawnCategoryConfig.this::applyConfigToWorld);
+                })
+                .build());
+
+        final ListConfigNode<EntityType> exceptions = node(ListConfigNode.listBuilder("exceptions", EntityType.class)
+                .defaultValue(ArrayList::new)
+                .onSetValue((oldValue, newValue) -> {
+                    if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
+                    loadedWorld.getBukkitWorld().peek(SpawnCategoryConfig.this::applyConfigToWorld);
+                })
+                .build());
     }
 }
