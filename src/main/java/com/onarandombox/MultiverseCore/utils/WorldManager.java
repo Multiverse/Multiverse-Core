@@ -176,9 +176,11 @@ public class WorldManager implements MVWorldManager {
         boolean wasAutoSave = false;
         if (oldWorld != null && oldWorld.getCBWorld().isAutoSave()) {
             wasAutoSave = true;
-            Logging.config("Saving world '%s'", oldName);
-            oldWorld.getCBWorld().setAutoSave(false);
-            oldWorld.getCBWorld().save();
+            if(plugin.getMVConfig().doCloneSaving()){
+                Logging.config("Saving world '%s'", oldName);
+                oldWorld.getCBWorld().setAutoSave(false);
+                oldWorld.getCBWorld().save();
+            }
         }
         Logging.config("Copying files for world '%s'", oldName);
         if (!FileUtils.copyFolder(oldWorldFile, newWorldFile, ignoreFiles)) {
