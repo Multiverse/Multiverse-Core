@@ -54,7 +54,7 @@ class DestinationTest : TestWithMockBukkit() {
         val destination = destinationsProvider.parseDestination("ca:world:1.2,2,3:10.5:9.5:5").orNull
         assertTrue(destination is CannonDestinationInstance)
         val expectedLocation = Location(world.bukkitWorld.orNull, 1.2, 2.0, 3.0, 9.5F, 10.5F)
-        assertEquals(expectedLocation, destination.getLocation(player).orNull)
+        assertLocationEquals(expectedLocation, destination.getLocation(player).orNull)
         // todo: assert the Vector
         assertEquals("ca:world:1.2,2.0,3.0:10.5:9.5:5.0", destination.toString())
     }
@@ -65,7 +65,7 @@ class DestinationTest : TestWithMockBukkit() {
         val destination = destinationsProvider.parseDestination("e:world:1.2,2,3:10.5:9.5").orNull
         assertTrue(destination is ExactDestinationInstance)
         val expectedLocation = Location(world.bukkitWorld.orNull, 1.2, 2.0, 3.0, 9.5F, 10.5F)
-        assertEquals(expectedLocation, destination.getLocation(player).orNull)
+        assertLocationEquals(expectedLocation, destination.getLocation(player).orNull)
         assertEquals("e:world:1.2,2.0,3.0:10.5:9.5", destination.toString())
     }
 

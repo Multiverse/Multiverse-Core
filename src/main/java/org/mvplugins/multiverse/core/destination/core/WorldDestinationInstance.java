@@ -8,13 +8,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * Destination instance implementation for the {@link WorldDestination}.
  */
 public final class WorldDestinationInstance extends DestinationInstance<WorldDestinationInstance, WorldDestination> {
-    private final MultiverseWorld world;
+    private final LoadedMultiverseWorld world;
     private final String direction;
     private final float yaw;
 
@@ -28,7 +29,7 @@ public final class WorldDestinationInstance extends DestinationInstance<WorldDes
      */
     WorldDestinationInstance(
             @NotNull WorldDestination destination,
-            @NotNull MultiverseWorld world,
+            @NotNull LoadedMultiverseWorld world,
             @Nullable String direction,
             float yaw
     ) {
@@ -43,7 +44,10 @@ public final class WorldDestinationInstance extends DestinationInstance<WorldDes
      */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
-        Location worldLoc = world.getSpawnLocation();
+        if (!world.isLoaded()) {
+            return Option.none();
+        }
+        Location worldLoc = world.getSpawnLocation().clone();
         if (this.yaw >= 0) {
             // Only modify the yaw if its set.
             worldLoc.setYaw(this.yaw);

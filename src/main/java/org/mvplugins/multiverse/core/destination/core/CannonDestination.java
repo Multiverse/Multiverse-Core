@@ -13,6 +13,7 @@ import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 import java.util.Collection;
 import java.util.List;
@@ -70,7 +71,7 @@ public final class CannonDestination implements Destination<CannonDestination, C
         Location location;
         double dSpeed;
         try {
-            location = new Location(
+            location = new UnloadedWorldLocation(
                     world,
                     Double.parseDouble(coordinatesParams[0]),
                     Double.parseDouble(coordinatesParams[1]),

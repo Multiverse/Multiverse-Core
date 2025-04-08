@@ -13,6 +13,7 @@ import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
@@ -62,7 +63,7 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
         }
 
         String worldName = items[0];
-        MultiverseWorld world = getLoadedMultiverseWorld(worldName);
+        LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
         if (world == null) {
             return null;
         }
@@ -74,7 +75,7 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
     }
 
     @Nullable
-    private MultiverseWorld getLoadedMultiverseWorld(String worldName) {
+    private LoadedMultiverseWorld getLoadedMultiverseWorld(String worldName) {
         return config.getResolveAliasName()
                 ? worldManager.getLoadedWorldByNameOrAlias(worldName).getOrNull()
                 : worldManager.getLoadedWorld(worldName).getOrNull();

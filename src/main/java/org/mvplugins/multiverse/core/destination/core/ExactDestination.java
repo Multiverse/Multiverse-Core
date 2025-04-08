@@ -18,6 +18,7 @@ import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
+import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
  * {@link Destination} implementation for exact locations.
@@ -81,7 +82,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
 
         Location location;
         try {
-            location = new Location(
+            location = new UnloadedWorldLocation(
                     world,
                     Double.parseDouble(coordinatesParams[0]),
                     Double.parseDouble(coordinatesParams[1]),

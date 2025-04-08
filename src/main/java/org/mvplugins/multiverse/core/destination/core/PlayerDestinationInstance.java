@@ -30,6 +30,9 @@ public final class PlayerDestinationInstance extends DestinationInstance<PlayerD
      */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
+        if (!player.isOnline()) {
+            return Option.none();
+        }
         return Option.of(player.getLocation());
     }
 
