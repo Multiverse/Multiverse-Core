@@ -10,7 +10,7 @@ import co.aikar.locales.MessageKeyProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-final class LocalizedMessage extends Message implements MessageKeyProvider {
+public final class LocalizedMessage extends Message implements MessageKeyProvider {
 
     private final @NotNull MessageKeyProvider messageKeyProvider;
 

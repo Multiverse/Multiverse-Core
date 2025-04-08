@@ -2,6 +2,8 @@ package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
 
+import co.aikar.locales.MessageKey;
+import co.aikar.locales.MessageKeyProvider;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
@@ -14,17 +16,23 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
+import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
 import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
+
 /**
  * {@link Destination} implementation for exact locations.
  */
 @Service
-public final class ExactDestination implements Destination<ExactDestination, ExactDestinationInstance> {
+public final class ExactDestination implements Destination<ExactDestination, ExactDestinationInstance, ExactDestination.InstanceFailureReason> {
 
     private final CoreConfig config;
     private final WorldManager worldManager;
@@ -59,25 +67,22 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
      * {@inheritDoc}
      */
     @Override
-    public @Nullable ExactDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
-        if (destinationParams == null) {
-            return null;
-        }
+    public @NotNull Attempt<ExactDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
         String[] items = REPatterns.COLON.split(destinationParams);
         if (items.length < 2) {
-            return null;
+            return Attempt.failure(InstanceFailureReason.INVALID_FORMAT);
         }
 
         String worldName = items[0];
         String coordinates = items[1];
         String[] coordinatesParams = REPatterns.COMMA.split(coordinates);
         if (coordinatesParams.length != 3) {
-            return null;
+            return Attempt.failure(InstanceFailureReason.INVALID_COORDINATES_FORMAT);
         }
 
         World world = getLoadedMultiverseWorld(worldName).flatMap(LoadedMultiverseWorld::getBukkitWorld).getOrNull();
         if (world == null) {
-            return null;
+            return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldName));
         }
 
         Location location;
@@ -89,7 +94,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
                     Double.parseDouble(coordinatesParams[2])
             );
         } catch (NumberFormatException e) {
-            return null;
+            return Attempt.failure(InstanceFailureReason.INVALID_NUMBER_FORMAT, Replace.ERROR.with(e));
         }
 
         if (items.length == 4) {
@@ -99,13 +104,14 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
                 location.setPitch(Float.parseFloat(pitch));
                 location.setYaw(Float.parseFloat(yaw));
             } catch (NumberFormatException e) {
-                return null;
+                return Attempt.failure(InstanceFailureReason.INVALID_NUMBER_FORMAT, Replace.ERROR.with(e));
             }
         }
 
-        return new ExactDestinationInstance(this, location);
+        return Attempt.success(new ExactDestinationInstance(this, location));
     }
 
+    //TODO: Extract to a world finder class
     private Option<LoadedMultiverseWorld> getLoadedMultiverseWorld(String worldName) {
         return config.getResolveAliasName()
                 ? worldManager.getLoadedWorldByNameOrAlias(worldName)
@@ -125,5 +131,27 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
                 .map(world ->
                         new DestinationSuggestionPacket(this, world.getTabCompleteName() + ":", world.getName()))
                 .toList();
+    }
+
+    public enum InstanceFailureReason implements FailureReason {
+        INVALID_FORMAT(MVCorei18n.DESTINATION_EXACT_FAILUREREASON_INVALIDFORMAT),
+        INVALID_COORDINATES_FORMAT(MVCorei18n.DESTINATION_SHARED_FAILUREREASON_INVALIDCOORDINATESFORMAT),
+        INVALID_NUMBER_FORMAT(MVCorei18n.DESTINATION_SHARED_FAILUREREASON_INVALIDNUMBERFORMAT),
+        WORLD_NOT_FOUND(MVCorei18n.DESTINATION_SHARED_FAILUREREASON_WORLDNOTFOUND),
+        ;
+
+        private final MessageKeyProvider messageKey;
+
+        InstanceFailureReason(MessageKeyProvider message) {
+            this.messageKey = message;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public MessageKey getMessageKey() {
+            return messageKey.getMessageKey();
+        }
     }
 }

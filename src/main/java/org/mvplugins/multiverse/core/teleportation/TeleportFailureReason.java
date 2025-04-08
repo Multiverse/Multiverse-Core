@@ -52,7 +52,6 @@ public enum TeleportFailureReason implements FailureReason {
         this.messageKey = message;
     }
 
-
     /**
      * {@inheritDoc}
      */

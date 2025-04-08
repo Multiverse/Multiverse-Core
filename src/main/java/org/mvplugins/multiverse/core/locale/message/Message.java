@@ -42,7 +42,7 @@ public sealed class Message permits LocalizedMessage {
      * @return A new localizable Message
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public static Message of(@NotNull MessageKeyProvider messageKeyProvider, @NotNull MessageReplacement... replacements) {
+    public static LocalizedMessage of(@NotNull MessageKeyProvider messageKeyProvider, @NotNull MessageReplacement... replacements) {
         return of(messageKeyProvider, "{error_key: %s}".formatted(messageKeyProvider.getMessageKey().getKey()), replacements);
     }
 
@@ -59,7 +59,7 @@ public sealed class Message permits LocalizedMessage {
      * @return A new localizable Message
      */
     @Contract(value = "_, _, _ -> new", pure = true)
-    public static Message of(
+    public static LocalizedMessage of(
             @NotNull MessageKeyProvider messageKeyProvider,
             @NotNull String nonLocalizedMessage,
             @NotNull MessageReplacement... replacements) {

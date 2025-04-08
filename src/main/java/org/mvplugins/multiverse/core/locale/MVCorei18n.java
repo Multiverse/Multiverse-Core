@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.locale;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.locale.message.Message;
@@ -10,23 +11,34 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 /**
  * All the translation keys for the core plugin
  */
+@ApiStatus.Internal
 public enum MVCorei18n implements MessageKeyProvider {
     // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
 
-    // config status
+    // configuration
     CONFIG_SAVE_FAILED,
     CONFIG_NODE_NOTFOUND,
 
-    // check command
+    // /mv check
+    CHECK_DESCRIPTION,
+    CHECK_PLAYER_DESCRIPTION,
+    CHECK_DESTINATION_DESCRIPTION,
     CHECK_HASPERMISSION,
     CHECK_NOPERMISSION,
     CHECK_LOCATION,
 
-    // clone command
+    // /mv clone
+    CLONE_DESCRIPTION,
+    CLONE_WORLD_DESCRIPTION,
+    CLONE_NEWWORLD_DESCRIPTION,
     CLONE_CLONING,
     CLONE_SUCCESS,
 
-    // Coordinates command
+    // /mv confirm
+    CONFIRM_DESCRIPTION,
+
+    // /mv coordinates
+    COORDINATES_DESCRIPTION,
     COORDINATES_INFO_TITLE,
     COORDINATES_INFO_WORLD,
     COORDINATES_INFO_ALIAS,
@@ -34,7 +46,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     COORDINATES_INFO_COORDINATES,
     COORDINATES_INFO_DIRECTION,
 
-    // create command
+    // /mv create
+    CREATE_DESCRIPTION,
+    CREATE_NAME_DESCRIPTION,
+    CREATE_ENVIRONMENT_DESCRIPTION,
+    CREATE_FLAGS_DESCRIPTION,
     CREATE_PROPERTIES,
     CREATE_PROPERTIES_ENVIRONMENT,
     CREATE_PROPERTIES_SEED,
@@ -43,90 +59,134 @@ public enum MVCorei18n implements MessageKeyProvider {
     CREATE_PROPERTIES_BIOME,
     CREATE_PROPERTIES_GENERATOR,
     CREATE_PROPERTIES_GENERATORSETTINGS,
+
     CREATE_PROPERTIES_STRUCTURES,
     CREATE_LOADING,
     CREATE_SUCCESS,
 
-    // delete command
+    // /mv debug
+    DEBUG_INFO_DESCRIPTION,
+    DEBUG_INFO_OFF,
+    DEBUG_INFO_ON,
+    DEBUG_CHANGE_DESCRIPTION,
+    DEBUG_CHANGE_SYNTAX,
+    DEBUG_CHANGE_LEVEL_DESCRIPTION,
+
+    // /mv delete
+    DELETE_DESCRIPTION,
     DELETE_DELETING,
     DELETE_PROMPT,
     DELETE_SUCCESS,
 
-    // Dumps command
+    // /mv dumps
     DUMPS_DESCRIPTION,
     DUMPS_URL_LIST,
 
-    // gamerule set command
+    // /mv gamerule set
+    GAMERULE_SET_DESCRIPTION,
+    GAMERULE_SET_GAMERULE_DESCRIPTION,
+    GAMERULE_SET_VALUE_DESCRIPTION,
+    GAMERULE_SET_WORLD_DESCRIPTION,
     GAMERULE_SET_FAILED,
     GAMERULE_SET_SUCCESS_SINGLE,
     GAMERULE_SET_SUCCESS_MULTIPLE,
 
-    // gamerule reset command
+    // /mv gamerule reset
+    GAMERULE_RESET_DESCRIPTION,
+    GAMERULE_RESET_GAMERULE_DESCRIPTION,
+    GAMERULE_RESET_WORLD_DESCRIPTION,
     GAMERULE_RESET_FAILED,
     GAMERULE_RESET_SUCCESS_SINGLE,
     GAMERULE_RESET_SUCCESS_MULTIPLE,
 
-    // gamerule list command
+    // /mv gamerule list
     GAMERULE_LIST_DESCRIPTION,
     GAMERULE_LIST_DESCRIPTION_PAGE,
     GAMERULE_LIST_DESCRIPTION_WORLD,
     GAMERULE_LIST_TITLE,
 
-    // Generators command
+    // /mv generators
     GENERATORS_DESCRIPTION,
     GENERATORS_DESCRIPTION_FLAGS,
     GENERATORS_EMPTY,
 
-    // import command
+    // /mv import
+    IMPORT_DESCRIPTION,
+    IMPORT_NAME_DESCRIPTION,
+    IMPORT_ENV_DESCRIPTION,
+    IMPORT_OTHER_DESCRIPTION,
     IMPORT_IMPORTING,
     IMPORT_SUCCESS,
 
-    // info command
+    // /mv info
+    INFO_DESCRIPTION,
+    INFO_DESCRIPTION_WORLD,
     INFO_HEADER,
     INFO_NOCONTENT,
 
-    // list command
+    // /mv list
+    LIST_DESCRIPTION,
     LIST_HEADER,
     LIST_NOCONTENT,
 
-    // load command
+    // /mv load
+    LOAD_DESCRIPTION,
+    LOAD_WORLD_DESCRIPTION,
     LOAD_LOADING,
     LOAD_SUCCESS,
 
-    // regen command
+    // /mv regen
+    REGEN_DESCRIPTION,
+    REGEN_WORLD_DESCRIPTION,
+    REGEN_OTHER_DESCRIPTION,
     REGEN_REGENERATING,
     REGEN_PROMPT,
     REGEN_SUCCESS,
 
-    // reload command
+    // /mv reload
+    RELOAD_DESCRIPTION,
     RELOAD_RELOADING,
     RELOAD_SUCCESS,
 
-    // remove command
+    // /mv remove
+    REMOVE_DESCRIPTION,
+    REMOVE_WORLD_DESCRIPTION,
     REMOVE_SUCCESS,
 
-    // root MV command
+    // /mv
     ROOT_TITLE,
     ROOT_HELP,
 
-    // spawn tp command
+    // /mv setspawn
+    SETSPAWN_DESCRIPTION,
+    SETSPAWN_LOCATION_DESCRIPTION,
+    SETSPAWN_WORLD_DESCRIPTION,
+
+    // /mv spawn
     SPAWN_DESCRIPTION,
     SPAWN_PLAYER_DESCRIPTION,
     SPAWN_SUCCESS,
     SPAWN_FAILED,
-    SPAWN_CONSOLENAME,
-    SPAWN_YOU,
 
-    // teleport command
+    // /mv tp
+    TELEPORT_DESCRIPTION,
+    TELEPORT_PLAYER_DESCRIPTION,
+    TELEPORT_DESTINATION_DESCRIPTION,
     TELEPORT_TOOMANYPLAYERS,
     TELEPORT_SUCCESS,
     TELEPORT_FAILED,
 
-    // unload command
+    // /mv unload
+    UNLOAD_DESCRIPTION,
+    UNLOAD_WORLD_DESCRIPTION,
     UNLOAD_UNLOADING,
     UNLOAD_SUCCESS,
 
-    // who command
+    // /mv usage
+    USAGE_DESCRIPTION,
+
+    // /mv who
+    // /mv whoall
     WHO_DESCRIPTION,
     WHO_ALL_DESCRIPTION,
     WHO_WORLD_DESCRIPTION,
@@ -134,14 +194,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     WHO_EMPTY,
     WHO_HEADER,
 
-    // version command
+    // /mv version
+    VERSION_DESCRIPTION,
     VERSION_MV,
     VERSION_AUTHORS,
     VERSION_SECRETCODE,
-
-    // debug command
-    DEBUG_INFO_OFF,
-    DEBUG_INFO_ON,
 
     // commands error
     COMMANDS_ERROR_PLAYERSONLY,
@@ -154,7 +211,18 @@ public enum MVCorei18n implements MessageKeyProvider {
     ENTRYCHECK_EXCEEDPLAYERLIMIT,
     ENTRYCHECK_NOWORLDACCESS,
 
-    // teleport failure reasons
+    // multiverse parse destination failure reason
+    DESTINATION_ANCHOR_FAILUREREASON_ANCHORNOTFOUND,
+    DESTINATION_BED_FAILUREREASON_PLAYERNOTFOUND,
+    DESTINATION_CANNON_FAILUREREASON_INVALIDFORMAT,
+    DESTINATION_EXACT_FAILUREREASON_INVALIDFORMAT,
+    DESTINATION_PLAYER_FAILUREREASON_PLAYERNOTFOUND,
+    DESTINATION_SHARED_FAILUREREASON_INVALIDCOORDINATESFORMAT,
+    DESTINATION_SHARED_FAILUREREASON_INVALIDNUMBERFORMAT,
+    DESTINATION_SHARED_FAILUREREASON_WORLDNOTFOUND,
+    DESTINATION_PARSE_FAILUREREASON_INVALIDDESTINATIONID,
+
+    // teleport failure reason
     TELEPORTFAILUREREASON_NULL_DESTINATION,
     TELEPORTFAILUREREASON_NULL_LOCATION,
     TELEPORTFAILUREREASON_NULL_WORLD,
@@ -181,9 +249,9 @@ public enum MVCorei18n implements MessageKeyProvider {
     DELETEWORLD_FAILEDTODELETEFOLDER,
 
     IMPORTWORLD_INVALIDWORLDNAME,
-    IMPORTWORLD_WORLDFOLDERINVALID,
     IMPORTWORLD_WORLDEXISTUNLOADED,
     IMPORTWORLD_WORLDEXISTLOADED,
+    IMPORTWORLD_WORLDFOLDERINVALID,
 
     LOADWORLD_WORLDALREADYLOADING,
     LOADWORLD_WORLDNONEXISTENT,
@@ -197,11 +265,11 @@ public enum MVCorei18n implements MessageKeyProvider {
     UNLOADWORLD_WORLDUNLOADED,
     UNLOADWORLD_BUKKITUNLOADFAILED,
 
-    WORLDCREATOR_BUKKITCREATIONFAILED,
-    WORLDCREATOR_INVALIDCHUNKGENERATOR,
     WORLDCREATOR_INVALIDBIOMEPROVIDER,
+    WORLDCREATOR_INVALIDCHUNKGENERATOR,
+    WORLDCREATOR_BUKKITCREATIONFAILED,
 
-    // queue command results
+    // queue command result
     QUEUECOMMAND_NOCOMMANDINQUEUE,
     QUEUECOMMAND_INVALIDOTP,
     QUEUECOMMAND_COMMANDEXECUTIONERROR,

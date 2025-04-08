@@ -6,6 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Contract;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
+import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
 /**
  * A destination is a location that can be teleported to.
@@ -14,7 +16,7 @@ import org.jvnet.hk2.annotations.Contract;
  * @param <T>   The type of the destination instance
  */
 @Contract
-public interface Destination<D extends Destination<D, T>, T extends DestinationInstance<T, D>> {
+public interface Destination<D extends Destination<D, T, F>, T extends DestinationInstance<T, D>, F extends FailureReason> {
     /**
      * Returns the identifier or prefix that is required for this destination.
      *
@@ -32,7 +34,7 @@ public interface Destination<D extends Destination<D, T>, T extends DestinationI
      * @param destinationParams The destination parameters. ex: p:MyPortal:nw
      * @return The destination instance, or null if the destination parameters are invalid.
      */
-    @Nullable T getDestinationInstance(@Nullable String destinationParams);
+    @NotNull Attempt<T, F> getDestinationInstance(@NotNull String destinationParams);
 
     /**
      * Returns a list of possible destinations for the given destination parameters. This packet's destination

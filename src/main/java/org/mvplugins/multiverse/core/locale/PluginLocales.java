@@ -1,14 +1,17 @@
 package org.mvplugins.multiverse.core.locale;
 
 import co.aikar.commands.BukkitLocales;
+import jakarta.inject.Inject;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 
 /**
  * Locale manager with additional methods for loading locales from plugin's locales folder.
  */
+@Service
 public final class PluginLocales extends BukkitLocales {
 
     private static final String DEFAULT_LOCALE_FOLDER_PATH = "locales";
@@ -18,6 +21,7 @@ public final class PluginLocales extends BukkitLocales {
      *
      * @param manager   The command manager.
      */
+    @Inject
     public PluginLocales(MVCommandManager manager) {
         super(manager);
     }

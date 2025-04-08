@@ -34,7 +34,7 @@ class DestinationTest : TestWithMockBukkit() {
     @Test
     fun `Bed destination instance`() {
         assertTrue(destinationsProvider.getDestinationById("b") is BedDestination)
-        val destination = destinationsProvider.parseDestination("b:benji_0224").orNull
+        val destination = destinationsProvider.parseDestination("b:benji_0224").get()
         assertTrue(destination is BedDestinationInstance)
         assertEquals(player.bedSpawnLocation, destination.getLocation(player).orNull)
         assertEquals("b:benji_0224", destination.toString())
@@ -117,14 +117,14 @@ class DestinationTest : TestWithMockBukkit() {
 
     @Test
     fun `Invalid destination instance`() {
-        assertTrue(destinationsProvider.parseDestination("").isEmpty)
-        assertTrue(destinationsProvider.parseDestination("idk:world").isEmpty)
-        assertTrue(destinationsProvider.parseDestination("a:invalid-anchor").isEmpty)
-        assertTrue(destinationsProvider.parseDestination("b:invalid-bed").isEmpty)
-        assertTrue(destinationsProvider.parseDestination("ca:invalid-cannon").isEmpty)
-        assertTrue(destinationsProvider.parseDestination("e:world:1,2,x").isEmpty)
-        assertTrue(destinationsProvider.parseDestination("pl:invalid-player").isEmpty)
-        assertTrue(destinationsProvider.parseDestination("w:invalid-world").isEmpty)
+        assertTrue(destinationsProvider.parseDestination("").isFailure)
+        assertTrue(destinationsProvider.parseDestination("idk:world").isFailure)
+        assertTrue(destinationsProvider.parseDestination("a:invalid-anchor").isFailure)
+        assertTrue(destinationsProvider.parseDestination("b:invalid-bed").isFailure)
+        assertTrue(destinationsProvider.parseDestination("ca:invalid-cannon").isFailure)
+        assertTrue(destinationsProvider.parseDestination("e:world:1,2,x").isFailure)
+        assertTrue(destinationsProvider.parseDestination("pl:invalid-player").isFailure)
+        assertTrue(destinationsProvider.parseDestination("w:invalid-world").isFailure)
         // todo: should we make invalid yaw for WorldDestination fail?
         // assertTrue(destinationsProvider.parseDestination("w:world:f").isEmpty)
     }

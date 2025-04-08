@@ -2,6 +2,8 @@ package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
 
+import co.aikar.locales.MessageKey;
+import co.aikar.locales.MessageKeyProvider;
 import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
@@ -11,8 +13,13 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
+import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -22,7 +29,7 @@ import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
  * {@link Destination} implementation for exact locations.
  */
 @Service
-public final class WorldDestination implements Destination<WorldDestination, WorldDestinationInstance> {
+public final class WorldDestination implements Destination<WorldDestination, WorldDestinationInstance, WorldDestination.InstanceFailureReason> {
 
     private final CoreConfig config;
     private final WorldManager worldManager;
@@ -53,27 +60,21 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
      * {@inheritDoc}
      */
     @Override
-    public @Nullable WorldDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
-        if (destinationParams == null) {
-            return null;
-        }
-        String[] items = REPatterns.COLON.split(destinationParams);
-        if (items.length > 3) {
-            return null;
-        }
-
+    public @NotNull Attempt<WorldDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
+        String[] items = REPatterns.COLON.split(destinationParams, 3);
         String worldName = items[0];
         LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
         if (world == null) {
-            return null;
+            return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldName));
         }
 
         String direction = (items.length == 2) ? items[1] : null;
         float yaw = direction != null ? this.locationManipulation.getYaw(direction) : -1;
 
-        return new WorldDestinationInstance(this, world, direction, yaw);
+        return Attempt.success(new WorldDestinationInstance(this, world, direction, yaw));
     }
 
+    //TODO: Extract to a world finder class
     @Nullable
     private LoadedMultiverseWorld getLoadedMultiverseWorld(String worldName) {
         return config.getResolveAliasName()
@@ -93,5 +94,24 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
                         .isSuccess())
                 .map(world -> new DestinationSuggestionPacket(this, world.getTabCompleteName(), world.getName()))
                 .toList();
+    }
+
+    public enum InstanceFailureReason implements FailureReason {
+        WORLD_NOT_FOUND(MVCorei18n.DESTINATION_SHARED_FAILUREREASON_WORLDNOTFOUND),
+        ;
+
+        private final MessageKeyProvider messageKey;
+
+        InstanceFailureReason(MessageKeyProvider message) {
+            this.messageKey = message;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public MessageKey getMessageKey() {
+            return messageKey.getMessageKey();
+        }
     }
 }

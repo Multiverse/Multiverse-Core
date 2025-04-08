@@ -301,7 +301,7 @@ public final class CorePermissionsChecker {
     public boolean hasAnyTeleportPermission(@NotNull CommandSender sender, @NotNull Scope[] scopes) {
         if (!config.getUseFinerTeleportPermissions()) {
             // Just loop over the destination
-            for (Destination<?, ?> destination : destinationsProvider.getDestinations()) {
+            for (Destination destination : destinationsProvider.getDestinations()) {
                 for (Scope scope : scopes) {
                     if (hasTeleportPermission(sender, scope, destination.getIdentifier(), null)) {
                         return true;

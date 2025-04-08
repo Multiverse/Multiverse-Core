@@ -36,6 +36,7 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
+import org.mvplugins.multiverse.core.locale.PluginLocales;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
@@ -98,6 +99,10 @@ final class MVPlayerListener implements CoreListener {
 
     private MVCommandManager getCommandManager() {
         return commandManagerProvider.get();
+    }
+
+    public PluginLocales getLocales() {
+        return getCommandManager().getLocales();
     }
 
     /**
@@ -190,9 +195,13 @@ final class MVPlayerListener implements CoreListener {
         }
         Logging.fine("Moving NEW player to(firstspawnoverride): %s", config.getFirstSpawnLocation());
         destinationsProvider.parseDestination(config.getFirstSpawnLocation())
-                .flatMap(destination -> destination.getLocation(event.getPlayer()))
-                .peek(event::setSpawnLocation)
-                .onEmpty(() -> Logging.warning("The destination in FirstSpawnLocation in config is invalid"));
+                .map(destination -> destination.getLocation(event.getPlayer())
+                        .peek(event::setSpawnLocation)
+                        .onEmpty(() -> Logging.warning("The destination in FirstSpawnLocation in config is invalid")))
+                .onFailure(failure -> {
+                    Logging.warning("Invalid destination in FirstSpawnLocation in config: %s");
+                    Logging.warning(failure.getFailureMessage().formatted(getLocales()));
+                });
     }
 
     private void handleJoinLocation(PlayerSpawnLocationEvent event) {
@@ -207,9 +216,13 @@ final class MVPlayerListener implements CoreListener {
         }
         Logging.finer("JoinDestination is " + config.getJoinDestination());
         destinationsProvider.parseDestination(config.getJoinDestination())
-                .flatMap(destination -> destination.getLocation(event.getPlayer()))
-                .peek(event::setSpawnLocation)
-                .onEmpty(() -> Logging.warning("The destination in JoinDestination in config is invalid"));
+                .map(destination -> destination.getLocation(event.getPlayer())
+                    .peek(event::setSpawnLocation)
+                    .onEmpty(() -> Logging.warning("The destination in JoinDestination in config is invalid")))
+                .onFailure(failure -> {
+                    Logging.warning("Invalid destination in JoinDestination in config: %s");
+                    Logging.warning(failure.getFailureMessage().formatted(getLocales()));
+                });
     }
 
     /**

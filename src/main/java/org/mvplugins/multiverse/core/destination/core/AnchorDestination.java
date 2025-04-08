@@ -2,6 +2,8 @@ package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
 
+import co.aikar.locales.MessageKey;
+import co.aikar.locales.MessageKeyProvider;
 import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,12 +14,17 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
+import org.mvplugins.multiverse.core.utils.result.FailureReason;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * {@link Destination} implementation for anchors.
  */
 @Service
-public final class AnchorDestination implements Destination<AnchorDestination, AnchorDestinationInstance> {
+public final class AnchorDestination implements Destination<AnchorDestination, AnchorDestinationInstance, AnchorDestination.InstanceFailureReason> {
 
     private final AnchorManager anchorManager;
 
@@ -38,14 +45,13 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
      * {@inheritDoc}
      */
     @Override
-    public @Nullable AnchorDestinationInstance getDestinationInstance(@Nullable String destinationParams) {
-        if (destinationParams == null) {
-            return null;
-        }
+    public @NotNull Attempt<AnchorDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
         return this.anchorManager.getAnchor(destinationParams)
-                .map(anchor -> new AnchorDestinationInstance(
-                        this, destinationParams, anchor.getLocation()))
-                .getOrNull();
+                .fold(
+                        () -> Attempt.failure(InstanceFailureReason.ANCHOR_NOT_FOUND, replace("{anchor}").with(destinationParams)),
+                        anchor -> Attempt.success(
+                                new AnchorDestinationInstance(this, destinationParams, anchor.getLocation()))
+                );
     }
 
     /**
@@ -58,5 +64,24 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
                 .stream()
                 .map(anchor -> new DestinationSuggestionPacket(this, anchor.getName(), anchor.getName()))
                 .toList();
+    }
+
+    public enum InstanceFailureReason implements FailureReason {
+        ANCHOR_NOT_FOUND(MVCorei18n.DESTINATION_ANCHOR_FAILUREREASON_ANCHORNOTFOUND),
+        ;
+
+        private final MessageKeyProvider messageKey;
+
+        InstanceFailureReason(MessageKeyProvider message) {
+            this.messageKey = message;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public MessageKey getMessageKey() {
+            return messageKey.getMessageKey();
+        }
     }
 }

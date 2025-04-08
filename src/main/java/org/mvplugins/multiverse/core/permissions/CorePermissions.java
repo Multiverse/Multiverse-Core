@@ -84,7 +84,7 @@ public final class CorePermissions {
         });
     }
 
-    public Try<Void> addDestinationPermissions(@NotNull Destination<?, ?> destination) {
+    public Try<Void> addDestinationPermissions(@NotNull Destination destination) {
         return Try.run(() -> {
             pluginManager.addPermission(new Permission(
                     concatPermission(TELEPORT, "self", destination.getIdentifier()), PermissionDefault.OP));
@@ -94,7 +94,7 @@ public final class CorePermissions {
         });
     }
 
-    public Try<Void> removeDestinationPermissions(@NotNull Destination<?, ?> destination) {
+    public Try<Void> removeDestinationPermissions(@NotNull Destination destination) {
         return Try.run(() -> {
             pluginManager.removePermission(concatPermission(TELEPORT, "self", destination.getIdentifier()));
             pluginManager.removePermission(concatPermission(TELEPORT, "other", destination.getIdentifier()));

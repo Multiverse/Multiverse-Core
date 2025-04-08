@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class PlayerFinder {
 
+    //TODO: Move to REPatterns
     private static final Pattern UUID_REGEX = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
     private static final Pattern COMMA_SPLIT = Pattern.compile(",");
 

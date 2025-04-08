@@ -24,6 +24,7 @@ import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
+import org.mvplugins.multiverse.core.exceptions.command.MVInvalidCommandArgument;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -91,7 +92,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return destinationsProvider.parseDestination(destination)
-                .getOrElseThrow(() -> new InvalidCommandArgument("The destination " + destination + " is not valid."));
+                .getOrThrow(failure -> MVInvalidCommandArgument.of(failure.getFailureMessage()));
     }
 
     private GameRule<?> parseGameRule(BukkitCommandExecutionContext context) {

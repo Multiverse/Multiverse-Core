@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
 /**
  * Instance of a specific {@link Destination}.
@@ -12,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <I>   The type of the instance.
  * @param <T>   The type of the destination.
  */
-public abstract class DestinationInstance<I extends  DestinationInstance<I, T>, T extends Destination<T, I>> {
+public abstract class DestinationInstance<I extends  DestinationInstance<I, T>, T extends Destination<T, I, ?>> {
 
     protected final T destination;
 

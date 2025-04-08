@@ -7,5 +7,5 @@ package org.mvplugins.multiverse.core.destination;
  * @param destinationString     The destination string
  * @param finerPermissionSuffix The finer permission suffix
  */
-public record DestinationSuggestionPacket(Destination<?, ?> destination, String destinationString, String finerPermissionSuffix) {
+public record DestinationSuggestionPacket(Destination<?, ?, ?> destination, String destinationString, String finerPermissionSuffix) {
 }

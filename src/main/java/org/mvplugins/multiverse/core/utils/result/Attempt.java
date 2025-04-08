@@ -63,6 +63,29 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
     T get();
 
     /**
+     * Gets the value of this attempt or null if this is a failure attempt.
+     *
+     * @return The value or null.
+     */
+    T getOrNull();
+
+    /**
+     * Gets the value of this attempt or a default value if this is a failure attempt.
+     *
+     * @param defaultValue The default value.
+     * @return The value or the default value.
+     */
+    T getOrElse(T defaultValue);
+
+    /**
+     * Gets the value of this attempt or throws an exception if this is a failure attempt.
+     *
+     * @param exceptionSupplier The exception supplier.
+     * @return The value.
+     */
+    <X extends Throwable> T getOrThrow(Function<Failure<T, F>, X> exceptionSupplier) throws X;
+
+    /**
      * Gets the reason for failure. Exceptions will be thrown if this is a success attempt.
      *
      * @return The reason for failure.
@@ -296,6 +319,21 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         }
 
         @Override
+        public T getOrNull() {
+            return value;
+        }
+
+        @Override
+        public T getOrElse(T defaultValue) {
+            return value;
+        }
+
+        @Override
+        public <X extends Throwable> T getOrThrow(Function<Failure<T, F>, X> exceptionSupplier) throws X  {
+            return value;
+        }
+
+        @Override
         public F getFailureReason() {
             throw new UnsupportedOperationException("No failure reason as attempt is a success");
         }
@@ -331,6 +369,21 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         @Override
         public T get() {
             throw new UnsupportedOperationException("No value as attempt is a failure");
+        }
+
+        @Override
+        public T getOrNull() {
+            return null;
+        }
+
+        @Override
+        public T getOrElse(T defaultValue) {
+            return defaultValue;
+        }
+
+        @Override
+        public <X extends Throwable> T getOrThrow(Function<Failure<T, F>, X> exceptionSupplier) throws X {
+            throw exceptionSupplier.apply(this);
         }
 
         @Override
