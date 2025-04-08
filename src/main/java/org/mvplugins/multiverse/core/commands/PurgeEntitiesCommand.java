@@ -24,7 +24,7 @@ final class PurgeEntitiesCommand extends CoreCommand {
     @Subcommand("purge-entities")
     @CommandPermission("multiverse.core.purge")
     @CommandCompletion("@mvworlds:scope=loaded")
-    @Syntax("[world] [spawn-categories]")
+    @Syntax("[world]")
     void onPurgeEntityCommand(
             MVCommandIssuer issuer,
 
