@@ -1,0 +1,16 @@
+com.onarandombox.MultiverseCore
+com.onarandombox.MultiverseCore.api
+com.onarandombox.MultiverseCore.commands
+com.onarandombox.MultiverseCore.commandtools.queue
+com.onarandombox.MultiverseCore.configuration
+com.onarandombox.MultiverseCore.destination
+com.onarandombox.MultiverseCore.display
+com.onarandombox.MultiverseCore.display.handlers
+com.onarandombox.MultiverseCore.display.settings
+com.onarandombox.MultiverseCore.enums
+com.onarandombox.MultiverseCore.event
+com.onarandombox.MultiverseCore.exceptions
+com.onarandombox.MultiverseCore.listeners
+com.onarandombox.MultiverseCore.utils
+com.onarandombox.MultiverseCore.utils.metrics
+com.onarandombox.MultiverseCore.utils.webpaste
