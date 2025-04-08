@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
-import org.mvplugins.multiverse.core.world.mobs.MobsSpawnConfig;
+import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
 /**
  * Represents a world handled by Multiverse which has all the custom properties provided by Multiverse.
@@ -625,11 +625,11 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
         return worldConfig.setSpawnLocation(spawnLocation);
     }
 
-    public MobsSpawnConfig getMobsSpawnConfig() {
+    public EntitySpawnConfig getMobsSpawnConfig() {
         return worldConfig.getMobsSpawnConfig();
     }
 
-    public Try<Void> setMobsSpawnConfig(MobsSpawnConfig mobsSpawnConfig) {
+    public Try<Void> setMobsSpawnConfig(EntitySpawnConfig mobsSpawnConfig) {
         return worldConfig.setMobsSpawnConfig(mobsSpawnConfig);
     }
 

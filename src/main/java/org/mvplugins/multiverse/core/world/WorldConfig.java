@@ -29,7 +29,7 @@ import org.mvplugins.multiverse.core.config.migration.action.NullStringMigratorA
 import org.mvplugins.multiverse.core.config.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
-import org.mvplugins.multiverse.core.world.mobs.MobsSpawnConfig;
+import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
 /**
  * Represents a world configuration.
@@ -350,11 +350,11 @@ final class WorldConfig {
         return configHandle.set(configNodes.spawnLocation, spawnLocation);
     }
 
-    MobsSpawnConfig getMobsSpawnConfig() {
+    EntitySpawnConfig getMobsSpawnConfig() {
         return configHandle.get(configNodes.mobsSpawnConfig);
     }
 
-    Try<Void> setMobsSpawnConfig(MobsSpawnConfig mobsSpawnConfig) {
+    Try<Void> setMobsSpawnConfig(EntitySpawnConfig mobsSpawnConfig) {
         return configHandle.set(configNodes.mobsSpawnConfig, mobsSpawnConfig);
     }
 

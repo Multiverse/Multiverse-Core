@@ -17,21 +17,22 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 @Service
-final class MobsSpawnConfigCommand extends CoreCommand {
+@Subcommand("entity-spawn-config")
+final class EntitySpawnConfigCommand extends CoreCommand {
 
     private final WorldManager worldManager;
 
     @Inject
-    MobsSpawnConfigCommand(WorldManager worldManager) {
+    EntitySpawnConfigCommand(WorldManager worldManager) {
         this.worldManager = worldManager;
     }
 
-    @Subcommand("mobsspawnconfig info")
+    @Subcommand("info")
     @CommandPermission("multiverse.core.mobsspawnconfig")
     @CommandCompletion("@mvworlds:scope=both")
     @Syntax("[world]")
     @Description("")
-    void onMobsSpawnConfigListCommand(
+    void onInfoCommand(
             MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
@@ -41,12 +42,12 @@ final class MobsSpawnConfigCommand extends CoreCommand {
         issuer.sendMessage(world.getMobsSpawnConfig().toString());
     }
 
-    @Subcommand("mobsspawnconfig modify")
+    @Subcommand("modify")
     @CommandPermission("multiverse.core.mobsspawnconfig")
     @CommandCompletion("@mvworlds:scope=both @spawncategories @propsmodifyaction @spawncategorypropsname @spawncategorypropsvalue")
     @Syntax("[world(s)] <spawn-category> <set|add|reset|remove> <property> [value]")
     @Description("")
-    void onMobsSpawnConfigModifyCommand(
+    void onModifyCommand(
             MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")

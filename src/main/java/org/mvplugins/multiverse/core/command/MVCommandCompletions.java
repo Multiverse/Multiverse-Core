@@ -101,31 +101,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         setDefaultCompletion("mvworlds", LoadedMultiverseWorld.class);
     }
 
-    private Collection<String> suggestSpawnCategoryPropsName(BukkitCommandCompletionContext context) {
-        return Try.of(() -> {
-            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
-            SpawnCategory spawnCategory = context.getContextValue(SpawnCategory.class);
-            PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
-            return world.getMobsSpawnConfig()
-                    .getSpawnCategoryConfig(spawnCategory)
-                    .getStringPropertyHandle()
-                    .getModifiablePropertyNames(action);
-        }).getOrElse(Collections.emptyList());
-    }
-
-    private Collection<String> suggestSpawnCategoryPropsValue(BukkitCommandCompletionContext context) {
-        return Try.of(() -> {
-            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
-            SpawnCategory spawnCategory = context.getContextValue(SpawnCategory.class);
-            PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
-            String propertyName = context.getContextValue(String.class);
-            return world.getMobsSpawnConfig()
-                    .getSpawnCategoryConfig(spawnCategory)
-                    .getStringPropertyHandle()
-                    .getSuggestedPropertyValue(propertyName, context.getInput(), action);
-        }).getOrElse(Collections.emptyList());
-    }
-
     @Override
     public CommandCompletionHandler registerCompletion(String id, CommandCompletionHandler<BukkitCommandCompletionContext> handler) {
         return super.registerCompletion(id, context ->
@@ -155,6 +130,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                     return Collections.emptyList();
                 }
             }
+        }
+        if (context.hasConfig("multiple")) {
+            return addonToCommaSeperated(context.getInput(), handler.getCompletions(context));
         }
         return handler.getCompletions(context);
     }
@@ -259,13 +237,6 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestMVWorlds(BukkitCommandCompletionContext context) {
-        if (!context.hasConfig("multiple")) {
-            return getMVWorldNames(context);
-        }
-        return addonToCommaSeperated(context.getInput(), getMVWorldNames(context));
-    }
-
-    private List<String> getMVWorldNames(BukkitCommandCompletionContext context) {
         String scope = context.getConfig("scope", "loaded");
         switch (scope) {
             case "both" -> {
@@ -321,5 +292,30 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             }
         }
         return addonToCommaSeperated(context.getInput(), matchedPlayers);
+    }
+
+    private Collection<String> suggestSpawnCategoryPropsName(BukkitCommandCompletionContext context) {
+        return Try.of(() -> {
+            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
+            SpawnCategory spawnCategory = context.getContextValue(SpawnCategory.class);
+            PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
+            return world.getMobsSpawnConfig()
+                    .getSpawnCategoryConfig(spawnCategory)
+                    .getStringPropertyHandle()
+                    .getModifiablePropertyNames(action);
+        }).getOrElse(Collections.emptyList());
+    }
+
+    private Collection<String> suggestSpawnCategoryPropsValue(BukkitCommandCompletionContext context) {
+        return Try.of(() -> {
+            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
+            SpawnCategory spawnCategory = context.getContextValue(SpawnCategory.class);
+            PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
+            String propertyName = context.getContextValue(String.class);
+            return world.getMobsSpawnConfig()
+                    .getSpawnCategoryConfig(spawnCategory)
+                    .getStringPropertyHandle()
+                    .getSuggestedPropertyValue(propertyName, context.getInput(), action);
+        }).getOrElse(Collections.emptyList());
     }
 }

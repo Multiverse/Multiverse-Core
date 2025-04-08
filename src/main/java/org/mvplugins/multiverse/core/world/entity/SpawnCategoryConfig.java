@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world.mobs;
+package org.mvplugins.multiverse.core.world.entity;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
@@ -19,7 +19,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpawnCategoryConfig {
+public final class SpawnCategoryConfig {
 
     private final SpawnCategory spawnCategory;
     private final MemoryConfigurationHandle handle;

@@ -1,4 +1,4 @@
-package org.mvplugins.multiverse.core.world.mobs;
+package org.mvplugins.multiverse.core.world.entity;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.World;
@@ -13,15 +13,11 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MobsSpawnConfig {
+public final class EntitySpawnConfig {
 
     private final Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig;
 
-    public MobsSpawnConfig() {
-        this(new HashMap<>());
-    }
-
-    public MobsSpawnConfig(Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig) {
+    EntitySpawnConfig(Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig) {
         this.spawnCategoriesConfig = spawnCategoriesConfig;
     }
 
@@ -55,7 +51,7 @@ public class MobsSpawnConfig {
     }
 
     @ApiStatus.Internal
-    public static MobsSpawnConfig fromSection(ConfigurationSection section) {
+    public static EntitySpawnConfig fromSection(ConfigurationSection section) {
         Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig = new HashMap<>();
         section.getValues(false).forEach((key, value) -> {
             if (!(value instanceof ConfigurationSection sectionPart)) {
@@ -65,7 +61,7 @@ public class MobsSpawnConfig {
             SpawnCategory spawnCategory = SpawnCategory.valueOf(key.toUpperCase());
             spawnCategoriesConfig.put(spawnCategory, new SpawnCategoryConfig(spawnCategory, sectionPart));
         });
-        return new MobsSpawnConfig(spawnCategoriesConfig);
+        return new EntitySpawnConfig(spawnCategoriesConfig);
     }
 
     @ApiStatus.Internal

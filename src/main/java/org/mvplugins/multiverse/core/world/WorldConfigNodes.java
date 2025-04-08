@@ -12,6 +12,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
@@ -25,7 +26,7 @@ import org.mvplugins.multiverse.core.utils.MaterialConverter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 import org.mvplugins.multiverse.core.world.location.NullLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
-import org.mvplugins.multiverse.core.world.mobs.MobsSpawnConfig;
+import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
 /**
  * Represents nodes in a world configuration.
@@ -239,17 +240,20 @@ final class WorldConfigNodes {
                 });
             }));
 
-    final ConfigNode<MobsSpawnConfig> mobsSpawnConfig = node(ConfigNode.builder("spawning", MobsSpawnConfig.class)
-            .defaultValue(MobsSpawnConfig::new)
+    final ConfigNode<EntitySpawnConfig> mobsSpawnConfig = node(ConfigNode.builder("spawning", EntitySpawnConfig.class)
+            .defaultValue(() -> EntitySpawnConfig.fromSection(new MemoryConfiguration()))
             .hidden()
             .serializer(new NodeSerializer<>() {
                 @Override
-                public MobsSpawnConfig deserialize(Object object, Class<MobsSpawnConfig> type) {
-                    return (object instanceof ConfigurationSection section) ? MobsSpawnConfig.fromSection(section) : new MobsSpawnConfig();
+                public EntitySpawnConfig deserialize(Object object, Class<EntitySpawnConfig> type) {
+                    ConfigurationSection spawnSection = (object instanceof ConfigurationSection section)
+                            ? section
+                            : new MemoryConfiguration();
+                    return EntitySpawnConfig.fromSection(spawnSection);
                 }
 
                 @Override
-                public Object serialize(MobsSpawnConfig object, Class<MobsSpawnConfig> type) {
+                public Object serialize(EntitySpawnConfig object, Class<EntitySpawnConfig> type) {
                     return object.toSection();
                 }
             })
