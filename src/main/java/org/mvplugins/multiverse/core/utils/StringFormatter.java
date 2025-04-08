@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.utils;
 import com.google.common.collect.Sets;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -71,5 +72,31 @@ public final class StringFormatter {
                 .filter(suggestion -> !inputSet.contains(suggestion))
                 .map(suggestion -> previousInputs + suggestion)
                 .toList();
+    }
+
+    public static Collection<String> parseQuotesInArgs(String[] args) {
+        List<String> result = new ArrayList<>(args.length);
+        StringBuilder quotedArg = null;
+        for (String arg : args) {
+            if (quotedArg == null && arg.startsWith("\"")) {
+                // Handle edge case where the arg itself starts and ends with quotes without space: "arghere"
+                if (arg.endsWith("\"")) {
+                    result.add(arg.substring(1, arg.length() - 1));
+                    continue;
+                }
+                quotedArg = new StringBuilder(arg.substring(1));
+            } else if (quotedArg != null) {
+                if (arg.endsWith("\"")) {
+                    quotedArg.append(" ").append(arg, 0, arg.length() - 1);
+                    result.add(quotedArg.toString());
+                    quotedArg = null;
+                    continue;
+                }
+                quotedArg.append(" ").append(arg);
+            } else {
+                result.add(arg);
+            }
+        }
+        return result;
     }
 }

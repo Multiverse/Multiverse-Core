@@ -9,6 +9,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
 import co.aikar.commands.MVPaperCommandManager;
+import co.aikar.commands.RootCommand;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
@@ -184,5 +185,10 @@ public class MVCommandManager extends MVPaperCommandManager {
         } else {
             return new MVCommandIssuer(this, (CommandSender)issuer);
         }
+    }
+
+    @Override
+    public RootCommand createRootCommand(String cmd) {
+        return new MVRootCommand(this, cmd);
     }
 }
