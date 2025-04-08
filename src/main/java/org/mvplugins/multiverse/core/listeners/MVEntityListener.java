@@ -85,6 +85,7 @@ final class MVEntityListener implements CoreListener {
             return;
         }
 
+        //TODO: Add config option for this
 //        // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
 //        if (event.getSpawnReason() == SpawnReason.CUSTOM
 //                || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
