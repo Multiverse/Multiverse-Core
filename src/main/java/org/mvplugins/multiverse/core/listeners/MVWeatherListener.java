@@ -40,7 +40,7 @@ final class MVWeatherListener implements CoreListener {
         }
         worldManager.getLoadedWorld(event.getWorld())
                 .peek(world -> {
-                    if (!world.getAllowWeather()) {
+                    if (!world.isAllowWeather()) {
                         Logging.fine("Cancelling weather for %s as getAllowWeather is false", world.getName());
                         event.setCancelled(true);
                     }
@@ -59,7 +59,7 @@ final class MVWeatherListener implements CoreListener {
         }
         worldManager.getLoadedWorld(event.getWorld())
                 .peek(world -> {
-                    if (!world.getAllowWeather()) {
+                    if (!world.isAllowWeather()) {
                         Logging.fine("Cancelling thunder for %s as getAllowWeather is false", world.getName());
                         event.setCancelled(true);
                     }

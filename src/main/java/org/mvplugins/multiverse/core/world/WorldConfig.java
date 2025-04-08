@@ -155,7 +155,7 @@ final class WorldConfig {
         return configHandle.set(configNodes.alias, alias);
     }
 
-    boolean getAllowFlight() {
+    boolean isAllowFlight() {
         return configHandle.get(configNodes.allowFlight);
     }
 
@@ -163,7 +163,7 @@ final class WorldConfig {
         return configHandle.set(configNodes.allowFlight, allowFlight);
     }
 
-    boolean getAllowWeather() {
+    boolean isAllowWeather() {
         return configHandle.get(configNodes.allowWeather);
     }
 
@@ -186,7 +186,7 @@ final class WorldConfig {
         return configHandle.set(configNodes.autoHeal, autoHeal);
     }
 
-    boolean getAutoLoad() {
+    boolean isAutoLoad() {
         return configHandle.get(configNodes.autoLoad);
     }
 
@@ -274,14 +274,14 @@ final class WorldConfig {
         return configHandle.set(configNodes.hidden, hidden);
     }
 
-    boolean getHunger() {
+    boolean isHunger() {
         return configHandle.get(configNodes.hunger);
     }
 
     Try<Void> setHunger(boolean hunger) {
         return configHandle.set(configNodes.hunger, hunger);
     }
-    boolean getKeepSpawnInMemory() {
+    boolean isKeepSpawnInMemory() {
         return configHandle.get(configNodes.keepSpawnInMemory);
     }
 
@@ -345,7 +345,7 @@ final class WorldConfig {
         return configHandle.set(configNodes.spawnLocation, spawnLocation);
     }
 
-    boolean getSpawningAnimals() {
+    boolean isSpawningAnimals() {
         return configHandle.get(configNodes.spawningAnimals);
     }
 
@@ -369,7 +369,7 @@ final class WorldConfig {
         return configHandle.set(configNodes.spawningAnimalsExceptions, spawningAnimalsExceptions);
     }
 
-    boolean getSpawningMonsters() {
+    boolean isSpawningMonsters() {
         return configHandle.get(configNodes.spawningMonsters);
     }
 

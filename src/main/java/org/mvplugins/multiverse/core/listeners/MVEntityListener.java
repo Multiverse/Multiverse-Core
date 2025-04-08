@@ -55,7 +55,7 @@ final class MVEntityListener implements CoreListener {
 
         worldManager.getLoadedWorld(player.getWorld())
                 .peek(world -> {
-                    if (!world.getHunger() && event.getFoodLevel() < player.getFoodLevel()) {
+                    if (!world.isHunger() && event.getFoodLevel() < player.getFoodLevel()) {
                         event.setCancelled(true);
                     }
                 });

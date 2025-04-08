@@ -19,7 +19,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
@@ -106,15 +105,15 @@ class InfoCommand extends CoreCommand {
         outMap.put("Generator", world.getGenerator());
         outMap.put("Generate Structures", world.canGenerateStructures().map(String::valueOf).getOrNull());
 
-        outMap.put("Auto Load", String.valueOf(world.getAutoLoad()));
-        outMap.put("Keep Spawn In Memory", String.valueOf(world.getKeepSpawnInMemory()));
+        outMap.put("Auto Load", String.valueOf(world.isAutoLoad()));
+        outMap.put("Keep Spawn In Memory", String.valueOf(world.isKeepSpawnInMemory()));
 
         getEntryFeeInfo(outMap, world);
         outMap.put("World Scale", String.valueOf(world.getScale()));
-        outMap.put("Weather Enabled", String.valueOf(world.getAllowWeather()));
-        outMap.put("Allow Flight", String.valueOf(world.getAllowFlight()));
-        outMap.put("Hunger Depletes", String.valueOf(world.getHunger()));
-        outMap.put("Keep Spawn In Memory", String.valueOf(world.getKeepSpawnInMemory()));
+        outMap.put("Weather Enabled", String.valueOf(world.isAllowWeather()));
+        outMap.put("Allow Flight", String.valueOf(world.isAllowFlight()));
+        outMap.put("Hunger Depletes", String.valueOf(world.isHunger()));
+        outMap.put("Keep Spawn In Memory", String.valueOf(world.isKeepSpawnInMemory()));
         outMap.put("PVP Enabled", String.valueOf(world.getPvp()));
         outMap.put("Portal Form", String.valueOf(world.getPortalForm()));
         outMap.put("Player Limit", String.valueOf(world.getPlayerLimit()));
@@ -137,7 +136,7 @@ class InfoCommand extends CoreCommand {
     }
 
     private void getAnimalSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
-        if (world.getSpawningAnimals()) {
+        if (world.isSpawningAnimals()) {
             outMap.put("Spawning Animals", "ALL");
         } else {
             if (!world.getSpawningAnimalsExceptions().isEmpty()) {
@@ -149,7 +148,7 @@ class InfoCommand extends CoreCommand {
     }
 
     private void getMonsterSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
-        if (world.getSpawningMonsters()) {
+        if (world.isSpawningMonsters()) {
             outMap.put("Spawning Monsters", "ALL");
         } else {
             if (!world.getSpawningMonstersExceptions().isEmpty()) {

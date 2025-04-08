@@ -62,7 +62,7 @@ public final class LegacyWorldPurger {
         }
         ArrayList<String> allMobs = new ArrayList<>(world.getSpawningAnimalsExceptions());
         allMobs.addAll(world.getSpawningMonstersExceptions());
-        purgeWorld(world, allMobs, !world.getSpawningAnimals(), !world.getSpawningMonsters());
+        purgeWorld(world, allMobs, !world.isSpawningAnimals(), !world.isSpawningMonsters());
     }
 
     /**
@@ -151,7 +151,7 @@ public final class LegacyWorldPurger {
     public boolean shouldWeKillThisCreature(@NotNull MultiverseWorld world, @NotNull Entity entity) {
         ArrayList<String> allMobs = new ArrayList<>(world.getSpawningAnimalsExceptions());
         allMobs.addAll(world.getSpawningMonstersExceptions());
-        return this.shouldWeKillThisCreature(entity, allMobs, !world.getSpawningAnimals(), !world.getSpawningMonsters());
+        return this.shouldWeKillThisCreature(entity, allMobs, !world.isSpawningAnimals(), !world.isSpawningMonsters());
     }
 
     /**

@@ -35,7 +35,6 @@ import org.mvplugins.multiverse.core.event.world.MVWorldLoadedEvent;
 import org.mvplugins.multiverse.core.event.world.MVWorldRegeneratedEvent;
 import org.mvplugins.multiverse.core.event.world.MVWorldRemovedEvent;
 import org.mvplugins.multiverse.core.event.world.MVWorldUnloadedEvent;
-import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.exceptions.world.MultiverseWorldException;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
@@ -182,7 +181,7 @@ public final class WorldManager {
      */
     private void autoLoadWorlds() {
         getWorlds().forEach(world -> {
-            if (isLoadedWorld(world) || !world.getAutoLoad()) {
+            if (isLoadedWorld(world) || !world.isAutoLoad()) {
                 return;
             }
             loadWorld(world).onFailure(failure -> Logging.severe("Failed to load world %s: %s",

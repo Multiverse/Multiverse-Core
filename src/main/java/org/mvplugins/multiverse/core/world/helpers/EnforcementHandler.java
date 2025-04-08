@@ -75,7 +75,7 @@ public final class EnforcementHandler {
                 return;
             }
 
-            if (world.getAllowFlight()) {
+            if (world.isAllowFlight()) {
                 if (player.getGameMode() == GameMode.CREATIVE) {
                     player.setAllowFlight(true);
                 }

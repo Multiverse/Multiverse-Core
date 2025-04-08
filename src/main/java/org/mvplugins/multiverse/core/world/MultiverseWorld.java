@@ -144,8 +144,8 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return True if players allowed to fly in this world.
      */
-    public boolean getAllowFlight() {
-        return worldConfig.getAllowFlight();
+    public boolean isAllowFlight() {
+        return worldConfig.isAllowFlight();
     }
 
     /**
@@ -163,8 +163,8 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return True if weather events will occur, false if not.
      */
-    public boolean getAllowWeather() {
-        return worldConfig.getAllowWeather();
+    public boolean isAllowWeather() {
+        return worldConfig.isAllowWeather();
     }
 
     /**
@@ -221,12 +221,12 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
-     * Gets whether or not Multiverse should auto-load this world.
+     * Gets whether or not Multiverse should auto-load this world on server start.
      *
-     * @return True if Multiverse should auto-load this world.
+     * @return True if Multiverse should auto-load this world on server start.
      */
-    public boolean getAutoLoad() {
-        return worldConfig.getAutoLoad();
+    public boolean isAutoLoad() {
+        return worldConfig.isAutoLoad();
     }
 
     /**
@@ -379,8 +379,8 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return True if it will go down, false if it will remain steady.
      */
-    public boolean getHunger() {
-        return worldConfig.getHunger();
+    public boolean isHunger() {
+        return worldConfig.isHunger();
     }
 
     /**
@@ -398,8 +398,8 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return True if CraftBukkit is keeping spawn chunks in memory.
      */
-    public boolean getKeepSpawnInMemory() {
-        return worldConfig.getKeepSpawnInMemory();
+    public boolean isKeepSpawnInMemory() {
+        return worldConfig.isKeepSpawnInMemory();
     }
 
     /**
@@ -629,8 +629,8 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return True if ANY animal can, false if no animals can spawn.
      */
-    public boolean getSpawningAnimals() {
-        return worldConfig.getSpawningAnimals();
+    public boolean isSpawningAnimals() {
+        return worldConfig.isSpawningAnimals();
     }
 
     /**
@@ -666,18 +666,18 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
-     * Returns a list of animals. This list always negates the {@link #getSpawningAnimals()} result.
+     * Returns a list of animals. This list always negates the {@link #isSpawningAnimals()} result.
      *
-     * @return A list of animals that will spawn if {@link #getSpawningAnimals()} is false.
+     * @return A list of animals that will spawn if {@link #isSpawningAnimals()} is false.
      */
     public List<String> getSpawningAnimalsExceptions() {
         return worldConfig.getSpawningAnimalsExceptions();
     }
 
     /**
-     * Sets the list of animals that will spawn if {@link #getSpawningAnimals()} is false.
+     * Sets the list of animals that will spawn if {@link #isSpawningAnimals()} is false.
      *
-     * @param spawningAnimalsExceptions The list of animals that will spawn if {@link #getSpawningAnimals()} is false.
+     * @param spawningAnimalsExceptions The list of animals that will spawn if {@link #isSpawningAnimals()} is false.
      * @return Result of setting property.
      */
     public Try<Void> setSpawningAnimalsExceptions(List<String> spawningAnimalsExceptions) {
@@ -689,8 +689,8 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return True if ANY monster can, false if no monsters can spawn.
      */
-    public boolean getSpawningMonsters() {
-        return worldConfig.getSpawningMonsters();
+    public boolean isSpawningMonsters() {
+        return worldConfig.isSpawningMonsters();
     }
 
     /**
@@ -725,18 +725,18 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
-     * Returns a list of monsters. This list always negates the {@link #getSpawningMonsters()} result.
+     * Returns a list of monsters. This list always negates the {@link #isSpawningMonsters()} result.
      *
-     * @return A list of monsters that will spawn if {@link #getSpawningMonsters()} is false.
+     * @return A list of monsters that will spawn if {@link #isSpawningMonsters()} is false.
      */
     public List<String> getSpawningMonstersExceptions() {
         return worldConfig.getSpawningMonstersExceptions();
     }
 
     /**
-     * Sets the list of monsters that will spawn if {@link #getSpawningMonsters()} is false.
+     * Sets the list of monsters that will spawn if {@link #isSpawningMonsters()} is false.
      *
-     * @param spawningMonstersExceptions The list of monsters that will spawn if {@link #getSpawningMonsters()}
+     * @param spawningMonstersExceptions The list of monsters that will spawn if {@link #isSpawningMonsters()}
      *                                   is false.
      * @return Result of setting property.
      */

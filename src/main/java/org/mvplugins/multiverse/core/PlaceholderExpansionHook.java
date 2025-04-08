@@ -99,7 +99,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return world.getAliasOrName();
             }
             case "animalspawn" -> {
-                return String.valueOf(world.getSpawningAnimals());
+                return String.valueOf(world.isSpawningAnimals());
             }
             case "autoheal" -> {
                 return String.valueOf(world.getAutoHeal());
@@ -120,7 +120,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return world.getEnvironment().toString().toLowerCase();
             }
             case "flight" -> {
-                return String.valueOf(world.getAllowFlight());
+                return String.valueOf(world.isAllowFlight());
             }
             case "gamemode" -> {
                 return world.getGameMode().toString().toLowerCase();
@@ -129,10 +129,10 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return world.getGenerator();
             }
             case "hunger" -> {
-                return String.valueOf(world.getHunger());
+                return String.valueOf(world.isHunger());
             }
             case "monstersspawn" -> {
-                return String.valueOf(world.getSpawningMonsters());
+                return String.valueOf(world.isSpawningMonsters());
             }
             case "name" -> {
                 return world.getName();
@@ -156,7 +156,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return world.getBukkitWorld().map(World::getWorldType).map(Enum::name).getOrElse("null");
             }
             case "weather" -> {
-                return String.valueOf(world.getAllowWeather());
+                return String.valueOf(world.isAllowWeather());
             }
             default -> {
                 warning("Unknown placeholder: " + placeholder);
