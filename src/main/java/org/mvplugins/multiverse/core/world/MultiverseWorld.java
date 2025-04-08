@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
+import org.mvplugins.multiverse.core.world.mobs.MobsSpawnConfig;
 
 /**
  * Represents a world handled by Multiverse which has all the custom properties provided by Multiverse.
@@ -624,124 +625,12 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
         return worldConfig.setSpawnLocation(spawnLocation);
     }
 
-    /**
-     * Gets whether or not animals are allowed to spawn in this world.
-     *
-     * @return True if ANY animal can, false if no animals can spawn.
-     */
-    public boolean isSpawningAnimals() {
-        return worldConfig.isSpawningAnimals();
+    public MobsSpawnConfig getMobsSpawnConfig() {
+        return worldConfig.getMobsSpawnConfig();
     }
 
-    /**
-     * Sets whether or not animals can spawn.
-     * <br/>
-     * If there are values in {@link #getSpawningAnimalsExceptions()} and this is false,
-     * those animals become the exceptions, and will spawn
-     *
-     * @param spawningAnimals True to allow spawning of monsters, false to prevent.
-     * @return Result of setting property.
-     */
-    public Try<Void> setSpawningAnimals(boolean spawningAnimals) {
-        return worldConfig.setSpawningAnimals(spawningAnimals);
-    }
-
-    /**
-     * Gets the amount of ticks between animal spawns.
-     *
-     * @return The amount of ticks between animal spawns.
-     */
-    public int getSpawningAnimalsTicks() {
-        return worldConfig.getSpawningAnimalsTicks();
-    }
-
-    /**
-     * Sets the amount of ticks between animal spawns. Set to -1 to use bukkit default.
-     *
-     * @param spawningAnimalsAmount The amount of ticks between animal spawns.
-     * @return Result of setting property.
-     */
-    public Try<Void> setSpawningAnimalsTicks(int spawningAnimalsAmount) {
-        return worldConfig.setSpawningAnimalsTicks(spawningAnimalsAmount);
-    }
-
-    /**
-     * Returns a list of animals. This list always negates the {@link #isSpawningAnimals()} result.
-     *
-     * @return A list of animals that will spawn if {@link #isSpawningAnimals()} is false.
-     */
-    public List<String> getSpawningAnimalsExceptions() {
-        return worldConfig.getSpawningAnimalsExceptions();
-    }
-
-    /**
-     * Sets the list of animals that will spawn if {@link #isSpawningAnimals()} is false.
-     *
-     * @param spawningAnimalsExceptions The list of animals that will spawn if {@link #isSpawningAnimals()} is false.
-     * @return Result of setting property.
-     */
-    public Try<Void> setSpawningAnimalsExceptions(List<String> spawningAnimalsExceptions) {
-        return worldConfig.setSpawningAnimalsExceptions(spawningAnimalsExceptions);
-    }
-
-    /**
-     * Gets whether or not monsters are allowed to spawn in this world.
-     *
-     * @return True if ANY monster can, false if no monsters can spawn.
-     */
-    public boolean isSpawningMonsters() {
-        return worldConfig.isSpawningMonsters();
-    }
-
-    /**
-     * Sets whether or not monsters can spawn.
-     * If there are values in {@link #getSpawningMonstersExceptions()} and this is false,
-     * those monsters become the exceptions, and will spawn
-     *
-     * @param spawningMonsters True to allow spawning of monsters, false to prevent.
-     * @return Result of setting property.
-     */
-    public Try<Void> setSpawningMonsters(boolean spawningMonsters) {
-        return worldConfig.setSpawningMonsters(spawningMonsters);
-    }
-
-    /**
-     * Gets the amount of ticks between monster spawns.
-     *
-     * @return The amount of ticks between monster spawns.
-     */
-    public int getSpawningMonstersTicks() {
-        return worldConfig.getSpawningMonstersTicks();
-    }
-
-    /**
-     * Sets the amount of ticks between monster spawns. Set to -1 to use bukkit default.
-     *
-     * @param spawningMonstersAmount The amount of ticks between monster spawns.
-     * @return Result of setting property.
-     */
-    public Try<Void> setSpawningMonstersTicks(int spawningMonstersAmount) {
-        return worldConfig.setSpawningMonstersTicks(spawningMonstersAmount);
-    }
-
-    /**
-     * Returns a list of monsters. This list always negates the {@link #isSpawningMonsters()} result.
-     *
-     * @return A list of monsters that will spawn if {@link #isSpawningMonsters()} is false.
-     */
-    public List<String> getSpawningMonstersExceptions() {
-        return worldConfig.getSpawningMonstersExceptions();
-    }
-
-    /**
-     * Sets the list of monsters that will spawn if {@link #isSpawningMonsters()} is false.
-     *
-     * @param spawningMonstersExceptions The list of monsters that will spawn if {@link #isSpawningMonsters()}
-     *                                   is false.
-     * @return Result of setting property.
-     */
-    public Try<Void> setSpawningMonstersExceptions(List<String> spawningMonstersExceptions) {
-        return worldConfig.setSpawningMonstersExceptions(spawningMonstersExceptions);
+    public Try<Void> setMobsSpawnConfig(MobsSpawnConfig mobsSpawnConfig) {
+        return worldConfig.setMobsSpawnConfig(mobsSpawnConfig);
     }
 
     /**

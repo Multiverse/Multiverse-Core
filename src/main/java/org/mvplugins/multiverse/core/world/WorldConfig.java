@@ -29,6 +29,7 @@ import org.mvplugins.multiverse.core.config.migration.action.NullStringMigratorA
 import org.mvplugins.multiverse.core.config.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
+import org.mvplugins.multiverse.core.world.mobs.MobsSpawnConfig;
 
 /**
  * Represents a world configuration.
@@ -111,6 +112,10 @@ final class WorldConfig {
                         .build())
                 .addVersionMigrator(VersionMigrator.builder(1.1)
                         .addAction(new BiomeMigrator())
+                        .build())
+                .addVersionMigrator(VersionMigrator.builder(1.2)
+                        .addAction(MoveMigratorAction.of("spawning.animals", "spawning.animal"))
+                        .addAction(MoveMigratorAction.of("spawning.monsters", "spawning.monster"))
                         .build())
                 .build();
     }
@@ -345,52 +350,12 @@ final class WorldConfig {
         return configHandle.set(configNodes.spawnLocation, spawnLocation);
     }
 
-    boolean isSpawningAnimals() {
-        return configHandle.get(configNodes.spawningAnimals);
+    MobsSpawnConfig getMobsSpawnConfig() {
+        return configHandle.get(configNodes.mobsSpawnConfig);
     }
 
-    Try<Void> setSpawningAnimals(boolean spawningAnimals) {
-        return configHandle.set(configNodes.spawningAnimals, spawningAnimals);
-    }
-
-    int getSpawningAnimalsTicks() {
-        return configHandle.get(configNodes.spawningAnimalsTicks);
-    }
-
-    Try<Void> setSpawningAnimalsTicks(int spawningAnimalsAmount) {
-        return configHandle.set(configNodes.spawningAnimalsTicks, spawningAnimalsAmount);
-    }
-
-    List<String> getSpawningAnimalsExceptions() {
-        return configHandle.get(configNodes.spawningAnimalsExceptions);
-    }
-
-    Try<Void> setSpawningAnimalsExceptions(List<String> spawningAnimalsExceptions) {
-        return configHandle.set(configNodes.spawningAnimalsExceptions, spawningAnimalsExceptions);
-    }
-
-    boolean isSpawningMonsters() {
-        return configHandle.get(configNodes.spawningMonsters);
-    }
-
-    Try<Void> setSpawningMonsters(boolean spawningMonsters) {
-        return configHandle.set(configNodes.spawningMonsters, spawningMonsters);
-    }
-
-    int getSpawningMonstersTicks() {
-        return configHandle.get(configNodes.spawningMonstersTicks);
-    }
-
-    Try<Void> setSpawningMonstersTicks(int spawningMonstersAmount) {
-        return configHandle.set(configNodes.spawningMonstersTicks, spawningMonstersAmount);
-    }
-
-    List<String> getSpawningMonstersExceptions() {
-        return configHandle.get(configNodes.spawningMonstersExceptions);
-    }
-
-    Try<Void> setSpawningMonstersExceptions(List<String> spawningMonstersExceptions) {
-        return configHandle.set(configNodes.spawningMonstersExceptions, spawningMonstersExceptions);
+    Try<Void> setMobsSpawnConfig(MobsSpawnConfig mobsSpawnConfig) {
+        return configHandle.set(configNodes.mobsSpawnConfig, mobsSpawnConfig);
     }
 
     List<String> getWorldBlacklist() {

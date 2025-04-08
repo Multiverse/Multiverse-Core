@@ -32,14 +32,6 @@ world_nether:
     z: 48.0
     pitch: 0.0
     yaw: 0.0
-  spawning:
-    animals:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
-    monsters:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
+  spawning: {}
   world-blacklist: []
-  version: 1.1
+  version: 1.2

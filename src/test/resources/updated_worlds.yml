@@ -33,16 +33,18 @@ world:
     pitch: 0.0
     yaw: 0.0
   spawning:
-    animals:
+    animal:
       spawn: true
+      exceptions:
+        - cow
+        - pig
+      tick-rate: 111
+    misc:
+      spawn: false
+      exceptions: [ ]
       tick-rate: -1
-      exceptions: []
-    monsters:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
   world-blacklist: []
-  version: 1.1
+  version: 1.2
 world_nether:
   adjust-spawn: false
   alias: ''
@@ -77,14 +79,6 @@ world_nether:
     z: 48.0
     pitch: 0.0
     yaw: 0.0
-  spawning:
-    animals:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
-    monsters:
-      spawn: true
-      tick-rate: -1
-      exceptions: []
+  spawning: {}
   world-blacklist: []
-  version: 1.1
+  version: 1.2
