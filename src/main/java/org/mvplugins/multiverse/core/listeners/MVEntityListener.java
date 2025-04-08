@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -21,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.world.WorldManager;
-import org.mvplugins.multiverse.core.world.helpers.LegacyWorldPurger;
 
 /**
  * Multiverse's Entity {@link Listener}.
@@ -29,14 +27,10 @@ import org.mvplugins.multiverse.core.world.helpers.LegacyWorldPurger;
 @Service
 final class MVEntityListener implements CoreListener {
     private final WorldManager worldManager;
-    private final LegacyWorldPurger worldPurger;
 
     @Inject
-    MVEntityListener(
-            @NotNull WorldManager worldManager,
-            @NotNull LegacyWorldPurger worldPurger) {
+    MVEntityListener(@NotNull WorldManager worldManager) {
         this.worldManager = worldManager;
-        this.worldPurger = worldPurger;
     }
 
     /**
@@ -91,16 +85,17 @@ final class MVEntityListener implements CoreListener {
             return;
         }
 
-        // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
-        if (event.getSpawnReason() == SpawnReason.CUSTOM
-                || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
-                || event.getSpawnReason() == SpawnReason.BREEDING) {
-            return;
-        }
+        //TODO: Add config option for this
+//        // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
+//        if (event.getSpawnReason() == SpawnReason.CUSTOM
+//                || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
+//                || event.getSpawnReason() == SpawnReason.BREEDING) {
+//            return;
+//        }
 
         worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek(world -> {
-                    if (this.worldPurger.shouldWeKillThisCreature(world, event.getEntity())) {
+                    if (!world.getMobsSpawnConfig().shouldAllowSpawn(event.getEntity())) {
                         Logging.finer("Cancelling Creature Spawn Event for: " + event.getEntity());
                         event.setCancelled(true);
                     }

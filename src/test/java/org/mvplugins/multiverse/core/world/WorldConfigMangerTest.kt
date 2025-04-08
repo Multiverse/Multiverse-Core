@@ -3,6 +3,8 @@ package org.mvplugins.multiverse.core.world
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.World.Environment
+import org.bukkit.entity.EntityType
+import org.bukkit.entity.SpawnCategory
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.economy.MVEconomist
 import org.mvplugins.multiverse.core.world.location.SpawnLocation
@@ -82,6 +84,9 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
                 50.0
             )
         ).isSuccess)
+        worldConfig.mobsSpawnConfig.getSpawnCategoryConfig(SpawnCategory.MISC).isSpawn = false
+        worldConfig.mobsSpawnConfig.getSpawnCategoryConfig(SpawnCategory.ANIMAL).tickRate = 111
+        worldConfig.mobsSpawnConfig.getSpawnCategoryConfig(SpawnCategory.ANIMAL).exceptions = listOf(EntityType.COW, EntityType.PIG)
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/updated_worlds.yml", "worlds.yml")
     }
@@ -109,5 +114,6 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertEquals(GameMode.SURVIVAL, worldConfig.gameMode)
         assertEquals(4.0, worldConfig.scale)
         assertEquals(listOf("a", "1", "2"), worldConfig.worldBlacklist)
+        assertEquals(listOf(EntityType.COW), worldConfig.mobsSpawnConfig.getSpawnCategoryConfig(SpawnCategory.ANIMAL).exceptions)
     }
 }

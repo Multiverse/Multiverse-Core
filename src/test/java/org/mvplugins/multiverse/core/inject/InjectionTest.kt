@@ -77,7 +77,7 @@ class InjectionTest : TestWithMockBukkit() {
     @Test
     fun `Commands are available as services`() {
         val commands = serviceLocator.getAllActiveServices(CoreCommand::class.java)
-        assertEquals(53, commands.size)
+        assertEquals(54, commands.size)
     }
 
     @Test

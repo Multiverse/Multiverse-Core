@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.world;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -12,6 +11,8 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
@@ -25,6 +26,7 @@ import org.mvplugins.multiverse.core.utils.MaterialConverter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 import org.mvplugins.multiverse.core.world.location.NullLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
+import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
 /**
  * Represents nodes in a world configuration.
@@ -238,52 +240,28 @@ final class WorldConfigNodes {
                 });
             }));
 
-    final ConfigNode<Boolean> spawningAnimals = node(ConfigNode.builder("spawning.animals.spawn", Boolean.class)
-            .defaultValue(true)
-            .name("spawning-animals")
+    final ConfigNode<EntitySpawnConfig> mobsSpawnConfig = node(ConfigNode.builder("spawning", EntitySpawnConfig.class)
+            .defaultValue(() -> EntitySpawnConfig.fromSection(new MemoryConfiguration()))
+            .hidden()
+            .serializer(new NodeSerializer<>() {
+                @Override
+                public EntitySpawnConfig deserialize(Object object, Class<EntitySpawnConfig> type) {
+                    ConfigurationSection spawnSection = (object instanceof ConfigurationSection section)
+                            ? section
+                            : new MemoryConfiguration();
+                    return EntitySpawnConfig.fromSection(spawnSection);
+                }
+
+                @Override
+                public Object serialize(EntitySpawnConfig object, Class<EntitySpawnConfig> type) {
+                    return object.toSection();
+                }
+            })
             .onSetValue((oldValue, newValue) -> {
+                newValue.setWorldRef(world);
                 if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                loadedWorld.getBukkitWorld().peek(bukkitWorld ->
-                        bukkitWorld.setSpawnFlags(bukkitWorld.getAllowMonsters(), newValue));
+                loadedWorld.getBukkitWorld().peek(newValue::applyConfigToWorld);
             }));
-
-    final ConfigNode<Integer> spawningAnimalsTicks = node(ConfigNode
-            .builder("spawning.animals.tick-rate", Integer.class)
-            .defaultValue(-1)
-            .name("spawning-animals-ticks")
-            .onSetValue((oldValue, newValue) -> {
-                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                loadedWorld.getBukkitWorld().peek(bukkitWorld -> bukkitWorld.setTicksPerAnimalSpawns(newValue));
-            }));
-
-    final ConfigNode<List<String>> spawningAnimalsExceptions = node(ListConfigNode
-            .listBuilder("spawning.animals.exceptions", String.class)
-            .defaultValue(new ArrayList<>())
-            .name("spawning-animals-exceptions"));
-
-    final ConfigNode<Boolean> spawningMonsters = node(ConfigNode
-            .builder("spawning.monsters.spawn", Boolean.class)
-            .defaultValue(true)
-            .name("spawning-monsters")
-            .onSetValue((oldValue, newValue) -> {
-                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                loadedWorld.getBukkitWorld().peek(bukkitWorld ->
-                        bukkitWorld.setSpawnFlags(newValue, bukkitWorld.getAllowAnimals()));
-            }));
-
-    final ConfigNode<Integer> spawningMonstersTicks = node(ConfigNode
-            .builder("spawning.monsters.tick-rate", Integer.class)
-            .defaultValue(-1)
-            .name("spawning-monsters-ticks")
-            .onSetValue((oldValue, newValue) -> {
-                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                loadedWorld.getBukkitWorld().peek(bukkitWorld -> bukkitWorld.setTicksPerMonsterSpawns(newValue));
-            }));
-
-    final ConfigNode<List<String>> spawningMonstersExceptions = node(ListConfigNode
-            .listBuilder("spawning.monsters.exceptions", String.class)
-            .defaultValue(new ArrayList<>())
-            .name("spawning-monsters-exceptions"));
 
     final ConfigNode<List<String>> worldBlacklist = node(ListConfigNode.listBuilder("world-blacklist", String.class));
 

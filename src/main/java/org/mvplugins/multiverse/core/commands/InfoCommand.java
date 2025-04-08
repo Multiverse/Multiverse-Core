@@ -117,8 +117,8 @@ class InfoCommand extends CoreCommand {
         outMap.put("PVP Enabled", String.valueOf(world.getPvp()));
         outMap.put("Portal Form", String.valueOf(world.getPortalForm()));
         outMap.put("Player Limit", String.valueOf(world.getPlayerLimit()));
-        getAnimalSpawningInfo(outMap, world);
-        getMonsterSpawningInfo(outMap, world);
+//        getAnimalSpawningInfo(outMap, world);
+//        getMonsterSpawningInfo(outMap, world);
         outMap.put("World Blacklist", String.join(", ", world.getWorldBlacklist()));
 
         return outMap;
@@ -135,29 +135,29 @@ class InfoCommand extends CoreCommand {
         }
     }
 
-    private void getAnimalSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
-        if (world.isSpawningAnimals()) {
-            outMap.put("Spawning Animals", "ALL");
-        } else {
-            if (!world.getSpawningAnimalsExceptions().isEmpty()) {
-                outMap.put("Spawning Animals", world.getSpawningAnimalsExceptions().toString());
-            } else {
-                outMap.put("Spawning Animals", "NONE");
-            }
-        }
-    }
-
-    private void getMonsterSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
-        if (world.isSpawningMonsters()) {
-            outMap.put("Spawning Monsters", "ALL");
-        } else {
-            if (!world.getSpawningMonstersExceptions().isEmpty()) {
-                outMap.put("Spawning Monsters", world.getSpawningMonstersExceptions().toString());
-            } else {
-                outMap.put("Spawning Monsters", "NONE");
-            }
-        }
-    }
+//    private void getAnimalSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
+//        if (world.isSpawningAnimals()) {
+//            outMap.put("Spawning Animals", "ALL");
+//        } else {
+//            if (!world.getSpawningAnimalsExceptions().isEmpty()) {
+//                outMap.put("Spawning Animals", world.getSpawningAnimalsExceptions().toString());
+//            } else {
+//                outMap.put("Spawning Animals", "NONE");
+//            }
+//        }
+//    }
+//
+//    private void getMonsterSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
+//        if (world.isSpawningMonsters()) {
+//            outMap.put("Spawning Monsters", "ALL");
+//        } else {
+//            if (!world.getSpawningMonstersExceptions().isEmpty()) {
+//                outMap.put("Spawning Monsters", world.getSpawningMonstersExceptions().toString());
+//            } else {
+//                outMap.put("Spawning Monsters", "NONE");
+//            }
+//        }
+//    }
 
     @Service
     private static final class LegacyAlias extends InfoCommand implements LegacyAliasCommand {

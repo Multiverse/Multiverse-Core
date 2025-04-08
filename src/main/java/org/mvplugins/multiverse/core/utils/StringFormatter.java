@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.utils;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Common string formatting methods used throughout Multiverse plugins.
@@ -28,6 +30,10 @@ public final class StringFormatter {
      */
     public static @NotNull String joinAnd(List<String> list) {
         return join(list, ", ", " and ");
+    }
+
+    public static @NotNull String join(Collection list, String separator) {
+        return list.stream().map(String::valueOf).collect(Collectors.joining(separator)).toString();
     }
 
     /**

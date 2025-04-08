@@ -7,6 +7,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -99,7 +100,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return world.getAliasOrName();
             }
             case "animalspawn" -> {
-                return String.valueOf(world.isSpawningAnimals());
+                return String.valueOf(world.getMobsSpawnConfig().getSpawnCategoryConfig(SpawnCategory.ANIMAL).isSpawn());
             }
             case "autoheal" -> {
                 return String.valueOf(world.getAutoHeal());
@@ -132,7 +133,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return String.valueOf(world.isHunger());
             }
             case "monstersspawn" -> {
-                return String.valueOf(world.isSpawningMonsters());
+                return String.valueOf(world.getMobsSpawnConfig().getSpawnCategoryConfig(SpawnCategory.MONSTER).isSpawn());
             }
             case "name" -> {
                 return world.getName();

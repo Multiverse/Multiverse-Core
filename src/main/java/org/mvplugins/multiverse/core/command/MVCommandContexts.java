@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.command;
 import java.util.HashSet;
 import java.util.Set;
 
+import co.aikar.commands.ACFUtil;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
@@ -12,6 +13,7 @@ import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
@@ -68,6 +70,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(MultiverseAnchor.class, this::parseMultiverseAnchor);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
+        registerContext(SpawnCategory[].class, this::parseSpawnCategories);
     }
 
     private MVCommandIssuer parseMVCommandIssuer(BukkitCommandExecutionContext context) {
@@ -444,5 +447,20 @@ public class MVCommandContexts extends PaperCommandContexts {
             return null;
         }
         throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
+    }
+
+    private SpawnCategory[] parseSpawnCategories(BukkitCommandExecutionContext context) {
+        if (context.isOptional() && context.getArgs().isEmpty()) {
+            return new SpawnCategory[0];
+        }
+        Set<SpawnCategory> categories = new HashSet<>();
+        String[] split = REPatterns.COMMA.split(context.popFirstArg());
+        for (String category : split) {
+            SpawnCategory spawnCategory = ACFUtil.simpleMatch(SpawnCategory.class, category);
+            if (spawnCategory != null) {
+                categories.add(spawnCategory);
+            }
+        }
+        return categories.toArray(new SpawnCategory[0]);
     }
 }
