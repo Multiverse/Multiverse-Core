@@ -40,6 +40,7 @@ import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -240,17 +241,21 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         String scope = context.getConfig("scope", "loaded");
         switch (scope) {
             case "both" -> {
-                return worldManager.getWorlds().stream().map(MultiverseWorld::getTabCompleteName).toList();
+                return worldManager.getWorlds().stream()
+                        .map(MultiverseWorld::getTabCompleteName)
+                        .map(StringFormatter::quoteMultiWordString)
+                        .toList();
             }
             case "loaded" -> {
-                return worldManager.getLoadedWorlds()
-                        .stream()
+                return worldManager.getLoadedWorlds().stream()
                         .map(MultiverseWorld::getTabCompleteName)
+                        .map(StringFormatter::quoteMultiWordString)
                         .toList();
             }
             case "unloaded" -> {
                 return worldManager.getUnloadedWorlds().stream()
                         .map(MultiverseWorld::getTabCompleteName)
+                        .map(StringFormatter::quoteMultiWordString)
                         .toList();
             }
             case "potential" -> {

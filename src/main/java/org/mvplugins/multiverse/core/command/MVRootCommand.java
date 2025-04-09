@@ -6,6 +6,8 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.OpenBukkitRootCommand;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 
+import java.util.List;
+
 public class MVRootCommand extends OpenBukkitRootCommand {
     protected MVRootCommand(BukkitCommandManager manager, String name) {
         super(manager, name);
@@ -15,5 +17,11 @@ public class MVRootCommand extends OpenBukkitRootCommand {
     public BaseCommand execute(CommandIssuer sender, String commandLabel, String[] args) {
         String[] quoteFormatedArgs = StringFormatter.parseQuotesInArgs(args).toArray(String[]::new);
         return super.execute(sender, commandLabel, quoteFormatedArgs);
+    }
+
+    @Override
+    public List<String> getTabCompletions(CommandIssuer sender, String alias, String[] args, boolean commandsOnly, boolean isAsync) {
+        String[] quoteFormatedArgs = StringFormatter.parseQuotesInArgs(args).toArray(String[]::new);
+        return super.getTabCompletions(sender, alias, quoteFormatedArgs, commandsOnly, isAsync);
     }
 }
