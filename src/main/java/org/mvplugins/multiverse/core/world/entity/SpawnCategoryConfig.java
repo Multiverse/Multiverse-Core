@@ -139,6 +139,9 @@ public final class SpawnCategoryConfig {
 
         final ListConfigNode<EntityType> exceptions = node(ListConfigNode.listBuilder("exceptions", EntityType.class)
                 .defaultValue(ArrayList::new)
+                .itemSuggester(input -> SpawnCategoryMapper.getEntityTypes(spawnCategory).stream()
+                        .map(EntityType::name)
+                        .toList())
                 .onSetValue((oldValue, newValue) -> {
                     if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
                     loadedWorld.getBukkitWorld().peek(SpawnCategoryConfig.this::applyConfigToWorld);
