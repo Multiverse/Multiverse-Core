@@ -19,10 +19,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class PlayerFinder {
 
-    //TODO: Move to REPatterns
-    private static final Pattern UUID_REGEX = Pattern.compile("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
-    private static final Pattern COMMA_SPLIT = Pattern.compile(",");
-
     /**
      * Get a {@link Player} based on an identifier of name UUID or selector.
      *
@@ -84,7 +80,7 @@ public final class PlayerFinder {
             return playerResults;
         }
 
-        String[] playerIdentifierArray = COMMA_SPLIT.split(playerIdentifiers);
+        String[] playerIdentifierArray = REPatterns.COMMA.split(playerIdentifiers);
         for (String playerIdentifier : playerIdentifierArray) {
             Player targetPlayer = getByName(playerIdentifier);
             if (targetPlayer != null) {
@@ -122,7 +118,7 @@ public final class PlayerFinder {
      * @return The player if found, else null.
      */
     public static @Nullable Player getByUuid(@NotNull String playerUuid) {
-        if (!UUID_REGEX.matcher(playerUuid).matches()) {
+        if (!REPatterns.UUID.matcher(playerUuid).matches()) {
             return null;
         }
         UUID uuid;

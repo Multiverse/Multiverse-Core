@@ -12,10 +12,11 @@ public class REPatterns {
         return patternCache.computeIfAbsent(regex, Pattern::compile);
     }
 
-    public static Pattern COLON = get(":");
-    public static Pattern COMMA = get(",");
-    public static Pattern DOT = get("\\.");
-    public static Pattern EQUALS = get("=");
-    public static Pattern SEMICOLON = get(";");
-    public static Pattern UNDERSCORE = get("_");
+    public static final Pattern COLON = get(":");
+    public static final Pattern COMMA = get(",");
+    public static final Pattern DOT = get("\\.");
+    public static final Pattern EQUALS = get("=");
+    public static final Pattern SEMICOLON = get(";");
+    public static final Pattern UNDERSCORE = get("_");
+    public static final Pattern UUID = get("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
 }
