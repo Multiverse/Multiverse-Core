@@ -55,7 +55,7 @@ class InfoCommand extends CoreCommand {
     // TODO: support info for unloaded worlds
     @Subcommand("info")
     @CommandPermission("multiverse.core.info")
-    @CommandCompletion("@mvworlds:scope=both|@flags:groupName=" + PageFilterFlags.NAME + " @flags:groupName=" + PageFilterFlags.NAME)
+    @CommandCompletion("@mvworlds:scope=both|@flags:resolveUntil=arg1,groupName=" + PageFilterFlags.NAME + " @flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.info.description}")
     public void onInfoCommand(
