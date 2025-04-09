@@ -23,6 +23,7 @@ import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.utils.StringFormatter;
 
 /**
  * A config node that contains a list of values.
@@ -107,18 +108,10 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
 
     private void setDefaultSuggester() {
         this.suggester = input -> {
-            int lastIndexOf = input == null ? -1 : input.lastIndexOf(',');
-            if (lastIndexOf == -1) {
-                return itemSuggester.suggest(input);
+            if (input == null) {
+                return itemSuggester.suggest(null);
             }
-
-            String lastInput = input.substring(lastIndexOf + 1);
-            String inputBeforeLast = input.substring(0, lastIndexOf + 1);
-            Set<String> inputs = Set.of(REPatterns.COMMA.split(inputBeforeLast));
-            return itemSuggester.suggest(lastInput).stream()
-                    .filter(item -> !inputs.contains(item))
-                    .map(item -> inputBeforeLast + item)
-                    .toList();
+            return StringFormatter.addonToCommaSeperated(input, itemSuggester.suggest(input));
         };
     }
 
