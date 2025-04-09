@@ -85,13 +85,13 @@ final class EntitySpawnConfigCommand extends CoreCommand {
     @Subcommand("modify")
     @CommandPermission("multiverse.core.mobsspawnconfig")
     @CommandCompletion("@mvworlds:scope=both @spawncategories @propsmodifyaction @spawncategorypropsname @spawncategorypropsvalue")
-    @Syntax("[world(s)] <spawn-category> <set|add|reset|remove> <property> [value]")
+    @Syntax("[world] <spawn-category> <set|add|reset|remove> <property> [value]")
     @Description("")
     void onModifyCommand(
             MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
-            @Syntax("[world(s)]")
+            @Syntax("[world]")
             MultiverseWorld world,
 
             @Syntax("<spawn-category>")
