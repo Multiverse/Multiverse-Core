@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.utils;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -70,7 +71,10 @@ public final class StringFormatter {
      * @param addons    The autocomplete suggestions
      * @return A collection of suggestions with the next suggestion appended
      */
-    public static Collection<String> addonToCommaSeperated(String input, Collection<String> addons) {
+    public static Collection<String> addonToCommaSeperated(@Nullable String input, @NotNull Collection<String> addons) {
+        if (Strings.isNullOrEmpty(input)) {
+            return addons;
+        }
         int lastComma = input.lastIndexOf(',');
         String previousInputs = input.substring(0, lastComma + 1);
         Set<String> inputSet = Sets.newHashSet(REPatterns.COMMA.split(input));
