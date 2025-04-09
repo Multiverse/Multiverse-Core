@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -84,29 +85,58 @@ public final class StringFormatter {
                 .toList();
     }
 
+    /**
+     * Parse quotes in args into a single string. E.g. ["\"my", "string\""] -> ["my string"]
+     *
+     * @param args  The args to parse
+     * @return The parsed args
+     */
     public static Collection<String> parseQuotesInArgs(String[] args) {
         List<String> result = new ArrayList<>(args.length);
-        StringBuilder quotedArg = null;
-        for (String arg : args) {
-            if (quotedArg == null && arg.startsWith("\"")) {
-                // Handle edge case where the arg itself starts and ends with quotes without space: "arghere"
-                if (arg.endsWith("\"")) {
-                    result.add(arg.substring(1, arg.length() - 1));
-                    continue;
-                }
-                quotedArg = new StringBuilder(arg.substring(1));
-            } else if (quotedArg != null) {
-                if (arg.endsWith("\"")) {
-                    quotedArg.append(" ").append(arg, 0, arg.length() - 1);
-                    result.add(quotedArg.toString());
-                    quotedArg = null;
-                    continue;
-                }
-                quotedArg.append(" ").append(arg);
+        StringBuilder current = new StringBuilder();
+        boolean inQuotes = false;
+        int quoteStartIndex = -1;
+
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+
+            if (!inQuotes && arg.startsWith("\"") && !arg.endsWith("\"")) {
+                inQuotes = true;
+                quoteStartIndex = i;
+                current.append(arg.substring(1));
+            } else if (inQuotes && arg.endsWith("\"")) {
+                current.append(" ").append(arg, 0, arg.length() - 1);
+                result.add(current.toString());
+                current.setLength(0);
+                inQuotes = false;
+                quoteStartIndex = -1;
+            } else if (inQuotes) {
+                current.append(" ").append(arg);
+            } else if (arg.startsWith("\"") && arg.endsWith("\"") && arg.length() > 1) {
+                // Fully quoted in one token
+                result.add(arg.substring(1, arg.length() - 1));
             } else {
                 result.add(arg);
             }
         }
+
+        // If we never saw the end quote, treat all those args as individual tokens again
+        if (inQuotes) {
+            // Restore the original args from quoteStartIndex onward
+            result.addAll(Arrays.asList(args).subList(quoteStartIndex, args.length));
+        }
+
         return result;
+    }
+
+    /**
+     * Add quotes to a string if it contains spaces. E.g. "my string" -> "\"my string\"".
+     * Gives back the original string if it doesn't contain spaces.
+     *
+     * @param input The string to add quotes to
+     * @return The quoted string
+     */
+    public static String quoteMultiWordString(String input) {
+        return input.contains(" ") ? "\"" + input + "\"" : input;
     }
 }
