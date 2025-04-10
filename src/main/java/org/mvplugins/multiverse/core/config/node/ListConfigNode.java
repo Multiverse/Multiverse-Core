@@ -104,6 +104,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         if (this.onSetItemValue != null && this.onSetValue == null) {
             setDefaultOnSetValue();
         }
+        if (this.defaultValue == null) {
+            this.defaultValue = ArrayList::new;
+        }
     }
 
     private void setDefaultSuggester() {

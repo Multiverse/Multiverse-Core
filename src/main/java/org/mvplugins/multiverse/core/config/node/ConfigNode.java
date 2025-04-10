@@ -42,7 +42,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
 
     protected final @Nullable String name;
     protected final @NotNull Class<T> type;
-    protected final @Nullable Supplier<T> defaultValue;
+    protected @Nullable Supplier<T> defaultValue;
     protected @Nullable NodeSuggester suggester;
     protected @Nullable NodeStringParser<T> stringParser;
     protected @Nullable NodeSerializer<T> serializer;
