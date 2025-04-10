@@ -49,6 +49,7 @@ class WorldConfigTest : TestWithMockBukkit() {
     fun `Getting existing world property by getter returns expected value`() {
         assertEquals("my world", worldConfig.alias)
         assertEquals(false, worldConfig.isHidden)
+        assertEquals(emptyList(), worldConfig.worldBlacklist)
     }
 
     @Test

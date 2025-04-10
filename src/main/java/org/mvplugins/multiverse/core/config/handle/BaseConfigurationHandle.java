@@ -53,6 +53,8 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         return Try.run(() -> {
             migrateConfig();
             setUpNodes();
+        }).onFailure(e -> {
+            Logging.severe("Failed to load configuration: %s", e.getMessage());
         });
     }
 

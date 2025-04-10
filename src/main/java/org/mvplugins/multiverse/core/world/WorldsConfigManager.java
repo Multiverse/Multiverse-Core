@@ -50,6 +50,8 @@ final class WorldsConfigManager {
         return Try.of(() -> {
             loadWorldYmlFile();
             return parseNewAndRemovedWorlds();
+        }).onFailure(e -> {
+            Logging.severe("Failed to load worlds.yml file: %s", e.getMessage());
         });
     }
 
@@ -175,6 +177,8 @@ final class WorldsConfigManager {
                 worldsConfig.set(worldName, worldConfig.getConfigurationSection());
             });
             worldsConfig.save(worldConfigFile);
+        }).onFailure(e -> {
+            Logging.severe("Failed to save worlds.yml file: %s", e.getMessage());
         });
     }
 
