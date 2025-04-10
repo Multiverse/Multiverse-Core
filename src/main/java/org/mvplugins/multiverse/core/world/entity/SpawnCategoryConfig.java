@@ -81,6 +81,10 @@ public final class SpawnCategoryConfig {
     }
 
     public void applyConfigToWorld(World bukkitWorld) {
+        if (spawnCategory == SpawnCategory.MISC) {
+            // Cannot control misc spawn with setTicksPerSpawns
+            return;
+        }
         if (!isSpawn()) {
             if (getExceptions().isEmpty()) {
                 Logging.finer("World %s %s setTicksPerSpawns: 0", world.getName(), spawnCategory);
