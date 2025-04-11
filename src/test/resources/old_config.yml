@@ -1,0 +1,20 @@
+multiverse-configuration:
+  ==: com.onarandombox.MultiverseCore.MultiverseCoreConfiguration
+  enforceaccess: 'true'
+  prefixchat: 'false'
+  prefixchatformat: '[%world%]>>%chat%'
+  useasyncchat: 'true'
+  teleportintercept: 'false'
+  firstspawnoverride: 'true'
+  displaypermerrors: 'false'
+  enablebuscript: 'false'
+  globaldebug: '2'
+  silentstart: 'false'
+  messagecooldown: '5000'
+  version: '2.9'
+  firstspawnworld: world
+  teleportcooldown: '1000'
+  defaultportalsearch: 'true'
+  portalsearchradius: '128'
+  autopurge: 'true'
+  idonotwanttodonate: 'true'
