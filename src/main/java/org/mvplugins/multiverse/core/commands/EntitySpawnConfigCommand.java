@@ -44,7 +44,7 @@ final class EntitySpawnConfigCommand extends CoreCommand {
     }
 
     @Subcommand("info")
-    @CommandPermission("multiverse.core.mobsspawnconfig")
+    @CommandPermission("multiverse.core.entityspawnconfig.info")
     @CommandCompletion("@mvworlds:scope=both|@flags:resolveUntil=arg1,groupName=" + PageFilterFlags.NAME + " @flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("")
@@ -83,7 +83,7 @@ final class EntitySpawnConfigCommand extends CoreCommand {
     }
 
     @Subcommand("modify")
-    @CommandPermission("multiverse.core.mobsspawnconfig")
+    @CommandPermission("multiverse.core.entityspawnconfig.modify")
     @CommandCompletion("@mvworlds:scope=both @spawncategories @propsmodifyaction @spawncategorypropsname @spawncategorypropsvalue")
     @Syntax("[world] <spawn-category> <set|add|reset|remove> <property> [value]")
     @Description("")
