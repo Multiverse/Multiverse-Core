@@ -106,12 +106,19 @@ public class ImportCommand extends MultiverseCommand {
         }
 
         String env = args.get(1);
+        //CustomGenerators start
+        if(env.equalsIgnoreCase("VOID")){
+            env = "NORMAL";
+            generator = "multiverse:void";
+        }
+        //CustomGenerators end
         Environment environment = EnvironmentCommand.getEnvFromString(env);
         if (environment == null) {
             sender.sendMessage(ChatColor.RED + "That is not a valid environment.");
             EnvironmentCommand.showEnvironments(sender);
             return;
         }
+
 
         if (!worldFile.exists()) {
             sender.sendMessage(ChatColor.RED + "FAILED.");

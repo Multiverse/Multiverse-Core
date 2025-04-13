@@ -78,6 +78,7 @@ import com.onarandombox.MultiverseCore.destination.PlayerDestination;
 import com.onarandombox.MultiverseCore.destination.WorldDestination;
 import com.onarandombox.MultiverseCore.event.MVDebugModeEvent;
 import com.onarandombox.MultiverseCore.event.MVVersionEvent;
+import com.onarandombox.MultiverseCore.generators.InternalChunkGeneratorManager;
 import com.onarandombox.MultiverseCore.listeners.MVAsyncPlayerChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVChatListener;
 import com.onarandombox.MultiverseCore.listeners.MVEntityListener;
@@ -281,6 +282,11 @@ public class MultiverseCore extends JavaPlugin implements MVPlugin, Core {
 
         this.messaging = new MVMessaging();
         this.economist = new MVEconomist(this);
+        //CustomGenerators start
+        // Initialize internal chunk generator manager
+        InternalChunkGeneratorManager.init();
+        //CustomGenerators end
+
         // Load the defaultWorldGenerators
         this.worldManager.getDefaultWorldGenerators();
 
