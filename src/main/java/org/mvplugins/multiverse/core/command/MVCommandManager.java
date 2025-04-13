@@ -8,7 +8,8 @@ import co.aikar.commands.CommandContexts;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.HelpEntry;
-import co.aikar.commands.MVPaperCommandManager;
+import co.aikar.commands.LogLevel;
+import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.RootCommand;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
@@ -31,7 +32,7 @@ import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
  * Main class to manage permissions.
  */
 @Service
-public class MVCommandManager extends MVPaperCommandManager {
+public class MVCommandManager extends PaperCommandManager {
 
     private final CommandFlagsManager flagsManager;
     private final CommandQueueManager commandQueueManager;
@@ -190,5 +191,13 @@ public class MVCommandManager extends MVPaperCommandManager {
     @Override
     public RootCommand createRootCommand(String cmd) {
         return new MVRootCommand(this, cmd);
+    }
+
+    @Override
+    public void log(LogLevel level, String message, Throwable throwable) {
+        Logging.finer("[%s] %s", level, message);
+        if (throwable != null) {
+            throwable.printStackTrace();
+        }
     }
 }

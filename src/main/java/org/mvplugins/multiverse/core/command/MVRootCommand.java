@@ -2,13 +2,13 @@ package org.mvplugins.multiverse.core.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.BukkitRootCommand;
 import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.OpenBukkitRootCommand;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 
 import java.util.List;
 
-public class MVRootCommand extends OpenBukkitRootCommand {
+public class MVRootCommand extends BukkitRootCommand {
     protected MVRootCommand(BukkitCommandManager manager, String name) {
         super(manager, name);
     }
