@@ -30,9 +30,9 @@ public final class EntitySpawnConfig {
         return getSpawnCategoryConfig(entity.getSpawnCategory()).shouldAllowSpawn(entity);
     }
 
-    public void applyConfigToWorld(World bukkitWorld) {
+    public void applyConfigToWorld() {
         spawnCategoriesConfig.values()
-                .forEach(spawnCategoryConfig -> spawnCategoryConfig.applyConfigToWorld(bukkitWorld));
+                .forEach(SpawnCategoryConfig::applyConfigToWorld);
     }
 
     @Override
@@ -42,6 +42,7 @@ public final class EntitySpawnConfig {
                 '}';
     }
 
+    @ApiStatus.Internal
     public ConfigurationSection toSection() {
         MemoryConfiguration section = new MemoryConfiguration();
         spawnCategoriesConfig.forEach((spawnCategory, spawnCategoryConfig) -> {

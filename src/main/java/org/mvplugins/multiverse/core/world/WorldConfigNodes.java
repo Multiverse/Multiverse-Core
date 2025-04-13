@@ -259,8 +259,7 @@ final class WorldConfigNodes {
             })
             .onSetValue((oldValue, newValue) -> {
                 newValue.setWorldRef(world);
-                if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                loadedWorld.getBukkitWorld().peek(newValue::applyConfigToWorld);
+                newValue.applyConfigToWorld();
             }));
 
     final ConfigNode<List<String>> worldBlacklist = node(ListConfigNode.listBuilder("world-blacklist", String.class));

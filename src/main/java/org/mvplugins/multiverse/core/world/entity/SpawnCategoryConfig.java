@@ -48,6 +48,30 @@ public final class SpawnCategoryConfig {
         this.world = world;
     }
 
+    void applyConfigToWorld() {
+        if (spawnCategory == SpawnCategory.MISC) {
+            // Cannot control misc spawn with setTicksPerSpawns
+            return;
+        }
+        if (!(world instanceof LoadedMultiverseWorld loadedWorld)) {
+            return;
+        }
+        loadedWorld.getBukkitWorld().peek(bukkitWorld -> {
+            if (!isSpawn()) {
+                if (getExceptions().isEmpty()) {
+                    Logging.finer("World %s %s setTicksPerSpawns: 0", world.getName(), spawnCategory);
+                    bukkitWorld.setTicksPerSpawns(spawnCategory, 0);
+                } else {
+                    Logging.finer("World %s %s setTicksPerSpawns: -1", world.getName(), spawnCategory);
+                    bukkitWorld.setTicksPerSpawns(spawnCategory, -1);
+                }
+            } else {
+                Logging.finer("World %s %s setTicksPerSpawns: %d", world.getName(), spawnCategory, getTickRate());
+                bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
+            }
+        });
+    }
+
     public StringPropertyHandle getStringPropertyHandle() {
         return stringPropertyHandle;
     }
@@ -80,25 +104,6 @@ public final class SpawnCategoryConfig {
         return handle.set(nodes.exceptions, exceptions);
     }
 
-    public void applyConfigToWorld(World bukkitWorld) {
-        if (spawnCategory == SpawnCategory.MISC) {
-            // Cannot control misc spawn with setTicksPerSpawns
-            return;
-        }
-        if (!isSpawn()) {
-            if (getExceptions().isEmpty()) {
-                Logging.finer("World %s %s setTicksPerSpawns: 0", world.getName(), spawnCategory);
-                bukkitWorld.setTicksPerSpawns(spawnCategory, 0);
-            } else {
-                Logging.finer("World %s %s setTicksPerSpawns: -1", world.getName(), spawnCategory);
-                bukkitWorld.setTicksPerSpawns(spawnCategory, -1);
-            }
-        } else {
-            Logging.finer("World %s %s setTicksPerSpawns: %d", world.getName(), spawnCategory, getTickRate());
-            bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
-        }
-    }
-
     public boolean shouldAllowSpawn(Entity entity) {
         return shouldAllowSpawn(entity.getType());
     }
@@ -127,18 +132,12 @@ public final class SpawnCategoryConfig {
 
         final ConfigNode<Boolean> spawn = node(ConfigNode.builder("spawn", Boolean.class)
                 .defaultValue(true)
-                .onSetValue((oldValue, newValue) -> {
-                    if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                    loadedWorld.getBukkitWorld().peek(SpawnCategoryConfig.this::applyConfigToWorld);
-                })
+                .onSetValue((oldValue, newValue) -> applyConfigToWorld())
                 .build());
 
         final ConfigNode<Integer> tickRate = node(ConfigNode.builder("tick-rate", Integer.class)
                 .defaultValue(-1)
-                .onSetValue((oldValue, newValue) -> {
-                    if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                    loadedWorld.getBukkitWorld().peek(SpawnCategoryConfig.this::applyConfigToWorld);
-                })
+                .onSetValue((oldValue, newValue) -> applyConfigToWorld())
                 .build());
 
         final ListConfigNode<EntityType> exceptions = node(ListConfigNode.listBuilder("exceptions", EntityType.class)
@@ -146,10 +145,7 @@ public final class SpawnCategoryConfig {
                 .itemSuggester(input -> SpawnCategoryMapper.getEntityTypes(spawnCategory).stream()
                         .map(EntityType::name)
                         .toList())
-                .onSetValue((oldValue, newValue) -> {
-                    if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                    loadedWorld.getBukkitWorld().peek(SpawnCategoryConfig.this::applyConfigToWorld);
-                })
+                .onSetValue((oldValue, newValue) -> applyConfigToWorld())
                 .build());
     }
 }
