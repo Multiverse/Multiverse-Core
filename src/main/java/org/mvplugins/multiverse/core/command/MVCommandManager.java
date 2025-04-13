@@ -22,7 +22,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
-import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
 import org.mvplugins.multiverse.core.world.WorldManager;

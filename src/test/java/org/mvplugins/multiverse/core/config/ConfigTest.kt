@@ -31,12 +31,12 @@ class ConfigTest : TestWithMockBukkit() {
 
     @Test
     fun `Config is fresh`() {
-        assertConfigEquals("/fresh_config.yml", "config.yml")
+        assertConfigEquals("/configs/fresh_config.yml", "config.yml")
     }
 
     @Test
     fun `Old config is migrated`() {
-        val oldConfig = getResourceAsText("/old_config.yml")
+        val oldConfig = getResourceAsText("/configs/old_config.yml")
         assertNotNull(oldConfig)
         multiverseCore.dataFolder.toPath().resolve("config.yml").toFile().writeText(oldConfig)
         assertTrue(config.load().isSuccess)
@@ -108,7 +108,7 @@ class ConfigTest : TestWithMockBukkit() {
 
     @Test
     fun `Broken config should regen fresh config`() {
-        val brokenConfigData = getResourceAsText("/broken_config.yml")
+        val brokenConfigData = getResourceAsText("/configs/broken_config.yml")
         assertNotNull(brokenConfigData)
         configFile.writeText(brokenConfigData)
         assertTrue(config.load().isSuccess)
@@ -116,6 +116,6 @@ class ConfigTest : TestWithMockBukkit() {
         val brokenConfigFile = configFile.parentFile.listFiles({ _, fileName -> fileName.startsWith("config.yml.broken") })
         assertNotNull(brokenConfigFile)
         assertEquals(1, brokenConfigFile.size)
-        assertConfigEquals("/fresh_config.yml", "config.yml")
+        assertConfigEquals("/configs/fresh_config.yml", "config.yml")
     }
 }

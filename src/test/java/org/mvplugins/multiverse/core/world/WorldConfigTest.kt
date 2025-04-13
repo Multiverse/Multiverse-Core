@@ -15,7 +15,7 @@ class WorldConfigTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUp() {
-        val defaultConfig = getResourceAsText("/default_worlds.yml")
+        val defaultConfig = getResourceAsText("/worlds/default_worlds.yml")
         assertNotNull(defaultConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString()).writeText(defaultConfig)
 

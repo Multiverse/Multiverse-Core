@@ -19,7 +19,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @BeforeTest
     fun setUp() {
-        val defaultWorldsData = getResourceAsText("/default_worlds.yml")
+        val defaultWorldsData = getResourceAsText("/worlds/default_worlds.yml")
         assertNotNull(defaultWorldsData)
         val worldsFile = File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString())
         if (worldsFile.exists()) worldsFile.delete()
@@ -33,7 +33,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Old world config is migrated`() {
-        val oldConfig = getResourceAsText("/old_worlds.yml")
+        val oldConfig = getResourceAsText("/worlds/old_worlds.yml")
         assertNotNull(oldConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString()).writeText(oldConfig)
 
@@ -58,7 +58,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertEquals(Material.DIRT, worldConfig.entryFeeCurrency)
         assertEquals(5.0, worldConfig.entryFeeAmount)
 
-        assertConfigEquals("/migrated_worlds.yml", "worlds.yml")
+        assertConfigEquals("/worlds/migrated_worlds.yml", "worlds.yml")
     }
 
     @Test
@@ -67,7 +67,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertNotNull(worldConfig)
         assertEquals("newworld", worldConfig.worldName)
         assertTrue(worldConfigManager.save().isSuccess)
-        assertConfigEquals("/newworld_worlds.yml", "worlds.yml")
+        assertConfigEquals("/worlds/newworld_worlds.yml", "worlds.yml")
     }
 
     @Test
@@ -88,19 +88,19 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         worldConfig.entitySpawnConfig.getSpawnCategoryConfig(SpawnCategory.ANIMAL).tickRate = 111
         worldConfig.entitySpawnConfig.getSpawnCategoryConfig(SpawnCategory.ANIMAL).exceptions = listOf(EntityType.COW, EntityType.PIG)
         assertTrue(worldConfigManager.save().isSuccess)
-        assertConfigEquals("/updated_worlds.yml", "worlds.yml")
+        assertConfigEquals("/worlds/updated_worlds.yml", "worlds.yml")
     }
 
     @Test
     fun `Delete world section from config`() {
         worldConfigManager.deleteWorldConfig("world")
         assertTrue(worldConfigManager.save().isSuccess)
-        assertConfigEquals("/delete_worlds.yml", "worlds.yml")
+        assertConfigEquals("/worlds/delete_worlds.yml", "worlds.yml")
     }
 
     @Test
     fun `Edge case parsing tests for world config`() {
-        val edgecaseConfig = getResourceAsText("/edgecase_worlds.yml")
+        val edgecaseConfig = getResourceAsText("/worlds/edgecase_worlds.yml")
         assertNotNull(edgecaseConfig)
         File(Path.of(multiverseCore.dataFolder.absolutePath, "worlds.yml").absolutePathString()).writeText(edgecaseConfig)
 

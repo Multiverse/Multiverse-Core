@@ -13,7 +13,7 @@ class AnchorManagerTest : TestWithMockBukkit() {
         anchorManager = serviceLocator.getActiveService(AnchorManager::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("AnchorManager is not available as a service") }
 
-        writeResourceFileToPluginDataFolder("/anchors.yml", "anchors.yml")
+        writeResourceFileToPluginDataFolder("/anchors/default_anchors.yml", "anchors.yml")
         assertTrue(anchorManager.loadAnchors().isSuccess)
     }
 
@@ -45,7 +45,7 @@ class AnchorManagerTest : TestWithMockBukkit() {
         anchorManager.setAnchor("a3", newLocation)
         assertLocationEquals(newLocation, anchorManager.getAnchor("a3").orNull?.location)
 
-        assertConfigEquals("/anchors_saved.yml", "anchors.yml")
+        assertConfigEquals("/anchors/anchors_saved.yml", "anchors.yml")
     }
 
     @Test
