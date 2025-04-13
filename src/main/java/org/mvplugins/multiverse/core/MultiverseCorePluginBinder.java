@@ -3,9 +3,9 @@ package org.mvplugins.multiverse.core;
 import org.glassfish.hk2.utilities.binding.ScopedBindingBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import org.mvplugins.multiverse.core.inject.binder.JavaPluginBinder;
+import org.mvplugins.multiverse.core.module.MultiverseModuleBinder;
 
-final class MultiverseCorePluginBinder extends JavaPluginBinder<MultiverseCore> {
+final class MultiverseCorePluginBinder extends MultiverseModuleBinder<MultiverseCore> {
 
     MultiverseCorePluginBinder(@NotNull MultiverseCore plugin) {
         super(plugin);

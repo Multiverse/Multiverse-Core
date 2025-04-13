@@ -77,7 +77,7 @@ public abstract class MultiverseModule extends JavaPlugin {
      *
      * @param pluginBinder  The plugin binder
      */
-    protected void initializeDependencyInjection(PluginBinder<? extends MultiverseModule> pluginBinder) {
+    protected void initializeDependencyInjection(MultiverseModuleBinder<? extends MultiverseModule> pluginBinder) {
         PluginServiceLocator coreServiceLocator = Option.of(MultiverseModulesRegistry.get().getCore())
                 .map(MultiverseCore::getServiceLocator)
                 .getOrNull();
