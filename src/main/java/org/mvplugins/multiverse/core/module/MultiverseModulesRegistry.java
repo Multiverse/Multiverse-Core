@@ -1,6 +1,8 @@
-package org.mvplugins.multiverse.core;
+package org.mvplugins.multiverse.core.module;
 
 import com.dumptruckman.minecraft.util.Logging;
+import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.MultiverseCoreApi;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,13 +11,13 @@ import java.util.List;
 /**
  * Handle loading sub-modules of the Multiverse-Core and checking for compatibility with api versions.
  */
-public class MultiversePluginsRegistration {
+public final class MultiverseModulesRegistry {
 
-    private static MultiversePluginsRegistration instance;
+    private static MultiverseModulesRegistry instance;
 
-    public static MultiversePluginsRegistration get() {
+    public static MultiverseModulesRegistry get() {
         if (instance == null) {
-            instance = new MultiversePluginsRegistration();
+            instance = new MultiverseModulesRegistry();
         }
         return instance;
     }
@@ -24,44 +26,47 @@ public class MultiversePluginsRegistration {
     private final List<String> registeredPlugins;
     private int pluginCount = 0;
 
-    public MultiversePluginsRegistration() {
+    public MultiverseModulesRegistry() {
         registeredPlugins = new ArrayList<>();
     }
 
-    void setCore(MultiverseCore core) {
-        this.core = core;
-    }
-
-    void deferenceCore() {
-        core = null;
-    }
-
-    void registerMultiversePlugin(MultiversePlugin plugin) {
+    void registerMultiverseModule(MultiverseModule module) {
+        if (module instanceof MultiverseCore) {
+            core = (MultiverseCore) module;
+            return;
+        }
         if (core == null) {
             throw new IllegalStateException("MultiverseCore has not been initialized!");
         }
-        Logging.fine("Registering %s version api %s", plugin.getDescription().getName(), plugin.getVersionAsNumber());
+        Logging.fine("Registering %s version api %s", module.getDescription().getName(), module.getVersionAsNumber());
         if (core.getVersionAsNumber() == -1) {
             // Probably a development build, so we dont check for version compatibility
             return;
         }
-        if (core.getVersionAsNumber() < plugin.getTargetCoreVersion()) {
+        if (core.getVersionAsNumber() < module.getTargetCoreVersion()) {
             Logging.severe("Your Multiverse-Core is OUT OF DATE!");
-            Logging.severe("This version of %s requires at least Multiverse-Core version %s", plugin.getDescription().getName(), plugin.getTargetCoreVersion());
+            Logging.severe("This version of %s requires at least Multiverse-Core version %s", module.getDescription().getName(), module.getTargetCoreVersion());
             Logging.severe("Your current Multiverse-Core version is: %s", core.getVersionAsNumber());
             Logging.severe("Grab an updated copy at: ");
             Logging.severe(core.getDescription().getWebsite());
             Logging.severe("Disabling!");
-            core.getServer().getPluginManager().disablePlugin(plugin);
+            core.getServer().getPluginManager().disablePlugin(module);
             return;
         }
-        registeredPlugins.add(plugin.getDescription().getName());
+        registeredPlugins.add(module.getDescription().getName());
         pluginCount++;
     }
 
-    void unregisterMultiversePlugin(MultiversePlugin plugin) {
-        registeredPlugins.remove(plugin.getDescription().getName());
+    void unregisterMultiverseModule(MultiverseModule module) {
+        if (module instanceof MultiverseCore) {
+            core = null;
+        }
+        registeredPlugins.remove(module.getDescription().getName());
         pluginCount--;
+    }
+
+    MultiverseCore getCore() {
+        return core;
     }
 
     /**

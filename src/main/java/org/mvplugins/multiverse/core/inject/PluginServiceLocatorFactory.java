@@ -123,7 +123,10 @@ public final class PluginServiceLocatorFactory {
      */
     public <T extends Plugin> Try<PluginServiceLocator> registerPlugin(
             @NotNull PluginBinder<T> pluginBinder,
-            @NotNull PluginServiceLocator parentServiceLocator) {
+            @Nullable PluginServiceLocator parentServiceLocator) {
+        if (parentServiceLocator == null) {
+            return registerPlugin(pluginBinder);
+        }
         return createPluginServiceLocator(pluginBinder, parentServiceLocator.getServiceLocator());
     }
 

@@ -7,7 +7,6 @@
 
 package org.mvplugins.multiverse.core;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -25,12 +24,11 @@ import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.listeners.CoreListener;
-import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
+import org.mvplugins.multiverse.core.module.MultiverseModule;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.location.NullLocation;
@@ -41,9 +39,7 @@ import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
  * The start of the Multiverse-Core plugin
  */
 @Service
-public class MultiverseCore extends MultiversePlugin {
-
-    private PluginServiceLocator serviceLocator;
+public class MultiverseCore extends MultiverseModule {
 
     @Inject
     private Provider<CoreConfig> configProvider;
@@ -51,8 +47,6 @@ public class MultiverseCore extends MultiversePlugin {
     private Provider<WorldManager> worldManagerProvider;
     @Inject
     private Provider<AnchorManager> anchorManagerProvider;
-    @Inject
-    private Provider<MVCommandManager> commandManagerProvider;
     @Inject
     private Provider<DestinationsProvider> destinationsProviderProvider;
     @Inject
@@ -83,9 +77,6 @@ public class MultiverseCore extends MultiversePlugin {
         ConfigurationSerialization.registerClass(NullLocation.class);
         ConfigurationSerialization.registerClass(SpawnLocation.class);
         ConfigurationSerialization.registerClass(UnloadedWorldLocation.class);
-
-        // Setup our MultiversePluginsRegistration
-        MultiversePluginsRegistration.get().setCore(this);
     }
 
     /**
@@ -94,7 +85,7 @@ public class MultiverseCore extends MultiversePlugin {
     @Override
     public void onEnable() {
         super.onEnable();
-        initializeDependencyInjection();
+        initializeDependencyInjection(new MultiverseCorePluginBinder(this));
 
         // Load our configs first as we need them for everything else.
         var config = configProvider.get();
@@ -111,9 +102,9 @@ public class MultiverseCore extends MultiversePlugin {
         worldManagerProvider.get().initAllWorlds().andThenTry(() -> {
             loadEconomist(); // Setup economy here so vault is loaded
             loadAnchors();
-            registerEvents();
+            registerEvents(CoreListener.class);
             setUpLocales();
-            registerCommands();
+            registerCommands(CoreCommand.class);
             registerDestinations();
             setupMetrics();
             loadPlaceholderApiIntegration();
@@ -137,17 +128,6 @@ public class MultiverseCore extends MultiversePlugin {
         saveAllConfigs();
         shutdownDependencyInjection();
         Logging.shutdown();
-    }
-
-    private void initializeDependencyInjection() {
-        var serviceLocatorFactory = PluginServiceLocatorFactory.get();
-        serviceLocator = serviceLocatorFactory.registerPlugin(new MultiverseCorePluginBinder(this))
-                .flatMap(PluginServiceLocator::enable)
-                .getOrElseThrow(exception -> {
-                    Logging.severe("Failed to initialize dependency injection!");
-                    getServer().getPluginManager().disablePlugin(this);
-                    return new RuntimeException(exception);
-                });
     }
 
     private void shutdownDependencyInjection() {
@@ -175,49 +155,6 @@ public class MultiverseCore extends MultiversePlugin {
                 .flatMap(AnchorManager::loadAnchors)
                 .onFailure(e -> {
                     Logging.severe("Failed to load anchors");
-                    e.printStackTrace();
-                });
-    }
-
-    /**
-     * Function to Register all the Events needed.
-     */
-    private void registerEvents() {
-        var pluginManager = getServer().getPluginManager();
-
-        Try.run(() -> serviceLocator.getAllServices(CoreListener.class).forEach(
-                listener -> pluginManager.registerEvents(listener, this)))
-                .onFailure(e -> {
-                    throw new RuntimeException("Failed to register listeners. Terminating...", e);
-                });
-    }
-
-    /**
-     * Register Multiverse-Core commands to Command Manager.
-     */
-    private void registerCommands() {
-        Try.of(() -> commandManagerProvider.get())
-                .andThenTry(commandManager -> {
-                    commandManager.registerAllCommands(serviceLocator.getAllServices(CoreCommand.class));
-                })
-                .onFailure(e -> {
-                    Logging.severe("Failed to register commands");
-                    e.printStackTrace();
-                });
-    }
-
-    /**
-     * Register locales.
-     */
-    private void setUpLocales() {
-        Try.of(() -> commandManagerProvider.get())
-                .mapTry(MVCommandManager::getLocales)
-                .andThen(pluginLocales -> {
-                    pluginLocales.addFileResClassLoader(this);
-                    pluginLocales.addMessageBundles("multiverse-core");
-                })
-                .onFailure(e -> {
-                    Logging.severe("Failed to register locales");
                     e.printStackTrace();
                 });
     }
@@ -288,11 +225,12 @@ public class MultiverseCore extends MultiversePlugin {
      * @return {@link Try#isSuccess()} true if all configs were successfully saved
      */
     private Try<Void> saveAllConfigs() {
-        Try<Void> saveConfig = configProvider.get().save();
-        Try<Void> saveWorld = worldManagerProvider.get().saveWorldsConfig();
-        Try<Void> saveAnchor = anchorManagerProvider.get().saveAllAnchors();
-        return saveConfig.flatMap(ignore ->saveWorld).flatMap(ignore ->saveAnchor)
-                .onFailure(e -> Logging.severe("Failed to save configs, things may not work as expected."));
+        return configProvider.get().save()
+                .flatMap(ignore -> worldManagerProvider.get().saveWorldsConfig())
+                .flatMap(ignore ->anchorManagerProvider.get().saveAllAnchors())
+                .onFailure(e -> {
+                    Logging.severe("Failed to save configs, things may not work as expected.");
+                });
     }
 
     /**
@@ -309,19 +247,20 @@ public class MultiverseCore extends MultiversePlugin {
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the MultiverseCoreApi
+     *
+     * @return The MultiverseCoreApi
      */
-    @Override
-    public double getTargetCoreVersion() {
-        return getVersionAsNumber();
+    public MultiverseCoreApi getApi() {
+        return MultiverseCoreApi.get();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public PluginServiceLocator getServiceLocator() {
-        return serviceLocator;
+    public double getTargetCoreVersion() {
+        return getVersionAsNumber();
     }
 
     /**
