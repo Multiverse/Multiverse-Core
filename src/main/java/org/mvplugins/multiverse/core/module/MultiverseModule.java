@@ -92,6 +92,12 @@ public abstract class MultiverseModule extends JavaPlugin {
                 });
     }
 
+    protected void shutdownDependencyInjection() {
+        Option.of(serviceLocator)
+                .peek(PluginServiceLocator::disable)
+                .peek(ignore -> serviceLocator = null);
+    }
+
     /**
      * Function to Register all the Events needed.
      */
@@ -126,6 +132,7 @@ public abstract class MultiverseModule extends JavaPlugin {
                 .mapTry(MVCommandManager::getLocales)
                 .andThen(pluginLocales -> {
                     pluginLocales.addFileResClassLoader(this);
+                    pluginLocales.addBundleClassLoader(this.getClassLoader());
                     pluginLocales.addMessageBundles(this.getDescription().getName().toLowerCase());
                 })
                 .onFailure(e -> {

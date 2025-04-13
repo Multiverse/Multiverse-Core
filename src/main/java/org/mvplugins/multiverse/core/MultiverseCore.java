@@ -127,15 +127,8 @@ public class MultiverseCore extends MultiverseModule {
         MultiverseCoreApi.shutdown();
         saveAllConfigs();
         shutdownDependencyInjection();
-        Logging.shutdown();
-    }
-
-    private void shutdownDependencyInjection() {
-        if (serviceLocator != null) {
-            serviceLocator.disable();
-            serviceLocator = null;
-        }
         PluginServiceLocatorFactory.get().shutdown();
+        Logging.shutdown();
     }
 
     private boolean shouldShowConfig() {
