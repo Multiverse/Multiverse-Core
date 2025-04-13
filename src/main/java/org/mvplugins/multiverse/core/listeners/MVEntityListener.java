@@ -97,7 +97,7 @@ final class MVEntityListener implements CoreListener {
 
         worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek(world -> {
-                    if (!world.getMobsSpawnConfig().shouldAllowSpawn(event.getEntity())) {
+                    if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getEntity())) {
                         Logging.finest("Cancelling Creature Spawn Event for: " + event.getEntity());
                         event.setCancelled(true);
                     }
@@ -116,7 +116,7 @@ final class MVEntityListener implements CoreListener {
 
         worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek(world -> {
-                    if (!world.getMobsSpawnConfig().shouldAllowSpawn(event.getEntity())) {
+                    if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getEntity())) {
                         Logging.finest("Cancelling Entity Spawn Event for: " + event.getEntity());
                         event.setCancelled(true);
                     }

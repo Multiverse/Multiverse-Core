@@ -625,12 +625,12 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
         return worldConfig.setSpawnLocation(spawnLocation);
     }
 
-    public EntitySpawnConfig getMobsSpawnConfig() {
-        return worldConfig.getMobsSpawnConfig();
+    public EntitySpawnConfig getEntitySpawnConfig() {
+        return worldConfig.getEntitySpawnConfig();
     }
 
-    public Try<Void> setMobsSpawnConfig(EntitySpawnConfig mobsSpawnConfig) {
-        return worldConfig.setMobsSpawnConfig(mobsSpawnConfig);
+    public Try<Void> setEntitySpawnConfig(EntitySpawnConfig entitySpawnConfig) {
+        return worldConfig.setEntitySpawnConfig(entitySpawnConfig);
     }
 
     /**

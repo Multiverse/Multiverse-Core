@@ -74,7 +74,7 @@ final class EntitySpawnConfigCommand extends CoreCommand {
         List<String> list = new ArrayList<>();
         Arrays.stream(SpawnCategory.values()).forEach(spawnCategory -> {
             list.add(spawnCategory.name() + ": ");
-            SpawnCategoryConfig spawnCategoryConfig = world.getMobsSpawnConfig().getSpawnCategoryConfig(spawnCategory);
+            SpawnCategoryConfig spawnCategoryConfig = world.getEntitySpawnConfig().getSpawnCategoryConfig(spawnCategory);
             list.add("  spawn: " + spawnCategoryConfig.isSpawn());
             list.add("  tick-rate: " + spawnCategoryConfig.getTickRate());
             list.add("  exceptions: " + StringFormatter.join(spawnCategoryConfig.getExceptions(), ", "));
@@ -108,7 +108,7 @@ final class EntitySpawnConfigCommand extends CoreCommand {
             @Syntax("[value]")
             String value
     ) {
-        world.getMobsSpawnConfig()
+        world.getEntitySpawnConfig()
                 .getSpawnCategoryConfig(spawnCategory)
                 .getStringPropertyHandle()
                 .modifyPropertyString(property, value, action)

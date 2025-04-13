@@ -350,12 +350,12 @@ final class WorldConfig {
         return configHandle.set(configNodes.spawnLocation, spawnLocation);
     }
 
-    EntitySpawnConfig getMobsSpawnConfig() {
-        return configHandle.get(configNodes.mobsSpawnConfig);
+    EntitySpawnConfig getEntitySpawnConfig() {
+        return configHandle.get(configNodes.enititySpawnConfig);
     }
 
-    Try<Void> setMobsSpawnConfig(EntitySpawnConfig mobsSpawnConfig) {
-        return configHandle.set(configNodes.mobsSpawnConfig, mobsSpawnConfig);
+    Try<Void> setEntitySpawnConfig(EntitySpawnConfig entitySpawnConfig) {
+        return configHandle.set(configNodes.enititySpawnConfig, entitySpawnConfig);
     }
 
     List<String> getWorldBlacklist() {

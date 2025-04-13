@@ -240,7 +240,7 @@ final class WorldConfigNodes {
                 });
             }));
 
-    final ConfigNode<EntitySpawnConfig> mobsSpawnConfig = node(ConfigNode.builder("spawning", EntitySpawnConfig.class)
+    final ConfigNode<EntitySpawnConfig> enititySpawnConfig = node(ConfigNode.builder("spawning", EntitySpawnConfig.class)
             .defaultValue(() -> EntitySpawnConfig.fromSection(new MemoryConfiguration()))
             .hidden()
             .serializer(new NodeSerializer<>() {

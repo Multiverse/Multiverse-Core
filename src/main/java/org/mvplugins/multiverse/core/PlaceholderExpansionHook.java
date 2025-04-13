@@ -100,7 +100,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return world.getAliasOrName();
             }
             case "animalspawn" -> {
-                return String.valueOf(world.getMobsSpawnConfig().getSpawnCategoryConfig(SpawnCategory.ANIMAL).isSpawn());
+                return String.valueOf(world.getEntitySpawnConfig().getSpawnCategoryConfig(SpawnCategory.ANIMAL).isSpawn());
             }
             case "autoheal" -> {
                 return String.valueOf(world.getAutoHeal());
@@ -133,7 +133,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return String.valueOf(world.isHunger());
             }
             case "monstersspawn" -> {
-                return String.valueOf(world.getMobsSpawnConfig().getSpawnCategoryConfig(SpawnCategory.MONSTER).isSpawn());
+                return String.valueOf(world.getEntitySpawnConfig().getSpawnCategoryConfig(SpawnCategory.MONSTER).isSpawn());
             }
             case "name" -> {
                 return world.getName();

@@ -304,7 +304,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
             SpawnCategory spawnCategory = context.getContextValue(SpawnCategory.class);
             PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
-            return world.getMobsSpawnConfig()
+            return world.getEntitySpawnConfig()
                     .getSpawnCategoryConfig(spawnCategory)
                     .getStringPropertyHandle()
                     .getModifiablePropertyNames(action);
@@ -317,7 +317,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             SpawnCategory spawnCategory = context.getContextValue(SpawnCategory.class);
             PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
             String propertyName = context.getContextValue(String.class);
-            return world.getMobsSpawnConfig()
+            return world.getEntitySpawnConfig()
                     .getSpawnCategoryConfig(spawnCategory)
                     .getStringPropertyHandle()
                     .getSuggestedPropertyValue(propertyName, context.getInput(), action);

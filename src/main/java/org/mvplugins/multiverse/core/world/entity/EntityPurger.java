@@ -15,7 +15,7 @@ public final class EntityPurger {
         AtomicInteger purgeCount = new AtomicInteger(0);
         world.getBukkitWorld().peek(bukkitWorld -> {
             for (Entity entity : bukkitWorld.getEntities()) {
-                if (!world.getMobsSpawnConfig().shouldAllowSpawn(entity)) {
+                if (!world.getEntitySpawnConfig().shouldAllowSpawn(entity)) {
                     entity.remove();
                     purgeCount.incrementAndGet();
                 }
