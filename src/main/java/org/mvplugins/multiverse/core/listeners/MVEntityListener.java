@@ -9,12 +9,15 @@ package org.mvplugins.multiverse.core.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -75,7 +78,7 @@ final class MVEntityListener implements CoreListener {
     }
 
     /**
-     * Handle Animal/Monster Spawn settings, seems like a more concrete method than using CraftBukkit.
+     * Handle Spawn Category settings.
      *
      * @param event The event.
      */
@@ -85,18 +88,36 @@ final class MVEntityListener implements CoreListener {
             return;
         }
 
-        //TODO: Add config option for this
-//        // Check to see if the Creature is spawned by a plugin, we don't want to prevent this behaviour.
-//        if (event.getSpawnReason() == SpawnReason.CUSTOM
-//                || event.getSpawnReason() == SpawnReason.SPAWNER_EGG
-//                || event.getSpawnReason() == SpawnReason.BREEDING) {
-//            return;
-//        }
+        // Always allow custom command and plugins to spawn creatures
+        if (event.getSpawnReason() == SpawnReason.CUSTOM
+                || event.getSpawnReason() == SpawnReason.COMMAND
+                || event.getSpawnReason() == SpawnReason.BREEDING) {
+            return;
+        }
 
         worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek(world -> {
                     if (!world.getMobsSpawnConfig().shouldAllowSpawn(event.getEntity())) {
-                        Logging.finer("Cancelling Creature Spawn Event for: " + event.getEntity());
+                        Logging.finest("Cancelling Creature Spawn Event for: " + event.getEntity());
+                        event.setCancelled(true);
+                    }
+                });
+    }
+
+    /**
+     * Handle Spawn Category settings for non-creature entities.
+     */
+    @EventHandler
+    public void entitySpawn(EntitySpawnEvent event) {
+        if (event.getEntity() instanceof LivingEntity) {
+            // Handled by CreatureSpawnEvent
+            return;
+        }
+
+        worldManager.getLoadedWorld(event.getEntity().getWorld())
+                .peek(world -> {
+                    if (!world.getMobsSpawnConfig().shouldAllowSpawn(event.getEntity())) {
+                        Logging.finest("Cancelling Entity Spawn Event for: " + event.getEntity());
                         event.setCancelled(true);
                     }
                 });
