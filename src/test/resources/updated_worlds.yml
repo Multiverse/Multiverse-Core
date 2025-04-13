@@ -35,14 +35,16 @@ world:
   spawning:
     animal:
       spawn: true
+      tick-rate: 111
+      spawn-limit: -1
       exceptions:
         - cow
         - pig
-      tick-rate: 111
     misc:
       spawn: false
-      exceptions: [ ]
       tick-rate: -1
+      spawn-limit: -1
+      exceptions: [ ]
   world-blacklist: []
   version: 1.2
 world_nether:

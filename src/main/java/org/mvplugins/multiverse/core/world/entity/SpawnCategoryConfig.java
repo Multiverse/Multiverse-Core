@@ -69,6 +69,8 @@ public final class SpawnCategoryConfig {
                 Logging.finer("World %s %s setTicksPerSpawns: %d", world.getName(), spawnCategory, getTickRate());
                 bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
             }
+            Logging.finer("World %s %s setSpawnLimit: %d", world.getName(), spawnCategory, getSpawnLimit());
+            bukkitWorld.setSpawnLimit(spawnCategory, getSpawnLimit());
         });
     }
 
@@ -94,6 +96,14 @@ public final class SpawnCategoryConfig {
 
     public Try<Void> setTickRate(int tickRate) {
         return handle.set(nodes.tickRate, tickRate);
+    }
+
+    public int getSpawnLimit() {
+        return handle.get(nodes.spawnLimit);
+    }
+
+    public Try<Void> setSpawnLimit(int spawnLimit) {
+        return handle.set(nodes.spawnLimit, spawnLimit);
     }
 
     public List<EntityType> getExceptions() {
@@ -137,6 +147,13 @@ public final class SpawnCategoryConfig {
 
         final ConfigNode<Integer> tickRate = node(ConfigNode.builder("tick-rate", Integer.class)
                 .defaultValue(-1)
+                .suggester(input -> List.of("-1", "10", "100", "400", "1000"))
+                .onSetValue((oldValue, newValue) -> applyConfigToWorld())
+                .build());
+
+        final ConfigNode<Integer> spawnLimit = node(ConfigNode.builder("spawn-limit", Integer.class)
+                .defaultValue(-1)
+                .suggester(input -> List.of("-1", "10", "100", "400", "1000"))
                 .onSetValue((oldValue, newValue) -> applyConfigToWorld())
                 .build());
 

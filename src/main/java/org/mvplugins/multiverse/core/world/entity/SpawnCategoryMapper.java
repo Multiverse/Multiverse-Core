@@ -16,8 +16,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
-public class SpawnCategoryMapper {
+/**
+ * Uses reflection into nms to map entity types to spawn categories.
+ */
+final class SpawnCategoryMapper {
 
     static {
         buildSpawnCategoryMap();
@@ -72,7 +74,13 @@ public class SpawnCategoryMapper {
         }
     }
 
-    public static List<EntityType> getEntityTypes(SpawnCategory spawnCategory) {
+    /**
+     * Gets the entity types for a spawn category
+     *
+     * @param spawnCategory The spawn category
+     * @return The entity types associated with the spawn category
+     */
+    static List<EntityType> getEntityTypes(SpawnCategory spawnCategory) {
         if (spawnCategoryMap == null) {
             return Collections.emptyList();
         }

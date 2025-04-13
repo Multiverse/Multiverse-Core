@@ -36,10 +36,12 @@ world_the_end:
     animal:
       exceptions: [ ]
       spawn: true
+      spawn-limit: -1
       tick-rate: -1
     monster:
       exceptions: [ ]
       spawn: true
+      spawn-limit: -1
       tick-rate: -1
   world-blacklist: []
   version: 1.2
@@ -81,10 +83,12 @@ world:
     animal:
       exceptions: [ ]
       spawn: true
+      spawn-limit: -1
       tick-rate: -1
     monster:
       exceptions: [ ]
       spawn: true
+      spawn-limit: -1
       tick-rate: -1
   world-blacklist:
   - test

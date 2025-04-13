@@ -36,6 +36,7 @@ world:
     animal:
       spawn: falSe
       tick-rate: 123
+      spawn-limit: -1
       exceptions: [cow]
   world-blacklist: # should be parsed as list of string
     - a
