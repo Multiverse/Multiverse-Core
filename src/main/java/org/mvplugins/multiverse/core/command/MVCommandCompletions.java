@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -82,6 +83,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules);
         registerAsyncCompletion("gamerulesvalues", this::suggestGamerulesValues);
+        registerStaticCompletion("materials", suggestEnums(Material.class));
         registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames());
         registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
