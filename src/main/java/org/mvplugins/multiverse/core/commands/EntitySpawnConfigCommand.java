@@ -4,13 +4,14 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Flags;
+import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
-import org.jvnet.hk2.annotations.Optional;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
@@ -100,13 +101,13 @@ final class EntitySpawnConfigCommand extends CoreCommand {
             @Syntax("<set|add|reset|remove>")
             PropertyModifyAction action,
 
-            @Syntax("<property")
+            @Syntax("<property>")
             String property,
 
-            @Single
             @Optional
+            @Single
             @Syntax("[value]")
-            String value
+            @Nullable String value
     ) {
         world.getEntitySpawnConfig()
                 .getSpawnCategoryConfig(spawnCategory)
