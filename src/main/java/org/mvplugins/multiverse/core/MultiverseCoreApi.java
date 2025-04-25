@@ -22,7 +22,7 @@ public class MultiverseCoreApi {
 
     private static MultiverseCoreApi instance;
 
-    static void init(PluginServiceLocator serviceLocator) {
+    static void init(@NotNull PluginServiceLocator serviceLocator) {
         if (instance != null) {
             throw new IllegalStateException("MultiverseCoreApi has already been initialized!");
         }
@@ -38,7 +38,7 @@ public class MultiverseCoreApi {
      *
      * @return The MultiverseCoreApi
      */
-    public static MultiverseCoreApi get() {
+    public static @NotNull MultiverseCoreApi get() {
         if (instance == null) {
             throw new IllegalStateException("MultiverseCoreApi has not been initialized!");
         }
@@ -47,7 +47,7 @@ public class MultiverseCoreApi {
 
     private final PluginServiceLocator serviceLocator;
 
-    private MultiverseCoreApi(PluginServiceLocator serviceProvider) {
+    private MultiverseCoreApi(@NotNull PluginServiceLocator serviceProvider) {
         this.serviceLocator = serviceProvider;
     }
 
@@ -148,7 +148,7 @@ public class MultiverseCoreApi {
      *
      * @return The Multiverse-Core's PluginServiceLocator
      */
-    public PluginServiceLocator getServiceLocator() {
+    public @NotNull PluginServiceLocator getServiceLocator() {
         return serviceLocator;
     }
 }

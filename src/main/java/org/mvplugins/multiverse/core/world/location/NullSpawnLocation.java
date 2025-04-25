@@ -12,19 +12,19 @@ import org.jetbrains.annotations.NotNull;
  * Null-location.
  */
 @SerializableAs("MVNullLocation (It's a bug if you see this in your config file)")
-public final class NullLocation extends SpawnLocation {
-    private static final NullLocation INSTANCE = new NullLocation();
+public final class NullSpawnLocation extends SpawnLocation {
+    private static final NullSpawnLocation INSTANCE = new NullSpawnLocation();
 
     /**
      * Get the default null location instance.
      *
      * @return The instance.
      */
-    public static NullLocation get() {
+    public static NullSpawnLocation get() {
         return INSTANCE;
     }
 
-    private NullLocation() {
+    private NullSpawnLocation() {
         super(0, -1, 0);
     }
 
@@ -44,8 +44,8 @@ public final class NullLocation extends SpawnLocation {
      * @param args The map.
      * @return The deserialized object.
      */
-    public static NullLocation deserialize(Map<String, Object> args) {
-        return new NullLocation();
+    public static NullSpawnLocation deserialize(Map<String, Object> args) {
+        return new NullSpawnLocation();
     }
 
     @Override
@@ -60,7 +60,7 @@ public final class NullLocation extends SpawnLocation {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof NullLocation;
+        return obj instanceof NullSpawnLocation;
     }
 
     @Override

@@ -24,7 +24,7 @@ import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.utils.MaterialConverter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
-import org.mvplugins.multiverse.core.world.location.NullLocation;
+import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
@@ -229,11 +229,11 @@ final class WorldConfigNodes {
             .hidden());
 
     final ConfigNode<SpawnLocation> spawnLocation = node(ConfigNode.builder("spawn-location", SpawnLocation.class)
-            .defaultValue(NullLocation.get())
+            .defaultValue(NullSpawnLocation.get())
             .hidden()
             .onSetValue((oldValue, newValue) -> {
                 if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                if (newValue == null || newValue instanceof NullLocation) return;
+                if (newValue == null || newValue instanceof NullSpawnLocation) return;
                 loadedWorld.getBukkitWorld().peek(bukkitWorld -> {
                     bukkitWorld.setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
                     newValue.setWorld(bukkitWorld);

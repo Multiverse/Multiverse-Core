@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
-import org.mvplugins.multiverse.core.world.location.NullLocation;
+import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
@@ -52,7 +52,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
 
     private void setupSpawnLocation(World world) {
         Location spawnLocation = worldConfig.getSpawnLocation();
-        if (spawnLocation == null || spawnLocation instanceof NullLocation) {
+        if (spawnLocation == null || spawnLocation instanceof NullSpawnLocation) {
             SpawnLocation newLocation = new SpawnLocation(readSpawnFromWorld(world));
             worldConfig.setSpawnLocation(newLocation);
         }
