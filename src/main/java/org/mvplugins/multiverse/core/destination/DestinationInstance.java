@@ -6,9 +6,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
+import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
- * Instance of a specific {@link Destination}.
+ * Instance of a specific {@link Destination}. This class may be persisted through the lifetime of the server. Thus,
+ * you should ensure location stored will still work after world unload and loads again. See {@link UnloadedWorldLocation}
+ * for a possible implementation of such location.
  *
  * @param <I>   The type of the instance.
  * @param <T>   The type of the destination.
@@ -40,7 +43,8 @@ public abstract class DestinationInstance<I extends  DestinationInstance<I, T>, 
     }
 
     /**
-     * Gets the exact location to teleport an entity to.
+     * Gets the exact location to teleport an entity to. It is recommended return a copy of the location, as
+     * the returned location may be modified by other api's that calls this method.
      *
      * @param teleportee The entity to teleport.
      * @return The location to teleport to.
@@ -48,7 +52,8 @@ public abstract class DestinationInstance<I extends  DestinationInstance<I, T>, 
     public abstract @NotNull Option<Location> getLocation(@NotNull Entity teleportee);
 
     /**
-     * Gets the velocity to apply to an entity after teleporting.
+     * Gets the velocity to apply to an entity after teleporting. It is recommended return a copy of the vector, as
+     * the returned vector may be modified by other api's that calls this method.
      *
      * @param teleportee The entity to teleport.
      * @return A vector representing the speed/direction the player should travel when arriving at the destination.

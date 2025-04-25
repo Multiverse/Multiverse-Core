@@ -8,12 +8,13 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
  * Destination instance implementation for the {@link CannonDestination}.
  */
 public final class CannonDestinationInstance extends DestinationInstance<CannonDestinationInstance, CannonDestination> {
-    private final Location location;
+    private final UnloadedWorldLocation location;
     private final double speed;
 
     /**
@@ -22,7 +23,7 @@ public final class CannonDestinationInstance extends DestinationInstance<CannonD
      * @param location The location to teleport to.
      * @param speed The speed to fire the player at.
      */
-    CannonDestinationInstance(@NotNull CannonDestination destination, @NotNull Location location, double speed) {
+    CannonDestinationInstance(@NotNull CannonDestination destination, @NotNull UnloadedWorldLocation location, double speed) {
         super(destination);
         this.location = location;
         this.speed = speed;
@@ -33,7 +34,10 @@ public final class CannonDestinationInstance extends DestinationInstance<CannonD
      */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
-        return Option.of(location);
+        if (location.getWorld() == null) {
+            return Option.none();
+        }
+        return Option.of(location.toBukkitLocation());
     }
 
     /**
@@ -73,7 +77,7 @@ public final class CannonDestinationInstance extends DestinationInstance<CannonD
      */
     @Override
     public @NotNull String serialise() {
-        return location.getWorld().getName() + ":" + location.getX() + "," + location.getY()
+        return location.getWorldName() + ":" + location.getX() + "," + location.getY()
                 + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw() + ":" + this.speed;
     }
 }

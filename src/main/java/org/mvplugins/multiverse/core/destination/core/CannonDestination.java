@@ -74,7 +74,7 @@ public final class CannonDestination implements Destination<CannonDestination, C
             return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldName));
         }
 
-        Location location;
+        UnloadedWorldLocation location;
         double dSpeed;
         try {
             location = new UnloadedWorldLocation(

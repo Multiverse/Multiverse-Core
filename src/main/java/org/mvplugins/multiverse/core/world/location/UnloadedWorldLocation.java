@@ -50,6 +50,19 @@ public final class UnloadedWorldLocation extends Location {
         setWorldName(world == null ? null : world.getName());
     }
 
+    public UnloadedWorldLocation(@NotNull Location location) {
+        this(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+    }
+
+    /**
+     * Makes a bukkit {@link Location} copy from this SpawnLocation.
+     *
+     * @return The bukkit location
+     */
+    public Location toBukkitLocation() {
+        return new Location(getWorld(), getX(), getY(), getZ(), getYaw(), getPitch());
+    }
+
     public void setWorldName(@Nullable String worldName) {
         this.worldName = worldName;
     }

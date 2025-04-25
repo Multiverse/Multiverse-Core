@@ -8,19 +8,20 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
  * Destination instance implementation for the {@link ExactDestination}.
  */
 public final class ExactDestinationInstance extends DestinationInstance<ExactDestinationInstance, ExactDestination> {
-    private final Location location;
+    private final UnloadedWorldLocation location;
 
     /**
      * Constructor.
      *
      * @param location The location to teleport to.
      */
-    ExactDestinationInstance(@NotNull ExactDestination destination, @NotNull Location location) {
+    ExactDestinationInstance(@NotNull ExactDestination destination, @NotNull UnloadedWorldLocation location) {
         super(destination);
         this.location = location;
     }
@@ -33,7 +34,7 @@ public final class ExactDestinationInstance extends DestinationInstance<ExactDes
         if (location.getWorld() == null) {
             return Option.none();
         }
-        return Option.of(location);
+        return Option.of(location.toBukkitLocation());
     }
 
     /**
@@ -65,7 +66,7 @@ public final class ExactDestinationInstance extends DestinationInstance<ExactDes
      */
     @Override
     public @NotNull String serialise() {
-        return location.getWorld().getName() + ":" + location.getX() + "," + location.getY()
+        return location.getWorldName() + ":" + location.getX() + "," + location.getY()
                 + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw();
     }
 }

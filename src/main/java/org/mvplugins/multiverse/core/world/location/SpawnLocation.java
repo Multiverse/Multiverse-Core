@@ -55,6 +55,16 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
     }
 
     /**
+     * Makes a bukkit {@link Location} copy from this SpawnLocation. Needed for {@link Location#equals(Object)}
+     * check, as it requires exact class type matching.
+     *
+     * @return The bukkit location
+     */
+    public Location toBukkitLocation() {
+        return new Location(getWorld(), getX(), getY(), getZ(), getYaw(), getPitch());
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -92,6 +102,16 @@ public class SpawnLocation extends Location implements ConfigurationSerializable
             return world.getBlockAt(this);
         }
         throw new IllegalStateException("World is null");
+    }
+
+    @Override
+    @NotNull
+    public SpawnLocation clone() {
+        try {
+            return (SpawnLocation) super.clone();
+        } catch (Throwable t) {
+            throw new Error(t);
+        }
     }
 
     /**

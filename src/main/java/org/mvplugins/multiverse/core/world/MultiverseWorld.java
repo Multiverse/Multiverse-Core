@@ -596,12 +596,13 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
-     * Gets the spawn location of this world.
+     * Gets a copy of the spawn location of this world. {@link Location#getWorld()} will be null when
+     * the world is unloaded. I.e. {@link MultiverseWorld#isLoaded()} is false.
      *
      * @return The spawn location of this world.
      */
-    public SpawnLocation getSpawnLocation() {
-        return worldConfig.getSpawnLocation();
+    public Location getSpawnLocation() {
+        return worldConfig.getSpawnLocation().toBukkitLocation();
     }
 
     /**
@@ -611,18 +612,9 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      * @return Result of setting property.
      */
     public Try<Void> setSpawnLocation(Location spawnLocation) {
-        return setSpawnLocation(new SpawnLocation(spawnLocation));
-    }
-
-    /**
-     * Sets the spawn location for a world.
-     *
-     * @param spawnLocation The spawn location for a world.
-     * @return Result of setting property.
-     */
-    public Try<Void> setSpawnLocation(SpawnLocation spawnLocation) {
-        //todo: Maybe check of safe location if adjust spawn is enabled
-        return worldConfig.setSpawnLocation(spawnLocation);
+        return worldConfig.setSpawnLocation(spawnLocation instanceof SpawnLocation
+                ? (SpawnLocation) spawnLocation.clone()
+                : new SpawnLocation(spawnLocation));
     }
 
     public EntitySpawnConfig getEntitySpawnConfig() {

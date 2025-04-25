@@ -60,7 +60,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
      * @return A new {@link ExactDestinationInstance}
      */
     public @NotNull ExactDestinationInstance fromLocation(@NotNull Location location) {
-        return new ExactDestinationInstance(this, location);
+        return new ExactDestinationInstance(this, new UnloadedWorldLocation(location));
     }
 
     /**
@@ -85,7 +85,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
             return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldName));
         }
 
-        Location location;
+        UnloadedWorldLocation location;
         try {
             location = new UnloadedWorldLocation(
                     world,

@@ -11,11 +11,14 @@ import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+
 /**
  * Destination instance implementation for the {@link WorldDestination}.
  */
 public final class WorldDestinationInstance extends DestinationInstance<WorldDestinationInstance, WorldDestination> {
-    private final LoadedMultiverseWorld world;
+    private final MultiverseWorld world;
     private final String direction;
     private final float yaw;
 
@@ -29,7 +32,7 @@ public final class WorldDestinationInstance extends DestinationInstance<WorldDes
      */
     WorldDestinationInstance(
             @NotNull WorldDestination destination,
-            @NotNull LoadedMultiverseWorld world,
+            @NotNull MultiverseWorld world,
             @Nullable String direction,
             float yaw
     ) {
@@ -47,7 +50,12 @@ public final class WorldDestinationInstance extends DestinationInstance<WorldDes
         if (!world.isLoaded()) {
             return Option.none();
         }
-        Location worldLoc = world.getSpawnLocation().clone();
+
+        Location worldLoc = world.getSpawnLocation();
+        if (!worldLoc.isWorldLoaded()) {
+            return Option.none();
+        }
+
         if (this.yaw >= 0) {
             // Only modify the yaw if its set.
             worldLoc.setYaw(this.yaw);

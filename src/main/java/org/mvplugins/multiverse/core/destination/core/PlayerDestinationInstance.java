@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.destination.core;
 
 import io.vavr.control.Option;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -9,11 +10,14 @@ import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 
+import java.util.UUID;
+
 /**
  * Destination instance implementation for the {@link PlayerDestination}.
  */
 public final class PlayerDestinationInstance extends DestinationInstance<PlayerDestinationInstance, PlayerDestination> {
-    private final Player player;
+    private final UUID playerUUID;
+    private final String playerName;
 
     /**
      * Constructor.
@@ -22,7 +26,8 @@ public final class PlayerDestinationInstance extends DestinationInstance<PlayerD
      */
     PlayerDestinationInstance(@NotNull PlayerDestination destination, @NotNull Player player) {
         super(destination);
-        this.player = player;
+        this.playerUUID = player.getUniqueId();
+        this.playerName = player.getName();
     }
 
     /**
@@ -30,7 +35,8 @@ public final class PlayerDestinationInstance extends DestinationInstance<PlayerD
      */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
-        if (!player.isOnline()) {
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player == null || !player.isOnline()) {
             return Option.none();
         }
         return Option.of(player.getLocation());
@@ -57,7 +63,7 @@ public final class PlayerDestinationInstance extends DestinationInstance<PlayerD
      */
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
-        return Option.of(player.getName());
+        return Option.of(playerName);
     }
 
     /**
@@ -65,6 +71,6 @@ public final class PlayerDestinationInstance extends DestinationInstance<PlayerD
      */
     @Override
     public @NotNull String serialise() {
-        return player.getName();
+        return playerName;
     }
 }

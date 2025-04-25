@@ -63,7 +63,7 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
     public @NotNull Attempt<WorldDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
         String[] items = REPatterns.COLON.split(destinationParams, 3);
         String worldName = items[0];
-        LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
+        MultiverseWorld world = getMultiverseWorld(worldName);
         if (world == null) {
             return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldName));
         }
@@ -76,10 +76,10 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
 
     //TODO: Extract to a world finder class
     @Nullable
-    private LoadedMultiverseWorld getLoadedMultiverseWorld(String worldName) {
+    private MultiverseWorld getMultiverseWorld(String worldName) {
         return config.getResolveAliasName()
-                ? worldManager.getLoadedWorldByNameOrAlias(worldName).getOrNull()
-                : worldManager.getLoadedWorld(worldName).getOrNull();
+                ? worldManager.getWorldByNameOrAlias(worldName).getOrNull()
+                : worldManager.getWorld(worldName).getOrNull();
     }
 
     /**

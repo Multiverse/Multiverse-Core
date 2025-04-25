@@ -36,7 +36,7 @@ public final class AnchorDestinationInstance extends DestinationInstance<AnchorD
      */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
-        return Option.of(anchorLocation);
+        return Option.of(anchorLocation.clone());
     }
 
     /**

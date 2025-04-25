@@ -29,7 +29,7 @@ public final class NullSpawnLocation extends SpawnLocation {
     }
 
     @Override
-    public @NotNull Location clone() {
+    public @NotNull NullSpawnLocation clone() {
         throw new UnsupportedOperationException();
     }
 
