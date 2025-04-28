@@ -27,6 +27,10 @@ Now it's time to create your very own Multiverse server, do check out our [Wiki]
 * [Multiverse-Inventories](https://github.com/Multiverse/Multiverse-Inventories) -> Have separated players stats and inventories per world or per group of worlds.
 * [Multiverse-SignPortals](https://github.com/Multiverse/Multiverse-SignPortals) -> Signs as teleporters!
 
+## Usage Guide
+
+We have a cool new website hosting our Wiki: https://mvplugins.org
+
 ## Building
 Simply build the source with Gradle:
 ```
