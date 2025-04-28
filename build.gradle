@@ -1,8 +1,7 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'org.mvplugins.multiverse-plugin' version '1.0.2'
-    id 'org.mvplugins.kotlin-test-only' version '1.0.2'
+    id 'org.mvplugins.multiverse-plugin' version '1.2.0'
 }
 
 group = 'org.mvplugins.multiverse.core'
@@ -28,6 +27,7 @@ repositories {
 configure(apiDependencies) {
     serverApiVersion = '1.18.2-R0.1-SNAPSHOT'
     mockBukkitServerApiVersion = '1.21'
+    mockBukkitVersion = '4.31.1'
 }
 
 dependencies {

@@ -20,8 +20,13 @@ import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 class ModifyCommand extends CoreCommand {
@@ -37,13 +42,13 @@ class ModifyCommand extends CoreCommand {
     @CommandPermission("multiverse.core.modify")
     @CommandCompletion("@mvworlds:scope=both @propsmodifyaction @mvworldpropsname @mvworldpropsvalue")
     @Syntax("[world] <set|add|remove|reset> <property> <value>")
-    @Description("")
+    @Description("{@@mv-core.modify.description}")
     void onModifyCommand(// SUPPRESS CHECKSTYLE: ParameterNumber
             MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware")
             @Syntax("[world]")
-            @Description("")
+            @Description("{@@mv-core.modify.world.description}")
             @NotNull MultiverseWorld world,
 
             @Syntax("<set|add|remove|reset>")
@@ -51,31 +56,49 @@ class ModifyCommand extends CoreCommand {
             @NotNull PropertyModifyAction action,
 
             @Syntax("<property>")
-            @Description("")
+            @Description("{@@mv-core.modify.property.description}")
             @NotNull String propertyName,
 
             @Optional
             @Single
             @Syntax("[value]")
-            @Description("")
+            @Description("{@@mv-core.modify.value.description}")
             @Nullable String propertyValue) {
         if (action.isRequireValue() && propertyValue == null) {
-            issuer.sendMessage("You must specify a value to " + action.name().toLowerCase()
-                    + " '" + propertyName + "'.");
+            issuer.sendMessage(MVCorei18n.MODIFY_SPECIFYVALUE,
+                    replace("{action}").with(action.name().toLowerCase()),
+                    replace("{property}").with(propertyName));
+            return;
+        } else if (!action.isRequireValue() && propertyValue != null) {
+            issuer.sendMessage(MVCorei18n.MODIFY_CANNOTHAVEVALUE,
+                    replace("{action}").with(action.name().toLowerCase()),
+                    replace("{property}").with(propertyName));
             return;
         }
 
         StringPropertyHandle worldPropertyHandle = world.getStringPropertyHandle();
         worldPropertyHandle.modifyPropertyString(propertyName, propertyValue, action).onSuccess(ignore -> {
-            issuer.sendMessage("Property %s%s set to %s%s for world %s%s%s.".formatted(
-                    propertyName, ChatColor.BLUE, worldPropertyHandle.getProperty(propertyName).getOrNull(),
-                    ChatColor.BLUE, ChatColor.GRAY, world.getName(), ChatColor.BLUE));
+            issuer.sendMessage(MVCorei18n.MODIFY_SUCCESS,
+                    replace("{action}").with(action.name().toLowerCase()),
+                    replace("{property}").with(propertyName),
+                    Replace.VALUE.with(worldPropertyHandle.getProperty(propertyName).getOrNull()),
+                    Replace.WORLD.with(world.getName()));
             worldManager.saveWorldsConfig();
         }).onFailure(exception -> {
-            issuer.sendMessage("Failed to %s%s property %s%s to %s%s for world %s%s.".formatted(
-                    action.name().toLowerCase(), ChatColor.BLUE, propertyName, ChatColor.BLUE,
-                    propertyValue, ChatColor.BLUE, world.getName(), ChatColor.BLUE));
-            issuer.sendMessage(exception.getMessage());
+            if (propertyValue == null) {
+                issuer.sendMessage(MVCorei18n.MODIFY_FAILURE_NOVALUE,
+                        replace("{action}").with(action.name().toLowerCase()),
+                        replace("{property}").with(propertyName),
+                        Replace.WORLD.with(world.getName()),
+                        Replace.ERROR.with(exception.getMessage()));
+            } else {
+                issuer.sendMessage(MVCorei18n.MODIFY_FAILURE,
+                        replace("{action}").with(action.name().toLowerCase()),
+                        replace("{property}").with(propertyName),
+                        Replace.VALUE.with(propertyValue),
+                        Replace.WORLD.with(world.getName()),
+                        Replace.ERROR.with(exception.getMessage()));
+            }
         });
     }
 
