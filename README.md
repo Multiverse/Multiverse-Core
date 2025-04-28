@@ -1,5 +1,5 @@
 <p align="center">
-<img src="config/multiverse-long.png" alt="Multiverse Logo">
+<img src="config/multiverse-banner.png" alt="Multiverse Logo">
 </p>
 
 [![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/plugin/multiverse-core)
