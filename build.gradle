@@ -113,11 +113,11 @@ publishing {
                 password = System.getenv("GITHUB_TOKEN")
             }
         }
-
         maven {
-            // todo: remove before mv5 release
-            name = "multiverseBeta"
-            url = "https://repo.c0ding.party/multiverse-beta"
+            name = "multiverse"
+            def releasesRepoUrl = "https://repo.onarandombox.com/multiverse-releases"
+            def snapshotsRepoUrl = "https://repo.onarandombox.com/multiverse-snapshots"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials(PasswordCredentials)
         }
     }
