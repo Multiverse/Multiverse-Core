@@ -1,5 +1,5 @@
 <p align="center">
-<img src="config/multiverse2-long.png" alt="Multiverse Logo">
+<img src="config/multiverse-banner.png" alt="Multiverse Logo">
 </p>
 
 [![Modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/plugin/multiverse-core)
@@ -16,7 +16,7 @@
 
 # About
 
-[Multiverse](https://dev.bukkit.org/projects/multiverse-core) was created at the dawn of Bukkit multiworld support. It has since then grown into a **complete world management solution!** Multiverse provides the easiest to use world management solution for your Minecraft server, big or small, and with great addons like [Portals](https://dev.bukkit.org/projects/multiverse-portals) and [NetherPortals](https://dev.bukkit.org/projects/multiverse-netherportals/), what's not to love!
+[Multiverse](https://modrinth.com/plugin/multiverse-core) was created at the dawn of Bukkit multiworld support. It has since then grown into a **complete world management solution!** Multiverse provides the easiest to use world management solution for your Minecraft server, big or small, and with great addons like [Portals](https://dev.bukkit.org/projects/multiverse-portals) and [NetherPortals](https://dev.bukkit.org/projects/multiverse-netherportals/), what's not to love!
 
 Now it's time to create your very own Multiverse server, do check out our [Wiki](https://github.com/Multiverse/Multiverse-Core/wiki) and [Usage Guide](https://github.com/Multiverse/Multiverse-Core/wiki/Basics) to get started. Feel free to hop onto our [Discord](https://discord.gg/NZtfKky) if you have any question or just want to have a chat with us!
 
@@ -27,20 +27,22 @@ Now it's time to create your very own Multiverse server, do check out our [Wiki]
 * [Multiverse-Inventories](https://github.com/Multiverse/Multiverse-Inventories) -> Have separated players stats and inventories per world or per group of worlds.
 * [Multiverse-SignPortals](https://github.com/Multiverse/Multiverse-SignPortals) -> Signs as teleporters!
 
+## Usage Guide
+
+We have a cool new website hosting our Wiki: https://mvplugins.org
+
 ## Building
 Simply build the source with Gradle:
 ```
 ./gradlew build
 ```
-More details are available on the [build instructions wiki page](https://github.com/Multiverse/Multiverse-Core/wiki/Building).
-
 
 ## Contributing
 
 **Want to help improve Multiverse?** There are several ways you can support and contribute to the project.
 * Take a look at our "Bug: Unconfirmed" issues, where you can find issues that need extra testing and investigation.
 * Want others to love Multiverse too? You can join the [Multiverse Discord community](https://discord.gg/NZtfKky) and help others with issues and setup!
-* A Multiverse guru? You can update our [Wiki](https://github.com/Multiverse/Multiverse-Core/wiki) with your latest tip, tricks and guides! The wiki open for all to edit and improve.
+* A Multiverse guru? You can update our [Wiki](https://github.com/Multiverse/multiverse-web) with your latest tip, tricks and guides! The wiki open for all to edit and improve.
 * Love coding? You could look at ["State: Open to PR"](https://github.com/Multiverse/Multiverse-Core/labels/State%3A%20Open%20to%20PR) and ["Resolution: Accepted"](https://github.com/Multiverse/Multiverse-Core/labels/Resolution%3A%20Accepted) issues. We're always happy to receive bug fixes and feature additions as [pull requests](https://www.freecodecamp.org/news/how-to-make-your-first-pull-request-on-github-3/).
 * If you'd like to make a financial contribution to the project, do consider joining our [Patreon](https://www.patreon.com/dumptruckman) or make a one-time donation [here](https://paypal.me/dumptruckman)!
 

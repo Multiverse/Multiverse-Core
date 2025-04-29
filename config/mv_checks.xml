@@ -134,7 +134,7 @@
         <module name="MutableException"/>
         <module name="OneTopLevelClass"/>
         <module name="ThrowsCount">
-            <property name="max" value="0"/>
+            <property name="max" value="2"/>
         </module>
         <module name="VisibilityModifier">
             <property name="protectedAllowed" value="true"/>
@@ -145,7 +145,10 @@
         <module name="AvoidDoubleBraceInitialization"/>
         <module name="AvoidNoArgumentSuperConstructorCall"/>
         <module name="CovariantEquals"/>
-        <module name="DeclarationOrder"/>
+        <module name="DeclarationOrder">
+            <!-- Doesn't respect static methods at top -->
+            <property name="severity" value="ignore"/>
+        </module>
         <module name="DefaultComesLast"/>
         <module name="EmptyStatement"/>
         <module name="EqualsAvoidNull"/>
@@ -158,6 +161,8 @@
             <property name="ignoreSetter" value="true"/>
             <property name="setterCanReturnItsClass" value="true"/>
             <property name="ignoreAbstractMethods" value="true"/>
+            <!-- Not smart enough -->
+            <property name="severity" value="ignore"/>
         </module>
         <module name="IllegalCatch"/>
         <module name="IllegalThrows"/>
@@ -192,7 +197,9 @@
         <module name="PackageDeclaration"/>
         <module name="ParameterAssignment"/>
         <module name="RequireThis"/>
-        <module name="ReturnCount"/>
+        <module name="ReturnCount">
+            <property name="severity" value="info"/>
+        </module>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality"/>
@@ -215,18 +222,21 @@
 
         <!-- Imports -->
         <module name="AvoidStarImport"/>
-        <module name="CustomImportOrder">
-            <property name="sortImportsInGroupAlphabetically" value="true"/>
-            <property name="separateLineBetweenGroups" value="true"/>
-            <property name="customImportOrderRules"
-                      value="THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>
-<!--                      value="SAME_PACKAGE(3)###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE###STATIC"/>-->
-            <property name="tokens" value="IMPORT, STATIC_IMPORT, PACKAGE_DEF"/>
-        </module>
         <module name="IllegalImport">
             <property name="illegalPkgs" value="sun"/>
         </module>
-<!--        <module name="ImportOrder"/>-->
+        <module name="ImportOrder">
+            <property name="option" value="bottom"/>
+            <property name="ordered" value="true"/>
+            <property name="separated" value="true"/>
+            <property name="separatedStaticGroups" value="true"/>
+            <property name="caseSensitive" value="true"/>
+            <property name="sortStaticImportsAlphabetically" value="true"/>
+            <property name="groups"
+                      value="java,javax,*,org.mvplugins"/>
+            <property name="staticGroups"
+                      value="/^.*$/"/>
+        </module>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
@@ -297,11 +307,48 @@
         <module name="BooleanExpressionComplexity"/>
         <module name="ClassDataAbstractionCoupling">
             <property name="max" value="7"/>
-            <property name="excludedClasses" value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character, Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception, Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, IntStream, Integer, LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map, NullPointerException, Object, Optional, OptionalDouble, OptionalInt, OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException, Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder, SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException, Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
         </module>
         <module name="ClassFanOutComplexity">
+            <property name="id" value="FanOutComplexityGettingTooHigh"/>
             <property name="max" value="20"/>
-            <property name="excludedClasses" value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character, Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception, Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException, IllegalStateException, IndexOutOfBoundsException, IntStream, Integer, LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map, NullPointerException, Object, Optional, OptionalDouble, OptionalInt, OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException, Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder, SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException, Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="ClassFanOutComplexity">
+            <property name="id" value="FanOutComplexityProbablyTooHigh"/>
+            <property name="max" value="35"/>
+            <property name="excludedClasses"
+                      value="ArrayIndexOutOfBoundsException, ArrayList, Boolean, Byte, Character,
+                      Class, Collection, Deprecated, Deque, Double, DoubleStream, EnumSet, Exception,
+                      Float, FunctionalInterface, HashMap, HashSet, IllegalArgumentException,
+                      IllegalStateException, IndexOutOfBoundsException, IntStream, Integer,
+                      LinkedHashMap, LinkedHashSet, LinkedList, List, Long, LongStream, Map,
+                      NullPointerException, Object, Optional, OptionalDouble, OptionalInt,
+                      OptionalLong, Override, Queue, RuntimeException, SafeVarargs, SecurityException,
+                      Set, Short, SortedMap, SortedSet, Stream, String, StringBuffer, StringBuilder,
+                      SuppressWarnings, Throwable, TreeMap, TreeSet, UnsupportedOperationException,
+                      Void, boolean, byte, char, double, float, int, long, short, var, void"/>
         </module>
         <module name="CyclomaticComplexity">
             <property name="max" value="7"/>
@@ -333,15 +380,18 @@
             <property name="throwsIndent" value="8"/>
             <property name="arrayInitIndent" value="4"/>
             <property name="lineWrappingIndentation" value="8"/>
-            <property name="forceStrictCondition" value="true"/>
+            <property name="forceStrictCondition" value="false"/>
         </module>
         <module name="NoCodeInFile"/>
         <module name="OuterTypeFilename"/>
         <module name="TodoComment">
             <property name="format" value="TODO"/>
-            <property name="severity" value="warning"/>
+            <!-- TODO change back to warning after MV5 -->
+            <property name="severity" value="info"/>
         </module>
-        <module name="TrailingComment"/>
+        <module name="TrailingComment">
+            <property name="legalComment" value="^\sSUPPRESS CHECKSTYLE:"/>
+        </module>
         <module name="UncommentedMain"/>
         <module name="UpperEll"/>
 
@@ -360,6 +410,7 @@
                     RECORD_COMPONENT_DEF"/>
         </module>
         <module name="AbstractClassName">
+            <property name="ignoreName" value="true"/>
             <message key="name.invalidPattern"
                      value="Abstract class name ''{0}'' must match pattern ''{1}''."/>
         </module>
@@ -398,7 +449,7 @@
                      value="Local variable name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="MemberName">
-            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$|^[A-Z][A-Z0-9_]*$"/>
             <message key="name.invalidPattern"
                      value="Member name ''{0}'' must match pattern ''{1}''."/>
         </module>
@@ -412,6 +463,7 @@
                      value="Method type name ''{0}'' must match pattern ''{1}''."/>
         </module>
         <module name="PackageName">
+            <property name="severity" value="info"/>
             <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
             <message key="name.invalidPattern"
                      value="Package name ''{0}'' must match pattern ''{1}''."/>
@@ -455,7 +507,13 @@
             <property name="max" value="30"/>
         </module>
         <module name="LambdaBodyLength">
+            <property name="id" value="LambdaGettingTooLong"/>
             <property name="max" value="10"/>
+            <property name="severity" value="info"/>
+        </module>
+        <module name="LambdaBodyLength">
+            <property name="id" value="LambdaProbablyTooLong"/>
+            <property name="max" value="25"/>
         </module>
         <module name="MethodCount">
             <property name="maxTotal" value="100"/>
@@ -472,9 +530,30 @@
             <property name="max" value="1"/>
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="3"/>
+            <property name="id" value="ConsiderLessMethodParameters"/>
+            <property name="max" value="4"/>
             <property name="ignoreOverriddenMethods" value="true"/>
-            <property name="severity" value="warning"/>
+            <property name="severity" value="info"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ProbablyTooManyMethodParameters"/>
+            <property name="max" value="10"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ConsiderLessConstructorParameters"/>
+            <property name="max" value="7"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="severity" value="info"/>
+            <property name="tokens" value="CTOR_DEF"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="id" value="ProbablyTooManyConstructorParameters"/>
+            <property name="max" value="12"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+            <property name="tokens" value="CTOR_DEF"/>
         </module>
         <module name="RecordComponentNumber">
             <property name="max" value="8"/>
