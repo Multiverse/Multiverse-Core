@@ -71,7 +71,6 @@ class CreateCommand extends CoreCommand {
                     + "--no-structures --biome <biome>]")
             @Description("{@@mv-core.create.flags.description}")
             String[] flagArray) {
-        Logging.severe("Running /mv create");
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         messageWorldDetails(issuer, worldName, environment, parsedFlags);
@@ -193,7 +192,6 @@ class CreateCommand extends CoreCommand {
         @Override
         @CommandAlias("mvcreate|mvc")
         void onCreateCommand(MVCommandIssuer issuer, String worldName, World.Environment environment, String[] flags) {
-            Logging.severe("Legacy alias used: /mvcreate");
             super.onCreateCommand(issuer, worldName, environment, flags);
         }
     }
