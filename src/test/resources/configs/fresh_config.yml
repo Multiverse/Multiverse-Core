@@ -1,6 +1,7 @@
 world:
   enforce-access: false
   enforce-gamemode: true
+  enforce-flight: true
   auto-purge-entities: false
 
 teleport:
