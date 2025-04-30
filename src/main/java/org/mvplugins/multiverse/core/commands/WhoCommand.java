@@ -79,7 +79,6 @@ class WhoCommand extends CoreCommand {
     void onWhoCommand(
             MVCommandIssuer issuer,
             @Flags("resolve=issuerAware")
-            @Optional
             @Syntax("<world>")
             @Description("{@@mv-core.who.world.description}")
             LoadedMultiverseWorld inputtedWorld,
