@@ -97,6 +97,15 @@ final class CoreConfigNodes {
             .name("enforce-gamemode")
             .build());
 
+    final ConfigNode<Boolean> enforceFlight = node(ConfigNode.builder("world.enforce-flight", Boolean.class)
+            .comment("")
+            .comment("Sets whether Multiverse will should globally enforce flight ability on worlds.")
+            .comment("Disable this if you want another plugin to handle player's flight ability.")
+            .comment("Disabling this will make the world property `allow-flight` have no effect.")
+            .defaultValue(true)
+            .name("enforce-flight")
+            .build());
+
     final ConfigNode<Boolean> autoPurgeEntities = node(ConfigNode.builder("world.auto-purge-entities", Boolean.class)
             .comment("")
             .comment("Sets whether Multiverse will purge mobs and entities automatically.")

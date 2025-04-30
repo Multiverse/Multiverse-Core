@@ -163,6 +163,14 @@ public class CoreConfig {
         return configHandle.get(configNodes.enforceGamemode);
     }
 
+    public Try<Void> setEnforceFlight(boolean enforceFlight) {
+        return configHandle.set(configNodes.enforceFlight, enforceFlight);
+    }
+
+    public boolean getEnforceFlight() {
+        return configHandle.get(configNodes.enforceFlight);
+    }
+
     /**
      * {@inheritDoc}
      */

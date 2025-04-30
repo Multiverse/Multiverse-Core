@@ -67,6 +67,9 @@ public final class EnforcementHandler {
      * @param world The world to enforce flight in.
      */
     public void handleAllFlightEnforcement(@NotNull LoadedMultiverseWorld world) {
+        if (!config.getEnforceFlight()) {
+            return;
+        }
         world.getPlayers().peek(players -> players.forEach(this::handleFlightEnforcement));
     }
 
@@ -76,6 +79,9 @@ public final class EnforcementHandler {
      * @param player    The player to enforce flight for.
      */
     public void handleFlightEnforcement(@NotNull Player player) {
+        if (!config.getEnforceFlight()) {
+            return;
+        }
         worldManagerProvider.get().getLoadedWorld(player.getWorld()).peek(world -> {
             if (player.getGameMode() == GameMode.SPECTATOR) {
                 // Spectators has to fly or not they will just fall to the void and die
