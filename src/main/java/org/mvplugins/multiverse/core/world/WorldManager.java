@@ -78,7 +78,7 @@ public final class WorldManager {
     private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.lock");
 
     private final Map<String, MultiverseWorld> worldsMap;
-    private final Map<String, MultiverseWorld> loadedWorldsMap;
+    private final Map<String, LoadedMultiverseWorld> loadedWorldsMap;
     private final List<String> unloadTracker;
     private final List<String> loadTracker;
     private final WorldsConfigManager worldsConfigManager;
@@ -355,8 +355,7 @@ public final class WorldManager {
         return validateWorldToLoad(world).mapAttempt(this::doLoadWorld);
     }
 
-    private Attempt<MultiverseWorld, LoadFailureReason> validateWorldToLoad(
-            @NotNull MultiverseWorld mvWorld) {
+    private Attempt<MultiverseWorld, LoadFailureReason> validateWorldToLoad(@NotNull MultiverseWorld mvWorld) {
         if (loadTracker.contains(mvWorld.getName())) {
             // This is to prevent recursive calls by WorldLoadEvent
             Logging.fine("World already loading: " + mvWorld.getName());
@@ -369,27 +368,35 @@ public final class WorldManager {
     }
 
     private Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadWorld(@NotNull MultiverseWorld mvWorld) {
+        World bukkitWorld = Bukkit.getWorld(mvWorld.getName());
+        if (bukkitWorld != null) {
+            // World already loaded, maybe by another plugin
+            Logging.finer("World already loaded in bukkit: " + mvWorld.getName());
+            return newLoadedMultiverseWorld(mvWorld, bukkitWorld);
+        }
+
         WorldCreator worldCreator = WorldCreator.name(mvWorld.getName())
                 .environment(mvWorld.getEnvironment())
                 .seed(mvWorld.getSeed());
-
         return addBiomeProviderToCreator(worldCreator, mvWorld.getName(), mvWorld.getBiome())
                 .mapAttempt(creator -> addGeneratorToCreator(creator, mvWorld.getGenerator()))
                 .mapAttempt(this::createBukkitWorld)
                 .transform(LoadFailureReason.WORLD_CREATOR_FAILED)
-                .map(bukkitWorld -> {
-                    WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName()).get(); //TODO: null check here
-                    LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
-                            bukkitWorld,
-                            worldConfig,
-                            blockSafety,
-                            locationManipulation,
-                            config);
-                    loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
-                    saveWorldsConfig();
-                    pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
-                    return loadedWorld;
-                });
+                .mapAttempt(newBukkitWorld -> newLoadedMultiverseWorld(mvWorld, newBukkitWorld));
+    }
+
+    private Attempt<LoadedMultiverseWorld, LoadFailureReason> newLoadedMultiverseWorld(MultiverseWorld mvWorld, World bukkitWorld) {
+        WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName()).get(); //TODO: null check here, but logically it should never be null.
+        LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
+                bukkitWorld,
+                worldConfig,
+                blockSafety,
+                locationManipulation,
+                config);
+        loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
+        saveWorldsConfig();
+        pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
+        return Attempt.success(loadedWorld);
     }
 
     /**
@@ -400,29 +407,35 @@ public final class WorldManager {
      */
     public Attempt<MultiverseWorld, UnloadFailureReason> unloadWorld(@NotNull UnloadWorldOptions options) {
         LoadedMultiverseWorld world = options.world();
-
         if (unloadTracker.contains(world.getName())) {
             // This is to prevent recursive calls by WorldUnloadEvent
             Logging.fine("World already unloading: " + world.getName());
             return worldActionResult(UnloadFailureReason.WORLD_ALREADY_UNLOADING, world.getName());
         }
 
+        if (!isLoadedWorld(world)) {
+            Logging.severe("World is not loaded: " + world.getName());
+            return worldActionResult(UnloadFailureReason.WORLD_NON_EXISTENT, world.getName());
+        }
+
+        if (!options.unloadBukkitWorld()) {
+            return removeLoadedMultiverseWorld(world);
+        }
+
         return unloadBukkitWorld(world.getBukkitWorld().getOrNull(), options.saveBukkitWorld()).fold(
-                exception -> worldActionResult(UnloadFailureReason.BUKKIT_UNLOAD_FAILED,
-                        world.getName(), exception),
-                success -> Option.of(loadedWorldsMap.remove(world.getName())).fold(
-                        () -> {
-                            Logging.severe("Failed to remove world from map: " + world.getName());
-                            return worldActionResult(UnloadFailureReason.WORLD_NON_EXISTENT, world.getName());
-                        },
-                        mvWorld -> {
-                            Logging.fine("Removed MultiverseWorld from map: " + world.getName());
-                            var unloadedWorld = Objects.requireNonNull(worldsMap.get(world.getName()),
-                                    "For some reason, the unloaded world isn't in the map... BUGGG");
-                            mvWorld.getWorldConfig().setMVWorld(unloadedWorld);
-                            pluginManager.callEvent(new MVWorldUnloadedEvent(mvWorld));
-                            return worldActionResult(unloadedWorld);
-                        }));
+                exception -> worldActionResult(UnloadFailureReason.BUKKIT_UNLOAD_FAILED, world.getName(), exception),
+                success -> removeLoadedMultiverseWorld(world));
+    }
+
+    private Attempt<MultiverseWorld, UnloadFailureReason> removeLoadedMultiverseWorld(@NotNull LoadedMultiverseWorld world) {
+        MultiverseWorld mvWorld = Objects.requireNonNull(loadedWorldsMap.remove(world.getName()),
+                "For some reason, the loaded world isn't in the map... BUGGG");
+        Logging.fine("Removed MultiverseWorld from map: " + world.getName());
+        var unloadedWorld = Objects.requireNonNull(worldsMap.get(world.getName()),
+                "For some reason, the unloaded world isn't in the map... BUGGG");
+        mvWorld.getWorldConfig().setMVWorld(unloadedWorld);
+        pluginManager.callEvent(new MVWorldUnloadedEvent(mvWorld));
+        return worldActionResult(unloadedWorld);
     }
 
     /**

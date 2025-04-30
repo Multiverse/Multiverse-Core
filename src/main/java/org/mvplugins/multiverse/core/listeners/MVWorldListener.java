@@ -44,11 +44,14 @@ final class MVWorldListener implements CoreListener {
             return;
         }
         worldManager.getLoadedWorld(event.getWorld().getName())
-                .peek(world -> worldManager.unloadWorld(UnloadWorldOptions.world(world)).onFailure(failure -> {
-                    if (failure.getFailureReason() != UnloadFailureReason.WORLD_ALREADY_UNLOADING) {
-                        Logging.severe("Failed to unload world: " + failure);
-                    }
-                }));
+                .peek(world -> worldManager.unloadWorld(UnloadWorldOptions
+                                .world(world)
+                                .unloadBukkitWorld(false))
+                        .onFailure(failure -> {
+                            if (failure.getFailureReason() != UnloadFailureReason.WORLD_ALREADY_UNLOADING) {
+                                Logging.severe("Failed to unload world: " + failure);
+                            }
+                        }));
     }
 
     /**
