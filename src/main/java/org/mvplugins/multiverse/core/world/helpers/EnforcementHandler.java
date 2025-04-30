@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -15,11 +16,13 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 @Service
 public final class EnforcementHandler {
 
+    private final CoreConfig config;
     private final CorePermissionsChecker permissionsChecker;
     private final Provider<WorldManager> worldManagerProvider;
 
     @Inject
-    EnforcementHandler(CorePermissionsChecker permissionsChecker, Provider<WorldManager> worldManagerProvider) {
+    EnforcementHandler(CoreConfig config, CorePermissionsChecker permissionsChecker, Provider<WorldManager> worldManagerProvider) {
+        this.config = config;
         this.permissionsChecker = permissionsChecker;
         this.worldManagerProvider = worldManagerProvider;
     }
@@ -30,6 +33,9 @@ public final class EnforcementHandler {
      * @param world The world to teleport players to.
      */
     public void handleAllGameModeEnforcement(@NotNull LoadedMultiverseWorld world) {
+        if (!config.getEnforceGameMode()) {
+            return;
+        }
         world.getPlayers().peek(players -> players.forEach(this::handleGameModeEnforcement));
     }
 
@@ -39,6 +45,9 @@ public final class EnforcementHandler {
      * @param player    The player to enforce game mode for.
      */
     public void handleGameModeEnforcement(@NotNull Player player) {
+        if (!config.getEnforceGameMode()) {
+            return;
+        }
         worldManagerProvider.get().getLoadedWorld(player.getWorld()).peek(world -> {
             if (permissionsChecker.hasGameModeBypassPermission(player, world)) {
                 Logging.finer("Player is immune to gamemode enforcement: %s", player.getName());
