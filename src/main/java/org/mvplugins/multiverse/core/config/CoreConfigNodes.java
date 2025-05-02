@@ -364,7 +364,15 @@ final class CoreConfigNodes {
             .comment("")
             .build());
 
+    final ConfigNode<String> bukkitYmlPath = node(ConfigNode.builder("misc.bukkit-yml-path", String.class)
+            .comment("Change this if you use a custom path for the bukkit.yml file with `--bukkit-settings` startup flag.")
+            .comment("Note: this config option needs a server restart to take effect.")
+            .defaultValue("bukkit.yml")
+            .name("bukkit-yml-path")
+            .build());
+
     final ConfigNode<Integer> globalDebug = node(ConfigNode.builder("misc.global-debug", Integer.class)
+            .comment("")
             .comment("This is our debug flag to help identify issues with Multiverse.")
             .comment("If you are having issues with Multiverse, please set this to 3 and then post your log to pastebin.com")
             .comment("Otherwise, there's no need to touch this. If not instructed by a wiki page or developer.")

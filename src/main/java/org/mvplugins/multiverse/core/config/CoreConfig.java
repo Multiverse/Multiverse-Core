@@ -495,6 +495,14 @@ public class CoreConfig {
         return configHandle.set(configNodes.showLegacyAliases, showLegacyAliases);
     }
 
+    public Try<Void> setBukkitYmlPath(String bukkitYmlPath) {
+        return configHandle.set(configNodes.bukkitYmlPath, bukkitYmlPath);
+    }
+
+    public String getBukkitYmlPath() {
+        return configHandle.get(configNodes.bukkitYmlPath);
+    }
+
     /**
      * {@inheritDoc}
      */

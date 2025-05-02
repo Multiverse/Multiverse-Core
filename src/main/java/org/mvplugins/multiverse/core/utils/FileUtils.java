@@ -9,6 +9,7 @@ package org.mvplugins.multiverse.core.utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collections;
@@ -19,9 +20,11 @@ import java.util.stream.Stream;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 
@@ -31,32 +34,16 @@ import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 @Service
 public final class FileUtils {
 
+    private final CoreConfig config;
     private final File serverFolder;
-    private final File bukkitYml;
-    private final File serverProperties;
+    private File bukkitYml;
+    private File serverProperties;
 
     @Inject
-    FileUtils() {
+    FileUtils(CoreConfig config) {
+        this.config = config;
         this.serverFolder = new File(System.getProperty("user.dir"));
         Logging.finer("Server folder: " + this.serverFolder);
-        this.bukkitYml = findFileFromServerDirectory("bukkit.yml");
-        this.serverProperties = findFileFromServerDirectory("server.properties");
-    }
-
-    private @Nullable File findFileFromServerDirectory(String fileName) {
-        File[] files;
-        try {
-            files = this.serverFolder.listFiles((file, s) -> s.equalsIgnoreCase(fileName));
-        } catch (Exception e) {
-            Logging.severe("Could not read from server directory. Unable to locate file: %s", fileName);
-            Logging.severe(e.getMessage());
-            return null;
-        }
-        if (files != null && files.length == 1) {
-            return files[0];
-        }
-        Logging.warning("Unable to locate file from server directory: %s", fileName);
-        return null;
     }
 
     /**
@@ -74,6 +61,10 @@ public final class FileUtils {
      * @return The bukkit.yml file if exist, else null.
      */
     public @Nullable File getBukkitConfig() {
+        if (this.bukkitYml == null) {
+            this.bukkitYml = findFileFromServerDirectory(config.getBukkitYmlPath());
+            Logging.finer("Bukkit.yml: " + this.bukkitYml);
+        }
         return this.bukkitYml;
     }
 
@@ -83,7 +74,24 @@ public final class FileUtils {
      * @return The server.properties file if exist, else null.
      */
     public @Nullable File getServerProperties() {
+        if (this.serverProperties == null) {
+            this.serverProperties = findFileFromServerDirectory("server.properties");
+            Logging.finer("server.properties: %s", this.serverProperties);
+        }
         return this.serverProperties;
+    }
+
+    private @Nullable File findFileFromServerDirectory(String fileName) {
+        if (this.serverFolder == null) {
+            Logging.warning("Unable to locate server directory.");
+            return null;
+        }
+        File file = new File(this.serverFolder, fileName);
+        if (!file.exists()) {
+            Logging.warning("Unable to locate file from server directory: %s", fileName);
+            return null;
+        }
+        return file;
     }
 
     /**
