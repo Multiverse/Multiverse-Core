@@ -612,8 +612,11 @@ public final class WorldManager {
         return worldActionResult(options);
     }
 
-    private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldCopyFolder(
-            @NotNull CloneWorldOptions options) {
+    private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldCopyFolder(@NotNull CloneWorldOptions options) {
+        if (options.forceSave()) {
+            Logging.finer("Force saving world before cloning: " + options.world().getName());
+            options.world().getBukkitWorld().peek(World::save);
+        }
         File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).get();
         File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
         return fileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
