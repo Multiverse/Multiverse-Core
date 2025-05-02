@@ -33,7 +33,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      */
     WorldConfig worldConfig;
 
-    private final CoreConfig config;
+    protected final CoreConfig config;
     private String colourlessAlias = "";
 
     MultiverseWorld(String worldName, WorldConfig worldConfig, CoreConfig config) {

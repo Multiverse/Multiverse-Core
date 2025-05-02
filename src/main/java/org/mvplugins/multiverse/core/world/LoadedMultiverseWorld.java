@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
@@ -27,20 +28,25 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
 
     private final BlockSafety blockSafety;
     private final LocationManipulation locationManipulation;
+    private final EntityPurger entityPurger;
 
     LoadedMultiverseWorld(
             @NotNull World world,
             @NotNull WorldConfig worldConfig,
+            @NotNull CoreConfig config,
             @NotNull BlockSafety blockSafety,
             @NotNull LocationManipulation locationManipulation,
-            @NotNull CoreConfig config) {
+            @NotNull EntityPurger entityPurger
+    ) {
         super(world.getName(), worldConfig, config);
         this.worldUid = world.getUID();
         this.blockSafety = blockSafety;
         this.locationManipulation = locationManipulation;
+        this.entityPurger = entityPurger;
 
         setupWorldConfig(world);
         setupSpawnLocation(world);
+        purgeEntitiesOnLoad();
     }
 
     private void setupWorldConfig(World world) {
@@ -99,6 +105,12 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
 
         Logging.severe("Safe spawn NOT found!!!");
         return location;
+    }
+
+    private void purgeEntitiesOnLoad() {
+        if (config.isAutoPurgeEntities()) {
+            entityPurger.purgeEntities(this);
+        }
     }
 
     /**

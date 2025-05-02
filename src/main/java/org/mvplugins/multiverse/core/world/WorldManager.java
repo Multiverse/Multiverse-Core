@@ -48,6 +48,7 @@ import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
 import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
+import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
@@ -91,8 +92,8 @@ public final class WorldManager {
     private final PluginManager pluginManager;
     private final CorePermissions corePermissions;
     private final ServerProperties serverProperties;
-    @NotNull
     private final CoreConfig config;
+    private final EntityPurger entityPurger;
 
     @Inject
     WorldManager(
@@ -106,7 +107,8 @@ public final class WorldManager {
             @NotNull PluginManager pluginManager,
             @NotNull CorePermissions corePermissions,
             @NotNull ServerProperties serverProperties,
-            @NotNull CoreConfig config) {
+            @NotNull CoreConfig config,
+            @NotNull EntityPurger entityPurger) {
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.biomeProviderFactory = biomeProviderFactory;
@@ -118,6 +120,7 @@ public final class WorldManager {
         this.corePermissions = corePermissions;
         this.serverProperties = serverProperties;
         this.config = config;
+        this.entityPurger = entityPurger;
 
         this.worldsMap = new HashMap<>();
         this.loadedWorldsMap = new HashMap<>();
@@ -312,9 +315,11 @@ public final class WorldManager {
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                 world,
                 worldConfig,
+                config,
                 blockSafety,
                 locationManipulation,
-                config);
+                entityPurger
+        );
         setDefaultEnvironmentScale(mvWorld);
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
@@ -390,9 +395,11 @@ public final class WorldManager {
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                 bukkitWorld,
                 worldConfig,
+                config,
                 blockSafety,
                 locationManipulation,
-                config);
+                entityPurger
+        );
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
