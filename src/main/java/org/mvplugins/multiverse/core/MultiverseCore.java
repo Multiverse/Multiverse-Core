@@ -201,15 +201,12 @@ public class MultiverseCore extends MultiverseModule {
      * Setup the api service for {@link MultiverseCoreApi}
      */
     private void loadApiService() {
-        Try.run(() -> {
-            MultiverseCoreApi.init(serviceLocator);
-            Bukkit.getServicesManager().register(MultiverseCoreApi.class, MultiverseCoreApi.get(), this, ServicePriority.Normal);
-        }).onSuccess(ignore -> {
-            Logging.info("API service loaded");
-        }).onFailure(e -> {
-            Logging.severe("Failed to load API service!");
-            e.printStackTrace();
-        });
+        Try.run(() -> MultiverseCoreApi.init(this))
+                .onSuccess(ignore -> Logging.info("API service loaded!"))
+                .onFailure(e -> {
+                    Logging.severe("Failed to load API service!");
+                    e.printStackTrace();
+                });
     }
 
     /**

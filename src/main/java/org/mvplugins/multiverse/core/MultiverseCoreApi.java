@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
@@ -22,15 +24,17 @@ public class MultiverseCoreApi {
 
     private static MultiverseCoreApi instance;
 
-    static void init(@NotNull PluginServiceLocator serviceLocator) {
+    static void init(@NotNull MultiverseCore multiverseCore) {
         if (instance != null) {
             throw new IllegalStateException("MultiverseCoreApi has already been initialized!");
         }
-        instance = new MultiverseCoreApi(serviceLocator);
+        instance = new MultiverseCoreApi(multiverseCore.getServiceLocator());
+        Bukkit.getServicesManager().register(MultiverseCoreApi.class, instance, multiverseCore, ServicePriority.Normal);
     }
 
     static void shutdown() {
         instance = null;
+        Bukkit.getServicesManager().unregister(MultiverseCoreApi.class);
     }
 
     /**
