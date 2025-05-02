@@ -108,7 +108,7 @@ final class CoreConfigNodes {
 
     final ConfigNode<Boolean> autoPurgeEntities = node(ConfigNode.builder("world.auto-purge-entities", Boolean.class)
             .comment("")
-            .comment("Sets whether Multiverse will purge mobs and entities automatically.")
+            .comment("Sets whether Multiverse will purge entities on world load based world's entity spawn config.")
             .defaultValue(false)
             .name("auto-purge-entities")
             .build());
