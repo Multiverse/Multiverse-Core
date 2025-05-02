@@ -66,7 +66,8 @@ class CloneCommand extends CoreCommand {
         CloneWorldOptions cloneWorldOptions = CloneWorldOptions.fromTo(world, newWorldName)
                 .keepWorldConfig(!parsedFlags.hasFlag(flags.resetWorldConfig))
                 .keepGameRule(!parsedFlags.hasFlag(flags.resetGamerules))
-                .keepWorldBorder(!parsedFlags.hasFlag(flags.resetWorldBorder));
+                .keepWorldBorder(!parsedFlags.hasFlag(flags.resetWorldBorder))
+                .forceSave(parsedFlags.hasFlag(flags.forceSave));
         worldManager.cloneWorld(cloneWorldOptions)
                 .onSuccess(newWorld -> {
                     Logging.fine("World clone success: " + newWorld);
@@ -97,6 +98,10 @@ class CloneCommand extends CoreCommand {
 
         private final CommandFlag resetWorldBorder = flag(CommandFlag.builder("--reset-world-border")
                 .addAlias("-wb")
+                .build());
+
+        private final CommandFlag forceSave = flag(CommandFlag.builder("--force-save")
+                .addAlias("-s")
                 .build());
     }
 
