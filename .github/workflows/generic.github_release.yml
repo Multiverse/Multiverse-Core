@@ -56,13 +56,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build and test
+      - name: Build to test
+        id: test
         run: ./gradlew clean build -x assemble -x shadowJar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release
         id: release
+        if: steps.test.outcome == 'success'
         uses: benwoo1110/semantic-release-action@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -80,12 +82,19 @@ jobs:
           GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build for upload
+        id: build
+        run: ./gradlew build -x test
+        env:
+          GITHUB_VERSION: ${{ steps.release.outputs.tag_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload release artifact
-        if: steps.release.outputs.release_created == 'true'
+        if: steps.build.outcome == 'success'
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/libs/${{ inputs.plugin_name }}-${{ steps.release.outputs.publish_version }}.jar
+          file: build/libs/${{ inputs.plugin_name }}-${{ steps.release.outputs.tag_name }}.jar
           asset_name: ${{ inputs.plugin_name }}-${{ steps.release.outputs.tag_name }}.jar
           tag: ${{ steps.release.outputs.tag_name }}
 
