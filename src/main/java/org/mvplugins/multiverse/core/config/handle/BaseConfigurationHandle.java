@@ -30,7 +30,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
     protected final @Nullable Logger logger;
     protected final @NotNull NodeGroup nodes;
     protected final @Nullable ConfigMigrator migrator;
-    protected final @NotNull Map<Node, Object> nodeValueMap;
+    protected final @NotNull Map<ValueNode, Object> nodeValueMap;
 
     protected C config;
 
@@ -80,8 +80,11 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
             if (node instanceof ValueNode valueNode) {
                 var value = deserializeNodeFromConfig(valueNode);
                 nodeValueMap.put(valueNode, value);
-                valueNode.onSetValue(value, value);
             }
+        });
+
+        nodeValueMap.forEach((valueNode, value) -> {
+            valueNode.onSetValue(value, value);
         });
     }
 
