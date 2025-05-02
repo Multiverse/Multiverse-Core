@@ -38,6 +38,7 @@ command:
   show-legacy-aliases: false
 
 misc:
+  bukkit-yml-path: bukkit.yml
   global-debug: 0
   debug-permissions: false
   silent-start: false
