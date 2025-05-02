@@ -84,6 +84,7 @@ jobs:
 
       - name: Build for upload
         id: build
+        if: steps.release.outputs.release_created == 'true'
         run: ./gradlew build -x test
         env:
           GITHUB_VERSION: ${{ steps.release.outputs.tag_name }}
