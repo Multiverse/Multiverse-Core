@@ -1,0 +1,39 @@
+name: 'Dispatch: Create Release'
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Stable or pre-release'
+        required: true
+        type: choice
+        options:
+          - prerelease
+          - release
+      version_bump:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  github_release:
+    uses: ./.github/workflows/call.github_release.yml
+    secrets: inherit
+    with:
+      release_mode: ${{ inputs.release_type }}
+      version_bump: ${{ inputs.version_bump }}
+
+  platform_uploads:
+    needs: github_release
+    if: needs.github_release.outputs.release_created == 'true'
+    uses: ./.github/workflows/call.platform_uploads.yml
+    secrets: inherit
+    with:
+      target_tag: ${{ needs.github_release.outputs.tag_name }}
+      upload_modrinth: 'true'
+      upload_dbo: 'false'
+      upload_hangar: 'false'
