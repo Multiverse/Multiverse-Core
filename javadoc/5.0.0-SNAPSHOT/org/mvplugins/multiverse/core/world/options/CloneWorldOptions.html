@@ -111,6 +111,16 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#forceSave()" class="member-name-link">forceSave</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets whether to force save the world to disk before clone copying.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#forceSave(boolean)" class="member-name-link">forceSave</a><wbr>(boolean&nbsp;forceSaveInput)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets whether to force save the world to disk before clone copying.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#fromTo(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld,java.lang.String)" class="member-name-link">fromTo</a><wbr>(<a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a>&nbsp;world,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newWorldName)</code></div>
@@ -295,6 +305,31 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 <dd><code><a href="KeepWorldSettingsOptions.html#keepWorldBorder()">keepWorldBorder</a></code>&nbsp;in interface&nbsp;<code><a href="KeepWorldSettingsOptions.html" title="interface in org.mvplugins.multiverse.core.world.options">KeepWorldSettingsOptions</a></code></dd>
 <dt>Returns:</dt>
 <dd>Whether to keep the world border of the world during cloning.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="forceSave(boolean)">
+<h3>forceSave</h3>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></span>&nbsp;<span class="element-name">forceSave</span><wbr><span class="parameters">(boolean&nbsp;forceSaveInput)</span></div>
+<div class="block">Sets whether to force save the world to disk before clone copying.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>forceSaveInput</code> - Whether to force save the world to disk before clone copying.</dd>
+<dt>Returns:</dt>
+<dd>This <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CloneWorldOptions</code></a> instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="forceSave()">
+<h3>forceSave</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">forceSave</span>()</div>
+<div class="block">Gets whether to force save the world to disk before clone copying.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>Whether to force save the world to disk before clone copying.</dd>
 </dl>
 </section>
 </li>
