@@ -100,19 +100,23 @@ jobs:
 
       - name: Generate javadoc
         id: javadoc
-        if: steps.release.outputs.release_created == 'true' && steps.release.outputs.release_type == 'release'
-        run: ./gradlew javadoc
+        if: steps.build.outcome == 'success'
+        run: ./gradlew javadoc -x test
         env:
           GITHUB_VERSION: ${{ steps.release.outputs.publish_version }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Copy javadoc to version and latest folder
+      - name: Upload javadoc
         if: steps.javadoc.outcome == 'success'
         run: |
+          mkdir -p build/docs/javadoc-deploy/${{ steps.release.outputs.publish_version }}
+          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/${{ steps.release.outputs.publish_version }}
+
+      - name: Override latest javadoc for stable release
+        if: steps.javadoc.outcome == 'success' && steps.release.outputs.release_type == 'release'
+        run: |
           mkdir -p build/docs/javadoc-deploy/latest
-          mkdir -p build/docs/javadoc-deploy/${{ steps.release.outputs.tag_name }}
           cp -r build/docs/javadoc/* build/docs/javadoc-deploy/latest
-          cp -r build/docs/javadoc/* build/docs/javadoc-deploy/${{ steps.release.outputs.tag_name }}
 
       - name: Deploy javadoc to gh pages
         if: steps.javadoc.outcome == 'success'
