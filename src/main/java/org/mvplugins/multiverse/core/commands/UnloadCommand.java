@@ -75,6 +75,7 @@ class UnloadCommand extends CoreCommand {
 
     private void doWorldUnloading(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {
         UnloadWorldOptions unloadWorldOptions = UnloadWorldOptions.world(world)
+                .unloadBukkitWorld(!parsedFlags.hasFlag(flags.noUnloadBukkitWorld))
                 .saveBukkitWorld(!parsedFlags.hasFlag(flags.noSave));
         worldManager.unloadWorld(unloadWorldOptions)
                 .onSuccess(loadedWorld -> {
@@ -95,6 +96,10 @@ class UnloadCommand extends CoreCommand {
         private Flags(@NotNull CommandFlagsManager flagsManager) {
             super(NAME, flagsManager);
         }
+
+        private final CommandFlag noUnloadBukkitWorld = flag(CommandFlag.builder("--no-unload-bukkit-world")
+                .addAlias("-b")
+                .build());
 
         private final CommandFlag noSave = flag(CommandFlag.builder("--no-save")
                 .addAlias("-n")
