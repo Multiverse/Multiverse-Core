@@ -55,6 +55,7 @@ import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions;
+import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 import org.mvplugins.multiverse.core.world.options.KeepWorldSettingsOptions;
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
@@ -211,7 +212,7 @@ public final class WorldManager {
             return worldActionResult(CreateFailureReason.WORLD_EXIST_LOADED, options.worldName());
         } else if (getWorld(options.worldName()).isDefined()) {
             return worldActionResult(CreateFailureReason.WORLD_EXIST_UNLOADED, options.worldName());
-        } else if (worldNameChecker.hasWorldFolder(options.worldName())) {
+        } else if (options.doFolderCheck() && worldNameChecker.hasWorldFolder(options.worldName())) {
             return worldActionResult(CreateFailureReason.WORLD_EXIST_FOLDER, options.worldName());
         }
         return worldActionResult(options);
@@ -506,28 +507,15 @@ public final class WorldManager {
      * Deletes an existing multiverse world entirely. World will be loaded if it is not already loaded.
      * Warning: This will delete all world files.
      *
-     * @param worldName The name of the world to delete.
+     * @param options The options for customizing the deletion of a world.
      * @return The result of the delete action.
      */
-    public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull String worldName) {
-        return getWorld(worldName)
-                .map(this::deleteWorld)
-                .getOrElse(() -> worldActionResult(DeleteFailureReason.WORLD_NON_EXISTENT, worldName));
-    }
-
-    /**
-     * Deletes an existing multiverse world entirely. World will be loaded if it is not already loaded.
-     * Warning: This will delete all world files.
-     *
-     * @param world The world to delete.
-     * @return The result of the delete action.
-     */
-    public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull MultiverseWorld world) {
-        return getLoadedWorld(world).fold(
-                () -> loadWorld(world)
+    public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull DeleteWorldOptions options) {
+        return getLoadedWorld(options.world()).fold(
+                () -> loadWorld(options.world())
                         .transform(DeleteFailureReason.LOAD_FAILED)
-                        .mapAttempt(this::deleteWorld),
-                this::deleteWorld);
+                        .mapAttempt(world -> doDeleteWorld(world, options)),
+                world -> doDeleteWorld(world, options));
     }
 
     /**
@@ -536,7 +524,7 @@ public final class WorldManager {
      * @param world The multiverse world to delete.
      * @return The result of the delete action.
      */
-    public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull LoadedMultiverseWorld world) {
+    private Attempt<String, DeleteFailureReason> doDeleteWorld(@NotNull LoadedMultiverseWorld world, @NotNull DeleteWorldOptions options) {
         AtomicReference<File> worldFolder = new AtomicReference<>();
         return validateWorldToDelete(world)
                 .peek(worldFolder::set)
@@ -548,7 +536,7 @@ public final class WorldManager {
                             : Attempt.success(null);
                 })
                 .mapAttempt(() -> removeWorld(world).transform(DeleteFailureReason.REMOVE_FAILED))
-                .mapAttempt(() -> fileUtils.deleteFolder(worldFolder.get()).fold(
+                .mapAttempt(() -> fileUtils.deleteFolder(worldFolder.get(), options.keepFiles()).fold(
                         exception -> worldActionResult(DeleteFailureReason.FAILED_TO_DELETE_FOLDER,
                                 world.getName(), exception),
                         success -> worldActionResult(world.getName())));
@@ -665,9 +653,10 @@ public final class WorldManager {
                 .generator(world.getGenerator())
                 .seed(options.seed())
                 .useSpawnAdjust(!shouldKeepSpawnLocation && world.getAdjustSpawn())
-                .worldType(world.getWorldType().getOrElse(WorldType.NORMAL));
+                .worldType(world.getWorldType().getOrElse(WorldType.NORMAL))
+                .doFolderCheck(options.keepFiles().isEmpty());
 
-        return deleteWorld(world)
+        return deleteWorld(DeleteWorldOptions.world(world).keepFiles(options.keepFiles()))
                 .transform(RegenFailureReason.DELETE_FAILED)
                 .mapAttempt(() -> createWorld(createWorldOptions).transform(RegenFailureReason.CREATE_FAILED))
                 .onSuccess(newWorld -> {

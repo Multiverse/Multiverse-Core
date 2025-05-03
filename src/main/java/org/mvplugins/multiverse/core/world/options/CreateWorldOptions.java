@@ -30,6 +30,7 @@ public final class CreateWorldOptions {
     private long seed;
     private boolean useSpawnAdjust = true;
     private WorldType worldType = WorldType.NORMAL;
+    private boolean doFolderCheck = true;
 
     /**
      * Creates a new {@link CreateWorldOptions} instance with the given world name.
@@ -238,5 +239,25 @@ public final class CreateWorldOptions {
      */
     public @NotNull WorldType worldType() {
         return worldType;
+    }
+
+    /**
+     * Sets whether to ensure folder does not exist before creating the world.
+     *
+     * @param doFolderCheckInput Whether to do the folder check
+     * @return This {@link CreateWorldOptions} instance
+     */
+    public @NotNull CreateWorldOptions doFolderCheck(boolean doFolderCheckInput) {
+        this.doFolderCheck = doFolderCheckInput;
+        return this;
+    }
+
+    /**
+     * Gets whether to ensure folder does not exist before creating the world.
+     *
+     * @return Whether to do the folder check
+     */
+    public boolean doFolderCheck() {
+        return doFolderCheck;
     }
 }

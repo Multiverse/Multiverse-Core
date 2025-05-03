@@ -7,6 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Options for customizing the regeneration of a world.
  */
@@ -31,6 +34,7 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
     private boolean keepWorldBorder = true;
     private boolean randomSeed = false;
     private long seed = UNINITIALIZED_SEED_VALUE;
+    private List<String> keepFiles = Collections.emptyList();
 
     RegenWorldOptions(@NotNull LoadedMultiverseWorld world) {
         this.world = world;
@@ -210,5 +214,25 @@ public final class RegenWorldOptions implements KeepWorldSettingsOptions {
             return seed;
         }
         return world.getSeed();
+    }
+
+    /**
+     * Sets the files to keep during regeneration.
+     *
+     * @param keepFilesInput The files to keep during regeneration.
+     * @return This {@link RegenWorldOptions} instance.
+     */
+    public @NotNull RegenWorldOptions keepFiles(@Nullable List<String> keepFilesInput) {
+        this.keepFiles = keepFilesInput == null ? Collections.emptyList() : keepFilesInput.stream().toList();
+        return this;
+    }
+
+    /**
+     * Gets the files to keep during regeneration. Note: The list is unmodifiable.
+     *
+     * @return The files to keep during regeneration.
+     */
+    public @NotNull List<String> keepFiles() {
+        return keepFiles;
     }
 }

@@ -29,6 +29,7 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
+import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 
 @Service
 class DeleteCommand extends CoreCommand {
@@ -94,7 +95,7 @@ class DeleteCommand extends CoreCommand {
     }
 
     private void doWorldDeleting(MVCommandIssuer issuer, MultiverseWorld world) {
-        worldManager.deleteWorld(world)
+        worldManager.deleteWorld(DeleteWorldOptions.world(world))
                 .onSuccess(deletedWorldName -> {
                     Logging.fine("World delete success: " + deletedWorldName);
                     issuer.sendInfo(MVCorei18n.DELETE_SUCCESS, Replace.WORLD.with(deletedWorldName));
