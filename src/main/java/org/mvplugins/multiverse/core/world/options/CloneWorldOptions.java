@@ -23,7 +23,7 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
     private final String newWorldName;
     private boolean keepGameRule = true;
     private boolean keepWorldConfig = true;
-    private boolean forceSave = false;
+    private boolean saveBukkitWorld = true;
 
     private boolean keepWorldBorder = true;
 
@@ -118,22 +118,22 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
     }
 
     /**
-     * Sets whether to force save the world to disk before clone copying.
+     * Sets whether to save the world to disk before clone copying.
      *
-     * @param forceSaveInput Whether to force save the world to disk before clone copying.
+     * @param forceSaveInput Whether to save the world to disk before clone copying.
      * @return This {@link CloneWorldOptions} instance.
      */
-    public @NotNull CloneWorldOptions forceSave(boolean forceSaveInput) {
-        this.forceSave = forceSaveInput;
+    public @NotNull CloneWorldOptions saveBukkitWorld(boolean forceSaveInput) {
+        this.saveBukkitWorld = forceSaveInput;
         return this;
     }
 
     /**
-     * Gets whether to force save the world to disk before clone copying.
+     * Gets whether to save the world to disk before clone copying.
      *
-     * @return Whether to force save the world to disk before clone copying.
+     * @return Whether to save the world to disk before clone copying.
      */
-    public boolean forceSave() {
-        return forceSave;
+    public boolean saveBukkitWorld() {
+        return saveBukkitWorld;
     }
 }
