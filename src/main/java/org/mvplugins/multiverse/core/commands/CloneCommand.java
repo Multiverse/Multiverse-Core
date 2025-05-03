@@ -67,7 +67,7 @@ class CloneCommand extends CoreCommand {
                 .keepWorldConfig(!parsedFlags.hasFlag(flags.resetWorldConfig))
                 .keepGameRule(!parsedFlags.hasFlag(flags.resetGamerules))
                 .keepWorldBorder(!parsedFlags.hasFlag(flags.resetWorldBorder))
-                .forceSave(parsedFlags.hasFlag(flags.forceSave));
+                .saveBukkitWorld(!parsedFlags.hasFlag(flags.noSave));
         worldManager.cloneWorld(cloneWorldOptions)
                 .onSuccess(newWorld -> {
                     Logging.fine("World clone success: " + newWorld);
@@ -100,7 +100,7 @@ class CloneCommand extends CoreCommand {
                 .addAlias("-wb")
                 .build());
 
-        private final CommandFlag forceSave = flag(CommandFlag.builder("--force-save")
+        private final CommandFlag noSave = flag(CommandFlag.builder("--no-save")
                 .addAlias("-s")
                 .build());
     }
