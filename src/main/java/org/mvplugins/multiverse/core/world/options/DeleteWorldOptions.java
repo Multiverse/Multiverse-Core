@@ -33,9 +33,9 @@ public final class DeleteWorldOptions {
     }
 
     /**
-     * Sets the files to keep during regeneration.
+     * Sets the files to keep during deletion.
      *
-     * @param keepFilesInput The files to keep during regeneration.
+     * @param keepFilesInput The files to keep during deletion.
      * @return This {@link DeleteWorldOptions} instance.
      */
     public @NotNull DeleteWorldOptions keepFiles(List<String> keepFilesInput) {
@@ -44,9 +44,9 @@ public final class DeleteWorldOptions {
     }
 
     /**
-     * Gets the files to keep during regeneration. Note: The list is unmodifiable.
+     * Gets the files to keep during deletion. Note: The list is unmodifiable.
      *
-     * @return The files to keep during regeneration.
+     * @return The files to keep during deletion.
      */
     public List<String> keepFiles() {
         return keepFiles;
