@@ -121,6 +121,16 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the single biome used for this world.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#keepFiles()" class="member-name-link">keepFiles</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the files to keep during regeneration.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">RegenWorldOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#keepFiles(java.util.List)" class="member-name-link">keepFiles</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;keepFilesInput)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the files to keep during regeneration.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#keepGameRule()" class="member-name-link">keepGameRule</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -408,6 +418,33 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>The seed for the world to regenerate.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="keepFiles(java.util.List)">
+<h3>keepFiles</h3>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">RegenWorldOptions</a></span>&nbsp;<span class="element-name">keepFiles</span><wbr><span class="parameters">(@Nullable
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;keepFilesInput)</span></div>
+<div class="block">Sets the files to keep during regeneration.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>keepFilesInput</code> - The files to keep during regeneration.</dd>
+<dt>Returns:</dt>
+<dd>This <a href="RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>RegenWorldOptions</code></a> instance.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="keepFiles()">
+<h3>keepFiles</h3>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">keepFiles</span>()</div>
+<div class="block">Gets the files to keep during regeneration. Note: The list is unmodifiable.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The files to keep during regeneration.</dd>
 </dl>
 </section>
 </li>

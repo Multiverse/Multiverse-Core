@@ -117,17 +117,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Creates a new world.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../utils/result/Attempt.html" title="interface in org.mvplugins.multiverse.core.utils.result">Attempt</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="reasons/DeleteFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">DeleteFailureReason</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteWorld(java.lang.String)" class="member-name-link">deleteWorld</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;worldName)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Deletes an existing multiverse world entirely.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../utils/result/Attempt.html" title="interface in org.mvplugins.multiverse.core.utils.result">Attempt</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="reasons/DeleteFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">DeleteFailureReason</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteWorld(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld)" class="member-name-link">deleteWorld</a><wbr>(@NotNull <a href="LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a>&nbsp;world)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Deletes an existing multiverse world entirely.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../utils/result/Attempt.html" title="interface in org.mvplugins.multiverse.core.utils.result">Attempt</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="reasons/DeleteFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">DeleteFailureReason</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteWorld(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">deleteWorld</a><wbr>(@NotNull <a href="MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a>&nbsp;world)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#deleteWorld(org.mvplugins.multiverse.core.world.options.DeleteWorldOptions)" class="member-name-link">deleteWorld</a><wbr>(@NotNull <a href="options/DeleteWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">DeleteWorldOptions</a>&nbsp;options)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Deletes an existing multiverse world entirely.</div>
 </div>
@@ -418,44 +408,15 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="deleteWorld(java.lang.String)">
+<section class="detail" id="deleteWorld(org.mvplugins.multiverse.core.world.options.DeleteWorldOptions)">
 <h3>deleteWorld</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../utils/result/Attempt.html" title="interface in org.mvplugins.multiverse.core.utils.result">Attempt</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="reasons/DeleteFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">DeleteFailureReason</a>&gt;</span>&nbsp;<span class="element-name">deleteWorld</span><wbr><span class="parameters">(@NotNull
- @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;worldName)</span></div>
+ @NotNull <a href="options/DeleteWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">DeleteWorldOptions</a>&nbsp;options)</span></div>
 <div class="block">Deletes an existing multiverse world entirely. World will be loaded if it is not already loaded.
  Warning: This will delete all world files.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>worldName</code> - The name of the world to delete.</dd>
-<dt>Returns:</dt>
-<dd>The result of the delete action.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="deleteWorld(org.mvplugins.multiverse.core.world.MultiverseWorld)">
-<h3>deleteWorld</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../utils/result/Attempt.html" title="interface in org.mvplugins.multiverse.core.utils.result">Attempt</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="reasons/DeleteFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">DeleteFailureReason</a>&gt;</span>&nbsp;<span class="element-name">deleteWorld</span><wbr><span class="parameters">(@NotNull
- @NotNull <a href="MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a>&nbsp;world)</span></div>
-<div class="block">Deletes an existing multiverse world entirely. World will be loaded if it is not already loaded.
- Warning: This will delete all world files.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>world</code> - The world to delete.</dd>
-<dt>Returns:</dt>
-<dd>The result of the delete action.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="deleteWorld(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld)">
-<h3>deleteWorld</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../utils/result/Attempt.html" title="interface in org.mvplugins.multiverse.core.utils.result">Attempt</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="reasons/DeleteFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">DeleteFailureReason</a>&gt;</span>&nbsp;<span class="element-name">deleteWorld</span><wbr><span class="parameters">(@NotNull
- @NotNull <a href="LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a>&nbsp;world)</span></div>
-<div class="block">Deletes an existing multiverse world entirely. Warning: This will delete all world files.</div>
-<dl class="notes">
-<dt>Parameters:</dt>
-<dd><code>world</code> - The multiverse world to delete.</dd>
+<dd><code>options</code> - The options for customizing the deletion of a world.</dd>
 <dt>Returns:</dt>
 <dd>The result of the delete action.</dd>
 </dl>

@@ -1181,21 +1181,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Deletes the given folder completely.</div>
 </dd>
-<dt><a href="org/mvplugins/multiverse/core/utils/FileUtils.html#deleteFolder(java.nio.file.Path)" class="member-name-link">deleteFolder(Path)</a> - Method in class org.mvplugins.multiverse.core.utils.<a href="org/mvplugins/multiverse/core/utils/FileUtils.html" title="class in org.mvplugins.multiverse.core.utils">FileUtils</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/utils/FileUtils.html#deleteFolder(java.io.File,java.util.Collection)" class="member-name-link">deleteFolder(File, Collection&lt;String&gt;)</a> - Method in class org.mvplugins.multiverse.core.utils.<a href="org/mvplugins/multiverse/core/utils/FileUtils.html" title="class in org.mvplugins.multiverse.core.utils">FileUtils</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/FileUtils.html#deleteFolder(java.nio.file.Path,java.util.Collection)" class="member-name-link">deleteFolder(Path, Collection&lt;String&gt;)</a> - Method in class org.mvplugins.multiverse.core.utils.<a href="org/mvplugins/multiverse/core/utils/FileUtils.html" title="class in org.mvplugins.multiverse.core.utils">FileUtils</a></dt>
 <dd>
 <div class="block">Deletes the given folder completely.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/config/migration/action/DeleteMigratorAction.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.config.migration.action">DeleteMigratorAction</a> - Class in <a href="org/mvplugins/multiverse/core/config/migration/action/package-summary.html">org.mvplugins.multiverse.core.config.migration.action</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="org/mvplugins/multiverse/core/world/WorldManager.html#deleteWorld(java.lang.String)" class="member-name-link">deleteWorld(String)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/WorldManager.html" title="class in org.mvplugins.multiverse.core.world">WorldManager</a></dt>
-<dd>
-<div class="block">Deletes an existing multiverse world entirely.</div>
-</dd>
-<dt><a href="org/mvplugins/multiverse/core/world/WorldManager.html#deleteWorld(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld)" class="member-name-link">deleteWorld(LoadedMultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/WorldManager.html" title="class in org.mvplugins.multiverse.core.world">WorldManager</a></dt>
-<dd>
-<div class="block">Deletes an existing multiverse world entirely.</div>
-</dd>
-<dt><a href="org/mvplugins/multiverse/core/world/WorldManager.html#deleteWorld(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">deleteWorld(MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/WorldManager.html" title="class in org.mvplugins.multiverse.core.world">WorldManager</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/world/WorldManager.html#deleteWorld(org.mvplugins.multiverse.core.world.options.DeleteWorldOptions)" class="member-name-link">deleteWorld(DeleteWorldOptions)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/WorldManager.html" title="class in org.mvplugins.multiverse.core.world">WorldManager</a></dt>
 <dd>
 <div class="block">Deletes an existing multiverse world entirely.</div>
 </dd>
@@ -1207,6 +1201,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html#DELETEWORLD_WORLDNONEXISTENT" class="member-name-link">DELETEWORLD_WORLDNONEXISTENT</a> - Enum constant in enum class org.mvplugins.multiverse.core.locale.<a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html" title="enum class in org.mvplugins.multiverse.core.locale">MVCorei18n</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.options">DeleteWorldOptions</a> - Class in <a href="org/mvplugins/multiverse/core/world/options/package-summary.html">org.mvplugins.multiverse.core.world.options</a></dt>
+<dd>
+<div class="block">Options for customizing the deletion of a world.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/economy/MVEconomist.html#deposit(org.bukkit.entity.Player,double,org.bukkit.Material)" class="member-name-link">deposit(Player, double, Material)</a> - Method in class org.mvplugins.multiverse.core.economy.<a href="org/mvplugins/multiverse/core/economy/MVEconomist.html" title="class in org.mvplugins.multiverse.core.economy">MVEconomist</a></dt>
 <dd>
 <div class="block">Deposits a given amount of currency either into the player's economy account or inventory if the currency
@@ -1284,6 +1282,16 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Creates an instance of a <code>DestinationSuggestionPacket</code> record class.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder</a> - Class in <a href="org/mvplugins/multiverse/core/world/helpers/package-summary.html">org.mvplugins.multiverse.core.world.helpers</a></dt>
+<dd>
+<div class="block">Helps to find the overworld world from a nether or end world and vice versa.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder.DimensionFormat</a> - Class in <a href="org/mvplugins/multiverse/core/world/helpers/package-summary.html">org.mvplugins.multiverse.core.world.helpers</a></dt>
+<dd>
+<div class="block">Represents a dimension name format, used to extract the overworld world name from a nether or end world name.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html#%3Cinit%3E(java.lang.String)" class="member-name-link">DimensionFormat(String)</a> - Constructor for class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder.DimensionFormat</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/inject/PluginServiceLocator.html#disable()" class="member-name-link">disable()</a> - Method in class org.mvplugins.multiverse.core.inject.<a href="org/mvplugins/multiverse/core/inject/PluginServiceLocator.html" title="class in org.mvplugins.multiverse.core.inject">PluginServiceLocator</a></dt>
 <dd>
 <div class="block">Shut down the service locator</div>
@@ -1307,6 +1315,14 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/world/helpers/WorldNameChecker.FolderStatus.html#DOES_NOT_EXIST" class="member-name-link">DOES_NOT_EXIST</a> - Enum constant in enum class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/WorldNameChecker.FolderStatus.html" title="enum class in org.mvplugins.multiverse.core.world.helpers">WorldNameChecker.FolderStatus</a></dt>
 <dd>
 <div class="block">Folder does not exist.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/CreateWorldOptions.html#doFolderCheck()" class="member-name-link">doFolderCheck()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></dt>
+<dd>
+<div class="block">Gets whether to ensure folder does not exist before creating the world.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/CreateWorldOptions.html#doFolderCheck(boolean)" class="member-name-link">doFolderCheck(boolean)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></dt>
+<dd>
+<div class="block">Sets whether to ensure folder does not exist before creating the world.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/display/handlers/PagedSendHandler.html#doPagination(boolean)" class="member-name-link">doPagination(boolean)</a> - Method in class org.mvplugins.multiverse.core.display.handlers.<a href="org/mvplugins/multiverse/core/display/handlers/PagedSendHandler.html" title="class in org.mvplugins.multiverse.core.display.handlers">PagedSendHandler</a></dt>
 <dd>
@@ -1589,14 +1605,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/utils/result/Result.html#fold(java.util.function.Function,java.util.function.Function)" class="member-name-link">fold(Function&lt;Result.Failure&lt;S, F&gt;, R&gt;, Function&lt;Result.Success&lt;S, F&gt;, R&gt;)</a> - Method in interface org.mvplugins.multiverse.core.utils.result.<a href="org/mvplugins/multiverse/core/utils/result/Result.html" title="interface in org.mvplugins.multiverse.core.utils.result">Result</a></dt>
 <dd>
 <div class="block">Executes either the failure or success function depending on the result type.</div>
-</dd>
-<dt><a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html#forceSave()" class="member-name-link">forceSave()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></dt>
-<dd>
-<div class="block">Gets whether to force save the world to disk before clone copying.</div>
-</dd>
-<dt><a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html#forceSave(boolean)" class="member-name-link">forceSave(boolean)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></dt>
-<dd>
-<div class="block">Sets whether to force save the world to disk before clone copying.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/display/parsers/ListContentProvider.html#forContent(java.util.List)" class="member-name-link">forContent(List&lt;T&gt;)</a> - Static method in class org.mvplugins.multiverse.core.display.parsers.<a href="org/mvplugins/multiverse/core/display/parsers/ListContentProvider.html" title="class in org.mvplugins.multiverse.core.display.parsers">ListContentProvider</a></dt>
 <dd>
@@ -2013,6 +2021,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the default generator for a world from the bukkit.yml config.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getDefaultLocale()" class="member-name-link">getDefaultLocale()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getDefaultRespawnInOverworld()" class="member-name-link">getDefaultRespawnInOverworld()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getDefaultRespawnWithinSameWorld()" class="member-name-link">getDefaultRespawnWithinSameWorld()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/config/node/serializer/DefaultSerializerProvider.html#getDefaultSerializer(java.lang.Class)" class="member-name-link">getDefaultSerializer(Class&lt;T&gt;)</a> - Static method in class org.mvplugins.multiverse.core.config.node.serializer.<a href="org/mvplugins/multiverse/core/config/node/serializer/DefaultSerializerProvider.html" title="class in org.mvplugins.multiverse.core.config.node.serializer">DefaultSerializerProvider</a></dt>
 <dd>
@@ -2109,6 +2119,12 @@ loadScripts(document, 'script');</script>
 <div class="block">Returns the name of the economy in use.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getEnableJoinDestination()" class="member-name-link">getEnableJoinDestination()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html#getEndWorld(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">getEndWorld(MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder</a></dt>
+<dd>
+<div class="block">Gets the Multiverse end world from an overworld or nether world</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getEndWorldNameFormat()" class="member-name-link">getEndWorldNameFormat()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getEnforceAccess()" class="member-name-link">getEnforceAccess()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getEnforceFlight()" class="member-name-link">getEnforceFlight()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dd>&nbsp;</dd>
@@ -2214,6 +2230,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/display/parsers/MapContentProvider.html#getFormat()" class="member-name-link">getFormat()</a> - Method in class org.mvplugins.multiverse.core.display.parsers.<a href="org/mvplugins/multiverse/core/display/parsers/MapContentProvider.html" title="class in org.mvplugins.multiverse.core.display.parsers">MapContentProvider</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html#getFormat()" class="member-name-link">getFormat()</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder.DimensionFormat</a></dt>
+<dd>
+<div class="block">The format used to format the dimension's name</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/event/MVTeleportDestinationEvent.html#getFrom()" class="member-name-link">getFrom()</a> - Method in class org.mvplugins.multiverse.core.event.<a href="org/mvplugins/multiverse/core/event/MVTeleportDestinationEvent.html" title="class in org.mvplugins.multiverse.core.event">MVTeleportDestinationEvent</a></dt>
 <dd>
 <div class="block">Returns the location the player was before the teleport.</div>
@@ -2552,6 +2572,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets the names of all nodes in this group.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html#getNetherWorld(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">getNetherWorld(MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder</a></dt>
+<dd>
+<div class="block">Gets the Multiverse nether world from an overworld or end world</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getNetherWorldNameFormat()" class="member-name-link">getNetherWorldNameFormat()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/event/world/MVWorldPropertyChangedEvent.html#getNewValue()" class="member-name-link">getNewValue()</a> - Method in class org.mvplugins.multiverse.core.event.world.<a href="org/mvplugins/multiverse/core/event/world/MVWorldPropertyChangedEvent.html" title="class in org.mvplugins.multiverse.core.event.world">MVWorldPropertyChangedEvent</a></dt>
 <dd>
 <div class="block">Gets the new value.</div>
@@ -2594,6 +2620,14 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/result/Attempt.Success.html#getOrThrow(java.util.function.Function)" class="member-name-link">getOrThrow(Function&lt;Attempt.Failure&lt;T, F&gt;, X&gt;)</a> - Method in class org.mvplugins.multiverse.core.utils.result.<a href="org/mvplugins/multiverse/core/utils/result/Attempt.Success.html" title="class in org.mvplugins.multiverse.core.utils.result">Attempt.Success</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html#getOverworldFromName(java.lang.String)" class="member-name-link">getOverworldFromName(String)</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder.DimensionFormat</a></dt>
+<dd>
+<div class="block">Extract the overworld world name from a nether or end world name</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html#getOverworldWorld(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">getOverworldWorld(MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder</a></dt>
+<dd>
+<div class="block">Gets the Multiverse overworld world from a nether or end world</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/node/ConfigHeaderNode.html#getPath()" class="member-name-link">getPath()</a> - Method in class org.mvplugins.multiverse.core.config.node.<a href="org/mvplugins/multiverse/core/config/node/ConfigHeaderNode.html" title="class in org.mvplugins.multiverse.core.config.node">ConfigHeaderNode</a></dt>
 <dd>
 <div class="block">Gets the YAML path of the node.</div>
@@ -3235,6 +3269,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/config/node/NodeGroup.html#isEmpty()" class="member-name-link">isEmpty()</a> - Method in class org.mvplugins.multiverse.core.config.node.<a href="org/mvplugins/multiverse/core/config/node/NodeGroup.html" title="class in org.mvplugins.multiverse.core.config.node">NodeGroup</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#isEnablePrefixChat()" class="member-name-link">isEnablePrefixChat()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html#isEnd(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">isEnd(MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder</a></dt>
+<dd>
+<div class="block">Gets whether a world is the end, i.e.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/teleportation/BlockSafety.html#isEntityOnTrack(org.bukkit.Location)" class="member-name-link">isEntityOnTrack(Location)</a> - Method in class org.mvplugins.multiverse.core.teleportation.<a href="org/mvplugins/multiverse/core/teleportation/BlockSafety.html" title="class in org.mvplugins.multiverse.core.teleportation">BlockSafety</a></dt>
 <dd>
 <div class="block">Checks if an entity would be on track at the specified <code>Location</code>.</div>
@@ -3299,6 +3337,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Check if a world is a multiverse world that is loaded.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html#isNether(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">isNether(MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder</a></dt>
+<dd>
+<div class="block">Gets whether a world is the nether, i.e.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/entrycheck/WorldEntryChecker.html#isNotBlacklisted(org.mvplugins.multiverse.core.world.MultiverseWorld,org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">isNotBlacklisted(MultiverseWorld, MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.entrycheck.<a href="org/mvplugins/multiverse/core/world/entrycheck/WorldEntryChecker.html" title="class in org.mvplugins.multiverse.core.world.entrycheck">WorldEntryChecker</a></dt>
 <dd>
 <div class="block">Checks if the sender is not blacklisted from the given world.</div>
@@ -3306,6 +3348,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/command/flag/CommandValueFlag.html#isOptional()" class="member-name-link">isOptional()</a> - Method in class org.mvplugins.multiverse.core.command.flag.<a href="org/mvplugins/multiverse/core/command/flag/CommandValueFlag.html" title="class in org.mvplugins.multiverse.core.command.flag">CommandValueFlag</a></dt>
 <dd>
 <div class="block">Check if it is optional for users to specify a value.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html#isOverworld(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">isOverworld(MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder</a></dt>
+<dd>
+<div class="block">Gets whether a world is the overworld, i.e.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/display/handlers/PagedSendHandler.html#isPadEnd()" class="member-name-link">isPadEnd()</a> - Method in class org.mvplugins.multiverse.core.display.handlers.<a href="org/mvplugins/multiverse/core/display/handlers/PagedSendHandler.html" title="class in org.mvplugins.multiverse.core.display.handlers">PagedSendHandler</a></dt>
 <dd>&nbsp;</dd>
@@ -3442,6 +3488,22 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:K">K</h2>
 <dl class="index">
+<dt><a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html#keepFiles()" class="member-name-link">keepFiles()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">DeleteWorldOptions</a></dt>
+<dd>
+<div class="block">Gets the files to keep during deletion.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html#keepFiles()" class="member-name-link">keepFiles()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">RegenWorldOptions</a></dt>
+<dd>
+<div class="block">Gets the files to keep during regeneration.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html#keepFiles(java.util.List)" class="member-name-link">keepFiles(List&lt;String&gt;)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">RegenWorldOptions</a></dt>
+<dd>
+<div class="block">Sets the files to keep during regeneration.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html#keepFiles(java.util.List)" class="member-name-link">keepFiles(List&lt;String&gt;)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">DeleteWorldOptions</a></dt>
+<dd>
+<div class="block">Sets the files to keep during deletion.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html#keepGameRule()" class="member-name-link">keepGameRule()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></dt>
 <dd>
 <div class="block">Gets whether to keep the game rule of the world during cloning.</div>
@@ -4501,6 +4563,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Sets the OTP number for validation.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html#OVERWORLD_PLACEHOLDER" class="member-name-link">OVERWORLD_PLACEHOLDER</a> - Static variable in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder.DimensionFormat</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:P">P</h2>
 <dl class="index">
@@ -4951,6 +5015,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/locale/message/Message.html#replacements" class="member-name-link">replacements</a> - Variable in class org.mvplugins.multiverse.core.locale.message.<a href="org/mvplugins/multiverse/core/locale/message/Message.html" title="class in org.mvplugins.multiverse.core.locale.message">Message</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html#replaceOverworld(java.lang.String)" class="member-name-link">replaceOverworld(String)</a> - Method in class org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder.DimensionFormat</a></dt>
+<dd>
+<div class="block">Parse the dimension name with the overworld world name</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/handle/BaseConfigurationHandle.html#reset(org.mvplugins.multiverse.core.config.node.ValueNode)" class="member-name-link">reset(ValueNode&lt;T&gt;)</a> - Method in class org.mvplugins.multiverse.core.config.handle.<a href="org/mvplugins/multiverse/core/config/handle/BaseConfigurationHandle.html" title="class in org.mvplugins.multiverse.core.config.handle">BaseConfigurationHandle</a></dt>
 <dd>
 <div class="block">Sets the default value of a node.</div>
@@ -5013,9 +5081,17 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Saves all anchors.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html#saveBukkitWorld()" class="member-name-link">saveBukkitWorld()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></dt>
+<dd>
+<div class="block">Gets whether to save the world to disk before clone copying.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html#saveBukkitWorld()" class="member-name-link">saveBukkitWorld()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">UnloadWorldOptions</a></dt>
 <dd>
 <div class="block">Gets whether to save the bukkit world before unloading.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html#saveBukkitWorld(boolean)" class="member-name-link">saveBukkitWorld(boolean)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></dt>
+<dd>
+<div class="block">Sets whether to save the world to disk before clone copying.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html#saveBukkitWorld(boolean)" class="member-name-link">saveBukkitWorld(boolean)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">UnloadWorldOptions</a></dt>
 <dd>
@@ -5270,6 +5346,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/permissions/PermissionUtils.html#setDebugPermissions(boolean)" class="member-name-link">setDebugPermissions(boolean)</a> - Static method in class org.mvplugins.multiverse.core.permissions.<a href="org/mvplugins/multiverse/core/permissions/PermissionUtils.html" title="class in org.mvplugins.multiverse.core.permissions">PermissionUtils</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setDefaultLocale(java.util.Locale)" class="member-name-link">setDefaultLocale(Locale)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setDefaultRespawnInOverworld(boolean)" class="member-name-link">setDefaultRespawnInOverworld(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setDefaultRespawnWithinSameWorld(boolean)" class="member-name-link">setDefaultRespawnWithinSameWorld(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html#setDifficulty(org.bukkit.Difficulty)" class="member-name-link">setDifficulty(Difficulty)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a></dt>
 <dd>
@@ -5277,6 +5355,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setEnableJoinDestination(boolean)" class="member-name-link">setEnableJoinDestination(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setEnablePrefixChat(boolean)" class="member-name-link">setEnablePrefixChat(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setEndWorldNameFormat(org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat)" class="member-name-link">setEndWorldNameFormat(DimensionFinder.DimensionFormat)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setEnforceAccess(boolean)" class="member-name-link">setEnforceAccess(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setEnforceFlight(boolean)" class="member-name-link">setEnforceFlight(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dd>&nbsp;</dd>
@@ -5313,6 +5393,8 @@ loadScripts(document, 'script');</script>
  If not, CraftBukkit will attempt to free memory when players have not used that world.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/config/migration/action/SetMigratorAction.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.config.migration.action">SetMigratorAction&lt;T&gt;</a> - Class in <a href="org/mvplugins/multiverse/core/config/migration/action/package-summary.html">org.mvplugins.multiverse.core.config.migration.action</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setNetherWorldNameFormat(org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat)" class="member-name-link">setNetherWorldNameFormat(DimensionFinder.DimensionFormat)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setPerPlayerLocale(boolean)" class="member-name-link">setPerPlayerLocale(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html#setPlayerLimit(int)" class="member-name-link">setPlayerLimit(int)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a></dt>
@@ -6368,6 +6450,8 @@ the order they are declared.</div>
 <dd>
 <div class="block">Gets the world to clone.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html#world()" class="member-name-link">world()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">DeleteWorldOptions</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html#world()" class="member-name-link">world()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">RegenWorldOptions</a></dt>
 <dd>
 <div class="block">Gets the world to regenerate.</div>
@@ -6379,6 +6463,10 @@ the order they are declared.</div>
 <dt><a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html#world(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld)" class="member-name-link">world(LoadedMultiverseWorld)</a> - Static method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">RegenWorldOptions</a></dt>
 <dd>
 <div class="block">Creates a new <a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>RegenWorldOptions</code></a> instance with the given world.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html#world(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">world(MultiverseWorld)</a> - Static method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">DeleteWorldOptions</a></dt>
+<dd>
+<div class="block">Creates a new <a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>DeleteWorldOptions</code></a> instance with the given world.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html#world(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld)" class="member-name-link">world(LoadedMultiverseWorld)</a> - Static method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">UnloadWorldOptions</a></dt>
 <dd>
