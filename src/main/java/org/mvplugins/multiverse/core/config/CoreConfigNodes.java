@@ -120,6 +120,7 @@ final class CoreConfigNodes {
     private final ConfigHeaderNode worldNameFormat = node(ConfigHeaderNode.builder("world.world-name-format")
             .comment("")
             .comment("Format for world names for multiverse to automatically detect a world group consist of overworld, nether and end.")
+            .comment("This is used default-respawn-in-overworld and potentially other features.")
             .build());
 
     final ConfigNode<DimensionFormat> netherWorldNameFormat = node(ConfigNode.builder("world.world-name-format.nether", DimensionFormat.class)
@@ -230,7 +231,14 @@ final class CoreConfigNodes {
 
     final ConfigNode<Boolean> defaultRespawnInOverworld = node(ConfigNode.builder("spawn.default-respawn-in-overworld", Boolean.class)
             .comment("")
-            .comment("Enables the default-respawn-in-overworld below.")
+            .comment("This only applies if the `respawn-world` property is not set for the world that the player died in,")
+            .comment("and the player does not have bed or anchor set.")
+            .comment("----")
+            .comment("When this option is enabled, players will respawn in the overworld when dying in nether or end, mimicking the vanilla behavior.")
+            .comment("The automatic selection of overworld is determined by the `world-name-format` config section above.")
+            .comment("This option takes precedence over the `default-respawn-within-same-world` option.")
+            .comment("----")
+            .comment("Set this to false if you want another plugin to handle respawning or do not want this vanilla behavior.")
             .defaultValue(true)
             .name("default-respawn-in-overworld")
             .build());
@@ -254,13 +262,10 @@ final class CoreConfigNodes {
 
     final ConfigNode<Boolean> enforceRespawnAtWorldSpawn = node(ConfigNode.builder("spawn.enforce-respawn-at-world-spawn", Boolean.class)
             .comment("")
-            .comment("This config will only apply if `respawn-world` is set, or `default-respawn-within-same-world` is enabled.")
-            .comment("----")
-            .comment("When this option is enabled, players will always respawn at the world's spawn location of `respawn-world`,")
+            .comment("When this option is enabled, players will always respawn at the world's spawn location of calculated respawn world,")
             .comment("unless bed or anchor is set and `bed-respawn` or `anchor-spawn` is enabled respectively.")
-            .comment("If respawn-world is set, Multiverse will use that world's spawn location, else it will use the world's spawn where the player died in.")
             .comment("----")
-            .comment("Set this to false if you want to use the /spawnpoint instead of the world's spawn location.")
+            .comment("Set this to false if you want to use a custom spawn location such as /spawnpoint instead of the world's spawn location.")
             .defaultValue(true)
             .name("enforce-respawn-at-world-spawn")
             .build());
