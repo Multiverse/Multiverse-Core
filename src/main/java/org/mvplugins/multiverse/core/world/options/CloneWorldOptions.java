@@ -120,11 +120,11 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
     /**
      * Sets whether to save the world to disk before clone copying.
      *
-     * @param forceSaveInput Whether to save the world to disk before clone copying.
+     * @param saveBukkitWorldInput Whether to save the world to disk before clone copying.
      * @return This {@link CloneWorldOptions} instance.
      */
-    public @NotNull CloneWorldOptions saveBukkitWorld(boolean forceSaveInput) {
-        this.saveBukkitWorld = forceSaveInput;
+    public @NotNull CloneWorldOptions saveBukkitWorld(boolean saveBukkitWorldInput) {
+        this.saveBukkitWorld = saveBukkitWorldInput;
         return this;
     }
 
