@@ -3,6 +3,9 @@ world:
   enforce-gamemode: true
   enforce-flight: true
   auto-purge-entities: false
+  world-name-format:
+    nether: '%overworld%_nether'
+    end: '%overworld%_the_end'
 
 teleport:
   use-finer-teleport-permissions: true
@@ -16,6 +19,7 @@ spawn:
   first-spawn-location: ''
   enable-join-destination: false
   join-destination: ''
+  default-respawn-in-overworld: true
   default-respawn-within-same-world: true
   enforce-respawn-at-world-spawn: true
 

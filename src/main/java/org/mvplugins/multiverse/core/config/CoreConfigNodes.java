@@ -7,17 +7,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.config.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.config.node.ConfigNode;
 import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
+import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
+import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
+import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 
 import java.util.Collection;
 import java.util.List;
@@ -113,6 +117,25 @@ final class CoreConfigNodes {
             .name("auto-purge-entities")
             .build());
 
+    private final ConfigHeaderNode worldNameFormat = node(ConfigHeaderNode.builder("world.world-name-format")
+            .comment("")
+            .comment("Format for world names for multiverse to automatically detect a world group consist of overworld, nether and end.")
+            .build());
+
+    final ConfigNode<DimensionFormat> netherWorldNameFormat = node(ConfigNode.builder("world.world-name-format.nether", DimensionFormat.class)
+            .defaultValue(() -> new DimensionFormat("%overworld%_nether"))
+            .name("nether-world-name-format")
+            .serializer(DimensionFormatNodeSerializer.INSTANCE)
+            .stringParser(DimensionFormatNodeStringParser.INSTANCE)
+            .build());
+
+    final ConfigNode<DimensionFormat> endWorldNameFormat = node(ConfigNode.builder("world.world-name-format.end", DimensionFormat.class)
+            .defaultValue(() -> new DimensionFormat("%overworld%_the_end"))
+            .name("end-world-name-format")
+            .serializer(DimensionFormatNodeSerializer.INSTANCE)
+            .stringParser(DimensionFormatNodeStringParser.INSTANCE)
+            .build());
+
     private final ConfigHeaderNode teleportHeader = node(ConfigHeaderNode.builder("teleport")
             .comment("")
             .comment("")
@@ -203,6 +226,13 @@ final class CoreConfigNodes {
             .defaultValue("")
             .name("join-destination")
             .suggester(this::suggestDestinations)
+            .build());
+
+    final ConfigNode<Boolean> defaultRespawnInOverworld = node(ConfigNode.builder("spawn.default-respawn-in-overworld", Boolean.class)
+            .comment("")
+            .comment("Enables the default-respawn-in-overworld below.")
+            .defaultValue(true)
+            .name("default-respawn-in-overworld")
             .build());
 
     final ConfigNode<Boolean> defaultRespawnWithinSameWorld = node(ConfigNode.builder("spawn.default-respawn-within-same-world", Boolean.class)
@@ -435,6 +465,35 @@ final class CoreConfigNodes {
                                 ? packet.destinationString()
                                 : destination.getIdentifier() + ":" + packet.destinationString()))
                 .toList();
+    }
+
+    private static final class DimensionFormatNodeSerializer implements NodeSerializer<DimensionFormat> {
+
+        private static final DimensionFormatNodeSerializer INSTANCE = new DimensionFormatNodeSerializer();
+
+        private DimensionFormatNodeSerializer() {}
+
+        @Override
+        public DimensionFormat deserialize(Object object, Class<DimensionFormat> type) {
+            return new DimensionFormat(String.valueOf(object));
+        }
+
+        @Override
+        public Object serialize(DimensionFormat dimensionFormat, Class<DimensionFormat> type) {
+            return dimensionFormat.getFormat();
+        }
+    }
+
+    private static final class DimensionFormatNodeStringParser implements NodeStringParser<DimensionFormat> {
+
+        private static final DimensionFormatNodeStringParser INSTANCE = new DimensionFormatNodeStringParser();
+
+        private DimensionFormatNodeStringParser() {}
+
+        @Override
+        public @NotNull Try<DimensionFormat> parse(@Nullable String string, @NotNull Class<DimensionFormat> type) {
+            return Try.of(() -> new DimensionFormat(string));
+        }
     }
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc

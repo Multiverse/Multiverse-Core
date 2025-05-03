@@ -27,6 +27,7 @@ import org.mvplugins.multiverse.core.config.migration.action.MoveMigratorAction;
 import org.mvplugins.multiverse.core.config.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.config.migration.action.SetMigratorAction;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 
 @Service
 public class CoreConfig {
@@ -185,6 +186,22 @@ public class CoreConfig {
         return configHandle.get(configNodes.autoPurgeEntities);
     }
 
+    public Try<Void> setNetherWorldNameFormat(DimensionFormat netherWorldNameFormat) {
+        return configHandle.set(configNodes.netherWorldNameFormat, netherWorldNameFormat);
+    }
+
+    public DimensionFormat getNetherWorldNameFormat() {
+        return configHandle.get(configNodes.netherWorldNameFormat);
+    }
+
+    public Try<Void> setEndWorldNameFormat(DimensionFormat endWorldNameFormat) {
+        return configHandle.set(configNodes.endWorldNameFormat, endWorldNameFormat);
+    }
+
+    public DimensionFormat getEndWorldNameFormat() {
+        return configHandle.get(configNodes.endWorldNameFormat);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -309,6 +326,14 @@ public class CoreConfig {
      */
     public String getJoinDestination() {
         return  configHandle.get(configNodes.joinDestination);
+    }
+
+    public Try<Void> setDefaultRespawnInOverworld(boolean defaultRespawnInOverworld) {
+        return configHandle.set(configNodes.defaultRespawnInOverworld, defaultRespawnInOverworld);
+    }
+
+    public boolean getDefaultRespawnInOverworld() {
+        return configHandle.get(configNodes.defaultRespawnInOverworld);
     }
 
     /**
