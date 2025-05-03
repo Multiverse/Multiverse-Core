@@ -9,9 +9,12 @@ package org.mvplugins.multiverse.core.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,7 +23,6 @@ import java.util.stream.Stream;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -102,7 +104,11 @@ public final class FileUtils {
      *         the folder could not be deleted.
      */
     public Try<Void> deleteFolder(File file) {
-        return deleteFolder(file.toPath());
+        return deleteFolder(file, Collections.emptyList());
+    }
+
+    public Try<Void> deleteFolder(File file, Collection<String> keepFiles) {
+        return deleteFolder(file.toPath(), keepFiles);
     }
 
     /**
@@ -112,11 +118,19 @@ public final class FileUtils {
      * @return A {@link Try} that will contain {@code null} if the folder was deleted successfully, or an exception if
      *         the folder could not be deleted.
      */
-    public Try<Void> deleteFolder(Path path) {
+    public Try<Void> deleteFolder(Path path, Collection<String> keepFiles) {
         try (Stream<Path> files = Files.walk(path)) {
             files.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(file -> {
+                if (!isDirectoryEmpty(file)) {
+                    Logging.finest("Cannot delete folder as it is not empty: " + file);
+                    return;
+                }
+                if (file.isFile() && keepFiles.contains(file.getName())) {
+                    Logging.finest("Keeping file: " + file);
+                    return;
+                }
                 if (!file.delete()) {
-                    Logging.warning("Failed to delete file: " + file);
+                    throw new IllegalStateException("Failed to delete file: " + file);
                 }
             });
             return Try.success(null);
@@ -124,6 +138,17 @@ public final class FileUtils {
             Logging.severe("Failed to delete folder: " + path.toAbsolutePath());
             e.printStackTrace();
             return Try.failure(e);
+        }
+    }
+
+    private boolean isDirectoryEmpty(File file) {
+        if (!file.isDirectory()) {
+            return true;
+        }
+        try (Stream<Path> entries = Files.list(file.toPath())) {
+            return entries.findFirst().isEmpty();
+        } catch (IOException e) {
+            return true;
         }
     }
 

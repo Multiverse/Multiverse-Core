@@ -9,6 +9,7 @@ import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.event.world.*
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
+import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions
 import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions
 import org.mvplugins.multiverse.core.world.reasons.CloneFailureReason
@@ -112,8 +113,10 @@ class WorldManagerTest : TestWithMockBukkit() {
 
     @Test
     fun `Delete world`() {
-        assertTrue(worldManager.deleteWorld(world).isSuccess)
+        assertTrue(File(Bukkit.getWorldContainer(), "world").isDirectory)
+        assertTrue(worldManager.deleteWorld(DeleteWorldOptions.world(world)).isSuccess)
         assertFalse(worldManager.getLoadedWorld("world").isDefined)
+        assertFalse(File(Bukkit.getWorldContainer(), "world").isDirectory)
 
         assertThat(server.pluginManager, hasFiredEventInstance(MVWorldDeleteEvent::class.java))
         assertThat(server.pluginManager, hasFiredEventInstance(MVWorldUnloadedEvent::class.java))

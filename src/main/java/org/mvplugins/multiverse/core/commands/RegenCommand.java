@@ -19,7 +19,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
@@ -30,6 +29,7 @@ import org.mvplugins.multiverse.core.command.queue.CommandQueuePayload;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.WorldTickDeferrer;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -112,7 +112,8 @@ class RegenCommand extends CoreCommand {
                 .seed(parsedFlags.flagValue(flags.seed))
                 .keepWorldConfig(!parsedFlags.hasFlag(flags.resetWorldConfig))
                 .keepGameRule(!parsedFlags.hasFlag(flags.resetGamerules))
-                .keepWorldBorder(!parsedFlags.hasFlag(flags.resetWorldBorder));
+                .keepWorldBorder(!parsedFlags.hasFlag(flags.resetWorldBorder))
+                .keepFiles(parsedFlags.flagValue(flags.keepFiles));
 
         worldManager.regenWorld(regenWorldOptions).onSuccess(newWorld -> {
             Logging.fine("World regen success: " + newWorld);
@@ -152,6 +153,13 @@ class RegenCommand extends CoreCommand {
 
         private final CommandFlag resetWorldBorder = flag(CommandFlag.builder("--reset-world-border")
                 .addAlias("-wb")
+                .build());
+
+        private final CommandValueFlag<List> keepFiles = flag(CommandValueFlag.builder("--keep-files", List.class)
+                .addAlias("-f")
+                .completion(input -> List.of("paper-world.yml"))
+                .defaultValue(Collections.emptyList())
+                .context(input -> List.of(REPatterns.COMMA.split(input)))
                 .build());
     }
 
