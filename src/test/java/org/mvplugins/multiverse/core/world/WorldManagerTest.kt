@@ -178,7 +178,7 @@ class WorldManagerTest : TestWithMockBukkit() {
 
     @Test
     fun `Clone world`() {
-        assertTrue(worldManager.cloneWorld(CloneWorldOptions.fromTo(world, "cloneworld")).isSuccess)
+        assertTrue(worldManager.cloneWorld(CloneWorldOptions.fromTo(world, "cloneworld").saveBukkitWorld(false)).isSuccess)
         val getWorld = worldManager.getLoadedWorld("cloneworld")
         assertTrue(getWorld.isDefined)
         val world = getWorld.get()
