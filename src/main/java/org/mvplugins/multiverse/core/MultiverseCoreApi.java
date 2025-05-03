@@ -33,8 +33,8 @@ public class MultiverseCoreApi {
     }
 
     static void shutdown() {
+        Bukkit.getServicesManager().unregister(instance);
         instance = null;
-        Bukkit.getServicesManager().unregister(MultiverseCoreApi.class);
     }
 
     /**
