@@ -7,17 +7,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.config.node.ConfigHeaderNode;
 import org.mvplugins.multiverse.core.config.node.ConfigNode;
 import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
+import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
+import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
+import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 
 import java.util.Collection;
 import java.util.List;
@@ -113,6 +117,26 @@ final class CoreConfigNodes {
             .name("auto-purge-entities")
             .build());
 
+    private final ConfigHeaderNode worldNameFormat = node(ConfigHeaderNode.builder("world.world-name-format")
+            .comment("")
+            .comment("Format for world names for multiverse to automatically detect a world group consist of overworld, nether and end.")
+            .comment("This is used default-respawn-in-overworld and potentially other features.")
+            .build());
+
+    final ConfigNode<DimensionFormat> netherWorldNameFormat = node(ConfigNode.builder("world.world-name-format.nether", DimensionFormat.class)
+            .defaultValue(() -> new DimensionFormat("%overworld%_nether"))
+            .name("nether-world-name-format")
+            .serializer(DimensionFormatNodeSerializer.INSTANCE)
+            .stringParser(DimensionFormatNodeStringParser.INSTANCE)
+            .build());
+
+    final ConfigNode<DimensionFormat> endWorldNameFormat = node(ConfigNode.builder("world.world-name-format.end", DimensionFormat.class)
+            .defaultValue(() -> new DimensionFormat("%overworld%_the_end"))
+            .name("end-world-name-format")
+            .serializer(DimensionFormatNodeSerializer.INSTANCE)
+            .stringParser(DimensionFormatNodeStringParser.INSTANCE)
+            .build());
+
     private final ConfigHeaderNode teleportHeader = node(ConfigHeaderNode.builder("teleport")
             .comment("")
             .comment("")
@@ -205,6 +229,20 @@ final class CoreConfigNodes {
             .suggester(this::suggestDestinations)
             .build());
 
+    final ConfigNode<Boolean> defaultRespawnInOverworld = node(ConfigNode.builder("spawn.default-respawn-in-overworld", Boolean.class)
+            .comment("")
+            .comment("This only applies if the `respawn-world` property is not set for the world that the player died in,")
+            .comment("and the player does not have bed or anchor set.")
+            .comment("----")
+            .comment("When this option is enabled, players will respawn in the overworld when dying in nether or end, mimicking the vanilla behavior.")
+            .comment("The automatic selection of overworld is determined by the `world-name-format` config section above.")
+            .comment("This option takes precedence over the `default-respawn-within-same-world` option.")
+            .comment("----")
+            .comment("Set this to false if you want another plugin to handle respawning or do not want this vanilla behavior.")
+            .defaultValue(true)
+            .name("default-respawn-in-overworld")
+            .build());
+
     final ConfigNode<Boolean> defaultRespawnWithinSameWorld = node(ConfigNode.builder("spawn.default-respawn-within-same-world", Boolean.class)
             .comment("")
             .comment("This only applies if the `respawn-world` property is not set for the world that the player died in,")
@@ -224,13 +262,10 @@ final class CoreConfigNodes {
 
     final ConfigNode<Boolean> enforceRespawnAtWorldSpawn = node(ConfigNode.builder("spawn.enforce-respawn-at-world-spawn", Boolean.class)
             .comment("")
-            .comment("This config will only apply if `respawn-world` is set, or `default-respawn-within-same-world` is enabled.")
-            .comment("----")
-            .comment("When this option is enabled, players will always respawn at the world's spawn location of `respawn-world`,")
+            .comment("When this option is enabled, players will always respawn at the world's spawn location of calculated respawn world,")
             .comment("unless bed or anchor is set and `bed-respawn` or `anchor-spawn` is enabled respectively.")
-            .comment("If respawn-world is set, Multiverse will use that world's spawn location, else it will use the world's spawn where the player died in.")
             .comment("----")
-            .comment("Set this to false if you want to use the /spawnpoint instead of the world's spawn location.")
+            .comment("Set this to false if you want to use a custom spawn location such as /spawnpoint instead of the world's spawn location.")
             .defaultValue(true)
             .name("enforce-respawn-at-world-spawn")
             .build());
@@ -435,6 +470,35 @@ final class CoreConfigNodes {
                                 ? packet.destinationString()
                                 : destination.getIdentifier() + ":" + packet.destinationString()))
                 .toList();
+    }
+
+    private static final class DimensionFormatNodeSerializer implements NodeSerializer<DimensionFormat> {
+
+        private static final DimensionFormatNodeSerializer INSTANCE = new DimensionFormatNodeSerializer();
+
+        private DimensionFormatNodeSerializer() {}
+
+        @Override
+        public DimensionFormat deserialize(Object object, Class<DimensionFormat> type) {
+            return new DimensionFormat(String.valueOf(object));
+        }
+
+        @Override
+        public Object serialize(DimensionFormat dimensionFormat, Class<DimensionFormat> type) {
+            return dimensionFormat.getFormat();
+        }
+    }
+
+    private static final class DimensionFormatNodeStringParser implements NodeStringParser<DimensionFormat> {
+
+        private static final DimensionFormatNodeStringParser INSTANCE = new DimensionFormatNodeStringParser();
+
+        private DimensionFormatNodeStringParser() {}
+
+        @Override
+        public @NotNull Try<DimensionFormat> parse(@Nullable String string, @NotNull Class<DimensionFormat> type) {
+            return Try.of(() -> new DimensionFormat(string));
+        }
     }
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc

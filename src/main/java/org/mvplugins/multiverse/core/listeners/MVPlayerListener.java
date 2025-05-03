@@ -45,6 +45,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.EntryFeeResult;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
+import org.mvplugins.multiverse.core.world.helpers.DimensionFinder;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
@@ -64,6 +65,7 @@ final class MVPlayerListener implements CoreListener {
     private final Provider<MVCommandManager> commandManagerProvider;
     private final DestinationsProvider destinationsProvider;
     private final EnforcementHandler enforcementHandler;
+    private final DimensionFinder dimensionFinder;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<>();
 
@@ -79,7 +81,8 @@ final class MVPlayerListener implements CoreListener {
             WorldEntryCheckerProvider worldEntryCheckerProvider,
             Provider<MVCommandManager> commandManagerProvider,
             DestinationsProvider destinationsProvider,
-            EnforcementHandler enforcementHandler) {
+            EnforcementHandler enforcementHandler,
+            DimensionFinder dimensionFinder) {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
@@ -91,6 +94,7 @@ final class MVPlayerListener implements CoreListener {
         this.commandManagerProvider = commandManagerProvider;
         this.destinationsProvider = destinationsProvider;
         this.enforcementHandler = enforcementHandler;
+        this.dimensionFinder = dimensionFinder;
     }
 
     private WorldManager getWorldManager() {
@@ -122,25 +126,29 @@ final class MVPlayerListener implements CoreListener {
     @EventHandler(priority = EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        getWorldManager().getLoadedWorld(player.getWorld())
-                .onEmpty(() -> Logging.fine("Player '%s' is in a world that is not managed by Multiverse.", player.getName()))
-                .filter(mvWorld -> {
-                    if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
-                        Logging.fine("Spawning %s at their bed.", player.getName());
-                        return false;
-                    }
-                    if (mvWorld.getAnchorRespawn() && event.isAnchorSpawn()) {
-                        Logging.fine("Spawning %s at their anchor.", player.getName());
-                        return false;
-                    }
-                    if (!config.getDefaultRespawnWithinSameWorld() && mvWorld.getRespawnWorldName().isEmpty()) {
-                        Logging.fine("Not overriding respawn location for player '%s' as " +
-                                "default-respawn-within-same-world is disabled and no respawn-world is set.", player.getName());
-                        return false;
-                    }
-                    return true;
+        LoadedMultiverseWorld mvWorld = getWorldManager().getLoadedWorld(player.getWorld()).getOrNull();
+        if (mvWorld == null) {
+            Logging.finer("Player '%s' died in a world that is not managed by Multiverse.", player.getName());
+            return;
+        }
+
+        if (mvWorld.getBedRespawn() && event.isBedSpawn()) {
+            Logging.fine("Spawning %s at their bed.", player.getName());
+            return;
+        }
+        if (mvWorld.getAnchorRespawn() && event.isAnchorSpawn()) {
+            Logging.fine("Spawning %s at their anchor.", player.getName());
+            return;
+        }
+
+        getRespawnWorld(mvWorld)
+                .onEmpty(() -> Logging.fine("No respawn-world determined for world '%s'.", mvWorld.getName()))
+                .flatMap(respawnWorld -> {
+                    Logging.finer("Using respawn-world '%s' for world '%s'.", respawnWorld.getName(), mvWorld.getName());
+                    return getMostAccurateRespawnLocation(respawnWorld, event.getRespawnLocation())
+                            .onEmpty(() -> Logging.finer("No accurate respawn-location determined for world '%s'.",
+                                    mvWorld.getName()));
                 })
-                .flatMap(mvWorld -> getMostAccurateRespawnLocation(player, mvWorld, event.getRespawnLocation()))
                 .peek(newRespawnLocation -> {
                     MVRespawnEvent respawnEvent = new MVRespawnEvent(newRespawnLocation, event.getPlayer());
                     this.server.getPluginManager().callEvent(respawnEvent);
@@ -153,22 +161,34 @@ final class MVPlayerListener implements CoreListener {
                 });
     }
 
-    private Option<Location> getMostAccurateRespawnLocation(Player player, MultiverseWorld mvWorld, Location defaultRespawnLocation) {
-        return Option.of(mvWorld.getRespawnWorldName().isEmpty()
-                        ? player.getWorld()
-                        : server.getWorld(mvWorld.getRespawnWorldName()))
-                .onEmpty(() -> Logging.warning("World '%s' has respawn-world property of '%s' that does not exist!",
-                        player.getWorld().getName(), mvWorld.getRespawnWorldName()))
-                .flatMap(newRespawnWorld -> {
-                    if (!config.getEnforceRespawnAtWorldSpawn() && newRespawnWorld.equals(defaultRespawnLocation.getWorld())) {
-                        Logging.fine("Respawn location is within same world as respawn-world, not overriding.");
-                        return Option.none();
-                    }
-                    return getWorldManager()
-                            .getLoadedWorld(newRespawnWorld)
-                            .map(newMVRespawnWorld -> (Location) newMVRespawnWorld.getSpawnLocation())
-                            .orElse(() -> Option.of(newRespawnWorld.getSpawnLocation()));
-                });
+    private Option<LoadedMultiverseWorld> getRespawnWorld(LoadedMultiverseWorld mvWorld) {
+        if (!mvWorld.getRespawnWorldName().isEmpty()) {
+            Logging.finer("Using configured respawn-world for world '%s'.", mvWorld.getName());
+            return getWorldManager().getLoadedWorld(mvWorld.getRespawnWorldName())
+                    .onEmpty(() -> {
+                        Logging.warning("World '%s' has respawn-world property of '%s' that does not exist!",
+                                mvWorld.getName(), mvWorld.getRespawnWorldName());
+                    });
+        } else if (!dimensionFinder.isOverworld(mvWorld) && config.getDefaultRespawnInOverworld()) {
+            Logging.finer("Defaulting to overworld for world '%s'.", mvWorld.getName());
+            return dimensionFinder.getOverworldWorld(mvWorld).flatMap(getWorldManager()::getLoadedWorld)
+                    .onEmpty(() -> {
+                        Logging.warning("World '%s' has no overworld to teleport to!",
+                                mvWorld.getName());
+                    });
+        } else if (config.getDefaultRespawnWithinSameWorld()) {
+            Logging.finer("Defaulting to same world for world '%s'.", mvWorld.getName());
+            return Option.of(mvWorld);
+        }
+        return Option.none();
+    }
+
+    private Option<Location> getMostAccurateRespawnLocation(LoadedMultiverseWorld mvWorld, Location defaultRespawnLocation) {
+        if (!config.getEnforceRespawnAtWorldSpawn() && Objects.equals(defaultRespawnLocation.getWorld(), mvWorld.getBukkitWorld().getOrNull())) {
+            Logging.fine("Respawn location is within same world as respawn-world, not overriding.");
+            return Option.none();
+        }
+        return Option.of(mvWorld.getSpawnLocation());
     }
 
     @EventHandler
