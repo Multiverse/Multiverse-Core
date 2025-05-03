@@ -59,7 +59,7 @@ public class CoreConfig {
                                 .addAction(BooleanMigratorAction.of("world.teleport-intercept"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.firstspawnoverride", "spawn.first-spawn-override"))
                                 .addAction(BooleanMigratorAction.of("spawn.first-spawn-override"))
-                                //.addAction(MoveMigratorAction.of("multiverse-configuration.displaypermerrors", ""))
+                                .addAction(MoveMigratorAction.of("multiverse-configuration.displaypermerrors", "misc.debug-permissions"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.globaldebug", "misc.global-debug"))
                                 .addAction(IntegerMigratorAction.of("misc.global-debug"))
                                 .addAction(MoveMigratorAction.of("multiverse-configuration.silentstart", "misc.silent-start"))
