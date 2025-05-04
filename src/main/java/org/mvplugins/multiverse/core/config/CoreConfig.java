@@ -136,6 +136,22 @@ public class CoreConfig {
         return stringPropertyHandle;
     }
 
+    public Try<Void> setAutoImportDefaultWorlds(boolean autoImportDefaultWorlds) {
+        return configHandle.set(configNodes.autoImportDefaultWorlds, autoImportDefaultWorlds);
+    }
+
+    public boolean getAutoImportDefaultWorlds() {
+        return configHandle.get(configNodes.autoImportDefaultWorlds);
+    }
+
+    public Try<Void> setAutoImport3rdPartyWorlds(boolean autoImport3rdPartyWorlds) {
+        return configHandle.set(configNodes.autoImport3rdPartyWorlds, autoImport3rdPartyWorlds);
+    }
+
+    public boolean getAutoImport3rdPartyWorlds() {
+        return configHandle.get(configNodes.autoImport3rdPartyWorlds);
+    }
+
     /**
      * {@inheritDoc}
      */

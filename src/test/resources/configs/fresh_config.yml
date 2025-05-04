@@ -1,4 +1,6 @@
 world:
+  auto-import-default-worlds: true
+  auto-import-3rd-party-worlds: true
   enforce-access: false
   enforce-gamemode: true
   enforce-flight: true
