@@ -148,7 +148,7 @@ public final class DimensionFinder {
         public DimensionFormat(@NotNull String format) {
             this.format = format;
             if (!format.contains(OVERWORLD_PLACEHOLDER)) {
-                throw new IllegalArgumentException("DimensionRegex must contain overworld placeholder: " + OVERWORLD_PLACEHOLDER);
+                throw new IllegalArgumentException("Dimension format must contain overworld placeholder: " + OVERWORLD_PLACEHOLDER);
             }
             this.pattern = Pattern.compile("^" + format.replace(OVERWORLD_PLACEHOLDER, "(?<worldname>.+)") + "$");
         }
@@ -184,6 +184,11 @@ public final class DimensionFinder {
          * @return the format
          */
         public @NotNull String getFormat() {
+            return format;
+        }
+
+        @Override
+        public String toString() {
             return format;
         }
     }

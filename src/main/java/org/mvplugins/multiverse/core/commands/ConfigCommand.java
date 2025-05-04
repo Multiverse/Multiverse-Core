@@ -16,6 +16,10 @@ import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 
 @Service
 class ConfigCommand extends CoreCommand {
@@ -31,17 +35,17 @@ class ConfigCommand extends CoreCommand {
     @CommandPermission("multiverse.core.config")
     @CommandCompletion("@mvconfigs @mvconfigvalues")
     @Syntax("<name> [value]")
-    @Description("Show or set a config value.")
+    @Description("{@@mv-core.config.description}")
     void onConfigCommand(
             MVCommandIssuer issuer,
 
             @Syntax("<name>")
-            @Description("The name of the config to set or show.")
+            @Description("{@@mv-core.config.name.description}")
             String name,
 
             @Optional
             @Syntax("[value]")
-            @Description("The value to set the config to. If not specified, the current value will be shown.")
+            @Description("{@@mv-core.config.value.description}")
             String value) {
         if (value == null) {
             showConfigValue(issuer, name);
@@ -52,19 +56,26 @@ class ConfigCommand extends CoreCommand {
 
     private void showConfigValue(MVCommandIssuer issuer, String name) {
         config.getStringPropertyHandle().getProperty(name)
-                .onSuccess(value -> issuer.sendMessage(name + "is currently set to " + value))
-                .onFailure(e -> issuer.sendMessage(e.getMessage()));
+                .onSuccess(value -> issuer.sendMessage(MVCorei18n.CONFIG_SHOW_SUCCESS,
+                                Replace.NAME.with(name),
+                                Replace.VALUE.with(value)))
+                .onFailure(e -> issuer.sendMessage(MVCorei18n.CONFIG_SHOW_ERROR,
+                        Replace.NAME.with(name),
+                        Replace.ERROR.with(e)));
     }
 
     private void updateConfigValue(MVCommandIssuer issuer, String name, String value) {
-        // TODO: Update with localization
         config.getStringPropertyHandle().setPropertyString(name, value)
                 .onSuccess(ignore -> {
                     config.save();
-                    issuer.sendMessage("Successfully set " + name + " to " + value);
+                    issuer.sendMessage(MVCorei18n.CONFIG_SET_SUCCESS,
+                            Replace.NAME.with(name),
+                            Replace.VALUE.with(value));
                 })
-                .onFailure(ignore -> issuer.sendMessage("Unable to set " + name + " to " + value + "."))
-                .onFailure(MultiverseException.class, e -> Option.of(e.getLocalizableMessage()).peek(issuer::sendMessage));
+                .onFailure(e -> issuer.sendMessage(MVCorei18n.CONFIG_SET_ERROR,
+                        Replace.NAME.with(name),
+                        Replace.VALUE.with(value),
+                        Replace.ERROR.with(e)));
     }
 
     @Service
