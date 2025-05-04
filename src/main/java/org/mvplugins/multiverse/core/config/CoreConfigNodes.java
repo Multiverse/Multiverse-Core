@@ -83,6 +83,23 @@ final class CoreConfigNodes {
             .comment("")
             .build());
 
+    final ConfigNode<Boolean> autoImportDefaultWorlds = node(ConfigNode.builder("world.auto-import-default-worlds", Boolean.class)
+            .comment("")
+            .comment("When enabled, Multiverse will automatically import default worlds defined in the server.properties")
+            .comment("`level-name` property when the Multiverse is enabled or reloaded. This will include the nether and ")
+            .comment("end if the server created them.")
+            .defaultValue(true)
+            .name("auto-import-default-worlds")
+            .build());
+
+    final ConfigNode<Boolean> autoImport3rdPartyWorlds = node(ConfigNode.builder("world.auto-import-3rd-party-worlds", Boolean.class)
+            .comment("")
+            .comment("When enabled, Multiverse will import all other worlds created by other plugins when Multiverse starts")
+            .comment("or when Multiverse is reloaded.")
+            .defaultValue(true)
+            .name("auto-import-3rd-party-worlds")
+            .build());
+
     final ConfigNode<Boolean> enforceAccess = node(ConfigNode.builder("world.enforce-access", Boolean.class)
             .comment("This setting will prevent players from entering worlds they don't have access to.")
             .comment("If this is set to false, players will be able to enter any world they want.")

@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
@@ -52,6 +54,7 @@ import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
+import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions;
@@ -78,6 +81,8 @@ import static org.mvplugins.multiverse.core.world.helpers.DataStore.WorldConfigS
 public final class WorldManager {
 
     private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.lock");
+    private static final DimensionFormat DEFAULT_NETHER_FORMAT = new DimensionFormat("%overworld%_nether");
+    private static final DimensionFormat DEFAULT_END_FORMAT = new DimensionFormat("%overworld%_the_end");
 
     private final Map<String, MultiverseWorld> worldsMap;
     private final Map<String, LoadedMultiverseWorld> loadedWorldsMap;
@@ -136,10 +141,9 @@ public final class WorldManager {
      */
     public Try<Void> initAllWorlds() {
         return updateWorldsFromConfig().andThenTry(() -> {
-            loadDefaultWorlds();
+            importExistingWorlds();
             autoLoadWorlds();
-            saveWorldsConfig();
-        });
+        }).flatMap(ignore -> saveWorldsConfig());
     }
 
     /**
@@ -170,15 +174,39 @@ public final class WorldManager {
     /**
      * Load worlds that are already loaded by bukkit before Multiverse-Core is loaded.
      */
-    private void loadDefaultWorlds() {
-        Bukkit.getWorlds().forEach(bukkitWorld -> {
-            if (isWorld(bukkitWorld.getName())) {
-                return;
+    private void importExistingWorlds() {
+        Map<String, World> bukkitWorlds = Bukkit.getWorlds()
+                .stream()
+                .collect(Collectors.toMap(World::getName, Function.identity()));
+
+        serverProperties.getLevelName().peek(overworldName -> {
+            World overworld = bukkitWorlds.remove(overworldName);
+            World nether = bukkitWorlds.remove(DEFAULT_NETHER_FORMAT.replaceOverworld(overworldName));
+            World end = bukkitWorlds.remove(DEFAULT_END_FORMAT.replaceOverworld(overworldName));
+
+            if (config.getAutoImportDefaultWorlds()) {
+                importExistingBukkitWorld(overworld);
+                importExistingBukkitWorld(nether);
+                importExistingBukkitWorld(end);
             }
-            importWorld(ImportWorldOptions.worldName(bukkitWorld.getName())
-                    .environment(bukkitWorld.getEnvironment())
-                    .generator(generatorProvider.getDefaultGeneratorForWorld(bukkitWorld.getName())));
         });
+
+        if (config.getAutoImport3rdPartyWorlds()) {
+            bukkitWorlds.values().forEach(this::importExistingBukkitWorld);
+        }
+    }
+
+    private void importExistingBukkitWorld(World bukkitWorld) {
+        if (bukkitWorld == null || isWorld(bukkitWorld.getName())) {
+            return;
+        }
+        importWorld(ImportWorldOptions.worldName(bukkitWorld.getName())
+                .environment(bukkitWorld.getEnvironment())
+                .generator(generatorProvider.getDefaultGeneratorForWorld(bukkitWorld.getName())))
+                .onFailure(failure ->
+                        Logging.severe("Failed to import world %s: %s", bukkitWorld.getName(), failure))
+                .onSuccess(success ->
+                        Logging.fine("Imported existing world %s", bukkitWorld.getName()));
     }
 
     /**
