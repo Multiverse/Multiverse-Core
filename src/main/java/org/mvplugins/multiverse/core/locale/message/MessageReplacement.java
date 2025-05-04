@@ -103,7 +103,9 @@ public final class MessageReplacement {
         // BEGIN CHECKSTYLE-SUPPRESSION: JavadocVariable
         COUNT(replace("{count}")),
         DESTINATION(replace("{destination}")),
+        ERROR(replace("{error}")),
         GAMERULE(replace("{gamerule}")),
+        NAME(replace("{name}")),
         PLAYER(replace("{player}")),
         REASON(replace("{reason}")),
         VALUE(replace("{value}")),

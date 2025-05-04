@@ -34,6 +34,15 @@ public enum MVCorei18n implements MessageKeyProvider {
     CLONE_CLONING,
     CLONE_SUCCESS,
 
+    // /mv config
+    CONFIG_DESCRIPTION,
+    CONFIG_NAME_DESCRIPTION,
+    CONFIG_VALUE_DESCRIPTION,
+    CONFIG_SHOW_SUCCESS,
+    CONFIG_SHOW_ERROR,
+    CONFIG_SET_SUCCESS,
+    CONFIG_SET_ERROR,
+
     // /mv confirm
     CONFIRM_DESCRIPTION,
 
