@@ -85,6 +85,13 @@ public final class MessageReplacement {
          */
         @Contract(value = "_ -> new", pure = true)
         public MessageReplacement with(@Nullable Object replacement) {
+            if (replacement instanceof LocalizableMessage localizableMessage
+                    && localizableMessage.getLocalizableMessage() != null) {
+                return new MessageReplacement(key2, localizableMessage.getLocalizableMessage());
+            }
+            if (replacement instanceof Throwable throwable) {
+                return new MessageReplacement(key2, throwable.getLocalizedMessage());
+            }
             return new MessageReplacement(key2, replacement);
         }
     }
@@ -101,7 +108,6 @@ public final class MessageReplacement {
         REASON(replace("{reason}")),
         VALUE(replace("{value}")),
         WORLD(replace("{world}")),
-        ERROR(replace("{error}")),
         ;
         // END CHECKSTYLE-SUPPRESSION: JavadocVariable
 
@@ -132,13 +138,6 @@ public final class MessageReplacement {
          */
         @Contract(value = "_ -> new", pure = true)
         public MessageReplacement with(@Nullable Object replacement) {
-            if (replacement instanceof LocalizableMessage localizableMessage
-                    && localizableMessage.getLocalizableMessage() != null) {
-                return replaceKey.with(localizableMessage.getLocalizableMessage());
-            }
-            if (replacement instanceof Throwable throwable) {
-                return replaceKey.with(throwable.getLocalizedMessage());
-            }
             return replaceKey.with(replacement);
         }
     }
