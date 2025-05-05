@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
@@ -33,7 +34,7 @@ final class MVWeatherListener implements CoreListener {
      *
      * @param event The Event that was fired.
      */
-    @EventHandler
+    @EventMethod
     public void weatherChange(WeatherChangeEvent event) {
         if (event.isCancelled() || !event.toWeatherState()) {
             return;
@@ -52,7 +53,7 @@ final class MVWeatherListener implements CoreListener {
      *
      * @param event The Event that was fired.
      */
-    @EventHandler
+    @EventMethod
     public void thunderChange(ThunderChangeEvent event) {
         if (event.isCancelled() || !event.toThunderState()) {
             return;

@@ -7,12 +7,15 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jvnet.hk2.annotations.Contract;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.MultiverseCoreApi;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.MultiverseCommand;
 import org.mvplugins.multiverse.core.commands.CoreCommand;
+import org.mvplugins.multiverse.core.dynamiclistener.DynamicListener;
+import org.mvplugins.multiverse.core.dynamiclistener.DynamicListenerRegistration;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
 import org.mvplugins.multiverse.core.inject.binder.PluginBinder;
@@ -29,6 +32,8 @@ public abstract class MultiverseModule extends JavaPlugin {
 
     @Inject
     protected Provider<MVCommandManager> commandManagerProvider;
+    @Inject
+    protected Provider<DynamicListenerRegistration> dynamicListenerRegistrationProvider;
 
     /**
      * {@inheritDoc}
@@ -100,11 +105,24 @@ public abstract class MultiverseModule extends JavaPlugin {
 
     /**
      * Function to Register all the Events needed.
+     *
+     * @deprecated Use {@link #registerDynamicListeners(Class)} with the new DynamicListener API.
      */
+    @Deprecated(since = "5.0.0", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
     protected void registerEvents(Class<? extends Listener> listenerClass) {
         var pluginManager = getServer().getPluginManager();
         Try.run(() -> serviceLocator.getAllServices(listenerClass).forEach(
                         listener -> pluginManager.registerEvents(listener, this)))
+                .onFailure(e -> {
+                    throw new RuntimeException("Failed to register listeners. Terminating...", e);
+                });
+    }
+
+    protected void registerDynamicListeners(Class<? extends DynamicListener> listenerClass) {
+        Try.run(() -> serviceLocator.getAllServices(listenerClass)
+                        .forEach(listener -> dynamicListenerRegistrationProvider.get()
+                                .register(listener, this)))
                 .onFailure(e -> {
                     throw new RuntimeException("Failed to register listeners. Terminating...", e);
                 });

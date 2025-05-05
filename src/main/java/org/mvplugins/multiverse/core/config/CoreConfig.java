@@ -10,6 +10,7 @@ import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -30,7 +31,7 @@ import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 
 @Service
-public class CoreConfig {
+public final class CoreConfig {
     public static final String CONFIG_FILENAME = "config.yml";
 
     private final Path configPath;
@@ -41,12 +42,10 @@ public class CoreConfig {
     @Inject
     CoreConfig(
             @NotNull MultiverseCore core,
-            @NotNull PluginManager pluginManager,
-            @NotNull Provider<MVCommandManager> commandManager, // config needs to be instantiated before the command manager
-            @NotNull Provider<DestinationsProvider> destinationsProvider
+            @NotNull CoreConfigNodes configNodes
     ) {
         this.configPath = Path.of(core.getDataFolder().getPath(), CONFIG_FILENAME);
-        this.configNodes = new CoreConfigNodes(pluginManager, commandManager, destinationsProvider);
+        this.configNodes = configNodes;
         this.configHandle = CommentedConfigurationHandle.builder(configPath, configNodes.getNodes())
                 .logger(Logging.getLogger())
                 .migrator(ConfigMigrator.builder(configNodes.version)
@@ -534,6 +533,38 @@ public class CoreConfig {
 
     public Try<Void> setShowLegacyAliases(boolean showLegacyAliases) {
         return configHandle.set(configNodes.showLegacyAliases, showLegacyAliases);
+    }
+
+    public Try<Void> setEventPriorityPlayerPortal(EventPriority eventPriorityPlayerPortal) {
+        return configHandle.set(configNodes.eventPriorityPlayerPortal, eventPriorityPlayerPortal);
+    }
+
+    public EventPriority getEventPriorityPlayerPortal() {
+        return configHandle.get(configNodes.eventPriorityPlayerPortal);
+    }
+
+    public Try<Void> setEventPriorityPlayerRespawn(EventPriority eventPriorityPlayerRespawn) {
+        return configHandle.set(configNodes.eventPriorityPlayerRespawn, eventPriorityPlayerRespawn);
+    }
+
+    public EventPriority getEventPriorityPlayerRespawn() {
+        return configHandle.get(configNodes.eventPriorityPlayerRespawn);
+    }
+
+    public Try<Void> getEventPriorityPlayerSpawnLocation(EventPriority eventPriorityPlayerSpawnLocation) {
+        return configHandle.set(configNodes.eventPriorityPlayerSpawnLocation, eventPriorityPlayerSpawnLocation);
+    }
+
+    public EventPriority getEventPriorityPlayerSpawnLocation() {
+        return configHandle.get(configNodes.eventPriorityPlayerSpawnLocation);
+    }
+
+    public Try<Void> setEventPriorityPlayerTeleport(EventPriority eventPriorityPlayerTeleport) {
+        return configHandle.set(configNodes.eventPriorityPlayerTeleport, eventPriorityPlayerTeleport);
+    }
+
+    public EventPriority getEventPriorityPlayerTeleport() {
+        return configHandle.get(configNodes.eventPriorityPlayerTeleport);
     }
 
     public Try<Void> setBukkitYmlPath(String bukkitYmlPath) {

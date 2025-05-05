@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
@@ -32,7 +33,7 @@ final class MVChatListener implements CoreListener {
      *
      * @param event The {@link AsyncPlayerChatEvent}.
      */
-    @EventHandler
+    @EventMethod
     public void asyncPlayerChat(AsyncPlayerChatEvent event) {
         if (event.isCancelled()) {
             return;

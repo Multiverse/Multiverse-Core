@@ -21,7 +21,6 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -34,6 +33,9 @@ import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.DefaultEventPriority;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventPriorityKey;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
@@ -123,7 +125,9 @@ final class MVPlayerListener implements CoreListener {
      *
      * @param event The Event that was fired.
      */
-    @EventHandler(priority = EventPriority.LOW)
+    @EventMethod
+    @EventPriorityKey("mvcore-player-respawn")
+    @DefaultEventPriority(EventPriority.LOW)
     public void playerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         LoadedMultiverseWorld mvWorld = getWorldManager().getLoadedWorld(player.getWorld()).getOrNull();
@@ -191,7 +195,8 @@ final class MVPlayerListener implements CoreListener {
         return Option.of(mvWorld.getSpawnLocation());
     }
 
-    @EventHandler
+    @EventMethod
+    @EventPriorityKey("mvcore-player-spawn-location")
     void playerSpawnLocation(PlayerSpawnLocationEvent event) {
         Player player = event.getPlayer();
         MultiverseWorld world = getWorldManager().getLoadedWorld(player.getWorld()).getOrNull();
@@ -249,7 +254,8 @@ final class MVPlayerListener implements CoreListener {
      * This method is called when a player changes worlds.
      * @param event The Event that was fired.
      */
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventMethod
+    @DefaultEventPriority(EventPriority.MONITOR)
     public void playerChangedWorld(PlayerChangedWorldEvent event) {
         // Permissions now determine whether or not to handle a gamemode.
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
@@ -260,7 +266,9 @@ final class MVPlayerListener implements CoreListener {
      * This method is called when a player teleports anywhere.
      * @param event The Event that was fired.
      */
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventMethod
+    @EventPriorityKey("mvcore-player-teleport")
+    @DefaultEventPriority(EventPriority.HIGHEST)
     public void playerTeleport(PlayerTeleportEvent event) {
         Logging.finer("Got teleport event for player '"
                 + event.getPlayer().getName() + "' with cause '" + event.getCause() + "'");
@@ -331,7 +339,8 @@ final class MVPlayerListener implements CoreListener {
      * right outside of it.
      * @param event The Event that was fired.
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventMethod
+    @DefaultEventPriority(EventPriority.LOWEST)
     public void playerPortalCheck(PlayerPortalEvent event) {
         if (event.isCancelled()) {
             return;
@@ -355,7 +364,9 @@ final class MVPlayerListener implements CoreListener {
      * This method is called when a player actually portals via a vanilla style portal.
      * @param event The Event that was fired.
      */
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventMethod
+    @EventPriorityKey("mvcore-player-portal")
+    @DefaultEventPriority(EventPriority.HIGH)
     public void playerPortal(PlayerPortalEvent event) {
         if (event.isCancelled()) {
             return;
