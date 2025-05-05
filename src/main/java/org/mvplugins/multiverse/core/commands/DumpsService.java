@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
