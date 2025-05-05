@@ -43,6 +43,12 @@ command:
   confirm-timeout: 30
   show-legacy-aliases: false
 
+event-priority:
+  player-portal: high
+  player-respawn: low
+  player-spawn-location: normal
+  player-teleport: highest
+
 misc:
   bukkit-yml-path: bukkit.yml
   global-debug: 0

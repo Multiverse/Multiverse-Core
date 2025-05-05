@@ -20,6 +20,8 @@ import org.bukkit.event.world.PortalCreateEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.IgnoreIfCancelled;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 import static org.bukkit.PortalType.CUSTOM;
@@ -44,7 +46,8 @@ final class MVPortalListener implements CoreListener {
      *
      * @param event The event where a portal was created or formed due to a world link
      */
-    @EventHandler(ignoreCancelled = true)
+    @EventMethod
+    @IgnoreIfCancelled
     public void portalCreate(PortalCreateEvent event) {
         Logging.fine("Attempting to create portal at '%s' with reason: %s",
                 event.getWorld().getName(), event.getReason());
@@ -88,7 +91,8 @@ final class MVPortalListener implements CoreListener {
      *
      * @param event The player interact event.
      */
-    @EventHandler(ignoreCancelled = true)
+    @EventMethod
+    @IgnoreIfCancelled
     public void playerInteract(PlayerInteractEvent event) {
         if (isCreateEndPortalInteraction(event)) {
             return;
@@ -117,7 +121,7 @@ final class MVPortalListener implements CoreListener {
      *
      * @param event The Event that was fired.
      */
-    @EventHandler
+    @EventMethod
     public void entityPortal(EntityPortalEvent event) {
         if (event.isCancelled() || event.getTo() == null) {
             return;

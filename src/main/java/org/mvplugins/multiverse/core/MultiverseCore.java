@@ -100,7 +100,7 @@ public class MultiverseCore extends MultiverseModule {
         worldManagerProvider.get().initAllWorlds().andThenTry(() -> {
             loadEconomist(); // Setup economy here so vault is loaded
             loadAnchors();
-            registerEvents(CoreListener.class);
+            registerDynamicListeners(CoreListener.class);
             setUpLocales();
             registerCommands(CoreCommand.class);
             registerDestinations();

@@ -15,6 +15,8 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.DefaultEventPriority;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
 import org.mvplugins.multiverse.core.world.reasons.LoadFailureReason;
@@ -38,8 +40,9 @@ final class MVWorldListener implements CoreListener {
      *
      * @param event The Event that was fired.
      */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void worldUnload(WorldUnloadEvent event) {
+    @EventMethod
+    @DefaultEventPriority(EventPriority.MONITOR)
+    void worldUnload(WorldUnloadEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -59,8 +62,9 @@ final class MVWorldListener implements CoreListener {
      *
      * @param event The Event that was fired.
      */
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void worldLoad(WorldLoadEvent event) {
+    @EventMethod
+    @DefaultEventPriority(EventPriority.MONITOR)
+    void worldLoad(WorldLoadEvent event) {
         worldManager.getUnloadedWorld(event.getWorld().getName())
                 .peek(world -> {
                     Logging.fine("Loading world: " + world.getName());

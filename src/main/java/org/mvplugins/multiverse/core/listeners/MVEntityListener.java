@@ -22,6 +22,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
@@ -41,7 +42,7 @@ final class MVEntityListener implements CoreListener {
      *
      * @param event The Event that was fired.
      */
-    @EventHandler
+    @EventMethod
     public void foodLevelChange(FoodLevelChangeEvent event) {
         if (event.isCancelled()) {
             return;
@@ -63,7 +64,7 @@ final class MVEntityListener implements CoreListener {
      *
      * @param event The Event that was fired.
      */
-    @EventHandler
+    @EventMethod
     public void entityRegainHealth(EntityRegainHealthEvent event) {
         if (event.isCancelled() || event.getRegainReason() != RegainReason.REGEN) {
             return;
@@ -82,7 +83,7 @@ final class MVEntityListener implements CoreListener {
      *
      * @param event The event.
      */
-    @EventHandler
+    @EventMethod
     public void creatureSpawn(CreatureSpawnEvent event) {
         if (event.isCancelled()) {
             return;
@@ -107,7 +108,7 @@ final class MVEntityListener implements CoreListener {
     /**
      * Handle Spawn Category settings for non-creature entities.
      */
-    @EventHandler
+    @EventMethod
     public void entitySpawn(EntitySpawnEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
             // Handled by CreatureSpawnEvent

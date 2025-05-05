@@ -2,12 +2,15 @@ package org.mvplugins.multiverse.core.config;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
+import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
+import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.config.node.ConfigHeaderNode;
@@ -18,6 +21,7 @@ import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.core.WorldDestination;
+import org.mvplugins.multiverse.core.dynamiclistener.EventPriorityMapper;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
@@ -27,20 +31,25 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+@Service
 final class CoreConfigNodes {
 
     private final NodeGroup nodes = new NodeGroup();
     private PluginManager pluginManager;
     private Provider<MVCommandManager> commandManager;
     private final Provider<DestinationsProvider> destinationsProvider;
+    private Provider<EventPriorityMapper> eventPriorityMapper;
 
+    @Inject
     CoreConfigNodes(
             @NotNull PluginManager pluginManager,
             @NotNull Provider<MVCommandManager> commandManager,
-            @NotNull Provider<DestinationsProvider> destinationsProvider) {
+            @NotNull Provider<DestinationsProvider> destinationsProvider,
+            @NotNull Provider<EventPriorityMapper> eventPriorityMapper) {
         this.pluginManager = pluginManager;
         this.commandManager = commandManager;
         this.destinationsProvider = destinationsProvider;
+        this.eventPriorityMapper = eventPriorityMapper;
     }
 
     NodeGroup getNodes() {
@@ -409,6 +418,51 @@ final class CoreConfigNodes {
             .comment("!!!NOTE: This will only apply after a server restart!")
             .defaultValue(false)
             .name("show-legacy-aliases")
+            .build());
+
+    private final ConfigHeaderNode eventPriorityHeader = node(ConfigHeaderNode.builder("event-priority")
+            .comment("")
+            .comment("")
+            .build());
+
+    final ConfigNode<EventPriority> eventPriorityPlayerPortal = node(ConfigNode.builder("event-priority.player-portal", EventPriority.class)
+            .defaultValue(EventPriority.HIGH)
+            .comment("The follow configuration changes the bukkit's EventPriority for certain events.")
+            .comment("Only ever change this if you need multiverse's events outcomes to override another plugin, or if")
+            .comment("you want another plugin's outcome to override multiverse's.")
+            .comment("----")
+            .comment("!!!NOTE: This will only apply after a server restart!")
+            .comment("")
+            .comment("This config option defines the priority for the PlayerPortalEvent.")
+            .name("event-priority-player-portal")
+            .onSetValue((oldValue, newValue) ->
+                    eventPriorityMapper.get().setPriority("mvcore-player-portal", newValue))
+            .build());
+
+    final ConfigNode<EventPriority> eventPriorityPlayerRespawn = node(ConfigNode.builder("event-priority.player-respawn", EventPriority.class)
+            .defaultValue(EventPriority.LOW)
+            .name("event-priority-player-respawn")
+            .comment("")
+            .comment("This config option defines the priority for the PlayerRespawnEvent.")
+            .onSetValue((oldValue, newValue) ->
+                    eventPriorityMapper.get().setPriority("mvcore-player-respawn", newValue))
+            .build());
+
+    final ConfigNode<EventPriority> eventPriorityPlayerSpawnLocation = node(ConfigNode.builder("event-priority.player-spawn-location", EventPriority.class)
+            .defaultValue(EventPriority.NORMAL)
+            .comment("")
+            .comment("This config option defines the priority for the PlayerSpawnLocationEvent.")
+            .name("event-priority-player-spawn-location").onSetValue((oldValue, newValue) ->
+                    eventPriorityMapper.get().setPriority("mvcore-player-spawn-location", newValue))
+            .build());
+
+    final ConfigNode<EventPriority> eventPriorityPlayerTeleport = node(ConfigNode.builder("event-priority.player-teleport", EventPriority.class)
+            .defaultValue(EventPriority.HIGHEST)
+            .name("event-priority-player-teleport")
+            .comment("")
+            .comment("This config option defines the priority for the PlayerTeleportEvent.")
+            .onSetValue((oldValue, newValue) ->
+                    eventPriorityMapper.get().setPriority("mvcore-player-teleport", newValue))
             .build());
 
     private final ConfigHeaderNode miscHeader = node(ConfigHeaderNode.builder("misc")
