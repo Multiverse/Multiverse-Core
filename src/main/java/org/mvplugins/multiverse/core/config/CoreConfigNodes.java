@@ -427,6 +427,13 @@ final class CoreConfigNodes {
 
     final ConfigNode<EventPriority> eventPriorityPlayerPortal = node(ConfigNode.builder("event-priority.player-portal", EventPriority.class)
             .defaultValue(EventPriority.HIGH)
+            .comment("The follow configuration changes the bukkit's EventPriority for certain events.")
+            .comment("Only ever change this if you need multiverse's events outcomes to override another plugin, or if")
+            .comment("you want another plugin's outcome to override multiverse's.")
+            .comment("----")
+            .comment("!!!NOTE: This will only apply after a server restart!")
+            .comment("")
+            .comment("This config option defines the priority for the PlayerPortalEvent.")
             .name("event-priority-player-portal")
             .onSetValue((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-portal", newValue))
@@ -435,12 +442,16 @@ final class CoreConfigNodes {
     final ConfigNode<EventPriority> eventPriorityPlayerRespawn = node(ConfigNode.builder("event-priority.player-respawn", EventPriority.class)
             .defaultValue(EventPriority.LOW)
             .name("event-priority-player-respawn")
+            .comment("")
+            .comment("This config option defines the priority for the PlayerRespawnEvent.")
             .onSetValue((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-respawn", newValue))
             .build());
 
     final ConfigNode<EventPriority> eventPriorityPlayerSpawnLocation = node(ConfigNode.builder("event-priority.player-spawn-location", EventPriority.class)
             .defaultValue(EventPriority.NORMAL)
+            .comment("")
+            .comment("This config option defines the priority for the PlayerSpawnLocationEvent.")
             .name("event-priority-player-spawn-location").onSetValue((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-spawn-location", newValue))
             .build());
@@ -448,6 +459,8 @@ final class CoreConfigNodes {
     final ConfigNode<EventPriority> eventPriorityPlayerTeleport = node(ConfigNode.builder("event-priority.player-teleport", EventPriority.class)
             .defaultValue(EventPriority.HIGHEST)
             .name("event-priority-player-teleport")
+            .comment("")
+            .comment("This config option defines the priority for the PlayerTeleportEvent.")
             .onSetValue((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-teleport", newValue))
             .build());
