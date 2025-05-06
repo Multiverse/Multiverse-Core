@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
 import org.bstats.charts.MultiLineChart;
