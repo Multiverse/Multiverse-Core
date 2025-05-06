@@ -19,6 +19,8 @@ org.mvplugins.multiverse.core.display
 org.mvplugins.multiverse.core.display.filters
 org.mvplugins.multiverse.core.display.handlers
 org.mvplugins.multiverse.core.display.parsers
+org.mvplugins.multiverse.core.dynamiclistener
+org.mvplugins.multiverse.core.dynamiclistener.annotations
 org.mvplugins.multiverse.core.economy
 org.mvplugins.multiverse.core.event
 org.mvplugins.multiverse.core.event.world

@@ -30,6 +30,7 @@ loadScripts(document, 'script');</script>
 <li>Package</li>
 <li>Class</li>
 <li class="nav-bar-cell1-rev">Tree</li>
+<li><a href="deprecated-list.html">Deprecated</a></li>
 <li><a href="index-all.html">Index</a></li>
 <li><a href="help-doc.html#tree">Help</a></li>
 </ul>
@@ -72,6 +73,8 @@ loadScripts(document, 'script');</script>
 <li><a href="org/mvplugins/multiverse/core/display/filters/package-tree.html">org.mvplugins.multiverse.core.display.filters</a>, </li>
 <li><a href="org/mvplugins/multiverse/core/display/handlers/package-tree.html">org.mvplugins.multiverse.core.display.handlers</a>, </li>
 <li><a href="org/mvplugins/multiverse/core/display/parsers/package-tree.html">org.mvplugins.multiverse.core.display.parsers</a>, </li>
+<li><a href="org/mvplugins/multiverse/core/dynamiclistener/package-tree.html">org.mvplugins.multiverse.core.dynamiclistener</a>, </li>
+<li><a href="org/mvplugins/multiverse/core/dynamiclistener/annotations/package-tree.html">org.mvplugins.multiverse.core.dynamiclistener.annotations</a>, </li>
 <li><a href="org/mvplugins/multiverse/core/economy/package-tree.html">org.mvplugins.multiverse.core.economy</a>, </li>
 <li><a href="org/mvplugins/multiverse/core/event/package-tree.html">org.mvplugins.multiverse.core.event</a>, </li>
 <li><a href="org/mvplugins/multiverse/core/event/world/package-tree.html">org.mvplugins.multiverse.core.event.world</a>, </li>
@@ -303,6 +306,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder</a></li>
 <li class="circle">org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DimensionFinder.DimensionFormat.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.helpers">DimensionFinder.DimensionFormat</a></li>
 <li class="circle">org.mvplugins.multiverse.core.config.migration.action.<a href="org/mvplugins/multiverse/core/config/migration/action/DoubleMigratorAction.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.config.migration.action">DoubleMigratorAction</a> (implements org.mvplugins.multiverse.core.config.migration.action.<a href="org/mvplugins/multiverse/core/config/migration/action/MigratorAction.html" title="interface in org.mvplugins.multiverse.core.config.migration.action">MigratorAction</a>)</li>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.<a href="org/mvplugins/multiverse/core/dynamiclistener/DynamicListenerRegistration.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.dynamiclistener">DynamicListenerRegistration</a></li>
 <li class="circle">org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/EnforcementHandler.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.helpers">EnforcementHandler</a></li>
 <li class="circle">org.mvplugins.multiverse.core.world.entity.<a href="org/mvplugins/multiverse/core/world/entity/EntityPurger.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.entity">EntityPurger</a></li>
 <li class="circle">org.mvplugins.multiverse.core.world.entity.<a href="org/mvplugins/multiverse/core/world/entity/EntitySpawnConfig.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.entity">EntitySpawnConfig</a></li>
@@ -330,6 +334,7 @@ loadScripts(document, 'script');</script>
 </li>
 </ul>
 </li>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.<a href="org/mvplugins/multiverse/core/dynamiclistener/EventPriorityMapper.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.dynamiclistener">EventPriorityMapper</a></li>
 <li class="circle">org.mvplugins.multiverse.core.destination.core.<a href="org/mvplugins/multiverse/core/destination/core/ExactDestination.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.destination.core">ExactDestination</a> (implements org.mvplugins.multiverse.core.destination.<a href="org/mvplugins/multiverse/core/destination/Destination.html" title="interface in org.mvplugins.multiverse.core.destination">Destination</a>&lt;D,<wbr>T,<wbr>F&gt;)</li>
 <li class="circle">org.mvplugins.multiverse.core.utils.<a href="org/mvplugins/multiverse/core/utils/FileUtils.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.utils">FileUtils</a></li>
 <li class="circle">org.mvplugins.multiverse.core.command.flag.<a href="org/mvplugins/multiverse/core/command/flag/FlagBuilder.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.command.flag">FlagBuilder</a>
@@ -353,7 +358,7 @@ loadScripts(document, 'script');</script>
 </li>
 </ul>
 </li>
-<li class="circle">org.bukkit.Location (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Cloneable.html" title="class or interface in java.lang" class="external-link">Cloneable</a>, org.bukkit.configuration.serialization.ConfigurationSerializable)
+<li class="circle">org.bukkit.Location (implements java.lang.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Cloneable.html" title="class or interface in java.lang" class="external-link">Cloneable</a>, org.bukkit.configuration.serialization.ConfigurationSerializable, io.papermc.paper.math.FinePosition)
 <ul>
 <li class="circle">org.mvplugins.multiverse.core.world.location.<a href="org/mvplugins/multiverse/core/world/location/SpawnLocation.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.location">SpawnLocation</a> (implements org.bukkit.configuration.serialization.ConfigurationSerializable)
 <ul>
@@ -475,12 +480,17 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.mvplugins.multiverse.core.display.parsers.<a href="org/mvplugins/multiverse/core/display/parsers/ContentProvider.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.display.parsers">ContentProvider</a></li>
 <li class="circle">org.mvplugins.multiverse.core.world.helpers.<a href="org/mvplugins/multiverse/core/world/helpers/DataStore.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.world.helpers">DataStore</a>&lt;T&gt;</li>
 <li class="circle">org.mvplugins.multiverse.core.destination.<a href="org/mvplugins/multiverse/core/destination/Destination.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.destination">Destination</a>&lt;D,<wbr>T,<wbr>F&gt;</li>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.<a href="org/mvplugins/multiverse/core/dynamiclistener/EventRunnable.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.dynamiclistener">EventRunnable</a>&lt;T&gt;</li>
 <li class="circle">org.mvplugins.multiverse.core.world.generators.<a href="org/mvplugins/multiverse/core/world/generators/GeneratorPlugin.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.world.generators">GeneratorPlugin</a></li>
 <li class="circle">org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/KeepWorldSettingsOptions.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.world.options">KeepWorldSettingsOptions</a></li>
 <li class="circle">org.mvplugins.multiverse.core.command.<a href="org/mvplugins/multiverse/core/command/LegacyAliasCommand.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.command">LegacyAliasCommand</a></li>
 <li class="circle">org.bukkit.event.Listener
 <ul>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.<a href="org/mvplugins/multiverse/core/dynamiclistener/DynamicListener.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.dynamiclistener">DynamicListener</a>
+<ul>
 <li class="circle">org.mvplugins.multiverse.core.listeners.<a href="org/mvplugins/multiverse/core/listeners/CoreListener.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.listeners">CoreListener</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="circle">org.mvplugins.multiverse.core.locale.message.<a href="org/mvplugins/multiverse/core/locale/message/LocalizableMessage.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.locale.message">LocalizableMessage</a></li>
@@ -506,6 +516,17 @@ loadScripts(document, 'script');</script>
 <li class="circle">org.mvplugins.multiverse.core.config.node.functions.<a href="org/mvplugins/multiverse/core/config/node/functions/NodeSuggester.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeSuggester</a></li>
 <li class="circle">org.mvplugins.multiverse.core.utils.result.<a href="org/mvplugins/multiverse/core/utils/result/Result.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.utils.result">Result</a>&lt;S,<wbr>F&gt;</li>
 <li class="circle">org.mvplugins.multiverse.core.display.handlers.<a href="org/mvplugins/multiverse/core/display/handlers/SendHandler.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.display.handlers">SendHandler</a></li>
+</ul>
+</section>
+<section class="hierarchy">
+<h2 title="Annotation Interface Hierarchy">Annotation Interface Hierarchy</h2>
+<ul>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.annotations.<a href="org/mvplugins/multiverse/core/dynamiclistener/annotations/DefaultEventPriority.html" class="type-name-link" title="annotation interface in org.mvplugins.multiverse.core.dynamiclistener.annotations">DefaultEventPriority</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.annotations.<a href="org/mvplugins/multiverse/core/dynamiclistener/annotations/EventClass.html" class="type-name-link" title="annotation interface in org.mvplugins.multiverse.core.dynamiclistener.annotations">EventClass</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.annotations.<a href="org/mvplugins/multiverse/core/dynamiclistener/annotations/EventMethod.html" class="type-name-link" title="annotation interface in org.mvplugins.multiverse.core.dynamiclistener.annotations">EventMethod</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.annotations.<a href="org/mvplugins/multiverse/core/dynamiclistener/annotations/EventPriorityKey.html" class="type-name-link" title="annotation interface in org.mvplugins.multiverse.core.dynamiclistener.annotations">EventPriorityKey</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.annotations.<a href="org/mvplugins/multiverse/core/dynamiclistener/annotations/IgnoreIfCancelled.html" class="type-name-link" title="annotation interface in org.mvplugins.multiverse.core.dynamiclistener.annotations">IgnoreIfCancelled</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
+<li class="circle">org.mvplugins.multiverse.core.dynamiclistener.annotations.<a href="org/mvplugins/multiverse/core/dynamiclistener/annotations/SkipIfEventExist.html" class="type-name-link" title="annotation interface in org.mvplugins.multiverse.core.dynamiclistener.annotations">SkipIfEventExist</a> (implements java.lang.annotation.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/Annotation.html" title="class or interface in java.lang.annotation" class="external-link">Annotation</a>)</li>
 </ul>
 </section>
 <section class="hierarchy">

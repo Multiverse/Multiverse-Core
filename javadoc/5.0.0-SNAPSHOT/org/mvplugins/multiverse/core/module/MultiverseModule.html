@@ -30,6 +30,7 @@ loadScripts(document, 'script');</script>
 <li><a href="package-summary.html">Package</a></li>
 <li class="nav-bar-cell1-rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
+<li><a href="../../../../../deprecated-list.html">Deprecated</a></li>
 <li><a href="../../../../../index-all.html">Index</a></li>
 <li><a href="../../../../../help-doc.html#class">Help</a></li>
 </ul>
@@ -120,9 +121,12 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected jakarta.inject.Provider<wbr>&lt;<a href="../command/MVCommandManager.html" title="class in org.mvplugins.multiverse.core.command">MVCommandManager</a>&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#commandManagerProvider" class="member-name-link">commandManagerProvider</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected <a href="../inject/PluginServiceLocator.html" title="class in org.mvplugins.multiverse.core.inject">PluginServiceLocator</a></code></div>
-<div class="col-second odd-row-color"><code><a href="#serviceLocator" class="member-name-link">serviceLocator</a></code></div>
+<div class="col-first odd-row-color"><code>protected jakarta.inject.Provider<wbr>&lt;<a href="../dynamiclistener/DynamicListenerRegistration.html" title="class in org.mvplugins.multiverse.core.dynamiclistener">DynamicListenerRegistration</a>&gt;</code></div>
+<div class="col-second odd-row-color"><code><a href="#dynamicListenerRegistrationProvider" class="member-name-link">dynamicListenerRegistrationProvider</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>protected <a href="../inject/PluginServiceLocator.html" title="class in org.mvplugins.multiverse.core.inject">PluginServiceLocator</a></code></div>
+<div class="col-second even-row-color"><code><a href="#serviceLocator" class="member-name-link">serviceLocator</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -144,7 +148,7 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -180,24 +184,29 @@ loadScripts(document, 'script');</script>
 <div class="block">Register all commands to Command Manager.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#registerEvents(java.lang.Class)" class="member-name-link">registerEvents</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.bukkit.event.Listener&gt;&nbsp;listenerClass)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Function to Register all the Events needed.</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#registerDynamicListeners(java.lang.Class)" class="member-name-link">registerDynamicListeners</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../dynamiclistener/DynamicListener.html" title="interface in org.mvplugins.multiverse.core.dynamiclistener">DynamicListener</a>&gt;&nbsp;listenerClass)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#registerEvents(java.lang.Class)" class="member-name-link">registerEvents</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.bukkit.event.Listener&gt;&nbsp;listenerClass)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#registerDynamicListeners(java.lang.Class)"><code>registerDynamicListeners(Class)</code></a> with the new DynamicListener API.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setUpLocales()" class="member-name-link">setUpLocales</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Register locales.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#shutdownDependencyInjection()" class="member-name-link">shutdownDependencyInjection</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setUpLocales()" class="member-name-link">setUpLocales</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Register locales.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#shutdownDependencyInjection()" class="member-name-link">shutdownDependencyInjection</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.bukkit.plugin.java.JavaPlugin">Methods inherited from class&nbsp;org.bukkit.plugin.java.JavaPlugin</h3>
-<code>getClassLoader, getCommand, getConfig, getDataFolder, getDefaultBiomeProvider, getDefaultWorldGenerator, getDescription, getFile, getLogger, getPlugin, getPluginLoader, getProvidingPlugin, getResource, getServer, getTextResource, isEnabled, isNaggable, onCommand, onLoad, onTabComplete, reloadConfig, saveConfig, saveDefaultConfig, saveResource, setEnabled, setNaggable, toString</code></div>
+<code>getClassLoader, getCommand, getConfig, getDataFolder, getDefaultBiomeProvider, getDefaultWorldGenerator, getDescription, getFile, getLogger, getPlugin, getPluginLoader, getPluginMeta, getProvidingPlugin, getResource, getServer, getTextResource, init, init, isEnabled, isNaggable, onCommand, onLoad, onTabComplete, reloadConfig, saveConfig, saveDefaultConfig, saveResource, setEnabled, setNaggable, toString</code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.bukkit.plugin.PluginBase">Methods inherited from class&nbsp;org.bukkit.plugin.PluginBase</h3>
 <code>equals, getName, hashCode</code></div>
@@ -229,6 +238,13 @@ loadScripts(document, 'script');</script>
 <h3>commandManagerProvider</h3>
 <div class="member-signature"><span class="annotations">@Inject
 </span><span class="modifiers">protected</span>&nbsp;<span class="return-type">jakarta.inject.Provider&lt;<a href="../command/MVCommandManager.html" title="class in org.mvplugins.multiverse.core.command">MVCommandManager</a>&gt;</span>&nbsp;<span class="element-name">commandManagerProvider</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="dynamicListenerRegistrationProvider">
+<h3>dynamicListenerRegistrationProvider</h3>
+<div class="member-signature"><span class="annotations">@Inject
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">jakarta.inject.Provider&lt;<a href="../dynamiclistener/DynamicListenerRegistration.html" title="class in org.mvplugins.multiverse.core.dynamiclistener">DynamicListenerRegistration</a>&gt;</span>&nbsp;<span class="element-name">dynamicListenerRegistrationProvider</span></div>
 </section>
 </li>
 </ul>
@@ -325,8 +341,20 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="registerEvents(java.lang.Class)">
 <h3>registerEvents</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">registerEvents</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.bukkit.event.Listener&gt;&nbsp;listenerClass)</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="5.0.0",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+@ScheduledForRemoval(inVersion="6.0.0")
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">registerEvents</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends org.bukkit.event.Listener&gt;&nbsp;listenerClass)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#registerDynamicListeners(java.lang.Class)"><code>registerDynamicListeners(Class)</code></a> with the new DynamicListener API.</div>
+</div>
 <div class="block">Function to Register all the Events needed.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="registerDynamicListeners(java.lang.Class)">
+<h3>registerDynamicListeners</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">registerDynamicListeners</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;? extends <a href="../dynamiclistener/DynamicListener.html" title="interface in org.mvplugins.multiverse.core.dynamiclistener">DynamicListener</a>&gt;&nbsp;listenerClass)</span></div>
 </section>
 </li>
 <li>
