@@ -8,6 +8,7 @@ import io.vavr.control.Option;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -157,6 +158,15 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
      */
     public Option<List<Player>> getPlayers() {
         return getBukkitWorld().map(World::getPlayers);
+    }
+
+    /**
+     * Get the world border configuration for this world.
+     *
+     * @return World border configuration
+     */
+    public Option<WorldBorder> getWorldBorder() {
+        return getBukkitWorld().map(World::getWorldBorder);
     }
 
     /**
