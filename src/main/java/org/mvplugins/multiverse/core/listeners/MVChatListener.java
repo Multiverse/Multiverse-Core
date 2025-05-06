@@ -72,7 +72,7 @@ final class MVChatListener implements CoreListener {
      * @param event The {@link AsyncPlayerChatEvent}.
      */
     @EventMethod
-    @SkipIfEventExist("io.papermc.paper.event.player.AsyncChatDecorateEvent")
+    @SkipIfEventExist("io.papermc.paper.event.player.AsyncChatEvent")
     @IgnoreIfCancelled
     void asyncPlayerChat(AsyncPlayerChatEvent event) {
         // Check whether the Server is set to prefix the chat with the World name.
