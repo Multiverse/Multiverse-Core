@@ -1,6 +1,7 @@
 world:
   adjust-spawn: true
   alias: newalias
+  allow-advancement-grant: true
   allow-flight: false
   allow-weather: true
   anchor-respawn: true
@@ -38,6 +39,7 @@ world:
 world_nether:
   adjust-spawn: false
   alias: ''
+  allow-advancement-grant: true
   allow-flight: false
   allow-weather: true
   anchor-respawn: true

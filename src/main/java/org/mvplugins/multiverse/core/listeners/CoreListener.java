@@ -5,6 +5,7 @@ import org.mvplugins.multiverse.core.dynamiclistener.DynamicListener;
 
 @Contract
 public sealed interface CoreListener extends DynamicListener permits
+        MVAdvancementListener,
         MVChatListener,
         MVEntityListener,
         MVPlayerListener,

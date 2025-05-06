@@ -1,6 +1,7 @@
 world_nether:
   adjust-spawn: false
   alias: ''
+  allow-advancement-grant: true
   allow-flight: false
   allow-weather: true
   anchor-respawn: true
