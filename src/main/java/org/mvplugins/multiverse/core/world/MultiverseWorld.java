@@ -141,6 +141,25 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
+     * Whether player's actions in this world will award them the relevant advancements.
+     *
+     * @return True if advancements should be granted, false if not
+     */
+    public boolean isAllowAdvancementGrant() {
+        return worldConfig.isAllowAdvancementGrant();
+    }
+
+    /**
+     * Sets whether player's actions in this world will award them the relevant advancements.
+     *
+     * @param allowAdvancementGrant True if advancements should be granted, false if not
+     * @return Result of setting property
+     */
+    public Try<Void> setAllowAdvancementGrant(boolean allowAdvancementGrant) {
+        return worldConfig.setAllowAdvancementGrant(allowAdvancementGrant);
+    }
+
+    /**
      * Whether or not players are allowed to fly in this world.
      *
      * @return True if players allowed to fly in this world.

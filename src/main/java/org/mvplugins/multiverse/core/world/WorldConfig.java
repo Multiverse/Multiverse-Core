@@ -160,6 +160,14 @@ final class WorldConfig {
         return configHandle.set(configNodes.alias, alias);
     }
 
+    boolean isAllowAdvancementGrant() {
+        return configHandle.get(configNodes.allowAdvancementGrant);
+    }
+
+    Try<Void> setAllowAdvancementGrant(boolean allowAdvancementGrant) {
+        return configHandle.set(configNodes.allowAdvancementGrant, allowAdvancementGrant);
+    }
+
     boolean isAllowFlight() {
         return configHandle.get(configNodes.allowFlight);
     }

@@ -85,6 +85,9 @@ final class WorldConfigNodes {
                 world.updateColourlessAlias();
             }));
 
+    final ConfigNode<Boolean> allowAdvancementGrant = node(ConfigNode.builder("allow-advancement-grant", Boolean.class)
+            .defaultValue(true));
+
     final ConfigNode<Boolean> allowFlight = node(ConfigNode.builder("allow-flight", Boolean.class)
             .defaultValue(false)
             .onSetValue((oldValue, newValue) -> {
