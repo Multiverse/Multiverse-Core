@@ -1,6 +1,7 @@
 world_the_end:
   adjust-spawn: false
   alias: '&aworld the end'
+  allow-advancement-grant: true
   allow-flight: true
   allow-weather: true
   anchor-respawn: true
@@ -48,6 +49,7 @@ world_the_end:
 world:
   adjust-spawn: true
   alias: ''
+  allow-advancement-grant: true
   allow-flight: false
   allow-weather: true
   anchor-respawn: true

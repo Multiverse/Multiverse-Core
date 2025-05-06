@@ -1,6 +1,7 @@
 world:
   adjust-spawn: false
   alias: 1234 # should be parsed as string and not integer
+  allow-advancement-grant: true
   allow-flight: false
   allow-weather: true
   anchor-respawn: true
@@ -46,6 +47,7 @@ world:
 world_nether:
   adjust-spawn: false
   alias: ''
+  allow-advancement-grant: true
   allow-flight: false
   allow-weather: true
   auto-heal: true
