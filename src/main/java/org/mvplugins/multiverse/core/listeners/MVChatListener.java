@@ -49,21 +49,21 @@ final class MVChatListener implements CoreListener {
                 ChatRenderer chatRenderer = getPrefixedChatRenderer(currentRenderer);
                 event.renderer(chatRenderer);
             }
-        };
-    }
 
-    private ChatRenderer getPrefixedChatRenderer(ChatRenderer currentRenderer) {
-        return (source, sourceDisplayName, message, viewer) ->
-                LegacyComponentSerializer.legacyAmpersand()
-                        .deserialize(config.getPrefixChatFormat())
-                        .replaceText(TextReplacementConfig.builder()
-                                .matchLiteral("%world%")
-                                .replacement(MVChatListener.this.getWorldName(source))
-                                .build())
-                        .replaceText(TextReplacementConfig.builder()
-                                .matchLiteral("%chat%")
-                                .replacement(currentRenderer.render(source, sourceDisplayName, message, viewer))
-                                .build());
+            private ChatRenderer getPrefixedChatRenderer(ChatRenderer currentRenderer) {
+                return (source, sourceDisplayName, message, viewer) ->
+                        LegacyComponentSerializer.legacyAmpersand()
+                                .deserialize(config.getPrefixChatFormat())
+                                .replaceText(TextReplacementConfig.builder()
+                                        .matchLiteral("%world%")
+                                        .replacement(MVChatListener.this.getWorldName(source))
+                                        .build())
+                                .replaceText(TextReplacementConfig.builder()
+                                        .matchLiteral("%chat%")
+                                        .replacement(currentRenderer.render(source, sourceDisplayName, message, viewer))
+                                        .build());
+            }
+        };
     }
 
     /**
