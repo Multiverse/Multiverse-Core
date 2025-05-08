@@ -5,10 +5,9 @@ import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.EventExecutor;
-import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
@@ -20,6 +19,7 @@ import org.mvplugins.multiverse.core.dynamiclistener.annotations.IgnoreIfCancell
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.SkipIfEventExist;
 import org.mvplugins.multiverse.core.utils.ReflectHelper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +30,12 @@ import java.util.Set;
  */
 @Service
 public final class DynamicListenerRegistration {
+
+    private static final boolean hasEventExecutorCreate;
+
+    static {
+        hasEventExecutorCreate = ReflectHelper.getMethod(EventExecutor.class, "create", Method.class, Class.class) != null;
+    }
 
     private final EventPriorityMapper eventPriorityMapper;
 
@@ -69,7 +75,7 @@ public final class DynamicListenerRegistration {
 
         Class<? extends Event> eventClass = parameterTypes[0].asSubclass(Event.class);
         method.setAccessible(true);
-        EventExecutor eventExecutor = EventExecutor.create(method, eventClass);
+        EventExecutor eventExecutor = createEventExecutor(method, eventClass);
         EventPriority priority = getDynamicEventPriority(method);
         boolean ignoreCancelled = isIgnoreIfCancelled(method);
 
@@ -141,5 +147,23 @@ public final class DynamicListenerRegistration {
 
     private boolean isIgnoreIfCancelled(Method method) {
         return method.isAnnotationPresent(IgnoreIfCancelled.class);
+    }
+
+    private EventExecutor createEventExecutor(Method method, Class<? extends Event> eventClass) {
+        if (hasEventExecutorCreate) {
+            return EventExecutor.create(method, eventClass);
+        }
+        return (listener, event) -> {
+            try {
+                if (!eventClass.isAssignableFrom(event.getClass())) {
+                    return;
+                }
+                method.invoke(listener, event);
+            } catch (InvocationTargetException ex) {
+                throw new EventException(ex.getCause());
+            } catch (Throwable t) {
+                throw new EventException(t);
+            }
+        };
     }
 }
