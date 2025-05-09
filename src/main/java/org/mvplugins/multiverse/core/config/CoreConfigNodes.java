@@ -223,8 +223,8 @@ final class CoreConfigNodes {
             .build());
 
     final ConfigNode<Boolean> firstSpawnOverride = node(ConfigNode.builder("spawn.first-spawn-override", Boolean.class)
-            .comment("Sets whether Multiverse will override the first spawn location of a world.")
-            .comment("If enabled, Multiverse will set the first spawn location of a world to the spawn location of the world.")
+            .comment("Sets whether Multiverse will override the location where the player spawns when they join the server")
+            .comment("for the first time. For fixed spawn location on every login, see the `join-destination` option below.")
             .comment("If disabled, it will default to server.properties settings.")
             .defaultValue(false)
             .name("first-spawn-override")
@@ -232,7 +232,7 @@ final class CoreConfigNodes {
 
     final ConfigNode<String> firstSpawnLocation = node(ConfigNode.builder("spawn.first-spawn-location", String.class)
             .comment("")
-            .comment("Sets the world that Multiverse will use as the location for players that first join the server.")
+            .comment("Sets the world that Multiverse will use as the location for players that join the server for the first time.")
             .comment("This only applies if first-spawn-override is set to true.")
             .defaultValue("")
             .name("first-spawn-location")
@@ -241,14 +241,15 @@ final class CoreConfigNodes {
 
     final ConfigNode<Boolean> enableJoinDestination = node(ConfigNode.builder("spawn.enable-join-destination", Boolean.class)
             .comment("")
-            .comment("Enables join-destination below.")
+            .comment("Enables setting of a fixed location for players to spawn in when they join the server every time.")
+            .comment("See `join-destination` option below as well.")
             .defaultValue(false)
             .name("enable-join-destination")
             .build());
 
     final ConfigNode<String> joinDestination = node(ConfigNode.builder("spawn.join-destination", String.class)
             .comment("")
-            .comment("Sets the destination that Multiverse will use to spawn players on every login")
+            .comment("Sets the destination that Multiverse will use to spawn players on every login.")
             .comment("Set the above enable-join-destination to false to disable")
             .defaultValue("")
             .name("join-destination")
