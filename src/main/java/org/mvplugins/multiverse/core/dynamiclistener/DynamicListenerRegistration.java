@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.dynamiclistener;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -54,13 +55,16 @@ public final class DynamicListenerRegistration {
         Set<Method> listenerMethods = new HashSet<>();
         listenerMethods.addAll(List.of(listener.getClass().getMethods()));
         listenerMethods.addAll(List.of(listener.getClass().getDeclaredMethods()));
-        listenerMethods.forEach(method -> {
+        listenerMethods.forEach(method -> Try.run(() ->{
             if (method.isAnnotationPresent(EventMethod.class)) {
                 registerAsEventMethod(listener, plugin, method);
             } else if (method.isAnnotationPresent(EventClass.class)) {
                 registerAsEventClass(listener, plugin, method);
             }
-        });
+        }).onFailure(e -> {
+            Logging.severe("Failed to register event method %s in %s", method.getName(), listener.getClass().getName());
+            e.printStackTrace();
+        }));
     }
 
     private void registerAsEventMethod(DynamicListener listener, Plugin plugin, Method method) {
