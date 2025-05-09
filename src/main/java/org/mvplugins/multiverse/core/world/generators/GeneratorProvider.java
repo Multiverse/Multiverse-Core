@@ -119,6 +119,7 @@ public final class GeneratorProvider implements Listener {
         var registeredGenerator = generatorPlugins.get(generatorPlugin.getPluginName());
         if (registeredGenerator == null || registeredGenerator instanceof SimpleGeneratorPlugin) {
             generatorPlugins.put(generatorPlugin.getPluginName(), generatorPlugin);
+            Logging.finer("Registered generator plugin: %s", generatorPlugin.getPluginName());
             return true;
         }
         Logging.severe("Generator plugin with name %s is already registered!", generatorPlugin.getPluginName());
@@ -185,6 +186,15 @@ public final class GeneratorProvider implements Listener {
         }
         suggestions.addAll(generatorPlugin.suggestIds(genSpilt[1]).stream().map(id -> genSpilt[0] + ":" + id).toList());
         return suggestions;
+    }
+
+    /**
+     * Gets all registered generator plugins.
+     *
+     * @return A collection of registered generator plugins.
+     */
+    public Collection<GeneratorPlugin> getRegisteredGeneratorPlugins() {
+        return generatorPlugins.values();
     }
 
     /**

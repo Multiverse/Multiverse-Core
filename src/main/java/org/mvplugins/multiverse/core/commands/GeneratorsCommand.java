@@ -2,7 +2,6 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.List;
 
-import co.aikar.commands.MessageType;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
@@ -17,7 +16,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
@@ -25,6 +23,8 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.StringFormatter;
+import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
 /**
@@ -42,12 +42,12 @@ class GeneratorsCommand extends CoreCommand {
         this.flags = flags;
     }
 
-    @Subcommand("generators|gens")
+    @Subcommand("generators list")
     @CommandPermission("multiverse.core.generator")
     @CommandCompletion("@flags:groupName=" + PageFilterFlags.NAME)
-    @Syntax("")
+    @Syntax("[--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.generators.description}")
-    void onGamerulesCommand(
+    void onGeneratorsListCommand(
             @NotNull MVCommandIssuer issuer,
 
             @Optional
@@ -75,6 +75,22 @@ class GeneratorsCommand extends CoreCommand {
                 .send(issuer);
     }
 
+    @Subcommand("generators info")
+    @CommandPermission("multiverse.core.generator")
+    @CommandCompletion("@generatorplugins")
+    @Syntax("<generator>")
+    void onGeneratorsInfoCommand(
+            @NotNull MVCommandIssuer issuer,
+
+            @Syntax("<generator>")
+            GeneratorPlugin generatorPlugin
+    ) {
+        issuer.sendMessage(ChatColor.RESET + "Generator Plugin: " + generatorPlugin.getPluginName());
+        issuer.sendMessage(ChatColor.RESET + "Example usages: ");
+        issuer.sendMessage(ChatColor.RESET + StringFormatter.join(generatorPlugin.getExampleUsages(), "\n"));
+        issuer.sendMessage(ChatColor.RESET + "Link to more info: " + generatorPlugin.getInfoLink());
+    }
+
     @Service
     private static final class LegacyAlias extends GeneratorsCommand implements LegacyAliasCommand {
         @Inject
@@ -84,8 +100,8 @@ class GeneratorsCommand extends CoreCommand {
 
         @Override
         @CommandAlias("mvgenerators|mvgens")
-        void onGamerulesCommand(@NotNull MVCommandIssuer issuer, String[] flags) {
-            super.onGamerulesCommand(issuer, flags);
+        void onGeneratorsListCommand(@NotNull MVCommandIssuer issuer, String[] flags) {
+            super.onGeneratorsListCommand(issuer, flags);
         }
     }
 }

@@ -32,6 +32,8 @@ import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
+import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
 @Service
 public class MVCommandContexts extends PaperCommandContexts {
@@ -41,6 +43,7 @@ public class MVCommandContexts extends PaperCommandContexts {
     private final WorldManager worldManager;
     private final CoreConfig config;
     private final AnchorManager anchorManager;
+    private final GeneratorProvider generatorProvider;
 
     @Inject
     MVCommandContexts(
@@ -48,7 +51,8 @@ public class MVCommandContexts extends PaperCommandContexts {
             DestinationsProvider destinationsProvider,
             WorldManager worldManager,
             CoreConfig config,
-            AnchorManager anchorManager
+            AnchorManager anchorManager,
+            GeneratorProvider generatorProvider
     ) {
         super(mvCommandManager);
         this.mvCommandManager = mvCommandManager;
@@ -56,6 +60,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         this.worldManager = worldManager;
         this.config = config;
         this.anchorManager = anchorManager;
+        this.generatorProvider = generatorProvider;
 
         registerIssuerOnlyContext(BukkitCommandIssuer.class, BukkitCommandExecutionContext::getIssuer);
         registerIssuerOnlyContext(MVCommandIssuer.class, this::parseMVCommandIssuer);
@@ -63,6 +68,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(DestinationInstance.class, this::parseDestination);
         registerContext(GameRule.class, this::parseGameRule);
         registerContext(GameRuleValue.class, this::parseGameRuleValue);
+        registerContext(GeneratorPlugin.class, this::parseGeneratorPlugin);
         registerIssuerAwareContext(LoadedMultiverseWorld.class, this::parseLoadedMultiverseWorld);
         registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseLoadedMultiverseWorldArray);
         registerIssuerAwareContext(MultiverseWorld.class, this::parseMultiverseWorld);
@@ -133,6 +139,14 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return new GameRuleValue(resolvedValue);
+    }
+
+    private GeneratorPlugin parseGeneratorPlugin(BukkitCommandExecutionContext context) {
+        GeneratorPlugin generatorPlugin = generatorProvider.getGeneratorPlugin(context.popFirstArg());
+        if (generatorPlugin == null) {
+            throw new InvalidCommandArgument("Invalid generator plugin: " + context.getFirstArg());
+        }
+        return generatorPlugin;
     }
 
     private LoadedMultiverseWorld parseLoadedMultiverseWorld(BukkitCommandExecutionContext context) {
