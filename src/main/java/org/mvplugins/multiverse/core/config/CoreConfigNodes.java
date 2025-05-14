@@ -327,7 +327,7 @@ final class CoreConfigNodes {
 
     final ConfigNode<Boolean> enableChatPrefix = node(ConfigNode.builder("messaging.enable-chat-prefix", Boolean.class)
             .comment("This config option defines whether or not Multiverse should prefix the chat with the world name.")
-            .comment("This only applies if use-custom-portal-search is set to true.")
+            .comment("Ensure this is false if you want another plugin to handle chat formatting.")
             .defaultValue(false)
             .name("enable-chat-prefix")
             .build());
@@ -364,7 +364,6 @@ final class CoreConfigNodes {
             .defaultValue(true)
             .name("per-player-locale")
             .onSetValue((oldValue, newValue) -> {
-                // autoDetectFromClient will be done by MVLocalesListener instead
                 commandManager.get().usePerIssuerLocale(newValue);
             })
             .build());
