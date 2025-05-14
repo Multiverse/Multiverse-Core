@@ -35,6 +35,9 @@ public final class StringFormatter {
     }
 
     public static @NotNull String join(Collection list, String separator) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
         return list.stream().map(String::valueOf).collect(Collectors.joining(separator)).toString();
     }
 
@@ -48,7 +51,7 @@ public final class StringFormatter {
      * @return the concatenated string
      */
     public static @NotNull String join(List<String> list, String separator, String lastSeparator) {
-        if (list.isEmpty()) {
+        if (list == null || list.isEmpty()) {
             return "";
         }
 

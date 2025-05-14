@@ -45,6 +45,8 @@ import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
+import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
 import static org.mvplugins.multiverse.core.utils.StringFormatter.addonToCommaSeperated;
 
@@ -57,6 +59,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private final CoreConfig config;
     private final CorePermissionsChecker corePermissionsChecker;
     private final AnchorManager anchorManager;
+    private final GeneratorProvider generatorProvider;
 
     @Inject
     MVCommandCompletions(
@@ -65,7 +68,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             @NotNull DestinationsProvider destinationsProvider,
             @NotNull CoreConfig config,
             @NotNull CorePermissionsChecker corePermissionsChecker,
-            @NotNull AnchorManager anchorManager) {
+            @NotNull AnchorManager anchorManager,
+            @NotNull GeneratorProvider generatorProvider
+    ) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
         this.worldManager = worldManager;
@@ -73,6 +78,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.config = config;
         this.corePermissionsChecker = corePermissionsChecker;
         this.anchorManager = anchorManager;
+        this.generatorProvider = generatorProvider;
 
         registerAsyncCompletion("anchornames", this::suggestAnchorNames);
         registerAsyncCompletion("commands", this::suggestCommands);
@@ -83,6 +89,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules);
         registerAsyncCompletion("gamerulesvalues", this::suggestGamerulesValues);
+        registerAsyncCompletion("generatorplugins", this::suggestGeneratorPlugins);
         registerStaticCompletion("materials", suggestEnums(Material.class));
         registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames());
         registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
@@ -230,6 +237,12 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                .mapTry(gamerule -> Option.of(DefaultSuggesterProvider.getDefaultSuggester(gamerule.getType()))
                        .map(s -> s.suggest(context.getInput())).getOrElse(Collections.emptyList()))
                .getOrElse(Collections.emptyList());
+    }
+
+    private Collection<String> suggestGeneratorPlugins(BukkitCommandCompletionContext context) {
+        return generatorProvider.getRegisteredGeneratorPlugins().stream()
+                .map(GeneratorPlugin::getPluginName)
+                .toList();
     }
 
     private Collection<String> suggestMVConfigValues(BukkitCommandCompletionContext context) {
