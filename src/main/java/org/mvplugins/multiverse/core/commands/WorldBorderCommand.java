@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.commands;
 
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Flags;
 import co.aikar.commands.annotation.Optional;
@@ -19,6 +20,7 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.re
 
 @Service
 @Subcommand("worldborder")
+@CommandPermission("multiverse.core.worldborder")
 final class WorldBorderCommand extends CoreCommand {
 
     @Subcommand("add")
