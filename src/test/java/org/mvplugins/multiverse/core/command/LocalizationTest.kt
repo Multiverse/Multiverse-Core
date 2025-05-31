@@ -330,7 +330,7 @@ class LocalizationTest : TestWithMockBukkit() {
         fun `Change default locale to chinese without per player locale should get chinese message`() {
             config.perPlayerLocale = false
             config.defaultLocale = Locale.CHINESE
-            assertEquals("ab!", Message.of(
+            assertEquals("成功！", Message.of(
                 MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
         }
 
@@ -346,7 +346,7 @@ class LocalizationTest : TestWithMockBukkit() {
         fun `PerPlayerLocale enabled - Player with chinese locale should get chinese message`() {
             config.perPlayerLocale = true
             player.setLocale(Locale.CHINESE)
-            assertEquals("ab!", Message.of(
+            assertEquals("成功！", Message.of(
                 MVCorei18n.GENERIC_SUCCESS, "").formatted(locales, issuer))
         }
 
