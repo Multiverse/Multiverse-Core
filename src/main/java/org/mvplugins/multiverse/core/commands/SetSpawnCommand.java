@@ -7,7 +7,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +17,8 @@ import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.context.PlayerLocation;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.command.flags.UnsafeFlags;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -56,22 +57,25 @@ class SetSpawnCommand extends CoreCommand {
         Location location = playerLocation.value();
 
         if (!parsedFlags.hasFlag(flags.unsafe) && !blockSafety.canSpawnAtLocationSafely(location)) {
-            issuer.sendError("The new spawn location is unsafe! If this is intentional, you can disable safety checks with --unsafe flag.");
+            issuer.sendMessage(MVCorei18n.SETSPAWN_UNSAFE);
             return;
         }
 
         worldManager.getLoadedWorld(location.getWorld())
                 .peek(mvWorld -> mvWorld.setSpawnLocation(location)
-                        .onSuccess(ignore -> issuer.sendMessage(
-                                "Successfully set spawn in " + mvWorld.getName() + " to "
-                                        + prettyLocation(mvWorld.getSpawnLocation())))
-                        .onFailure(e -> issuer.sendMessage(e.getLocalizedMessage())))
-                .onEmpty(() -> issuer.sendMessage("That world is not loaded or does not exist!"));
+                        .onSuccess(ignore -> issuer.sendMessage(MVCorei18n.SETSPAWN_SUCCESS,
+                                Replace.WORLD.with(mvWorld.getName()),
+                                Replace.LOCATION.with(prettyLocation(location))))
+                        .onFailure(e -> issuer.sendMessage(MVCorei18n.SETSPAWN_FAILED,
+                                Replace.WORLD.with(mvWorld.getName()),
+                                Replace.ERROR.with(e))))
+                .onEmpty(() -> issuer.sendMessage(MVCorei18n.SETSPAWN_NOTMVWORLD,
+                        Replace.WORLD.with(location.getWorld().getName())));
     }
 
     private String prettyLocation(Location location) {
-        return location.getX() + ", " + location.getY() + ", " + location.getZ() + ". pitch:" + location.getPitch()
-                + ", yaw:" + location.getYaw();
+        return "%.2f, %.2f, %.2f, pitch:%.2f, yaw:%.2f"
+                .formatted(location.getX(), location.getY(), location.getZ(), location.getPitch(), location.getYaw());
     }
 
     @Service
