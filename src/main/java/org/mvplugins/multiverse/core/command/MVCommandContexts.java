@@ -7,11 +7,18 @@ import co.aikar.commands.ACFUtil;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.MinecraftMessageKeys;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.contexts.ContextResolver;
 import com.google.common.base.Strings;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +27,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
 import org.mvplugins.multiverse.core.command.context.GameRuleValue;
+import org.mvplugins.multiverse.core.command.context.PlayerLocation;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -76,6 +84,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(MultiverseAnchor.class, this::parseMultiverseAnchor);
         registerIssuerAwareContext(Player.class, this::parsePlayer);
         registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
+        registerIssuerAwareContext(PlayerLocation.class, this::parsePlayerLocation);
         registerContext(SpawnCategory[].class, this::parseSpawnCategories);
     }
 
@@ -461,6 +470,91 @@ public class MVCommandContexts extends PaperCommandContexts {
             return null;
         }
         throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
+    }
+
+    private PlayerLocation parsePlayerLocation(BukkitCommandExecutionContext context) {
+        Try<Location> location = Try.of(() -> parseLocation(context.getFirstArg(), context.getSender()));
+
+        if (location.isSuccess()) {
+            context.popFirstArg();
+            return new PlayerLocation(location.get());
+        }
+        if (context.getPlayer() != null) {
+            return new PlayerLocation(context.getPlayer().getLocation());
+        }
+        if (context.getFirstArg() == null) {
+            throw new InvalidCommandArgument("You must specify a world location when using this command in console.");
+        }
+        if (location.getCause() instanceof InvalidCommandArgument) {
+            throw (InvalidCommandArgument)location.getCause();
+        }
+        throw new RuntimeException(location.getCause());
+    }
+
+    // copied from ACF
+    private Location parseLocation(String input, CommandSender sender) {
+        String[] split = REPatterns.COLON.split(input, 2);
+        if (split.length == 0) {
+            throw new InvalidCommandArgument(true);
+        } else if (split.length < 2 && !(sender instanceof Player) && !(sender instanceof BlockCommandSender)) {
+            throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_WORLD, new String[0]);
+        } else {
+            Location sourceLoc = null;
+            String world;
+            String rest;
+            if (split.length == 2) {
+                world = split[0];
+                rest = split[1];
+            } else if (sender instanceof Player) {
+                sourceLoc = ((Player)sender).getLocation();
+                world = sourceLoc.getWorld().getName();
+                rest = split[0];
+            } else {
+                if (!(sender instanceof BlockCommandSender)) {
+                    throw new InvalidCommandArgument(true);
+                }
+
+                sourceLoc = ((BlockCommandSender)sender).getBlock().getLocation();
+                world = sourceLoc.getWorld().getName();
+                rest = split[0];
+            }
+
+            boolean rel = rest.startsWith("~");
+            split = REPatterns.COMMA.split(rel ? rest.substring(1) : rest);
+            if (split.length < 3) {
+                throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_XYZ, new String[0]);
+            } else {
+                Double x = ACFUtil.parseDouble(split[0], rel ? (double)0.0F : null);
+                Double y = ACFUtil.parseDouble(split[1], rel ? (double)0.0F : null);
+                Double z = ACFUtil.parseDouble(split[2], rel ? (double)0.0F : null);
+                if (sourceLoc != null && rel) {
+                    x = x + sourceLoc.getX();
+                    y = y + sourceLoc.getY();
+                    z = z + sourceLoc.getZ();
+                } else if (rel) {
+                    throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_CONSOLE_NOT_RELATIVE, new String[0]);
+                }
+
+                if (x != null && y != null && z != null) {
+                    World worldObj = Bukkit.getWorld(world);
+                    if (worldObj == null) {
+                        throw new InvalidCommandArgument(MinecraftMessageKeys.INVALID_WORLD, new String[0]);
+                    } else if (split.length >= 5) {
+                        Float yaw = ACFUtil.parseFloat(split[3]);
+                        Float pitch = ACFUtil.parseFloat(split[4]);
+                        if (pitch != null && yaw != null) {
+                            return new Location(worldObj, x, y, z, yaw, pitch);
+                        } else {
+                            throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_XYZ, new String[0]);
+                        }
+                    } else {
+                        return new Location(worldObj, x, y, z);
+                    }
+                } else {
+                    throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_XYZ, new String[0]);
+                }
+            }
+        }
     }
 
     private SpawnCategory[] parseSpawnCategories(BukkitCommandExecutionContext context) {
