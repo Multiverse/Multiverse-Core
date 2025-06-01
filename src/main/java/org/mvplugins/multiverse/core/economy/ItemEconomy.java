@@ -45,7 +45,7 @@ final class ItemEconomy {
 
     void deposit(Player player, double amount, Material currency) {
         if (MVEconomist.isItemCurrency(currency)) {
-            giveItem(player, -augmentAmount(amount), currency);
+            giveItem(player, augmentAmount(amount), currency);
         }
     }
 
