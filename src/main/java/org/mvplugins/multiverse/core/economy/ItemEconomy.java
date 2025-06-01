@@ -3,13 +3,15 @@ package org.mvplugins.multiverse.core.economy;
 import java.util.HashMap;
 
 import jakarta.inject.Inject;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 final class ItemEconomy {
@@ -83,12 +85,11 @@ final class ItemEconomy {
 
     void showReceipt(Player player, int price, Material item) {
         if (price > 0D) {
-            player.sendMessage(String.format("%s%s%s %s",
-                    ChatColor.WHITE, "You have been charged", ChatColor.GREEN, getFormattedPrice(price, item)));
+            commandManager.getCommandIssuer(player).sendInfo(MVCorei18n.ECONOMY_ITEM_WITHDRAW,
+                    replace("{price}").with(getFormattedPrice(price, item)));
         } else if (price < 0D) {
-            player.sendMessage(String.format("%s%s%s %s",
-                    ChatColor.DARK_GREEN, getFormattedPrice(price, item),
-                    ChatColor.WHITE, "has been added to your inventory."));
+            commandManager.getCommandIssuer(player).sendInfo(MVCorei18n.ECONOMY_ITEM_DEPOSIT,
+                    replace("{price}").with(getFormattedPrice(price, item)));
         }
     }
 

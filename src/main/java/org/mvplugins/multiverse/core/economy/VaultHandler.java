@@ -3,7 +3,6 @@ package org.mvplugins.multiverse.core.economy;
 import com.dumptruckman.minecraft.util.Logging;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +10,11 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * A class we use to interface with Vault when it is present.
@@ -18,8 +22,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 final class VaultHandler implements Listener {
 
     private Economy economy;
+    private final MVCommandManager commandManager;
 
-    VaultHandler(final Plugin plugin) {
+    VaultHandler(final Plugin plugin, @NotNull MVCommandManager commandManager) {
+        this.commandManager = commandManager;
         Bukkit.getPluginManager().registerEvents(new VaultListener(), plugin);
         setupVaultEconomy();
     }
@@ -64,11 +70,11 @@ final class VaultHandler implements Listener {
 
     void showReceipt(Player player, double price) {
         if (price > 0D) {
-            player.sendMessage(String.format("%sYou have been charged %s%s",
-                    ChatColor.WHITE, ChatColor.GREEN, economy.format(price)));
+            commandManager.getCommandIssuer(player).sendInfo(MVCorei18n.ECONOMY_VAULT_WITHDRAW,
+                    replace("{price}").with(economy.format(price)));
         } else if (price < 0D) {
-            player.sendMessage(String.format("%s%s%s has been added to your account balance.",
-                    ChatColor.DARK_GREEN, economy.format(price), ChatColor.WHITE)); //$NON-NLS-1$
+            commandManager.getCommandIssuer(player).sendInfo(MVCorei18n.ECONOMY_VAULT_DEPOSIT,
+                    replace("{price}").with(economy.format(price)));
         }
     }
 
