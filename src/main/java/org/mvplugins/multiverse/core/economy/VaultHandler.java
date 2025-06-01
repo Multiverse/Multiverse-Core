@@ -3,6 +3,8 @@ package org.mvplugins.multiverse.core.economy;
 import com.dumptruckman.minecraft.util.Logging;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
@@ -58,6 +60,16 @@ final class VaultHandler implements Listener {
      */
     public Economy getEconomy() {
         return economy;
+    }
+
+    void showReceipt(Player player, double price) {
+        if (price > 0D) {
+            player.sendMessage(String.format("%sYou have been charged %s%s",
+                    ChatColor.WHITE, ChatColor.GREEN, economy.format(price)));
+        } else if (price < 0D) {
+            player.sendMessage(String.format("%s%s%s has been added to your account balance.",
+                    ChatColor.DARK_GREEN, economy.format(price), ChatColor.WHITE)); //$NON-NLS-1$
+        }
     }
 
     /**

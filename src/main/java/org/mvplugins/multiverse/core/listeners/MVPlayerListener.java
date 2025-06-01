@@ -318,7 +318,6 @@ final class MVPlayerListener implements CoreListener {
                 .onSuccessReason(EntryFeeResult.Success.class, reason -> {
                     if (reason == EntryFeeResult.Success.ENOUGH_MONEY) {
                         economist.payEntryFee((Player) finalTeleporter, toWorld);
-                        // Send payment receipt
                     }
                 })
                 .onFailure(results -> {

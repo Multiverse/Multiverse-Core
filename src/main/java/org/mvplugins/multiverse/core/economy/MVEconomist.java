@@ -153,6 +153,7 @@ public final class MVEconomist {
     public void withdraw(Player player, double amount, @Nullable Material currency) {
         if (isUsingVault(currency)) {
             getVaultHandler().getEconomy().withdrawPlayer(player, amount);
+            getVaultHandler().showReceipt(player, amount);
         } else {
             itemEconomy.withdraw(player, amount, currency);
         }
