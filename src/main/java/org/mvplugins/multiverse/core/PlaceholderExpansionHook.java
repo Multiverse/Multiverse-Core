@@ -179,7 +179,22 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return String.valueOf(world.getSeed());
             }
             case "time" -> {
-                return String.valueOf(world.getBukkitWorld().map(World::getTime).getOrElse(0L));
+                String timeFormat = !placeholderParams.isEmpty() ? placeholderParams.getFirst() : "";
+                long time = world.getBukkitWorld().map(World::getTime).getOrElse(0L);
+                switch (timeFormat) {
+                    case "" -> {
+                        return String.valueOf(time);
+                    }
+                    case "12h" -> {
+                        return MinecraftTimeFormatter.format12h(time);
+                    }
+                    case "24h" -> {
+                        return MinecraftTimeFormatter.format24h(time);
+                    }
+                    default -> {
+                        return MinecraftTimeFormatter.formatTime(time, timeFormat);
+                    }
+                }
             }
             case "type" -> {
                 return world.getBukkitWorld().map(World::getWorldType).map(Enum::name).getOrElse("null");

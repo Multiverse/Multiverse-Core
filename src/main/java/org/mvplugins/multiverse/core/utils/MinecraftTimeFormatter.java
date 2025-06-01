@@ -1,0 +1,63 @@
+package org.mvplugins.multiverse.core.utils;
+
+import io.vavr.control.Try;
+
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+/**
+ * Utility class for formatting Minecraft time to real-world time format.
+ *
+ * @since 5.1
+ */
+public final class MinecraftTimeFormatter {
+
+    /**
+     * Formats Minecraft time to 12-hour format.
+     *
+     * @param time The Minecraft time to format.
+     *
+     * @since 5.1
+     */
+    public static String format12h(long time) {
+        return formatTime(time, "hh:mm:ss a");
+    }
+
+    /**
+     * Formats Minecraft time to 24-hour format.
+     *
+     * @param time The Minecraft time to format.
+     *
+     * @since 5.1
+     */
+    public static String format24h(long time) {
+        return formatTime(time, "HH:mm:ss");
+    }
+
+    /**
+     * Formats Minecraft time to the specified format.
+     * See <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">DateTimeFormatter documentation</a>
+     * for available patterns.
+     *
+     * @param time   The Minecraft time to format.
+     * @param format The format string for the time.
+     *
+     * @since 5.1
+     */
+    public static String formatTime(long time, String format) {
+        // Convert Minecraft time to real-world time
+        long realTime = (time * 20) / 1000L;  // Minecraft ticks to seconds
+
+        // Convert seconds to LocalTime
+        LocalTime localTime = LocalTime.ofSecondOfDay(realTime);
+
+        return Try.of(() -> DateTimeFormatter.ofPattern(format))
+                .map(localTime::format)
+                .getOrElse("invalid time format: " + format);
+    }
+
+    private MinecraftTimeFormatter() {
+        // No instantiation
+        throw new UnsupportedOperationException();
+    }
+}
