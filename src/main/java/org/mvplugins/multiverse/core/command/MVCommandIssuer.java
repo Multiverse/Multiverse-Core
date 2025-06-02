@@ -25,7 +25,7 @@ public class MVCommandIssuer extends BukkitCommandIssuer {
     }
 
     public void sendError(String message, MessageReplacement... replacements) {
-        sendMessage(MessageType.INFO, message, replacements);
+        sendMessage(MessageType.ERROR, message, replacements);
     }
 
     public void sendSyntax(String message, MessageReplacement... replacements) {
