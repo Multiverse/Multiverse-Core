@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class PlayerFinder {
 
+    private static final List<String> VANILLA_SELECTORS = List.of("@a", "@e", "@r", "@p", "@s");
+
     /**
      * Get a {@link Player} based on an identifier of name UUID or selector.
      *
@@ -80,6 +82,16 @@ public final class PlayerFinder {
             return playerResults;
         }
 
+        // TODO: Currently just assume entire string is a selector. Add support for comma seperated mixture of names, uuids and selectors
+        if (isSelector(playerIdentifiers)) {
+            Logging.finer("Using selector: %s", playerIdentifiers);
+            List<Player> targetPlayers = getMultiBySelector(playerIdentifiers, sender);
+            if (targetPlayers != null) {
+                playerResults.addAll(targetPlayers);
+            }
+            return playerResults;
+        }
+
         String[] playerIdentifierArray = REPatterns.COMMA.split(playerIdentifiers);
         for (String playerIdentifier : playerIdentifierArray) {
             Player targetPlayer = getByName(playerIdentifier);
@@ -98,6 +110,10 @@ public final class PlayerFinder {
             }
         }
         return playerResults;
+    }
+
+    private static boolean isSelector(@NotNull String playerIdentifier) {
+        return VANILLA_SELECTORS.stream().anyMatch(playerIdentifier::startsWith);
     }
 
     /**
