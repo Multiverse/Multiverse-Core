@@ -12,6 +12,10 @@ import java.time.format.DateTimeFormatter;
  */
 public final class MinecraftTimeFormatter {
 
+    private static final double TIME_MULTIPLIER = 3.6;
+    private static final long DAY_SECONDS = 24 * 60 * 60;
+    private static final long START_OFFSET = 6 * 60 * 60;
+
     /**
      * Formats Minecraft time to 12-hour format.
      *
@@ -46,7 +50,7 @@ public final class MinecraftTimeFormatter {
      */
     public static String formatTime(long time, String format) {
         // Convert Minecraft time to real-world time
-        long realTime = (time * 20) / 1000L;  // Minecraft ticks to seconds
+        long realTime = (long) ((time * TIME_MULTIPLIER) + START_OFFSET) % DAY_SECONDS;  // Minecraft ticks to seconds
 
         // Convert seconds to LocalTime
         LocalTime localTime = LocalTime.ofSecondOfDay(realTime);
