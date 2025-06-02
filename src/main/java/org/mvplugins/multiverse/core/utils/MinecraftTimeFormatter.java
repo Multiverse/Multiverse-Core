@@ -24,7 +24,7 @@ public final class MinecraftTimeFormatter {
      * @since 5.1
      */
     public static String format12h(long time) {
-        return formatTime(time, "hh:mm:ss a");
+        return formatTime(time, "hh:mm a");
     }
 
     /**
@@ -35,7 +35,7 @@ public final class MinecraftTimeFormatter {
      * @since 5.1
      */
     public static String format24h(long time) {
-        return formatTime(time, "HH:mm:ss");
+        return formatTime(time, "HH:mm");
     }
 
     /**
