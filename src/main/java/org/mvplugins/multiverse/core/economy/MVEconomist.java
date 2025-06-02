@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
@@ -22,8 +23,8 @@ public final class MVEconomist {
     private final ItemEconomy itemEconomy;
 
     @Inject
-    MVEconomist(MultiverseCore plugin, ItemEconomy itemEconomy) {
-        vaultHandler = new VaultHandler(plugin);
+    MVEconomist(MultiverseCore plugin, ItemEconomy itemEconomy, MVCommandManager commandManager) {
+        vaultHandler = new VaultHandler(plugin, commandManager);
         this.itemEconomy = itemEconomy;
     }
 
@@ -137,6 +138,7 @@ public final class MVEconomist {
     public void deposit(Player player, double amount, @Nullable Material currency) {
         if (isUsingVault(currency)) {
             getVaultHandler().getEconomy().depositPlayer(player, amount);
+            getVaultHandler().showReceipt(player, amount);
         } else {
             itemEconomy.deposit(player, amount, currency);
         }
@@ -153,6 +155,7 @@ public final class MVEconomist {
     public void withdraw(Player player, double amount, @Nullable Material currency) {
         if (isUsingVault(currency)) {
             getVaultHandler().getEconomy().withdrawPlayer(player, amount);
+            getVaultHandler().showReceipt(player, amount);
         } else {
             itemEconomy.withdraw(player, amount, currency);
         }

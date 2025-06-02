@@ -129,9 +129,9 @@ class InfoCommand extends CoreCommand {
         if (price == 0) {
             outMap.put("Entry Fee", "FREE!");
         } else if (price > 0) {
-            outMap.put("Entry Fee", economist.formatPrice(-price, world.getCurrency()));
+            outMap.put("Entry Fee", economist.formatPrice(price, world.getCurrency()));
         } else if (price < 0) {
-            outMap.put("Entry Reward", economist.formatPrice(price, world.getCurrency()));
+            outMap.put("Entry Reward", economist.formatPrice(-price, world.getCurrency()));
         }
     }
 
