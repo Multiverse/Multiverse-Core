@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.command;
 
 import co.aikar.commands.BukkitCommandIssuer;
-import co.aikar.commands.MessageKeys;
 import co.aikar.commands.MessageType;
 import co.aikar.locales.MessageKeyProvider;
 import org.bukkit.command.CommandSender;
@@ -9,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 
 public class MVCommandIssuer extends BukkitCommandIssuer {
 
@@ -22,6 +22,11 @@ public class MVCommandIssuer extends BukkitCommandIssuer {
     @Override
     public MVCommandManager getManager() {
         return commandManager;
+    }
+
+    @Override
+    public void sendMessageInternal(String message) {
+        ChatTextFormatter.sendFormattedMessage(getIssuer(), message);
     }
 
     public void sendError(String message, MessageReplacement... replacements) {
