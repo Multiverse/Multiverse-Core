@@ -33,6 +33,8 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
+import org.mvplugins.multiverse.core.command.context.issueraware.IssuerAwareValue;
+import org.mvplugins.multiverse.core.command.context.issueraware.MultiverseWorldValue;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
@@ -128,6 +130,22 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             CommandCompletionHandler<BukkitCommandCompletionContext> handler) {
         if (context.hasConfig("playerOnly") && !context.getIssuer().isPlayer()) {
             return Collections.emptyList();
+        }
+        if (context.hasConfig("byIssuerForArg")) {
+            Boolean byIssuerForArg = Try.of(() -> context.getContextValueByName(IssuerAwareValue.class, context.getConfig("byIssuerForArg")))
+                    .map(IssuerAwareValue::isByIssuer)
+                    .getOrElse(false);
+            if (!byIssuerForArg) {
+                return Collections.emptyList();
+            }
+        }
+        if (context.hasConfig("notByIssuerForArg")) {
+            Boolean byIssuerForArg = Try.of(() -> context.getContextValueByName(IssuerAwareValue.class, context.getConfig("notByIssuerForArg")))
+                    .map(IssuerAwareValue::isByIssuer)
+                    .getOrElse(false);
+            if (byIssuerForArg) {
+                return Collections.emptyList();
+            }
         }
         if (context.hasConfig("resolveUntil")) {
             if (!Try.run(() -> context.getContextValueByName(Object.class, context.getConfig("resolveUntil"))).isSuccess()) {
@@ -283,7 +301,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     private Collection<String> suggestMVWorldPropsName(BukkitCommandCompletionContext context) {
         return Try.of(() -> {
-            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
+            MultiverseWorld world = context.getContextValue(MultiverseWorldValue.class).value();
             PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
             return world.getStringPropertyHandle().getModifiablePropertyNames(action);
         }).getOrElse(Collections.emptyList());
@@ -291,7 +309,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     private Collection<String> suggestMVWorldPropsValue(BukkitCommandCompletionContext context) {
         return Try.of(() -> {
-            MultiverseWorld world = context.getContextValue(MultiverseWorld.class);
+            MultiverseWorld world = context.getContextValue(MultiverseWorldValue.class).value();
             PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
             String propertyName = context.getContextValue(String.class);
             return world.getStringPropertyHandle().getSuggestedPropertyValue(propertyName, context.getInput(), action);
