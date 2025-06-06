@@ -12,6 +12,7 @@ import jakarta.inject.Provider;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -28,6 +29,8 @@ import org.mvplugins.multiverse.core.config.migration.action.MoveMigratorAction;
 import org.mvplugins.multiverse.core.config.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.config.migration.action.SetMigratorAction;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.teleportation.PassengerMode;
+import org.mvplugins.multiverse.core.teleportation.PassengerModes;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 
 @Service
@@ -229,6 +232,31 @@ public final class CoreConfig {
      */
     public boolean getUseFinerTeleportPermissions() {
         return configHandle.get(configNodes.useFinerTeleportPermissions);
+    }
+
+    /**
+     * Sets the passenger mode
+     *
+     * @param passengerMode The passenger mode
+     * @return The set result
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public Try<Void> setPassengerMode(PassengerModes passengerMode) {
+        return configHandle.set(configNodes.passengerMode, passengerMode);
+    }
+
+    /**
+     * Gets the passenger mode
+     *
+     * @return The passenger mode
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public PassengerMode getPassengerMode() {
+        return configHandle.get(configNodes.passengerMode);
     }
 
     /**

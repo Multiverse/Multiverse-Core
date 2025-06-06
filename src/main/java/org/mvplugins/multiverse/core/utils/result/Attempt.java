@@ -220,6 +220,23 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
     }
 
     /**
+     *
+     * @param successMapper
+     * @param failureMapper
+     * @param <U>
+     * @return
+     *
+     * @since 5.1
+     */
+    default <U> U transform(Function<T, U> successMapper, Function<F, U> failureMapper) {
+        if (this instanceof Success) {
+            return successMapper.apply(get());
+        } else {
+            return failureMapper.apply(getFailureReason());
+        }
+    }
+
+    /**
      * Calls either the failure or success function depending on the result type.
      *
      * @param failureMapper The failure function.

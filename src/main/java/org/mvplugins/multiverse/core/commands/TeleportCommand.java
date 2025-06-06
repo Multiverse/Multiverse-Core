@@ -105,14 +105,21 @@ final class TeleportCommand extends CoreCommand {
         safetyTeleporter.to(destination)
                 .by(issuer)
                 .checkSafety(!parsedFlags.hasFlag(flags.unsafe) && destination.checkTeleportSafety())
-                .teleport(player)
+                .passengerMode(config.getPassengerMode())
+                .teleportSingle(player)
                 .onSuccess(() -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                         Replace.PLAYER.with(getYouOrName(issuer, player)),
                         Replace.DESTINATION.with(destination.toString())))
-                .onFailure(failure -> issuer.sendError(MVCorei18n.TELEPORT_FAILED,
-                        Replace.PLAYER.with(getYouOrName(issuer, player)),
-                        Replace.DESTINATION.with(destination.toString()),
-                        Replace.REASON.with(failure.getFailureMessage())));
+                .onFailureCount(reasonsCountMap -> {
+                    for (var entry : reasonsCountMap.entrySet()) {
+                        Logging.finer("Failed to teleport %s players to %s: %s",
+                                entry.getValue(), destination, entry.getKey());
+                        issuer.sendError(MVCorei18n.TELEPORT_FAILED,
+                                Replace.PLAYER.with(player.getName()),
+                                Replace.DESTINATION.with(destination.toString()),
+                                Replace.REASON.with(Message.of(entry.getKey())));
+                    }
+                });
     }
 
     private Message getYouOrName(MVCommandIssuer issuer, Player player) {
@@ -131,6 +138,7 @@ final class TeleportCommand extends CoreCommand {
         safetyTeleporter.to(destination)
                 .by(issuer)
                 .checkSafety(!parsedFlags.hasFlag(flags.unsafe) && destination.checkTeleportSafety())
+                .passengerMode(config.getPassengerMode())
                 .teleport(List.of(players))
                 .onSuccessCount(successCount -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                         Replace.PLAYER.with(successCount + " players"),
