@@ -225,12 +225,12 @@ public class MultiverseCore extends MultiverseModule {
      * Logs the enable message.
      */
     private void logEnableMessage() {
-        Logging.config("Version %s (API v%s) Enabled - By %s",
+        Logging.config("\u001B[32mVersion %s (API v%s) Enabled - By %s\u001B[39m",
                 this.getDescription().getVersion(), getVersionAsNumber(), StringFormatter.joinAnd(getDescription().getAuthors()));
 
         if (configProvider.get().isShowingDonateMessage()) {
-            Logging.config("Help dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman");
-            Logging.config("One time donations are also appreciated: https://www.paypal.me/dumptruckman");
+            Logging.config("\u001B[32mHelp dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman\u001B[39m");
+            Logging.config("\u001B[32mOne time donations are also appreciated: https://www.paypal.me/dumptruckman\u001B[39m");
         }
     }
 
