@@ -108,8 +108,8 @@ public abstract class MultiverseModule extends JavaPlugin {
      *
      * @deprecated Use {@link #registerDynamicListeners(Class)} with the new DynamicListener API.
      */
-    @Deprecated(since = "5.0.0", forRemoval = true)
-    @ApiStatus.ScheduledForRemoval(inVersion = "6.0.0")
+    @Deprecated(since = "5.0", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     protected void registerEvents(Class<? extends Listener> listenerClass) {
         var pluginManager = getServer().getPluginManager();
         Try.run(() -> serviceLocator.getAllServices(listenerClass).forEach(
