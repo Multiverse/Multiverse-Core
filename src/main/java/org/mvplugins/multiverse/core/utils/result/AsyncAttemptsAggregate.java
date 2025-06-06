@@ -181,6 +181,8 @@ public final class AsyncAttemptsAggregate<T, F extends FailureReason> {
      *
      * @param runnable The action to execute after all async attempts are completed.
      * @return A new {@link AsyncAttemptsAggregate} instance.
+     *
+     * @since 5.1
      */
     @ApiStatus.AvailableSince("5.1")
     public AsyncAttemptsAggregate<T, F> thenRun(Runnable runnable) {

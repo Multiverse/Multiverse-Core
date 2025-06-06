@@ -5,6 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import io.vavr.control.Either;
+import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
@@ -220,14 +221,16 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
     }
 
     /**
+     * Maps attempt result to another value.
      *
-     * @param successMapper
-     * @param failureMapper
-     * @param <U>
-     * @return
+     * @param successMapper Action taken if the attempt is a success
+     * @param failureMapper Action taken if the attempt is a failure
+     * @param <U> The transformed value type
+     * @return The transformed value
      *
      * @since 5.1
      */
+    @ApiStatus.AvailableSince("5.1")
     default <U> U transform(Function<T, U> successMapper, Function<F, U> failureMapper) {
         if (this instanceof Success) {
             return successMapper.apply(get());
