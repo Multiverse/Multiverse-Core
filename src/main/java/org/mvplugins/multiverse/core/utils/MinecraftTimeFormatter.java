@@ -1,6 +1,8 @@
 package org.mvplugins.multiverse.core.utils;
 
 import io.vavr.control.Try;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -10,6 +12,7 @@ import java.time.format.DateTimeFormatter;
  *
  * @since 5.1
  */
+@ApiStatus.AvailableSince("5.1")
 public final class MinecraftTimeFormatter {
 
     private static final double TIME_MULTIPLIER = 3.6;
@@ -23,6 +26,7 @@ public final class MinecraftTimeFormatter {
      *
      * @since 5.1
      */
+    @ApiStatus.AvailableSince("5.1")
     public static String format12h(long time) {
         return formatTime(time, "hh:mm a");
     }
@@ -34,6 +38,7 @@ public final class MinecraftTimeFormatter {
      *
      * @since 5.1
      */
+    @ApiStatus.AvailableSince("5.1")
     public static String format24h(long time) {
         return formatTime(time, "HH:mm");
     }
@@ -48,6 +53,7 @@ public final class MinecraftTimeFormatter {
      *
      * @since 5.1
      */
+    @ApiStatus.AvailableSince("5.1")
     public static String formatTime(long time, String format) {
         // Convert Minecraft time to real-world time
         long realTime = (long) ((time * TIME_MULTIPLIER) + START_OFFSET) % DAY_SECONDS;  // Minecraft ticks to seconds

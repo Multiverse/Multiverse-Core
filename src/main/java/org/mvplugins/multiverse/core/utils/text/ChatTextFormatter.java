@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.utils.text;
 
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.utils.ReflectHelper;
 
 /**
@@ -9,6 +10,7 @@ import org.mvplugins.multiverse.core.utils.ReflectHelper;
  *
  * @since 5.1
  */
+@ApiStatus.AvailableSince("5.1")
 public final class ChatTextFormatter {
 
     private static final TextFormatter wrapper;
@@ -29,6 +31,7 @@ public final class ChatTextFormatter {
      *
      * @since 5.1
      */
+    @ApiStatus.AvailableSince("5.1")
     public static void sendFormattedMessage(CommandSender sender, String message) {
         wrapper.sendFormattedMessage(sender, message);
     }
@@ -53,6 +56,7 @@ public final class ChatTextFormatter {
      *
      * @since 5.1
      */
+    @ApiStatus.AvailableSince("5.1")
     public static String removeAmpColor(String message) {
         return wrapper.removeAmpColor(message);
     }
@@ -65,6 +69,7 @@ public final class ChatTextFormatter {
      *
      * @since 5.1
      */
+    @ApiStatus.AvailableSince("5.1")
     public static String removeSectionColor(String message) {
         return wrapper.removeSectionColor(message);
     }
@@ -77,6 +82,7 @@ public final class ChatTextFormatter {
      *
      * @since 5.1
      */
+    @ApiStatus.AvailableSince("5.1")
     public static String colorize(String message) {
         return wrapper.colorize(message);
     }
