@@ -10,18 +10,16 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
-import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.command.context.issueraware.MultiverseWorldValue;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -40,7 +38,10 @@ class ModifyCommand extends CoreCommand {
 
     @Subcommand("modify")
     @CommandPermission("multiverse.core.modify")
-    @CommandCompletion("@mvworlds:scope=both @propsmodifyaction @mvworldpropsname @mvworldpropsvalue")
+    @CommandCompletion("@mvworlds:scope=both|@propsmodifyaction:byIssuerForArg=arg1 " +
+            "@propsmodifyaction:notByIssuerForArg=arg1|@mvworldpropsname:byIssuerForArg=arg1 " +
+            "@mvworldpropsname:notByIssuerForArg=arg1|@mvworldpropsvalue:byIssuerForArg=arg1 " +
+            "@mvworldpropsvalue:notByIssuerForArg=arg1")
     @Syntax("[world] <set|add|remove|reset> <property> <value>")
     @Description("{@@mv-core.modify.description}")
     void onModifyCommand(// SUPPRESS CHECKSTYLE: ParameterNumber
@@ -49,7 +50,7 @@ class ModifyCommand extends CoreCommand {
             @Flags("resolve=issuerAware")
             @Syntax("[world]")
             @Description("{@@mv-core.modify.world.description}")
-            @NotNull MultiverseWorld world,
+            @NotNull MultiverseWorldValue worldValue,
 
             @Syntax("<set|add|remove|reset>")
             @Description("")
@@ -64,6 +65,8 @@ class ModifyCommand extends CoreCommand {
             @Syntax("[value]")
             @Description("{@@mv-core.modify.value.description}")
             @Nullable String propertyValue) {
+        MultiverseWorld world = worldValue.value();
+
         if (action.isRequireValue() && propertyValue == null) {
             issuer.sendMessage(MVCorei18n.MODIFY_SPECIFYVALUE,
                     replace("{action}").with(action.name().toLowerCase()),
@@ -111,7 +114,7 @@ class ModifyCommand extends CoreCommand {
 
         @Override
         @CommandAlias("mvmodify|mvm")
-        void onModifyCommand(MVCommandIssuer issuer, @NotNull MultiverseWorld world, @NotNull PropertyModifyAction action, @NotNull String propertyName, @Nullable String propertyValue) {
+        void onModifyCommand(MVCommandIssuer issuer, @NotNull MultiverseWorldValue world, @NotNull PropertyModifyAction action, @NotNull String propertyName, @Nullable String propertyValue) {
             super.onModifyCommand(issuer, world, action, propertyName, propertyValue);
         }
     }

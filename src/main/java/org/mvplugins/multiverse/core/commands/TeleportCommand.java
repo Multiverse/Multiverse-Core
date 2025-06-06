@@ -1,9 +1,7 @@
 package org.mvplugins.multiverse.core.commands;
 
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
@@ -20,8 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
-import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.context.issueraware.PlayerArrayValue;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.command.flags.UnsafeFlags;
 import org.mvplugins.multiverse.core.config.CoreConfig;
@@ -31,7 +28,6 @@ import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
-import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
 
 @Service
 final class TeleportCommand extends CoreCommand {
@@ -57,10 +53,9 @@ final class TeleportCommand extends CoreCommand {
     @CommandAlias("mvtp")
     @Subcommand("teleport|tp")
     @CommandPermission("@mvteleport")
-    @CommandCompletion(
-            "@destinations:playerOnly|@playersarray:checkPermissions=@mvteleportother "
-                    + "@destinations:othersOnly|@flags:groupName=" + UnsafeFlags.NAME + ",resolveUntil=arg2 "
-                    + "@flags:groupName=" + UnsafeFlags.NAME)
+    @CommandCompletion("@playersarray:checkPermissions=@mvteleportother|@destinations:byIssuerForArg=arg1 "
+            + "@destinations:notByIssuerForArg=arg1|@flags:byIssuerForArg=arg1,groupName=" + UnsafeFlags.NAME + " "
+            + "@flags:notByIssuerForArg=arg1,groupName=" + UnsafeFlags.NAME)
     @Syntax("[player] <destination> [--unsafe]")
     @Description("{@@mv-core.teleport.description}")
     void onTeleportCommand(
@@ -69,7 +64,7 @@ final class TeleportCommand extends CoreCommand {
             @Flags("resolve=issuerAware")
             @Syntax("[player]")
             @Description("{@@mv-core.teleport.player.description}")
-            Player[] players,
+            PlayerArrayValue playersValue,
 
             @Syntax("<destination>")
             @Description("{@@mv-core.teleport.destination.description}")
@@ -79,6 +74,7 @@ final class TeleportCommand extends CoreCommand {
             @Syntax("[--unsafe]")
             @Description("")
             String[] flagArray) {
+        Player[] players = playersValue.value();
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         if (players.length == 1) {
