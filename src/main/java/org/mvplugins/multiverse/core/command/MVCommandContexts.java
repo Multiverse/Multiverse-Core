@@ -30,6 +30,7 @@ import org.mvplugins.multiverse.core.command.context.GameRuleValue;
 import org.mvplugins.multiverse.core.command.context.issueraware.IssuerAwareContextBuilder;
 import org.mvplugins.multiverse.core.command.context.PlayerLocation;
 import org.mvplugins.multiverse.core.command.context.issueraware.MultiverseWorldValue;
+import org.mvplugins.multiverse.core.command.context.issueraware.PlayerArrayValue;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -88,6 +89,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(MultiverseAnchor.class, this::parseMultiverseAnchor);
         registerIssuerAwareContext(Player.class, playerContextBuilder().generateContext());
         registerIssuerAwareContext(Player[].class, playerArrayContextBuilder().generateContext());
+        registerIssuerAwareContext(PlayerArrayValue.class, playerArrayContextBuilder().generateContext(PlayerArrayValue::new));
         registerIssuerAwareContext(PlayerLocation.class, this::parsePlayerLocation);
         registerContext(SpawnCategory[].class, this::parseSpawnCategories);
     }

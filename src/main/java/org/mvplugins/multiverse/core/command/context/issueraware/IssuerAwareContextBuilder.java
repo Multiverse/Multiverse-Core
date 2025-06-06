@@ -18,7 +18,7 @@ import java.util.function.Function;
  * @since 5.1
  */
 @ApiStatus.AvailableSince("5.1")
-public class IssuerAwareContextBuilder<T> {
+public final class IssuerAwareContextBuilder<T> {
 
     private BiFunction<BukkitCommandExecutionContext, Player, T> fromPlayer;
     private BiFunction<BukkitCommandExecutionContext, String, T> fromInput;

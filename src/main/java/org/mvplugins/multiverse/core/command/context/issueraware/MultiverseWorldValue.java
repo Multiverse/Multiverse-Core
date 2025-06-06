@@ -9,7 +9,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
  * @since 5.1
  */
 @ApiStatus.AvailableSince("5.1")
-public class MultiverseWorldValue extends IssuerAwareValue {
+public final class MultiverseWorldValue extends IssuerAwareValue {
 
     private final MultiverseWorld world;
 

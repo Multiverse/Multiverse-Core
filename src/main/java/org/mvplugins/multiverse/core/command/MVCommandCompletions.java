@@ -35,6 +35,7 @@ import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
 import org.mvplugins.multiverse.core.command.context.issueraware.IssuerAwareValue;
 import org.mvplugins.multiverse.core.command.context.issueraware.MultiverseWorldValue;
+import org.mvplugins.multiverse.core.command.context.issueraware.PlayerArrayValue;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
@@ -213,7 +214,10 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     }
 
     private Collection<String> suggestDestinations(BukkitCommandCompletionContext context) {
-        return Try.of(() -> context.getContextValue(Player[].class))
+        return Try.of(() -> context.getContextValue(PlayerArrayValue.class))
+                .map(PlayerArrayValue::value)
+                .recover(IllegalStateException.class, e -> context.getContextValue(Player[].class))
+                .recover(IllegalStateException.class, e -> new Player[]{context.getContextValue(Player.class)})
                 .map(players -> {
                     if (players.length == 0) {
                         // Most likely console did not specify a player
