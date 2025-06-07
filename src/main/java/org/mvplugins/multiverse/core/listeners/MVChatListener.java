@@ -5,7 +5,6 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import jakarta.inject.Inject;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jvnet.hk2.annotations.Service;
@@ -15,6 +14,7 @@ import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventClass;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.IgnoreIfCancelled;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.SkipIfEventExist;
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 /**
@@ -87,7 +87,7 @@ final class MVChatListener implements CoreListener {
 
         String prefixChatFormat = config.getPrefixChatFormat();
         prefixChatFormat = prefixChatFormat.replace("%world%", worldName).replace("%chat%", chat);
-        prefixChatFormat = ChatColor.translateAlternateColorCodes('&', prefixChatFormat);
+        prefixChatFormat = ChatTextFormatter.colorize(prefixChatFormat);
 
         event.setFormat(prefixChatFormat);
     }
