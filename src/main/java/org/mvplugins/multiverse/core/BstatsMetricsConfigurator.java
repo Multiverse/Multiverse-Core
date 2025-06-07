@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -10,7 +11,7 @@ import jakarta.inject.Inject;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.AdvancedPie;
-import org.bstats.charts.MultiLineChart;
+import org.bstats.charts.SingleLineChart;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 
@@ -79,18 +80,15 @@ final class BstatsMetricsConfigurator {
     }
 
     private void addWorldCountMetric() {
-        addMultiLineMetric("world_count", map -> {
-            map.put("Loaded worlds", worldManager.getLoadedWorlds().size());
-            map.put("Total number of worlds", worldManager.getWorlds().size());
-        });
+        addLineMetric("worlds", () -> worldManager.getWorlds().size());
     }
 
     private void addAdvancedPieMetric(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
         metrics.addCustomChart(createAdvancedPieChart(chartId, metricsFunc));
     }
 
-    private void addMultiLineMetric(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
-        metrics.addCustomChart(createMultiLineChart(chartId, metricsFunc));
+    private void addLineMetric(String chartId, Callable<Integer> metricsFunc) {
+        metrics.addCustomChart(createLineChart(chartId, metricsFunc));
     }
 
     private void incrementCount(Map<String, Integer> map, String key) {
@@ -104,9 +102,7 @@ final class BstatsMetricsConfigurator {
         return new AdvancedPie(chartId, () -> map);
     }
 
-    private MultiLineChart createMultiLineChart(String chartId, Consumer<Map<String, Integer>> metricsFunc) {
-        Map<String, Integer> map = new HashMap<>();
-        metricsFunc.accept(map);
-        return new MultiLineChart(chartId, () -> map);
+    private SingleLineChart createLineChart(String chartId, Callable<Integer> metricsFunc) {
+        return new SingleLineChart(chartId, metricsFunc);
     }
 }
