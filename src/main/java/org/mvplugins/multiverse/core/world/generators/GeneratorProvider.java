@@ -1,13 +1,12 @@
 package org.mvplugins.multiverse.core.world.generators;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
@@ -176,16 +175,19 @@ public final class GeneratorProvider implements Listener {
      */
     public Collection<String> suggestGeneratorString(@Nullable String currentInput) {
         String[] genSpilt = currentInput == null ? new String[0] : REPatterns.COLON.split(currentInput, 2);
-        List<String> suggestions = new ArrayList<>(generatorPlugins.keySet());
-        if (genSpilt.length < 2) {
-            return suggestions;
-        }
-        GeneratorPlugin generatorPlugin = generatorPlugins.get(genSpilt[0]);
-        if (generatorPlugin == null) {
-            return suggestions;
-        }
-        suggestions.addAll(generatorPlugin.suggestIds(genSpilt[1]).stream().map(id -> genSpilt[0] + ":" + id).toList());
-        return suggestions;
+        String generatorName = genSpilt[0];
+        String generatorId = genSpilt.length > 1 ? genSpilt[1] : "";
+        return generatorPlugins.entrySet().stream()
+                .flatMap(entry -> {
+                    var ids = entry.getValue().suggestIds(entry.getKey().equals(generatorName) ? generatorId : "");
+                    if (ids.isEmpty()) {
+                        return Stream.of(entry.getKey());
+                    }
+                    return ids.stream().map(id -> Strings.isNullOrEmpty(id)
+                            ? entry.getKey()
+                            : entry.getKey() + ":" + id);
+                })
+                .toList();
     }
 
     /**
