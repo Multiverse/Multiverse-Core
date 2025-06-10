@@ -5,6 +5,9 @@ import java.util.Collections;
 
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,20 +74,47 @@ public class StringPropertyHandle {
     /**
      * Suggests property values for command auto-complete based on the input and action type.
      *
-     * @param name The name of the property.
-     * @param input The input value to suggest based on.
-     * @param action The modification action being performed.
+     * @param name      The name of the property.
+     * @param input     The input value to suggest based on.
+     * @param action    The modification action being performed.
      * @return A collection of suggested values.
      */
     public Collection<String> getSuggestedPropertyValue(
-            @Nullable String name, @Nullable String input, @NotNull PropertyModifyAction action) {
+            @Nullable String name,
+            @Nullable String input,
+            @NotNull PropertyModifyAction action
+    ) {
+        return getSuggestedPropertyValue(name, input, action, Bukkit.getConsoleSender());
+    }
+
+    /**
+     * Suggests property values for command auto-complete based on the input and action type.
+     * <br />
+     * Providing a sender gives contextual information such as sender name, permissions, or player location
+     * for better suggestions.
+     *
+     * @param name      The name of the property.
+     * @param input     The input value to suggest based on.
+     * @param action    The modification action being performed.
+     * @param sender    The sender context to use.
+     * @return A collection of suggested values
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public Collection<String> getSuggestedPropertyValue(
+            @Nullable String name,
+            @Nullable String input,
+            @NotNull PropertyModifyAction action,
+            @NotNull CommandSender sender
+    ) {
         return switch (action) {
             case SET -> findNode(name, ValueNode.class)
-                    .map(node -> node.suggest(input))
+                    .map(node -> node.suggest(sender, input))
                     .getOrElse(Collections.emptyList());
 
             case ADD -> findNode(name, ListValueNode.class)
-                    .map(node -> node.suggestItem(input))
+                    .map(node -> node.suggestItem(sender, input))
                     .getOrElse(Collections.emptyList());
 
             case REMOVE -> findNode(name, ListValueNode.class)
