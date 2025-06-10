@@ -17,7 +17,10 @@ public interface GeneratorPlugin {
      * <p>Suggest possible generator ids. To be used in command tab-completion.</p>
      *
      * <p>These suggestions can be static without relying on currentIdInput, or dynamically changed based
-     * on the currentIdInput.</p>
+     * on the currentIdInput. Add an entry of empty string "" if your plugin supports generator string without an id.</p>
+     *
+     * <p>These suggestions should be quick lookups, that gets from your cached or loaded data as tab-complete handler
+     * may be called multiple times a second.</p>
      *
      * @param currentIdInput    The current state user input. This may be null or empty if user has not started
      *                          any input for generator id.
