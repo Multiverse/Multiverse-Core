@@ -6,6 +6,7 @@ import org.bukkit.ChatColor
 import org.mvplugins.multiverse.core.locale.MVCorei18n
 import org.mvplugins.multiverse.core.locale.message.Message
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -15,7 +16,7 @@ class VersionCommandTest : AbstractCommandTest() {
     @Test
     fun `Run version command as console`() {
         assertTrue(Bukkit.dispatchCommand(console, "mv version"))
-        val output = ChatColor.stripColor(console.nextMessage())
+        val output = ChatTextFormatter.removeColor(console.nextMessage())
         assertEquals("Multiverse Core Version v" + multiverseCore.getDescription().getVersion(), output)
     }
 

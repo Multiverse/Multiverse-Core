@@ -25,6 +25,7 @@ import org.mvplugins.multiverse.core.dynamiclistener.EventPriorityMapper;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
+import org.mvplugins.multiverse.core.teleportation.PassengerModes;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 
 import java.util.Collection;
@@ -181,6 +182,20 @@ final class CoreConfigNodes {
             .comment("  - For spawn: `multiverse.core.spawn.<self|other>`")
             .defaultValue(true)
             .name("use-finer-teleport-permissions")
+            .build());
+
+    final ConfigNode<PassengerModes> passengerMode = node(ConfigNode.builder("teleport.passenger-mode", PassengerModes.class)
+            .comment("")
+            .comment("Configures how passengers and vehicles are handled when an entity is teleported.")
+            .comment("  default: Server will handle passengers and vehicles, this usually means entities will not be teleported to a different world if they have passengers.")
+            .comment("  dismount_passengers: Passengers will be removed from the parent entity before the teleport.")
+            .comment("  dismount_vehicle: Vehicle will be removed and from the parent entity before the teleport.")
+            .comment("  dismount_all: All passengers and vehicles will be removed from the parent entity before the teleport.")
+            .comment("  retain_passengers: Passengers will teleport together with the parent entity.")
+            .comment("  retain_vehicle: Vehicles will teleport together with the parent entity.")
+            .comment("  retain_all: All passengers and vehicles will teleport together with the parent entity.")
+            .defaultValue(PassengerModes.DEFAULT)
+            .name("passenger-mode")
             .build());
 
     final ConfigNode<Integer> concurrentTeleportLimit = node(ConfigNode.builder("teleport.concurrent-teleport-limit", Integer.class)

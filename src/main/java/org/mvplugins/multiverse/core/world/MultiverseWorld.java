@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.common.base.Strings;
 import io.vavr.control.Try;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -16,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
@@ -137,7 +137,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     void updateColourlessAlias() {
-        colourlessAlias = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', getAliasOrName()));
+        colourlessAlias = ChatTextFormatter.removeColor(getAliasOrName());
     }
 
     /**

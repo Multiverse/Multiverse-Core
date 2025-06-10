@@ -11,6 +11,7 @@ world:
 
 teleport:
   use-finer-teleport-permissions: true
+  passenger-mode: default
   concurrent-teleport-limit: 50
   teleport-intercept: true
   safe-location-horizontal-search-radius: 3
