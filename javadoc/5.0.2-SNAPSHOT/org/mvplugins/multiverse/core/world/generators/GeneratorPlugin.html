@@ -150,7 +150,10 @@ loadScripts(document, 'script');</script>
 <div class="block"><p>Suggest possible generator ids. To be used in command tab-completion.</p>
 
  <p>These suggestions can be static without relying on currentIdInput, or dynamically changed based
- on the currentIdInput.</p></div>
+ on the currentIdInput. Add an entry of empty string "" if your plugin supports generator string without an id.</p>
+
+ <p>These suggestions should be quick lookups, that gets from your cached or loaded data as tab-complete handler
+ may be called multiple times a second.</p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>currentIdInput</code> - The current state user input. This may be null or empty if user has not started
