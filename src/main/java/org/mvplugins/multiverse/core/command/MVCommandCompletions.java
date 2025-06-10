@@ -270,7 +270,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private Collection<String> suggestMVConfigValues(BukkitCommandCompletionContext context) {
         return Try.of(() -> context.getContextValue(String.class))
                 .map(propertyName -> config.getStringPropertyHandle()
-                        .getSuggestedPropertyValue(propertyName, context.getInput(), PropertyModifyAction.SET))
+                        .getSuggestedPropertyValue(propertyName, context.getInput(), PropertyModifyAction.SET, context.getSender()))
                 .getOrElse(Collections.emptyList());
     }
 
@@ -316,7 +316,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             MultiverseWorld world = context.getContextValue(MultiverseWorldValue.class).value();
             PropertyModifyAction action = context.getContextValue(PropertyModifyAction.class);
             String propertyName = context.getContextValue(String.class);
-            return world.getStringPropertyHandle().getSuggestedPropertyValue(propertyName, context.getInput(), action);
+            return world.getStringPropertyHandle().getSuggestedPropertyValue(propertyName, context.getInput(), action, context.getSender());
         }).getOrElse(Collections.emptyList());
     }
 
@@ -357,7 +357,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             return world.getEntitySpawnConfig()
                     .getSpawnCategoryConfig(spawnCategory)
                     .getStringPropertyHandle()
-                    .getSuggestedPropertyValue(propertyName, context.getInput(), action);
+                    .getSuggestedPropertyValue(propertyName, context.getInput(), action, context.getSender());
         }).getOrElse(Collections.emptyList());
     }
 }

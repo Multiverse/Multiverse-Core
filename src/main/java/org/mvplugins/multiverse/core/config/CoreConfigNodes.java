@@ -5,6 +5,7 @@ import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
 
@@ -18,6 +19,7 @@ import org.mvplugins.multiverse.core.config.node.ConfigNode;
 import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.destination.core.WorldDestination;
@@ -251,7 +253,7 @@ final class CoreConfigNodes {
             .comment("This only applies if first-spawn-override is set to true.")
             .defaultValue("")
             .name("first-spawn-location")
-            .suggester(this::suggestDestinations)
+            .suggester((SenderNodeSuggester) this::suggestDestinations)
             .build());
 
     final ConfigNode<Boolean> enableJoinDestination = node(ConfigNode.builder("spawn.enable-join-destination", Boolean.class)
@@ -268,7 +270,7 @@ final class CoreConfigNodes {
             .comment("Set the above enable-join-destination to false to disable")
             .defaultValue("")
             .name("join-destination")
-            .suggester(this::suggestDestinations)
+            .suggester((SenderNodeSuggester) this::suggestDestinations)
             .build());
 
     final ConfigNode<Boolean> defaultRespawnInOverworld = node(ConfigNode.builder("spawn.default-respawn-in-overworld", Boolean.class)
@@ -548,13 +550,12 @@ final class CoreConfigNodes {
             .build());
 
     // todo: Maybe combine with the similar method in MVCommandCompletion but that has permission checking
-    private Collection<String> suggestDestinations(String input) {
-        return destinationsProvider.get().getDestinations().stream()
-                .flatMap(destination -> destination.suggestDestinations(Bukkit.getConsoleSender(), null)
-                        .stream()
-                        .map(packet -> destination instanceof WorldDestination
-                                ? packet.destinationString()
-                                : destination.getIdentifier() + ":" + packet.destinationString()))
+    private Collection<String> suggestDestinations(CommandSender sender, String input) {
+        return destinationsProvider.get().suggestDestinations(sender, input)
+                .stream()
+                .map(packet -> packet.destination() instanceof WorldDestination
+                        ? packet.destinationString()
+                        : packet.destination().getIdentifier() + ":" + packet.destinationString())
                 .toList();
     }
 

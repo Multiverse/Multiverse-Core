@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -13,6 +12,7 @@ import java.util.stream.Collectors;
 
 import io.vavr.Value;
 import io.vavr.control.Try;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +20,7 @@ import org.mvplugins.multiverse.core.config.node.functions.DefaultStringParserPr
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.utils.REPatterns;
@@ -192,6 +193,17 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             return itemSuggester.suggest(input);
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Collection<String> suggestItem(@NotNull CommandSender sender, @Nullable String input) {
+        if (itemSuggester != null && itemSuggester instanceof SenderNodeSuggester senderSuggester) {
+            return senderSuggester.suggest(sender, input);
+        }
+        return suggestItem(input);
     }
 
     /**
