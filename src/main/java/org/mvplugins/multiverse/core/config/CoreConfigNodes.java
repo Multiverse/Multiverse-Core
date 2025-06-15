@@ -4,7 +4,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
 
@@ -548,13 +548,12 @@ final class CoreConfigNodes {
             .build());
 
     // todo: Maybe combine with the similar method in MVCommandCompletion but that has permission checking
-    private Collection<String> suggestDestinations(String input) {
-        return destinationsProvider.get().getDestinations().stream()
-                .flatMap(destination -> destination.suggestDestinations(Bukkit.getConsoleSender(), null)
-                        .stream()
-                        .map(packet -> destination instanceof WorldDestination
-                                ? packet.destinationString()
-                                : destination.getIdentifier() + ":" + packet.destinationString()))
+    private Collection<String> suggestDestinations(CommandSender sender, String input) {
+        return destinationsProvider.get().suggestDestinations(sender, input)
+                .stream()
+                .map(packet -> packet.destination() instanceof WorldDestination
+                        ? packet.destinationString()
+                        : packet.destination().getIdentifier() + ":" + packet.destinationString())
                 .toList();
     }
 

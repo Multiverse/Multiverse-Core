@@ -4,6 +4,8 @@ import java.util.Collection;
 
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +41,19 @@ public interface ValueNode<T> extends Node {
      * @return A collection of possible string values.
      */
     @NotNull Collection<String> suggest(@Nullable String input);
+
+    /**
+     * Suggests possible string values for this node. Use contextural information from the sender such as
+     * sender name, permissions, or player location for better suggestions.
+     *
+     * @param sender    The sender context.
+     * @param input     The input string.
+     * @return A collection of possible string values
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    @NotNull Collection<String> suggest(@NotNull CommandSender sender, @Nullable String input);
 
     /**
      * Parses the given string into a value of type {@link T}. Used for property set by user input.

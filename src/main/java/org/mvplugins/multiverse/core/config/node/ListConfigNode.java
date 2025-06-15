@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -13,6 +12,8 @@ import java.util.stream.Collectors;
 
 import io.vavr.Value;
 import io.vavr.control.Try;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,7 @@ import org.mvplugins.multiverse.core.config.node.functions.DefaultStringParserPr
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.utils.REPatterns;
@@ -110,12 +112,12 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
     }
 
     private void setDefaultSuggester() {
-        this.suggester = input -> {
-            if (input == null) {
-                return itemSuggester.suggest(null);
-            }
-            return StringFormatter.addonToCommaSeperated(input, itemSuggester.suggest(input));
-        };
+        if (itemSuggester instanceof SenderNodeSuggester senderItemSuggester) {
+            this.suggester = (SenderNodeSuggester)(sender, input) ->
+                    StringFormatter.addonToCommaSeperated(input, senderItemSuggester.suggest(sender, input));
+        } else {
+            this.suggester = input -> StringFormatter.addonToCommaSeperated(input, itemSuggester.suggest(input));
+        }
     }
 
     private void setDefaultStringParser() {
@@ -198,6 +200,17 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
      * {@inheritDoc}
      */
     @Override
+    public @NotNull Collection<String> suggestItem(@NotNull CommandSender sender, @Nullable String input) {
+        if (itemSuggester != null && itemSuggester instanceof SenderNodeSuggester senderSuggester) {
+            return senderSuggester.suggest(sender, input);
+        }
+        return suggestItem(input);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public @NotNull Try<I> parseItemFromString(@Nullable String input) {
         if (itemStringParser != null) {
             return itemStringParser.parse(input, itemType);
@@ -263,6 +276,20 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
          * @return This builder.
          */
         public @NotNull B itemSuggester(@NotNull NodeSuggester itemSuggester) {
+            this.itemSuggester = itemSuggester;
+            return self();
+        }
+
+        /**
+         * Sets the suggester for an individual item in the list with sender context.
+         *
+         * @param itemSuggester The suggester.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B itemSuggester(@NotNull SenderNodeSuggester itemSuggester) {
             this.itemSuggester = itemSuggester;
             return self();
         }
