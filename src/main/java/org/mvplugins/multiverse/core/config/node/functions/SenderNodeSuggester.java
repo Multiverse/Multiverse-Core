@@ -23,6 +23,8 @@ public interface SenderNodeSuggester extends NodeSuggester {
      * @param sender    The sender context.
      * @param input     The current partial user input
      * @return The possible values.
+     *
+     * @since 5.1
      */
     @ApiStatus.AvailableSince("5.1")
     @NotNull Collection<String> suggest(@NotNull CommandSender sender, @Nullable String input);

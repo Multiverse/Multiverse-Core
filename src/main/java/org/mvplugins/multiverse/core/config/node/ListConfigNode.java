@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import io.vavr.Value;
 import io.vavr.control.Try;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -111,12 +112,12 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
     }
 
     private void setDefaultSuggester() {
-        this.suggester = input -> {
-            if (input == null) {
-                return itemSuggester.suggest(null);
-            }
-            return StringFormatter.addonToCommaSeperated(input, itemSuggester.suggest(input));
-        };
+        if (itemSuggester instanceof SenderNodeSuggester senderItemSuggester) {
+            this.suggester = (SenderNodeSuggester)(sender, input) ->
+                    StringFormatter.addonToCommaSeperated(input, senderItemSuggester.suggest(sender, input));
+        } else {
+            this.suggester = input -> StringFormatter.addonToCommaSeperated(input, itemSuggester.suggest(input));
+        }
     }
 
     private void setDefaultStringParser() {
@@ -275,6 +276,20 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
          * @return This builder.
          */
         public @NotNull B itemSuggester(@NotNull NodeSuggester itemSuggester) {
+            this.itemSuggester = itemSuggester;
+            return self();
+        }
+
+        /**
+         * Sets the suggester for an individual item in the list with sender context.
+         *
+         * @param itemSuggester The suggester.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B itemSuggester(@NotNull SenderNodeSuggester itemSuggester) {
             this.itemSuggester = itemSuggester;
             return self();
         }

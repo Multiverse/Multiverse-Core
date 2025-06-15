@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -263,6 +264,20 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * @return This builder.
          */
         public @NotNull B suggester(@NotNull NodeSuggester suggester) {
+            this.suggester = suggester;
+            return self();
+        }
+
+        /**
+         * Sets the suggester for this node with sender context.
+         *
+         * @param suggester The suggester for this node.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B suggester(@NotNull SenderNodeSuggester suggester) {
             this.suggester = suggester;
             return self();
         }
