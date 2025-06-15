@@ -40,8 +40,8 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
@@ -235,9 +235,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         return destinationsProvider.suggestDestinations(teleporter, deststring).stream()
                 .filter(packet -> corePermissionsChecker
                         .checkDestinationPacketPermission(teleporter, Arrays.asList(players), packet))
-                .map(packet -> packet.destination() instanceof WorldDestination
-                                ? packet.destinationString()
-                                : packet.destination().getIdentifier() + ":" + packet.destinationString())
+                .map(DestinationSuggestionPacket::parsableString)
                 .toList();
     }
 

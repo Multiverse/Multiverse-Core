@@ -20,7 +20,6 @@ import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.dynamiclistener.EventPriorityMapper;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
@@ -547,14 +546,8 @@ final class CoreConfigNodes {
             .hidden()
             .build());
 
-    // todo: Maybe combine with the similar method in MVCommandCompletion but that has permission checking
     private Collection<String> suggestDestinations(CommandSender sender, String input) {
-        return destinationsProvider.get().suggestDestinations(sender, input)
-                .stream()
-                .map(packet -> packet.destination() instanceof WorldDestination
-                        ? packet.destinationString()
-                        : packet.destination().getIdentifier() + ":" + packet.destinationString())
-                .toList();
+        return destinationsProvider.get().suggestDestinationStrings(sender, input);
     }
 
     private static final class DimensionFormatNodeSerializer implements NodeSerializer<DimensionFormat> {
