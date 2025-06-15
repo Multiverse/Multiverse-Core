@@ -1,14 +1,17 @@
 package org.mvplugins.multiverse.core.destination.core;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -17,7 +20,6 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
@@ -124,13 +126,38 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
-        return worldManager.getLoadedWorlds().stream()
+        Stream<DestinationSuggestionPacket> stream = worldManager.getLoadedWorlds().stream()
                 .filter(world -> worldEntryCheckerProvider.forSender(sender)
                         .canAccessWorld(world)
                         .isSuccess())
                 .map(world ->
-                        new DestinationSuggestionPacket(this, world.getTabCompleteName() + ":", world.getName()))
-                .toList();
+                        new DestinationSuggestionPacket(this, world.getTabCompleteName() + ":", world.getName()));
+        if (sender instanceof Player player) {
+            var playerLocation = new DestinationSuggestionPacket(
+                    this,
+                    "%s:%.2f,%.2f,%.2f".formatted(
+                            player.getWorld().getName(),
+                            player.getLocation().getX(),
+                            player.getLocation().getY(),
+                            player.getLocation().getZ()
+                    ),
+                    player.getWorld().getName()
+            );
+            var playerLocationPW = new DestinationSuggestionPacket(
+                    this,
+                    "%s:%.2f,%.2f,%.2f:%.2f:%.2f".formatted(
+                            player.getWorld().getName(),
+                            player.getLocation().getX(),
+                            player.getLocation().getY(),
+                            player.getLocation().getZ(),
+                            player.getLocation().getPitch(),
+                            player.getLocation().getYaw()
+                    ),
+                    player.getWorld().getName()
+            );
+            stream = Stream.concat(stream, Stream.of(playerLocation, playerLocationPW));
+        }
+        return stream.toList();
     }
 
     public enum InstanceFailureReason implements FailureReason {

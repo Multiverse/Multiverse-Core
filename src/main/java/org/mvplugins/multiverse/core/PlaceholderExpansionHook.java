@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core;
 
+import com.google.common.collect.Lists;
 import io.vavr.control.Option;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -13,10 +14,15 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.utils.MinecraftTimeFormatter;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 final class PlaceholderExpansionHook extends PlaceholderExpansion {
@@ -68,32 +74,54 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
     @Override
     public @Nullable String onRequest(OfflinePlayer offlinePlayer, @NotNull String params) {
         // Split string in to an Array with underscores
-        String[] paramsArray = REPatterns.UNDERSCORE.split(params, 2);
+        List<String> paramsArray = Lists.newArrayList(REPatterns.UNDERSCORE.split(params));
 
         // No placeholder defined
-        if (paramsArray.length < 1) {
-            warning("No placeholder defined");
+        if (paramsArray.isEmpty()) {
+            warning("No placeholder key defined");
             return null;
         }
 
-        final var placeholder = paramsArray[0];
-        Option<LoadedMultiverseWorld> targetWorld;
+        final var placeholder = paramsArray.removeFirst();
 
-        // If no world is defined, use the player's world
-        if (paramsArray.length == 1) {
-            if (!offlinePlayer.isOnline()) {
-                return null;
-            }
-            targetWorld = worldManager.getLoadedWorld(((Player)offlinePlayer).getWorld());
-        } else {
-            targetWorld = worldManager.getLoadedWorld(paramsArray[1]);
-        }
+        String worldName = parseWorldName(offlinePlayer, paramsArray);
+        if (worldName == null) return null;
 
-        // Fail if world is null
-        return targetWorld.map(world -> getWorldPlaceHolderValue(placeholder, world)).getOrNull();
+        return worldManager.getLoadedWorld(worldName)
+                .onEmpty(() -> warning("Multiverse World not found: " + worldName))
+                .map(world -> getWorldPlaceHolderValue(placeholder, paramsArray, world))
+                .getOrNull();
     }
 
-    private @Nullable String getWorldPlaceHolderValue(@NotNull String placeholder, @NotNull LoadedMultiverseWorld world) {
+    private @Nullable String parseWorldName(OfflinePlayer offlinePlayer, List<String> paramsArray) {
+        // No world defined, get from player
+        if (paramsArray.isEmpty()) {
+            if (offlinePlayer instanceof Player player) {
+                return player.getWorld().getName();
+            } else {
+                warning("You must specify a world name for non-player placeholders");
+                return null;
+            }
+        }
+
+        // Try get from params
+        String paramWorldName = paramsArray.getLast();
+        if (worldManager.isLoadedWorld(paramWorldName)) {
+            paramsArray.removeLast();
+            return paramWorldName;
+        }
+
+        // Param not a world, fallback to player
+        if (offlinePlayer instanceof Player player) {
+            return player.getWorld().getName();
+        }
+        warning("Multiverse World not found: " + paramWorldName);
+        return null;
+    }
+
+    private @Nullable String getWorldPlaceHolderValue(@NotNull String placeholder,
+                                                      @NotNull List<String> placeholderParams,
+                                                      @NotNull LoadedMultiverseWorld world) {
         // Switch to find what specific placeholder we want
         switch (placeholder.toLowerCase()) {
             case "alias" -> {
@@ -151,7 +179,22 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return String.valueOf(world.getSeed());
             }
             case "time" -> {
-                return String.valueOf(world.getBukkitWorld().map(World::getTime).getOrElse(0L));
+                String timeFormat = !placeholderParams.isEmpty() ? placeholderParams.getFirst() : "";
+                long time = world.getBukkitWorld().map(World::getTime).getOrElse(0L);
+                switch (timeFormat) {
+                    case "" -> {
+                        return String.valueOf(time);
+                    }
+                    case "12h" -> {
+                        return MinecraftTimeFormatter.format12h(time);
+                    }
+                    case "24h" -> {
+                        return MinecraftTimeFormatter.format24h(time);
+                    }
+                    default -> {
+                        return MinecraftTimeFormatter.formatTime(time, timeFormat);
+                    }
+                }
             }
             case "type" -> {
                 return world.getBukkitWorld().map(World::getWorldType).map(Enum::name).getOrElse("null");
