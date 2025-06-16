@@ -15,6 +15,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -238,7 +239,11 @@ public class MultiverseCore extends MultiverseModule {
      * Gets the MultiverseCoreApi
      *
      * @return The MultiverseCoreApi
+     *
+     * @deprecated Use {@link MultiverseCoreApi#get()} directly.
      */
+    @Deprecated(since = "5.1", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public MultiverseCoreApi getApi() {
         return MultiverseCoreApi.get();
     }

@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
@@ -15,7 +16,10 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Provides access to the MultiverseCore API.
@@ -23,6 +27,7 @@ import java.util.Objects;
 public class MultiverseCoreApi {
 
     private static MultiverseCoreApi instance;
+    private static final List<Consumer<MultiverseCoreApi>> whenLoadedCallbacks = new ArrayList<>();
 
     static void init(@NotNull MultiverseCore multiverseCore) {
         if (instance != null) {
@@ -30,6 +35,9 @@ public class MultiverseCoreApi {
         }
         instance = new MultiverseCoreApi(multiverseCore.getServiceLocator());
         Bukkit.getServicesManager().register(MultiverseCoreApi.class, instance, multiverseCore, ServicePriority.Normal);
+
+        whenLoadedCallbacks.forEach(c -> c.accept(instance));
+        whenLoadedCallbacks.clear();
     }
 
     static void shutdown() {
@@ -38,9 +46,48 @@ public class MultiverseCoreApi {
     }
 
     /**
+     * Hook your plugin into the MultiverseCoreApi here to ensure you only start using the API after it has been initialized.
+     * Use this if you know your plugin may load before Multiverse-Core is fully initialized.
+     * <br/>
+     * This handy method removes the need for you to check with plugin manager or listen to plugin enable event.
+     * <br/>
+     * Callback will be called immediately if the MultiverseCoreApi has already been initialized.
+     *
+     * @param consumer The callback to execute when the MultiverseCoreApi has been initialized.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public static void whenLoaded(@NotNull Consumer<MultiverseCoreApi> consumer) {
+        if (instance != null) {
+            consumer.accept(instance);
+        } else {
+            whenLoadedCallbacks.add(consumer);
+        }
+    }
+
+    /**
+     * Checks if the MultiverseCoreApi has been initialized.
+     *
+     * @return True if the MultiverseCoreApi has been initialized, false otherwise
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public static boolean isLoaded() {
+        return instance != null;
+    }
+
+    /**
      * Gets the MultiverseCoreApi. This will throw an exception if the Multiverse-Core has not been initialized.
+     * <br/>
+     * You can check if the MultiverseCoreApi has been initialized with {@link #isLoaded()} before using this method.
+     * <br/>
+     * Alternatively, you can use {@link #whenLoaded(Consumer)} to hook into the MultiverseCoreApi if your plugin may
+     * load before Multiverse-Core is fully initialized.
      *
      * @return The MultiverseCoreApi
+     * @throws IllegalStateException if the MultiverseCoreApi has not been initialized
      */
     public static @NotNull MultiverseCoreApi get() {
         if (instance == null) {
