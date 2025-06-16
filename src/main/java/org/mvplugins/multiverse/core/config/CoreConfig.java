@@ -660,10 +660,11 @@ public final class CoreConfig {
     }
 
     /**
-     * Gets the underlying config file object
+     * Gets the underlying config file object. For internal use only.
      *
      * @return The config file
      */
+    @ApiStatus.Internal
     public FileConfiguration getConfig() {
         return configHandle.getConfig();
     }
