@@ -115,7 +115,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("No destination specified.");
         }
 
-        return destinationsProvider.parseDestination(destination)
+        return destinationsProvider.parseDestination(context.getSender(), destination)
                 .getOrThrow(failure -> MVInvalidCommandArgument.of(failure.getFailureMessage()));
     }
 

@@ -45,7 +45,10 @@ public final class AnchorDestination implements Destination<AnchorDestination, A
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Attempt<AnchorDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
+    public @NotNull Attempt<AnchorDestinationInstance, InstanceFailureReason> getDestinationInstance(
+            @NotNull CommandSender sender,
+            @NotNull String destinationParams
+    ) {
         return this.anchorManager.getAnchor(destinationParams)
                 .fold(
                         () -> Attempt.failure(InstanceFailureReason.ANCHOR_NOT_FOUND, replace("{anchor}").with(destinationParams)),

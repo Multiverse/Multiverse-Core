@@ -5,7 +5,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import io.vavr.control.Either;
+import io.vavr.control.Try;
 import org.jetbrains.annotations.ApiStatus;
+import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
@@ -117,6 +119,29 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
     default boolean isFailure() {
         return this instanceof Failure;
     }
+
+    /**
+     * Converts this {@link Attempt} instance to an equivalent {@link Try} representation. Defaults to a
+     * {@link MultiverseException} with failure message if this is a failure attempt.
+     *
+     * @return A {@link Try} instance representing the result of this {@code Attempt}.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    Try<T> toTry();
+
+    /**
+     * Converts this attempt to a {@code Try} instance. If this attempt represents a failure, the
+     * provided exception supplier will be invoked to create a failed try.
+     *
+     * @param throwableFunction A function that provides a throwable in case of failure.
+     * @return The {@link Try} instance corresponding to this attempt.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    Try<T> toTry(Function<Failure<T, F>, Throwable> throwableFunction);
 
     default Attempt<T, F> thenRun(Runnable runnable) {
         runnable.run();
@@ -354,6 +379,16 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         }
 
         @Override
+        public Try<T> toTry() {
+            return Try.success(value);
+        }
+
+        @Override
+        public Try<T> toTry(Function<Failure<T, F>, Throwable> throwableFunction) {
+            return Try.success(value);
+        }
+
+        @Override
         public F getFailureReason() {
             throw new UnsupportedOperationException("No failure reason as attempt is a success");
         }
@@ -404,6 +439,16 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         @Override
         public <X extends Throwable> T getOrThrow(Function<Failure<T, F>, X> exceptionSupplier) throws X {
             throw exceptionSupplier.apply(this);
+        }
+
+        @Override
+        public Try<T> toTry() {
+            return Try.failure(new MultiverseException(message));
+        }
+
+        @Override
+        public Try<T> toTry(Function<Failure<T, F>, Throwable> throwableFunction) {
+            return Try.failure(throwableFunction.apply(this));
         }
 
         @Override

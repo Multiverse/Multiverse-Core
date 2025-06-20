@@ -43,7 +43,10 @@ public final class PlayerDestination implements Destination<PlayerDestination, P
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Attempt<PlayerDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
+    public @NotNull Attempt<PlayerDestinationInstance, InstanceFailureReason> getDestinationInstance(
+            @NotNull CommandSender sender,
+            @NotNull String destinationParams
+    ) {
         Player player = PlayerFinder.get(destinationParams);
         if (player == null) {
             return Attempt.failure(InstanceFailureReason.PLAYER_NOT_FOUND, Replace.PLAYER.with(destinationParams));

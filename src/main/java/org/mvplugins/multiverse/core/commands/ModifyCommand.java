@@ -80,7 +80,7 @@ class ModifyCommand extends CoreCommand {
         }
 
         StringPropertyHandle worldPropertyHandle = world.getStringPropertyHandle();
-        worldPropertyHandle.modifyPropertyString(propertyName, propertyValue, action).onSuccess(ignore -> {
+        worldPropertyHandle.modifyPropertyString(issuer.getIssuer(), propertyName, propertyValue, action).onSuccess(ignore -> {
             issuer.sendMessage(MVCorei18n.MODIFY_SUCCESS,
                     replace("{action}").with(action.name().toLowerCase()),
                     replace("{property}").with(propertyName),
