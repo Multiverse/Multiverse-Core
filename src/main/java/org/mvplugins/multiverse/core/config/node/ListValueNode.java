@@ -44,7 +44,9 @@ public interface ListValueNode<I> extends ValueNode<List<I>> {
      * @since 5.1
      */
     @ApiStatus.AvailableSince("5.1")
-    @NotNull Collection<String> suggestItem(@NotNull CommandSender sender, @Nullable String input);
+    default @NotNull Collection<String> suggestItem(@NotNull CommandSender sender, @Nullable String input) {
+        return suggestItem(input);
+    }
 
     /**
      * Parses the given string into a value of type {@link I}. Used for property set by user input.
@@ -53,6 +55,20 @@ public interface ListValueNode<I> extends ValueNode<List<I>> {
      * @return The parsed value, or given exception if parsing failed.
      */
     @NotNull Try<I> parseItemFromString(@Nullable String input);
+
+    /**
+     * Parses the given string into a value of type {@link I}. Used for property set by user input.
+     *
+     * @param sender    The sender context.
+     * @param input     The string to parse.
+     * @return The parsed value, or given exception if parsing failed.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    default @NotNull Try<I> parseItemFromString(@NotNull CommandSender sender, @Nullable String input) {
+        return parseItemFromString(input);
+    }
 
     /**
      * Gets the serializer for this node.

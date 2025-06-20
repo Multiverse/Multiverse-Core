@@ -14,6 +14,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultStringParserProvider;
@@ -150,6 +151,17 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             return stringParser.parse(input, type);
         }
         return Try.failure(new UnsupportedOperationException("No string parser for type " + type.getName()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Try<T> parseFromString(@NotNull CommandSender sender, @Nullable String input) {
+        if (stringParser != null && stringParser instanceof SenderNodeStringParser<T> senderStringParser) {
+            return senderStringParser.parse(sender, input, type);
+        }
+        return parseFromString(input);
     }
 
     /**
@@ -316,6 +328,20 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * @return This builder.
          */
         public @NotNull B stringParser(@NotNull NodeStringParser<T> stringParser) {
+            this.stringParser = stringParser;
+            return self();
+        }
+
+        /**
+         * Sets the string parser for this node with sender context.
+         *
+         * @param stringParser  The string parser for this node.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B stringParser(@NotNull SenderNodeStringParser<T> stringParser) {
             this.stringParser = stringParser;
             return self();
         }

@@ -21,6 +21,7 @@ import org.mvplugins.multiverse.core.config.node.functions.DefaultStringParserPr
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
@@ -223,6 +224,17 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
      * {@inheritDoc}
      */
     @Override
+    public @NotNull Try<I> parseItemFromString(@NotNull CommandSender sender, @Nullable String input) {
+        if (itemStringParser != null && itemStringParser instanceof SenderNodeStringParser<I> senderStringParser) {
+            return senderStringParser.parse(sender, input, itemType);
+        }
+        return parseItemFromString(input);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public @Nullable NodeSerializer<I> getItemSerializer() {
         return itemSerializer;
     }
@@ -302,6 +314,20 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
          * @return This builder.
          */
         public @NotNull B itemStringParser(@NotNull NodeStringParser<I> itemStringParser) {
+            this.itemStringParser = itemStringParser;
+            return self();
+        }
+
+        /**
+         * Sets the string parser for an individual item in the list with sender context.
+         *
+         * @param itemStringParser  The string parser.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B itemStringParser(@NotNull SenderNodeStringParser<I> itemStringParser) {
             this.itemStringParser = itemStringParser;
             return self();
         }
