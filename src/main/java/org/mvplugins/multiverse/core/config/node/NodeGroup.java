@@ -1,9 +1,11 @@
 package org.mvplugins.multiverse.core.config.node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import io.github.townyadvanced.commentedconfiguration.setting.CommentedNode;
@@ -16,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public class NodeGroup implements Collection<Node> {
     private final Collection<Node> nodes;
+    private final List<String> nodeNames;
     private final Map<String, Node> nodesMap;
 
     /**
@@ -23,6 +26,7 @@ public class NodeGroup implements Collection<Node> {
      */
     public NodeGroup() {
         this.nodes = new ArrayList<>();
+        this.nodeNames = new ArrayList<>();
         this.nodesMap = new HashMap<>();
     }
 
@@ -34,18 +38,27 @@ public class NodeGroup implements Collection<Node> {
     public NodeGroup(@NotNull Collection<Node> nodes) {
         this.nodes = nodes;
         this.nodesMap = new HashMap<>(nodes.size());
+        this.nodeNames = new ArrayList<>(nodes.size());
         nodes.forEach(this::addNodeIndex);
     }
 
     private void addNodeIndex(@NotNull Node node) {
-        if (node instanceof ValueNode) {
-            ((ValueNode<?>) node).getName().peek(name -> nodesMap.put(name, node));
+        if (node instanceof ValueNode<?> valueNode) {
+            valueNode.getName().peek(name -> {
+                nodeNames.add(name);
+                nodesMap.put(name, node);
+                Arrays.stream(valueNode.getAliases()).forEach(alias -> nodesMap.put(alias, node));
+            });
         }
     }
 
     private void removeNodeIndex(@NotNull Node node) {
-        if (node instanceof ValueNode) {
-            ((ValueNode<?>) node).getName().peek(nodesMap::remove);
+        if (node instanceof ValueNode<?> valueNode) {
+            valueNode.getName().peek(name -> {
+                nodeNames.remove(name);
+                nodesMap.remove(name);
+                Arrays.stream(valueNode.getAliases()).forEach(alias -> nodesMap.remove(alias, node));
+            });
         }
     }
 
@@ -55,7 +68,7 @@ public class NodeGroup implements Collection<Node> {
      * @return The names of all nodes in this group.
      */
     public @NotNull Collection<String> getNames() {
-        return nodesMap.keySet();
+        return nodeNames;
     }
 
     /**

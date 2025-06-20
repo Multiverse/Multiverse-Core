@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import org.apache.logging.log4j.util.Strings;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,7 @@ import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 public interface ValueNode<T> extends Node {
 
     /**
-     * Gets the name of this node. Used for identifying the node from user input.
+     * Gets the name of this node. Used for identifying the node from user input. This must be unique within a node group.
      *
      * @return An {@link Option} containing the name of this node, or {@link Option.None} if the node has no name.
      */
@@ -26,6 +27,19 @@ public interface ValueNode<T> extends Node {
      * @return The class type of the node value.
      */
     @NotNull Class<T> getType();
+
+    /**
+     * Gets the aliases of this node. Serves as shorter or legacy alternatives the {@link #getName()} and must be
+     * unique within a node group.
+     *
+     * @return The aliases of this node.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    default @NotNull String[] getAliases() {
+        return Strings.EMPTY_ARRAY;
+    }
 
     /**
      * Gets the default value with type {@link T} of the node.
