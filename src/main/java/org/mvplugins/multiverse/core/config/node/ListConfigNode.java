@@ -60,6 +60,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @NotNull String[] comments,
             @Nullable String name,
             @NotNull Class<List<I>> type,
+            @NotNull String[] aliases,
             @Nullable Supplier<List<I>> defaultValueSupplier,
             @Nullable NodeSuggester suggester,
             @Nullable NodeStringParser<List<I>> stringParser,
@@ -72,7 +73,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @Nullable NodeSerializer<I> itemSerializer,
             @Nullable Function<I, Try<Void>> itemValidator,
             @Nullable BiConsumer<I, I> onSetItemValue) {
-        super(path, comments, name, type, defaultValueSupplier, suggester, stringParser, serializer,
+        super(path, comments, name, type, aliases, defaultValueSupplier, suggester, stringParser, serializer,
                 validator, onSetValue);
         this.itemType = itemType;
         this.itemSuggester = itemSuggester != null
@@ -348,6 +349,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
                     comments.toArray(new String[0]),
                     name,
                     type,
+                    aliases,
                     defaultValue,
                     suggester,
                     stringParser,
