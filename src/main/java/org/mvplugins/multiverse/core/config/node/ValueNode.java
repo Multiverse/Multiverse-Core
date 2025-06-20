@@ -78,6 +78,21 @@ public interface ValueNode<T> extends Node {
     @NotNull Try<T> parseFromString(@Nullable String input);
 
     /**
+     * Parses the given string into a value of type {@link T} with context from the sender.
+     * Used for property set by user input.
+     *
+     * @param sender    The sender context.
+     * @param input     The string to parse.
+     * @return The parsed value, or given exception if parsing failed.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    default @NotNull Try<T> parseFromString(@NotNull CommandSender sender, @Nullable String input) {
+        return parseFromString(input);
+    }
+
+    /**
      * Gets the serializer for this node.
      *
      * @return  The serializer for this node.

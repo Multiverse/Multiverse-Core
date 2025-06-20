@@ -6,7 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * A function that suggests possible values for a node value.
+ * A function that suggests possible values for a node value. These suggestions must be able to be used to parse the
+ * value from string with {@link NodeStringParser}.
  */
 @FunctionalInterface
 public interface NodeSuggester {

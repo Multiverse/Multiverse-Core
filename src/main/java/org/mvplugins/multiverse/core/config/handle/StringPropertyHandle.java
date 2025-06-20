@@ -43,6 +43,7 @@ public class StringPropertyHandle {
 
     /**
      * Get property names that can be modified. ADD and REMOVE actions can only be used on list nodes.
+     *
      * @param action The target action
      * @return The property names modifiable for the action.
      */
@@ -141,7 +142,7 @@ public class StringPropertyHandle {
     /**
      * Sets the value of the specified property name.
      *
-     * @param name The name of the property.
+     * @param name  The name of the property.
      * @param value The value to set.
      * @return A Try indicating success or failure.
      */
@@ -152,7 +153,7 @@ public class StringPropertyHandle {
     /**
      * Adds a value to a list property name.
      *
-     * @param name The name of the property.
+     * @param name  The name of the property.
      * @param value The value to add.
      * @return A Try indicating success or failure.
      */
@@ -163,7 +164,7 @@ public class StringPropertyHandle {
     /**
      * Removes a value from a list property name.
      *
-     * @param name The name of the property.
+     * @param name  The name of the property.
      * @param value The value to remove.
      * @return A Try indicating success or failure.
      */
@@ -184,9 +185,9 @@ public class StringPropertyHandle {
     /**
      * Modifies a property name based on the given action.
      *
-     * @param name The name of the property.
-     * @param value The new value (if applicable).
-     * @param action The modification action.
+     * @param name      The name of the property.
+     * @param value     The new value (if applicable).
+     * @param action    The modification action.
      * @return A Try indicating success or failure.
      */
     public Try<Void> modifyProperty(
@@ -203,59 +204,128 @@ public class StringPropertyHandle {
     /**
      * Sets the property value from a string representation.
      *
-     * @param name The name of the property.
+     * @param name  The name of the property.
      * @param value The string value to set.
      * @return A Try indicating success or failure.
      */
     public Try<Void> setPropertyString(@Nullable String name, @Nullable String value) {
+        return setPropertyString(Bukkit.getConsoleSender(), name, value);
+    }
+
+    /**
+     * Sets the property value from a string representation with a sender context.
+     *
+     * @param sender    The sender context.
+     * @param name      The name of the property.
+     * @param value     The string value to set.
+     * @return A Try indicating success or failure.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public Try<Void> setPropertyString(@NotNull CommandSender sender, @Nullable String name, @Nullable String value) {
         return findNode(name, ValueNode.class)
-                .flatMap(node -> node.parseFromString(value)
+                .flatMap(node -> node.parseFromString(sender, value)
                         .flatMap(parsedValue -> handle.set(node, parsedValue)));
     }
 
     /**
      * Adds a value to a list property using its string representation.
      *
-     * @param name The name of the property.
+     * @param name  The name of the property.
      * @param value The string value to add.
      * @return A Try indicating success or failure.
      */
     public Try<Void> addPropertyString(@Nullable String name, @Nullable String value) {
+        return addPropertyString(Bukkit.getConsoleSender(), name, value);
+    }
+
+    /**
+     * Adds a value to a list property using its string representation with a sender context.
+     *
+     * @param sender    The sender context.
+     * @param name      The name of the property.
+     * @param value     The string value to add.
+     * @return A Try indicating success or failure.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public Try<Void> addPropertyString(@NotNull CommandSender sender, @Nullable String name, @Nullable String value) {
         return findNode(name, ListValueNode.class)
-                .flatMap(node -> node.parseItemFromString(value)
+                .flatMap(node -> node.parseItemFromString(sender, value)
                         .flatMap(parsedValue -> handle.add(node, parsedValue)));
     }
 
     /**
      * Removes a value from a list property using its string representation.
      *
-     * @param name The name of the property.
+     * @param name  The name of the property.
      * @param value The string value to remove.
      * @return A Try indicating success or failure.
      */
     public Try<Void> removePropertyString(@Nullable String name, @Nullable String value) {
+        return removePropertyString(Bukkit.getConsoleSender(), name, value);
+    }
+
+    /**
+     * Removes a value from a list property using its string representation with a sender context.
+     *
+     * @param sender    The sender context.
+     * @param name      The name of the property.
+     * @param value     The string value to remove.
+     * @return A Try indicating success or failure.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public Try<Void> removePropertyString(@NotNull CommandSender sender, @Nullable String name, @Nullable String value) {
         return findNode(name, ListValueNode.class)
-                .flatMap(node -> node.parseItemFromString(value)
+                .flatMap(node -> node.parseItemFromString(sender, value)
                         .flatMap(parsedValue -> handle.remove(node, parsedValue)));
     }
 
     /**
      * Modifies a property using a string value based on the given action.
      *
-     * @param name The name of the property.
-     * @param value The string value (if applicable).
-     * @param action The modification action.
+     * @param name      The name of the property.
+     * @param value     The string value (if applicable).
+     * @param action    The modification action.
      * @return A Try indicating success or failure.
      */
     public Try<Void> modifyPropertyString(
-            @Nullable String name, @Nullable String value, @NotNull PropertyModifyAction action) {
+            @Nullable String name,
+            @Nullable String value,
+            @NotNull PropertyModifyAction action
+    ) {
+        return modifyPropertyString(Bukkit.getConsoleSender(), name, value, action);
+    }
+
+    /**
+     * Modifies a property using a string value based on the given action with a sender context.
+     *
+     * @param sender    The sender context.
+     * @param name      The name of the property.
+     * @param value     The string value (if applicable).
+     * @param action    The modification action.
+     * @return A Try indicating success or failure.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    public Try<Void> modifyPropertyString(
+            @NotNull CommandSender sender,
+            @Nullable String name,
+            @Nullable String value,
+            @NotNull PropertyModifyAction action
+    ) {
         if (action.isRequireValue() && (value == null)) {
             return Try.failure(new IllegalArgumentException("Value is required for PropertyModifyAction: " + action));
         }
         return switch (action) {
-            case SET -> setPropertyString(name, value);
-            case ADD -> addPropertyString(name, value);
-            case REMOVE -> removePropertyString(name, value);
+            case SET -> setPropertyString(sender, name, value);
+            case ADD -> addPropertyString(sender, name, value);
+            case REMOVE -> removePropertyString(sender, name, value);
             case RESET -> resetProperty(name);
             default -> Try.failure(new IllegalArgumentException("Unknown action: " + action));
         };
@@ -264,9 +334,9 @@ public class StringPropertyHandle {
     /**
      * Finds a configuration node by name and type.
      *
-     * @param name The name of the node.
-     * @param type The expected class type of the node.
-     * @param <T> The type of node.
+     * @param name  The name of the node.
+     * @param type  The expected class type of the node.
+     * @param <T>   The type of node.
      * @return A Try containing the found node or a failure if not found.
      */
     private <T extends Node> Try<T> findNode(@Nullable String name, @NotNull Class<T> type) {
