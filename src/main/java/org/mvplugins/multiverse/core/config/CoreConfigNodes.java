@@ -19,6 +19,7 @@ import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.dynamiclistener.EventPriorityMapper;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
@@ -251,6 +252,7 @@ final class CoreConfigNodes {
             .defaultValue("")
             .name("first-spawn-location")
             .suggester(this::suggestDestinations)
+            .stringParser(this::parseDestinationString)
             .build());
 
     final ConfigNode<Boolean> enableJoinDestination = node(ConfigNode.builder("spawn.enable-join-destination", Boolean.class)
@@ -268,6 +270,7 @@ final class CoreConfigNodes {
             .defaultValue("")
             .name("join-destination")
             .suggester(this::suggestDestinations)
+            .stringParser(this::parseDestinationString)
             .build());
 
     final ConfigNode<Boolean> defaultRespawnInOverworld = node(ConfigNode.builder("spawn.default-respawn-in-overworld", Boolean.class)
@@ -548,6 +551,12 @@ final class CoreConfigNodes {
 
     private Collection<String> suggestDestinations(CommandSender sender, String input) {
         return destinationsProvider.get().suggestDestinationStrings(sender, input);
+    }
+
+    private Try<String> parseDestinationString(CommandSender sender, String input, Class<String> type) {
+        return destinationsProvider.get().parseDestination(sender, input)
+                .map(DestinationInstance::toString)
+                .toTry();
     }
 
     private static final class DimensionFormatNodeSerializer implements NodeSerializer<DimensionFormat> {

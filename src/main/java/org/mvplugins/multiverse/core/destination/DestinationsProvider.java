@@ -7,6 +7,7 @@ import java.util.Map;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -51,8 +52,25 @@ public final class DestinationsProvider {
      * @param destinationString The destination string.
      * @return The destination object, or null if invalid format.
      */
-    @SuppressWarnings("unchecked,rawtypes")
     public @NotNull Attempt<DestinationInstance<?, ?>, FailureReason> parseDestination(@NotNull String destinationString) {
+        return this.parseDestination(Bukkit.getConsoleSender(), destinationString);
+    }
+
+    /**
+     * Converts a destination string to a destination object with sender context.
+     *
+     * @param sender            The target sender context.
+     * @param destinationString The destination string.
+     * @return The destination object, or null if invalid format.
+     *
+     * @since 5.1
+     */
+    @ApiStatus.AvailableSince("5.1")
+    @SuppressWarnings("unchecked,rawtypes")
+    public @NotNull Attempt<DestinationInstance<?, ?>, FailureReason> parseDestination(
+            @NotNull CommandSender sender,
+            @NotNull String destinationString
+    ) {
         String[] items = destinationString.split(SEPARATOR, 2);
 
         String idString = items[0];
@@ -74,7 +92,7 @@ public final class DestinationsProvider {
                     replace("{ids}").with(String.join(", ", this.destinationMap.keySet())));
         }
 
-        return destination.getDestinationInstance(destinationParams);
+        return destination.getDestinationInstance(sender, destinationParams);
     }
 
     /**

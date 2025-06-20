@@ -5,13 +5,13 @@ import java.util.stream.Stream;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
-import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -69,9 +69,19 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Attempt<ExactDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
+    public @NotNull Attempt<ExactDestinationInstance, InstanceFailureReason> getDestinationInstance(
+            @NotNull CommandSender sender,
+            @NotNull String destinationParams
+    ) {
         String[] items = REPatterns.COLON.split(destinationParams);
         if (items.length < 2) {
+            if (items[0].equals("@here")) {
+                return getLocationFromSender(sender)
+                        .map(location -> Attempt.<ExactDestinationInstance, InstanceFailureReason>success(
+                                new ExactDestinationInstance(this, new UnloadedWorldLocation(location))
+                        ))
+                        .getOrElse(() -> Attempt.failure(InstanceFailureReason.INVALID_COORDINATES_FORMAT)); // todo: specific failure reason for this case
+            }
             return Attempt.failure(InstanceFailureReason.INVALID_FORMAT);
         }
 
@@ -120,6 +130,16 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
                 : worldManager.getLoadedWorld(worldName);
     }
 
+    private Option<Location> getLocationFromSender(CommandSender sender) {
+        if (sender instanceof Entity entity) {
+            return Option.of(entity.getLocation());
+        }
+        if (sender instanceof BlockCommandSender blockSender) {
+            return Option.of(blockSender.getBlock().getLocation());
+        }
+        return Option.none();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -132,30 +152,37 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
                         .isSuccess())
                 .map(world ->
                         new DestinationSuggestionPacket(this, world.getTabCompleteName() + ":", world.getName()));
-        if (sender instanceof Player player) {
-            var playerLocation = new DestinationSuggestionPacket(
+
+        Location location = getLocationFromSender(sender).getOrNull();
+        if (location != null) {
+            var herePacket = new DestinationSuggestionPacket(
+                    this,
+                    "@here",
+                    location.getWorld().getName()
+            );
+            var locationPacket = new DestinationSuggestionPacket(
                     this,
                     "%s:%.2f,%.2f,%.2f".formatted(
-                            player.getWorld().getName(),
-                            player.getLocation().getX(),
-                            player.getLocation().getY(),
-                            player.getLocation().getZ()
+                            location.getWorld().getName(),
+                            location.getX(),
+                            location.getY(),
+                            location.getZ()
                     ),
-                    player.getWorld().getName()
+                    location.getWorld().getName()
             );
-            var playerLocationPW = new DestinationSuggestionPacket(
+            var locationPacketPW = new DestinationSuggestionPacket(
                     this,
                     "%s:%.2f,%.2f,%.2f:%.2f:%.2f".formatted(
-                            player.getWorld().getName(),
-                            player.getLocation().getX(),
-                            player.getLocation().getY(),
-                            player.getLocation().getZ(),
-                            player.getLocation().getPitch(),
-                            player.getLocation().getYaw()
+                            location.getWorld().getName(),
+                            location.getX(),
+                            location.getY(),
+                            location.getZ(),
+                            location.getPitch(),
+                            location.getYaw()
                     ),
-                    player.getWorld().getName()
+                    location.getWorld().getName()
             );
-            stream = Stream.concat(stream, Stream.of(playerLocation, playerLocationPW));
+            stream = Stream.concat(stream, Stream.of(herePacket, locationPacket, locationPacketPW));
         }
         return stream.toList();
     }

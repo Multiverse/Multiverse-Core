@@ -60,7 +60,10 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Attempt<WorldDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
+    public @NotNull Attempt<WorldDestinationInstance, InstanceFailureReason> getDestinationInstance(
+            @NotNull CommandSender sender,
+            @NotNull String destinationParams
+    ) {
         String[] items = REPatterns.COLON.split(destinationParams, 3);
         String worldName = items[0];
         MultiverseWorld world = getMultiverseWorld(worldName);

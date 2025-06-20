@@ -45,7 +45,10 @@ public final class BedDestination implements Destination<BedDestination, BedDest
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Attempt<BedDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
+    public @NotNull Attempt<BedDestinationInstance, InstanceFailureReason> getDestinationInstance(
+            @NotNull CommandSender sender,
+            @NotNull String destinationParams
+    ) {
         Player player = PlayerFinder.get(destinationParams);
         if (player == null && !OWN_BED_STRING.equals(destinationParams)) {
             return Attempt.failure(InstanceFailureReason.PLAYER_NOT_FOUND, Replace.PLAYER.with(destinationParams));
