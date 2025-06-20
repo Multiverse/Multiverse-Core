@@ -81,8 +81,8 @@ class ConfigTest : TestWithMockBukkit() {
         assertTrue(config.stringPropertyHandle.setProperty("enforce-access", true).isSuccess)
         assertEquals(true, config.stringPropertyHandle.getProperty("enforce-access").get())
 
-        assertTrue(config.stringPropertyHandle.setProperty("first-spawn-location", "world2").isSuccess)
-        assertEquals("world2", config.stringPropertyHandle.getProperty("first-spawn-location").get())
+        assertTrue(config.stringPropertyHandle.setProperty("chat-prefix-format", "%world% %chat%").isSuccess)
+        assertEquals("%world% %chat%", config.stringPropertyHandle.getProperty("chat-prefix-format").get())
 
         assertTrue(config.stringPropertyHandle.setProperty("global-debug", 1).isSuccess)
         assertEquals(1, config.stringPropertyHandle.getProperty("global-debug").get())
@@ -93,8 +93,8 @@ class ConfigTest : TestWithMockBukkit() {
         assertTrue(config.stringPropertyHandle.setPropertyString("enforce-access", "true").isSuccess)
         assertEquals(true, config.stringPropertyHandle.getProperty("enforce-access").get())
 
-        assertTrue(config.stringPropertyHandle.setPropertyString("first-spawn-location", "world2").isSuccess)
-        assertEquals("world2", config.stringPropertyHandle.getProperty("first-spawn-location").get())
+        assertTrue(config.stringPropertyHandle.setPropertyString("chat-prefix-format", "%world% %chat%").isSuccess)
+        assertEquals("%world% %chat%", config.stringPropertyHandle.getProperty("chat-prefix-format").get())
 
         assertTrue(config.stringPropertyHandle.setPropertyString("global-debug", "1").isSuccess)
         assertEquals(1, config.stringPropertyHandle.getProperty("global-debug").get())
