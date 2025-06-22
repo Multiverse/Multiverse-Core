@@ -74,7 +74,7 @@ world_nether:
   spawning: {}
   world-blacklist: []
   version: 1.2
-newworld:
+new[dot]world:
   adjust-spawn: false
   alias: ''
   allow-advancement-grant: true

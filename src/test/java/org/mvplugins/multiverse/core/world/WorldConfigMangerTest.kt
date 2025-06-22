@@ -63,10 +63,15 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Add a new world to config`() {
-        val worldConfig = worldConfigManager.addWorldConfig("newworld")
+        val worldConfig = worldConfigManager.addWorldConfig("new.world")
         assertNotNull(worldConfig)
-        assertEquals("newworld", worldConfig.worldName)
+        assertEquals("new.world", worldConfig.worldName)
         assertTrue(worldConfigManager.save().isSuccess)
+        assertConfigEquals("/worlds/newworld_worlds.yml", "worlds.yml")
+
+        // Make sure the world still can be loaded after save
+        assertTrue(worldConfigManager.load().isSuccess)
+        assertEquals("new.world", worldConfigManager.getWorldConfig("new.world").orNull?.worldName)
         assertConfigEquals("/worlds/newworld_worlds.yml", "worlds.yml")
     }
 
