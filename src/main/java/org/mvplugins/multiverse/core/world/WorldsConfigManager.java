@@ -121,7 +121,11 @@ final class WorldsConfigManager {
      * @return A tuple containing a list of the new WorldConfigs added and a list of the worlds removed from the config.
      */
     private NewAndRemovedWorlds parseNewAndRemovedWorlds() {
-        Set<String> allWorldsInConfig = worldsConfig.getKeys(false);
+        List<String> allWorldsInConfig = worldsConfig.getKeys(false)
+                .stream()
+                .map(this::decodeWorldName)
+                .toList();
+
         List<WorldConfig> newWorldsAdded = new ArrayList<>();
 
         for (String worldName : allWorldsInConfig) {
@@ -174,7 +178,7 @@ final class WorldsConfigManager {
                 worldConfig.save().onFailure(e -> {
                     throw new RuntimeException("Failed to save world config: " + worldName, e);
                 });
-                worldsConfig.set(worldName, worldConfig.getConfigurationSection());
+                worldsConfig.set(encodeWorldName(worldName), worldConfig.getConfigurationSection());
             });
             worldsConfig.save(worldConfigFile);
         }).onFailure(e -> {
@@ -214,7 +218,7 @@ final class WorldsConfigManager {
      */
     public void deleteWorldConfig(@NotNull String worldName) {
         worldConfigMap.remove(worldName);
-        worldsConfig.set(worldName, null);
+        worldsConfig.set(encodeWorldName(worldName), null);
     }
 
     /**
@@ -225,9 +229,21 @@ final class WorldsConfigManager {
      * @return The {@link ConfigurationSection} for the given world.
      */
     private ConfigurationSection getWorldConfigSection(String worldName) {
+        worldName = encodeWorldName(worldName);
         return worldsConfig.isConfigurationSection(worldName)
                 ? worldsConfig.getConfigurationSection(worldName)
                 : worldsConfig.createSection(worldName);
+    }
+
+    /**
+     * Dot is a special character in YAML that causes sub-path issues.
+     */
+    private String encodeWorldName(String worldName) {
+        return worldName.replace(".", "[dot]");
+    }
+
+    private String decodeWorldName(String worldName) {
+        return worldName.replace("[dot]", ".");
     }
 
     private static final class ConfigMigratedException extends RuntimeException {
