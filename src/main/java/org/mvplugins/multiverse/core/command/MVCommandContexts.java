@@ -7,11 +7,18 @@ import co.aikar.commands.ACFUtil;
 import co.aikar.commands.BukkitCommandExecutionContext;
 import co.aikar.commands.BukkitCommandIssuer;
 import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.MinecraftMessageKeys;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.contexts.ContextResolver;
 import com.google.common.base.Strings;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +27,10 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
 import org.mvplugins.multiverse.core.command.context.GameRuleValue;
+import org.mvplugins.multiverse.core.command.context.issueraware.IssuerAwareContextBuilder;
+import org.mvplugins.multiverse.core.command.context.PlayerLocation;
+import org.mvplugins.multiverse.core.command.context.issueraware.MultiverseWorldValue;
+import org.mvplugins.multiverse.core.command.context.issueraware.PlayerArrayValue;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -27,6 +38,7 @@ import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.exceptions.command.MVInvalidCommandArgument;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -69,13 +81,16 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerContext(GameRule.class, this::parseGameRule);
         registerContext(GameRuleValue.class, this::parseGameRuleValue);
         registerContext(GeneratorPlugin.class, this::parseGeneratorPlugin);
-        registerIssuerAwareContext(LoadedMultiverseWorld.class, this::parseLoadedMultiverseWorld);
-        registerIssuerAwareContext(LoadedMultiverseWorld[].class, this::parseLoadedMultiverseWorldArray);
-        registerIssuerAwareContext(MultiverseWorld.class, this::parseMultiverseWorld);
-        registerIssuerAwareContext(MultiverseWorld[].class, this::parseMultiverseWorldArray);
+        registerIssuerAwareContext(LoadedMultiverseWorld.class, loadedMultiverseWorldContextBuilder().generateContext());
+        registerIssuerAwareContext(LoadedMultiverseWorld[].class, loadedMultiverseWorldArrayContextBuilder().generateContext());
+        registerIssuerAwareContext(MultiverseWorld.class, multiverseWorldContextBuilder().generateContext());
+        registerIssuerAwareContext(MultiverseWorldValue.class, multiverseWorldContextBuilder().generateContext(MultiverseWorldValue::new));
+        registerIssuerAwareContext(MultiverseWorld[].class, multiverseWorldArrayContextBuilder().generateContext());
         registerContext(MultiverseAnchor.class, this::parseMultiverseAnchor);
-        registerIssuerAwareContext(Player.class, this::parsePlayer);
-        registerIssuerAwareContext(Player[].class, this::parsePlayerArray);
+        registerIssuerAwareContext(Player.class, playerContextBuilder().generateContext());
+        registerIssuerAwareContext(Player[].class, playerArrayContextBuilder().generateContext());
+        registerIssuerAwareContext(PlayerArrayValue.class, playerArrayContextBuilder().generateContext(PlayerArrayValue::new));
+        registerIssuerAwareContext(PlayerLocation.class, this::parsePlayerLocation);
         registerContext(SpawnCategory[].class, this::parseSpawnCategories);
     }
 
@@ -100,7 +115,7 @@ public class MVCommandContexts extends PaperCommandContexts {
             throw new InvalidCommandArgument("No destination specified.");
         }
 
-        return destinationsProvider.parseDestination(destination)
+        return destinationsProvider.parseDestination(context.getSender(), destination)
                 .getOrThrow(failure -> MVInvalidCommandArgument.of(failure.getFailureMessage()));
     }
 
@@ -149,107 +164,42 @@ public class MVCommandContexts extends PaperCommandContexts {
         return generatorPlugin;
     }
 
-    private LoadedMultiverseWorld parseLoadedMultiverseWorld(BukkitCommandExecutionContext context) {
-        String resolve = context.getFlagValue("resolve", "");
 
-        // Get world based on sender only
-        if (resolve.equals("issuerOnly")) {
-            if (context.getIssuer().isPlayer()) {
-                return worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
-        }
-
-        String worldName = context.getFirstArg();
-        LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
-
-        // Get world based on input, fallback to sender if input is not a world
-        if (resolve.equals("issuerAware")) {
-            if (world != null) {
-                context.popFirstArg();
-                return world;
-            }
-            if (context.getIssuer().isPlayer()) {
-                return worldManager.getLoadedWorld(context.getPlayer().getWorld())
-                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("World '" + worldName + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
-        }
-
-        // Get world based on input only
-        if (world != null) {
-            context.popFirstArg();
-            return world;
-        }
-        if (context.isOptional()) {
-            return null;
-        }
-        throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+    private IssuerAwareContextBuilder<LoadedMultiverseWorld> loadedMultiverseWorldContextBuilder() {
+        return new IssuerAwareContextBuilder<LoadedMultiverseWorld>()
+                .fromPlayer((context, player) -> worldManager.getLoadedWorld(player.getWorld()).getOrNull())
+                .fromInput((context, input) -> getLoadedMultiverseWorld(input))
+                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player in a loaded Multiverse World."))
+                .issuerAwarePlayerFailMessage((context, player) -> Message.of("You are not in a loaded multiverse world. Either specify a multiverse world name or use this command in a loaded multiverse world."))
+                .issuerAwareInputFailMessage((context, input) -> Message.of("World '" + input + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console."))
+                .inputOnlyFailMessage((context, input) -> Message.of("World " + input + " is not a loaded multiverse world."));
     }
 
-    private LoadedMultiverseWorld[] parseLoadedMultiverseWorldArray(BukkitCommandExecutionContext context) {
-        String resolve = context.getFlagValue("resolve", "");
-
-        // Get world based on sender only
-        if (resolve.equals("issuerOnly")) {
-            if (context.getIssuer().isPlayer()) {
-                LoadedMultiverseWorld playerWorld = worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld())
-                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
-                return new LoadedMultiverseWorld[]{playerWorld};
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
-        }
-
-        String worldStrings = context.getFirstArg();
-        String[] worldNames = worldStrings == null ? new String[0] : REPatterns.COMMA.split(worldStrings);
-        Set<LoadedMultiverseWorld> worlds = new HashSet<>(worldNames.length);
-        for (String worldName : worldNames) {
-            if ("*".equals(worldName)) {
-                worlds.addAll(worldManager.getLoadedWorlds());
-                break;
-            }
-            LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
-            if (world == null) {
-                throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
-            }
-            worlds.add(world);
-        }
-
-        // Get world based on input, fallback to sender if input is not a world
-        if (resolve.equals("issuerAware")) {
-            if (!worlds.isEmpty()) {
-                context.popFirstArg();
-                return worlds.toArray(new LoadedMultiverseWorld[0]);
-            }
-            if (context.getIssuer().isPlayer()) {
-                LoadedMultiverseWorld playerWorld = worldManager.getLoadedWorld(context.getIssuer().getPlayer().getWorld())
-                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
-                return new LoadedMultiverseWorld[]{playerWorld};
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("Worlds '" + worldStrings + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
-        }
-
-        // Get world based on input only
-        if (!worlds.isEmpty()) {
-            context.popFirstArg();
-            return worlds.toArray(new LoadedMultiverseWorld[0]);
-        }
-        if (context.isOptional()) {
-            return null;
-        }
-        throw new InvalidCommandArgument("World " + worldStrings + " is not a loaded multiverse world.");
+    private IssuerAwareContextBuilder<LoadedMultiverseWorld[]> loadedMultiverseWorldArrayContextBuilder() {
+        return new IssuerAwareContextBuilder<LoadedMultiverseWorld[]>()
+                .fromPlayer((context, player) -> worldManager.getLoadedWorld(player.getWorld())
+                        .map(world -> new LoadedMultiverseWorld[]{world})
+                        .getOrNull())
+                .fromInput((context, input) -> {
+                    String[] worldNames = input == null ? new String[0] : REPatterns.COMMA.split(input);
+                    Set<LoadedMultiverseWorld> worlds = new HashSet<>(worldNames.length);
+                    for (String worldName : worldNames) {
+                        if ("*".equals(worldName)) {
+                            worlds.addAll(worldManager.getLoadedWorlds());
+                            break;
+                        }
+                        LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
+                        if (world == null) {
+                            throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+                        }
+                        worlds.add(world);
+                    }
+                    return worlds.isEmpty() ? null : worlds.toArray(new LoadedMultiverseWorld[0]);
+                })
+                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player in a loaded Multiverse World."))
+                .issuerAwarePlayerFailMessage((context, player) -> Message.of("You are not in a loaded multiverse world. Either specify a multiverse world name or use this command in a loaded multiverse world."))
+                .issuerAwareInputFailMessage((context, input) -> Message.of("World '" + input + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console."))
+                .inputOnlyFailMessage((context, input) -> Message.of("World " + input + " is not a loaded multiverse world."));
     }
 
     @Nullable
@@ -259,107 +209,41 @@ public class MVCommandContexts extends PaperCommandContexts {
                 : worldManager.getLoadedWorld(worldName).getOrNull();
     }
 
-    private MultiverseWorld parseMultiverseWorld(BukkitCommandExecutionContext context) {
-        String resolve = context.getFlagValue("resolve", "");
-
-        // Get world based on sender only
-        if (resolve.equals("issuerOnly")) {
-            if (context.getIssuer().isPlayer()) {
-                return worldManager.getWorld(context.getIssuer().getPlayer().getWorld()).getOrNull();
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
-        }
-
-        String worldName = context.getFirstArg();
-        MultiverseWorld world = getMultiverseWorld(worldName);
-
-        // Get world based on input, fallback to sender if input is not a world
-        if (resolve.equals("issuerAware")) {
-            if (world != null) {
-                context.popFirstArg();
-                return world;
-            }
-            if (context.getIssuer().isPlayer()) {
-                return worldManager.getWorld(context.getPlayer().getWorld())
-                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("World '" + worldName + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
-        }
-
-        // Get world based on input only
-        if (world != null) {
-            context.popFirstArg();
-            return world;
-        }
-        if (context.isOptional()) {
-            return null;
-        }
-        throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+    private IssuerAwareContextBuilder<MultiverseWorld> multiverseWorldContextBuilder() {
+        return new IssuerAwareContextBuilder<MultiverseWorld>()
+                .fromPlayer((context, player) -> worldManager.getWorld(player.getWorld()).getOrNull())
+                .fromInput((context, input) -> getMultiverseWorld(input))
+                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player in a Multiverse World."))
+                .issuerAwarePlayerFailMessage((context, player) -> Message.of("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."))
+                .issuerAwareInputFailMessage((context, input) -> Message.of("World '" + input + "' is not a multiverse world. Remember to specify the world name when using this command in console."))
+                .inputOnlyFailMessage((context, input) -> Message.of("World " + input + " is not a multiverse world."));
     }
 
-    private MultiverseWorld[] parseMultiverseWorldArray(BukkitCommandExecutionContext context) {
-        String resolve = context.getFlagValue("resolve", "");
-
-        // Get world based on sender only
-        if (resolve.equals("issuerOnly")) {
-            if (context.getIssuer().isPlayer()) {
-                MultiverseWorld playerWorld = worldManager.getWorld(context.getIssuer().getPlayer().getWorld())
-                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
-                return new MultiverseWorld[]{playerWorld};
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("This command can only be used by a player in a Multiverse World.");
-        }
-
-        String worldStrings = context.getFirstArg();
-        String[] worldNames = worldStrings == null ? new String[0] : REPatterns.COMMA.split(worldStrings);
-        Set<MultiverseWorld> worlds = new HashSet<>(worldNames.length);
-        for (String worldName : worldNames) {
-            if ("*".equals(worldName)) {
-                worlds.addAll(worldManager.getWorlds());
-                break;
-            }
-            MultiverseWorld world = getMultiverseWorld(worldName);
-            if (world == null) {
-                throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
-            }
-            worlds.add(world);
-        }
-
-        // Get world based on input, fallback to sender if input is not a world
-        if (resolve.equals("issuerAware")) {
-            if (!worlds.isEmpty()) {
-                context.popFirstArg();
-                return worlds.toArray(new MultiverseWorld[0]);
-            }
-            if (context.getIssuer().isPlayer()) {
-                MultiverseWorld playerWorld = worldManager.getWorld(context.getIssuer().getPlayer().getWorld())
-                        .getOrElseThrow(() -> new InvalidCommandArgument("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."));
-                return new MultiverseWorld[]{playerWorld};
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("Worlds '" + worldStrings + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console.");
-        }
-
-        // Get world based on input only
-        if (!worlds.isEmpty()) {
-            context.popFirstArg();
-            return worlds.toArray(new MultiverseWorld[0]);
-        }
-        if (context.isOptional()) {
-            return null;
-        }
-        throw new InvalidCommandArgument("World " + worldStrings + " is not a loaded multiverse world.");
+    private IssuerAwareContextBuilder<MultiverseWorld[]> multiverseWorldArrayContextBuilder() {
+        return new IssuerAwareContextBuilder<MultiverseWorld[]>()
+                .fromPlayer((context, player) -> worldManager.getWorld(player.getWorld())
+                        .map(world -> new MultiverseWorld[]{world})
+                        .getOrNull())
+                .fromInput((context, input) -> {
+                    String[] worldNames = input == null ? new String[0] : REPatterns.COMMA.split(input);
+                    Set<MultiverseWorld> worlds = new HashSet<>(worldNames.length);
+                    for (String worldName : worldNames) {
+                        if ("*".equals(worldName)) {
+                            worlds.addAll(worldManager.getWorlds());
+                            break;
+                        }
+                        MultiverseWorld world = getMultiverseWorld(worldName);
+                        if (world == null) {
+                            throw new InvalidCommandArgument("World " + worldName + " is not a multiverse world.");
+                        }
+                        worlds.add(world);
+                    }
+                    return worlds.isEmpty() ? null : worlds.toArray(new MultiverseWorld[0]);
+                })
+                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player in a Multiverse World."))
+                .issuerAwarePlayerFailMessage((context, player) -> Message.of("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."))
+                .issuerAwareInputFailMessage((context, input) -> Message.of("World '" + input + "' is not a multiverse world. Remember to specify the world name when using this command in console."))
+                .inputOnlyFailMessage((context, input) -> Message.of("World " + input + " is not a multiverse world."));
     }
 
     @Nullable
@@ -375,92 +259,110 @@ public class MVCommandContexts extends PaperCommandContexts {
                 .getOrElseThrow(() -> new InvalidCommandArgument("The anchor '" +anchorName + "' does not exist."));
     }
 
-    private Player parsePlayer(BukkitCommandExecutionContext context) {
-        String resolve = context.getFlagValue("resolve", "");
-
-        // Get player based on sender only
-        if (resolve.equals("issuerOnly")) {
-            if (context.getIssuer().isPlayer()) {
-                return context.getIssuer().getPlayer();
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("This command can only be used by a player.");
-        }
-
-        String playerIdentifier = context.getFirstArg();
-        Player player = PlayerFinder.get(playerIdentifier, context.getSender());
-
-        // Get player based on input, fallback to sender if input is not a player
-        if (resolve.equals("issuerAware")) {
-            if (player != null) {
-                context.popFirstArg();
-                return player;
-            }
-            if (context.getIssuer().isPlayer()) {
-                return context.getIssuer().getPlayer();
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("Invalid player: " + playerIdentifier
-                    + ". Either specify an online player or use this command as a player.");
-        }
-
-        // Get player based on input only
-        if (player != null) {
-            context.popFirstArg();
-            return player;
-        }
-        if (context.isOptional()) {
-            return null;
-        }
-        throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
+    private IssuerAwareContextBuilder<Player> playerContextBuilder() {
+        return new IssuerAwareContextBuilder<Player>()
+                .fromPlayer((context, player) -> player)
+                .fromInput((context, input) -> PlayerFinder.get(input, context.getSender()))
+                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player."))
+                .issuerAwareInputFailMessage((context, input) -> Message.of("Invalid player: " + input + ". Either specify an online player or use this command as a player."))
+                .inputOnlyFailMessage((context, input) -> Message.of("Player " + input + " not found."));
     }
 
-    private Player[] parsePlayerArray(BukkitCommandExecutionContext context) {
-        String resolve = context.getFlagValue("resolve", "");
+    private IssuerAwareContextBuilder<Player[]> playerArrayContextBuilder() {
+        return new IssuerAwareContextBuilder<Player[]>()
+                .fromPlayer((context, player) -> new Player[]{player})
+                .fromInput((context, input) -> {
+                    Player[] players = PlayerFinder.getMulti(input, context.getSender()).toArray(new Player[0]);
+                    return (players.length == 0) ? null : players;
+                })
+                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player."))
+                .issuerAwareInputFailMessage((context, input) -> Message.of("Invalid player: " + input + ". Either specify an online player or use this command as a player."))
+                .inputOnlyFailMessage((context, input) -> Message.of("Player " + input + " not found."));
+    }
 
-        // Get player based on sender only
-        if (resolve.equals("issuerOnly")) {
-            if (context.getIssuer().isPlayer()) {
-                return new Player[]{context.getIssuer().getPlayer()};
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("This command can only be used by a player.");
-        }
+    private PlayerLocation parsePlayerLocation(BukkitCommandExecutionContext context) {
+        Try<Location> location = Try.of(() -> parseLocationFromInput(context.getFirstArg(), context.getSender()));
 
-        String playerIdentifier = context.getFirstArg();
-        Player[] players = PlayerFinder.getMulti(playerIdentifier, context.getSender()).toArray(new Player[0]);
-
-        // Get player based on input, fallback to sender if input is not a player
-        if (resolve.equals("issuerAware")) {
-            if (players.length > 0) {
-                context.popFirstArg();
-                return players;
-            }
-            if (context.getIssuer().isPlayer()) {
-                return new Player[]{context.getIssuer().getPlayer()};
-            }
-            if (context.isOptional()) {
-                return null;
-            }
-            throw new InvalidCommandArgument("Invalid player: " + playerIdentifier
-                    + ". Either specify an online player or use this command as a player.");
-        }
-
-        // Get player based on input only
-        if (players.length > 0) {
+        if (location.isSuccess()) {
             context.popFirstArg();
-            return players;
+            return new PlayerLocation(location.get());
         }
-        if (context.isOptional()) {
-            return null;
+        if (context.getPlayer() != null) {
+            return new PlayerLocation(context.getPlayer().getLocation());
         }
-        throw new InvalidCommandArgument("Player " + playerIdentifier + " not found.");
+        if (context.getFirstArg() == null) {
+            throw new InvalidCommandArgument("You must specify a world location when using this command in console.");
+        }
+        if (location.getCause() instanceof InvalidCommandArgument) {
+            throw (InvalidCommandArgument)location.getCause();
+        }
+        throw new RuntimeException(location.getCause());
+    }
+
+    // copied from ACF
+    private Location parseLocationFromInput(String input, CommandSender sender) {
+        String[] split = REPatterns.COLON.split(input, 2);
+        if (split.length == 0) {
+            throw new InvalidCommandArgument(true);
+        } else if (split.length < 2 && !(sender instanceof Player) && !(sender instanceof BlockCommandSender)) {
+            throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_WORLD, new String[0]);
+        } else {
+            Location sourceLoc = null;
+            String world;
+            String rest;
+            if (split.length == 2) {
+                world = split[0];
+                rest = split[1];
+            } else if (sender instanceof Player) {
+                sourceLoc = ((Player)sender).getLocation();
+                world = sourceLoc.getWorld().getName();
+                rest = split[0];
+            } else {
+                if (!(sender instanceof BlockCommandSender)) {
+                    throw new InvalidCommandArgument(true);
+                }
+
+                sourceLoc = ((BlockCommandSender)sender).getBlock().getLocation();
+                world = sourceLoc.getWorld().getName();
+                rest = split[0];
+            }
+
+            boolean rel = rest.startsWith("~");
+            split = REPatterns.COMMA.split(rel ? rest.substring(1) : rest);
+            if (split.length < 3) {
+                throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_XYZ, new String[0]);
+            } else {
+                Double x = ACFUtil.parseDouble(split[0], rel ? (double)0.0F : null);
+                Double y = ACFUtil.parseDouble(split[1], rel ? (double)0.0F : null);
+                Double z = ACFUtil.parseDouble(split[2], rel ? (double)0.0F : null);
+                if (sourceLoc != null && rel) {
+                    x = x + sourceLoc.getX();
+                    y = y + sourceLoc.getY();
+                    z = z + sourceLoc.getZ();
+                } else if (rel) {
+                    throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_CONSOLE_NOT_RELATIVE, new String[0]);
+                }
+
+                if (x != null && y != null && z != null) {
+                    World worldObj = Bukkit.getWorld(world);
+                    if (worldObj == null) {
+                        throw new InvalidCommandArgument(MinecraftMessageKeys.INVALID_WORLD, new String[0]);
+                    } else if (split.length >= 5) {
+                        Float yaw = ACFUtil.parseFloat(split[3]);
+                        Float pitch = ACFUtil.parseFloat(split[4]);
+                        if (pitch != null && yaw != null) {
+                            return new Location(worldObj, x, y, z, yaw, pitch);
+                        } else {
+                            throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_XYZ, new String[0]);
+                        }
+                    } else {
+                        return new Location(worldObj, x, y, z);
+                    }
+                } else {
+                    throw new InvalidCommandArgument(MinecraftMessageKeys.LOCATION_PLEASE_SPECIFY_XYZ, new String[0]);
+                }
+            }
+        }
     }
 
     private SpawnCategory[] parseSpawnCategories(BukkitCommandExecutionContext context) {

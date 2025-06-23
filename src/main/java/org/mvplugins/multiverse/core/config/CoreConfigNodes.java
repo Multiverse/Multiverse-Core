@@ -4,7 +4,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
-import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
 
@@ -19,12 +19,13 @@ import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
-import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.dynamiclistener.EventPriorityMapper;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
+import org.mvplugins.multiverse.core.teleportation.PassengerModes;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 
 import java.util.Collection;
@@ -183,6 +184,20 @@ final class CoreConfigNodes {
             .name("use-finer-teleport-permissions")
             .build());
 
+    final ConfigNode<PassengerModes> passengerMode = node(ConfigNode.builder("teleport.passenger-mode", PassengerModes.class)
+            .comment("")
+            .comment("Configures how passengers and vehicles are handled when an entity is teleported.")
+            .comment("  default: Server will handle passengers and vehicles, this usually means entities will not be teleported to a different world if they have passengers.")
+            .comment("  dismount_passengers: Passengers will be removed from the parent entity before the teleport.")
+            .comment("  dismount_vehicle: Vehicle will be removed and from the parent entity before the teleport.")
+            .comment("  dismount_all: All passengers and vehicles will be removed from the parent entity before the teleport.")
+            .comment("  retain_passengers: Passengers will teleport together with the parent entity.")
+            .comment("  retain_vehicle: Vehicles will teleport together with the parent entity.")
+            .comment("  retain_all: All passengers and vehicles will teleport together with the parent entity.")
+            .defaultValue(PassengerModes.DEFAULT)
+            .name("passenger-mode")
+            .build());
+
     final ConfigNode<Integer> concurrentTeleportLimit = node(ConfigNode.builder("teleport.concurrent-teleport-limit", Integer.class)
             .comment("")
             .comment("Sets the maximum number of players allowed to be teleported at once with `/mv teleport` command")
@@ -237,6 +252,7 @@ final class CoreConfigNodes {
             .defaultValue("")
             .name("first-spawn-location")
             .suggester(this::suggestDestinations)
+            .stringParser(this::parseDestinationString)
             .build());
 
     final ConfigNode<Boolean> enableJoinDestination = node(ConfigNode.builder("spawn.enable-join-destination", Boolean.class)
@@ -254,6 +270,7 @@ final class CoreConfigNodes {
             .defaultValue("")
             .name("join-destination")
             .suggester(this::suggestDestinations)
+            .stringParser(this::parseDestinationString)
             .build());
 
     final ConfigNode<Boolean> defaultRespawnInOverworld = node(ConfigNode.builder("spawn.default-respawn-in-overworld", Boolean.class)
@@ -532,15 +549,14 @@ final class CoreConfigNodes {
             .hidden()
             .build());
 
-    // todo: Maybe combine with the similar method in MVCommandCompletion but that has permission checking
-    private Collection<String> suggestDestinations(String input) {
-        return destinationsProvider.get().getDestinations().stream()
-                .flatMap(destination -> destination.suggestDestinations(Bukkit.getConsoleSender(), null)
-                        .stream()
-                        .map(packet -> destination instanceof WorldDestination
-                                ? packet.destinationString()
-                                : destination.getIdentifier() + ":" + packet.destinationString()))
-                .toList();
+    private Collection<String> suggestDestinations(CommandSender sender, String input) {
+        return destinationsProvider.get().suggestDestinationStrings(sender, input);
+    }
+
+    private Try<String> parseDestinationString(CommandSender sender, String input, Class<String> type) {
+        return destinationsProvider.get().parseDestination(sender, input)
+                .map(DestinationInstance::toString)
+                .toTry();
     }
 
     private static final class DimensionFormatNodeSerializer implements NodeSerializer<DimensionFormat> {

@@ -8,9 +8,14 @@ import java.util.function.Supplier;
 
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import org.apache.logging.log4j.util.Strings;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser;
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultStringParserProvider;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
@@ -42,6 +47,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
 
     protected final @Nullable String name;
     protected final @NotNull Class<T> type;
+    protected final @NotNull String[] aliases;
     protected @Nullable Supplier<T> defaultValue;
     protected @Nullable NodeSuggester suggester;
     protected @Nullable NodeStringParser<T> stringParser;
@@ -54,6 +60,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             @NotNull String[] comments,
             @Nullable String name,
             @NotNull Class<T> type,
+            @NotNull String[] aliases,
             @Nullable Supplier<T> defaultValue,
             @Nullable NodeSuggester suggester,
             @Nullable NodeStringParser<T> stringParser,
@@ -63,6 +70,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         super(path, comments);
         this.name = name;
         this.type = type;
+        this.aliases = aliases;
         this.defaultValue = defaultValue;
         this.suggester = (suggester != null)
                 ? suggester
@@ -97,6 +105,14 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * {@inheritDoc}
      */
     @Override
+    public @NotNull String[] getAliases() {
+        return aliases;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public @Nullable T getDefaultValue() {
         if (defaultValue != null) {
             return defaultValue.get();
@@ -119,11 +135,33 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * {@inheritDoc}
      */
     @Override
+    public @NotNull Collection<String> suggest(@NotNull CommandSender sender, @Nullable String input) {
+        if (suggester != null && suggester instanceof SenderNodeSuggester senderSuggester) {
+            return senderSuggester.suggest(sender, input);
+        }
+        return suggest(input);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public @NotNull Try<T> parseFromString(@Nullable String input) {
         if (stringParser != null) {
             return stringParser.parse(input, type);
         }
         return Try.failure(new UnsupportedOperationException("No string parser for type " + type.getName()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Try<T> parseFromString(@NotNull CommandSender sender, @Nullable String input) {
+        if (stringParser != null && stringParser instanceof SenderNodeStringParser<T> senderStringParser) {
+            return senderStringParser.parse(sender, input, type);
+        }
+        return parseFromString(input);
     }
 
     /**
@@ -164,6 +202,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
 
         protected @Nullable String name;
         protected @NotNull final Class<T> type;
+        protected @NotNull String[] aliases = Strings.EMPTY_ARRAY;
         protected @Nullable Supplier<T> defaultValue;
         protected @Nullable NodeSuggester suggester;
         protected @Nullable NodeStringParser<T> stringParser;
@@ -244,6 +283,20 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         }
 
         /**
+         * Sets the aliases for this node. Aliases are alternative identifiers for referencing the node.
+         *
+         * @param aliases The aliases to set for this node.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B aliases(@NotNull String... aliases) {
+            this.aliases = aliases;
+            return self();
+        }
+
+        /**
          * Sets the suggester for this node.
          *
          * @param suggester The suggester for this node.
@@ -255,12 +308,40 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         }
 
         /**
+         * Sets the suggester for this node with sender context.
+         *
+         * @param suggester The suggester for this node.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B suggester(@NotNull SenderNodeSuggester suggester) {
+            this.suggester = suggester;
+            return self();
+        }
+
+        /**
          * Sets the string parser for this node.
          *
          * @param stringParser  The string parser for this node.
          * @return This builder.
          */
         public @NotNull B stringParser(@NotNull NodeStringParser<T> stringParser) {
+            this.stringParser = stringParser;
+            return self();
+        }
+
+        /**
+         * Sets the string parser for this node with sender context.
+         *
+         * @param stringParser  The string parser for this node.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B stringParser(@NotNull SenderNodeStringParser<T> stringParser) {
             this.stringParser = stringParser;
             return self();
         }
@@ -304,7 +385,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         @Override
         public @NotNull ConfigNode<T> build() {
             return new ConfigNode<>(path, comments.toArray(new String[0]),
-                    name, type, defaultValue, suggester, stringParser, serializer, validator, onSetValue);
+                    name, type, aliases, defaultValue, suggester, stringParser, serializer, validator, onSetValue);
         }
     }
 }

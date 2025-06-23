@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -13,6 +12,8 @@ import java.util.stream.Collectors;
 
 import io.vavr.Value;
 import io.vavr.control.Try;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,8 @@ import org.mvplugins.multiverse.core.config.node.functions.DefaultStringParserPr
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser;
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.utils.REPatterns;
@@ -58,6 +61,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @NotNull String[] comments,
             @Nullable String name,
             @NotNull Class<List<I>> type,
+            @NotNull String[] aliases,
             @Nullable Supplier<List<I>> defaultValueSupplier,
             @Nullable NodeSuggester suggester,
             @Nullable NodeStringParser<List<I>> stringParser,
@@ -70,7 +74,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @Nullable NodeSerializer<I> itemSerializer,
             @Nullable Function<I, Try<Void>> itemValidator,
             @Nullable BiConsumer<I, I> onSetItemValue) {
-        super(path, comments, name, type, defaultValueSupplier, suggester, stringParser, serializer,
+        super(path, comments, name, type, aliases, defaultValueSupplier, suggester, stringParser, serializer,
                 validator, onSetValue);
         this.itemType = itemType;
         this.itemSuggester = itemSuggester != null
@@ -110,12 +114,12 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
     }
 
     private void setDefaultSuggester() {
-        this.suggester = input -> {
-            if (input == null) {
-                return itemSuggester.suggest(null);
-            }
-            return StringFormatter.addonToCommaSeperated(input, itemSuggester.suggest(input));
-        };
+        if (itemSuggester instanceof SenderNodeSuggester senderItemSuggester) {
+            this.suggester = (SenderNodeSuggester)(sender, input) ->
+                    StringFormatter.addonToCommaSeperated(input, senderItemSuggester.suggest(sender, input));
+        } else {
+            this.suggester = input -> StringFormatter.addonToCommaSeperated(input, itemSuggester.suggest(input));
+        }
     }
 
     private void setDefaultStringParser() {
@@ -198,11 +202,33 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
      * {@inheritDoc}
      */
     @Override
+    public @NotNull Collection<String> suggestItem(@NotNull CommandSender sender, @Nullable String input) {
+        if (itemSuggester != null && itemSuggester instanceof SenderNodeSuggester senderSuggester) {
+            return senderSuggester.suggest(sender, input);
+        }
+        return suggestItem(input);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public @NotNull Try<I> parseItemFromString(@Nullable String input) {
         if (itemStringParser != null) {
             return itemStringParser.parse(input, itemType);
         }
         return Try.failure(new UnsupportedOperationException("No item string parser for type " + itemType));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Try<I> parseItemFromString(@NotNull CommandSender sender, @Nullable String input) {
+        if (itemStringParser != null && itemStringParser instanceof SenderNodeStringParser<I> senderStringParser) {
+            return senderStringParser.parse(sender, input, itemType);
+        }
+        return parseItemFromString(input);
     }
 
     /**
@@ -268,12 +294,40 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         }
 
         /**
+         * Sets the suggester for an individual item in the list with sender context.
+         *
+         * @param itemSuggester The suggester.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B itemSuggester(@NotNull SenderNodeSuggester itemSuggester) {
+            this.itemSuggester = itemSuggester;
+            return self();
+        }
+
+        /**
          * Sets the string parser for an individual item in the list.
          *
          * @param itemStringParser  The string parser.
          * @return This builder.
          */
         public @NotNull B itemStringParser(@NotNull NodeStringParser<I> itemStringParser) {
+            this.itemStringParser = itemStringParser;
+            return self();
+        }
+
+        /**
+         * Sets the string parser for an individual item in the list with sender context.
+         *
+         * @param itemStringParser  The string parser.
+         * @return This builder.
+         *
+         * @since 5.1
+         */
+        @ApiStatus.AvailableSince("5.1")
+        public @NotNull B itemStringParser(@NotNull SenderNodeStringParser<I> itemStringParser) {
             this.itemStringParser = itemStringParser;
             return self();
         }
@@ -321,6 +375,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
                     comments.toArray(new String[0]),
                     name,
                     type,
+                    aliases,
                     defaultValue,
                     suggester,
                     stringParser,

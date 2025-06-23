@@ -60,7 +60,7 @@ final class SpawnCommand extends CoreCommand {
     @CommandAlias("mvspawn")
     @Subcommand("spawn")
     @CommandPermission("@mvspawn")
-    @CommandCompletion("@playersarray:checkPermissions=@mvspawnother|@flags:groupName=" + UnsafeFlags.NAME + ",resolveUntil=arg1"
+    @CommandCompletion("@playersarray:checkPermissions=@mvspawnother|@flags:resolveUntil=arg1,groupName=" + UnsafeFlags.NAME
             + " @flags:groupName=" + UnsafeFlags.NAME)
     @Syntax("[player]")
     @Description("{@@mv-core.spawn.description}")

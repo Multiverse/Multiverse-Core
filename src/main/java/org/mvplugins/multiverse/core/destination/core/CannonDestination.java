@@ -51,7 +51,10 @@ public final class CannonDestination implements Destination<CannonDestination, C
      * {@inheritDoc}
      */
     @Override
-    public @NotNull Attempt<CannonDestinationInstance, InstanceFailureReason> getDestinationInstance(@NotNull String destinationParams) {
+    public @NotNull Attempt<CannonDestinationInstance, InstanceFailureReason> getDestinationInstance(
+            @NotNull CommandSender sender,
+            @NotNull String destinationParams
+    ) {
         String[] params = REPatterns.COLON.split(destinationParams);
         if (params.length != 5) {
             return Attempt.failure(InstanceFailureReason.INVALID_FORMAT);

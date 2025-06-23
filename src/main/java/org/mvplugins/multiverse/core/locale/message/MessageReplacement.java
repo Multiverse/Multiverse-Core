@@ -105,6 +105,7 @@ public final class MessageReplacement {
         DESTINATION(replace("{destination}")),
         ERROR(replace("{error}")),
         GAMERULE(replace("{gamerule}")),
+        LOCATION(replace("{location}")),
         NAME(replace("{name}")),
         PLAYER(replace("{player}")),
         REASON(replace("{reason}")),

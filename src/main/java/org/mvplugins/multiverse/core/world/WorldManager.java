@@ -49,6 +49,7 @@ import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
@@ -899,9 +900,10 @@ public final class WorldManager {
     }
 
     private Option<MultiverseWorld> getUnloadedWorldByAlias(@Nullable String alias) {
+        String colourlessAlias = ChatTextFormatter.removeColor(alias);
         return Option.ofOptional(worldsMap.values().stream()
                 .filter(world -> !world.isLoaded())
-                .filter(world -> world.getColourlessAlias().equalsIgnoreCase(ChatColor.stripColor(alias)))
+                .filter(world -> world.getColourlessAlias().equalsIgnoreCase(colourlessAlias))
                 .findFirst());
     }
 

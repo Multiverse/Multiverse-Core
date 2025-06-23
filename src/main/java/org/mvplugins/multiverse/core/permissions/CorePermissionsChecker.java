@@ -349,8 +349,8 @@ public final class CorePermissionsChecker {
             return scope;
         }
 
-        public static Scope getApplicableScope(CommandSender sender, Entity entity) {
-            if (sender instanceof Entity senderEntity && senderEntity.equals(entity)) {
+        public static Scope getApplicableScope(CommandSender teleporter, Entity entity) {
+            if (teleporter instanceof Entity senderEntity && senderEntity.equals(entity)) {
                 return Scope.SELF;
             }
             return Scope.OTHER;

@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.commands
 
-import org.bukkit.ChatColor
 import org.bukkit.permissions.PermissionAttachment
 import org.mockbukkit.mockbukkit.command.ConsoleCommandSenderMock
 import org.mockbukkit.mockbukkit.entity.PlayerMock
@@ -8,6 +7,7 @@ import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.command.MVCommandManager
 import org.mvplugins.multiverse.core.locale.PluginLocales
 import org.mvplugins.multiverse.core.locale.message.Message
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter
 import org.mvplugins.multiverse.core.world.WorldManager
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import kotlin.test.BeforeTest
@@ -47,8 +47,8 @@ abstract class AbstractCommandTest : TestWithMockBukkit() {
 
     fun assertCommandOutput(message : Message) {
         assertEquals(
-            ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&',message.formatted(locales))),
-            ChatColor.stripColor(player.nextMessage())
+            ChatTextFormatter.removeColor(message.formatted(locales)),
+            ChatTextFormatter.removeColor(player.nextMessage())
         )
     }
 }
