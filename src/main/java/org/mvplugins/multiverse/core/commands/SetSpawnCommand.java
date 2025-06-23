@@ -63,6 +63,7 @@ class SetSpawnCommand extends CoreCommand {
 
         worldManager.getLoadedWorld(location.getWorld())
                 .peek(mvWorld -> mvWorld.setSpawnLocation(location)
+                        .flatMap(ignore -> worldManager.saveWorldsConfig())
                         .onSuccess(ignore -> issuer.sendMessage(MVCorei18n.SETSPAWN_SUCCESS,
                                 Replace.WORLD.with(mvWorld.getName()),
                                 Replace.LOCATION.with(prettyLocation(location))))
