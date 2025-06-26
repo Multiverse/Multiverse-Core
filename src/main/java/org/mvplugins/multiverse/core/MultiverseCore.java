@@ -230,8 +230,7 @@ public class MultiverseCore extends MultiverseModule {
                 this.getDescription().getVersion(), getVersionAsNumber(), StringFormatter.joinAnd(getDescription().getAuthors()));
 
         if (configProvider.get().isShowingDonateMessage()) {
-            Logging.config("\u001B[32mHelp dumptruckman keep this project alive. Become a patron! https://www.patreon.com/dumptruckman\u001B[39m");
-            Logging.config("\u001B[32mOne time donations are also appreciated: https://www.paypal.me/dumptruckman\u001B[39m");
+            Logging.config("\u001B[32mLoving Multiverse-Core? Please consider supporting the project with a small donation: https://github.com/sponsors/Multiverse\u001B[39m");
         }
     }
 
