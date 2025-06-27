@@ -121,7 +121,7 @@ jobs:
         changelog: ${{ steps.release-artifact.outputs.body }}
         changelog_type: markdown
         display_name: ${{ steps.release-info.outputs.tag_name }}
-        game_versions: 1.21.5, 1.21.4, 1.21.3, 1.21.2, 1.21.1, 1.21, 1.20.6, 1.20.5, 1.20.4, 1.20.3, 1.20.2, 1.20.1, 1.20, 1.19.4, 1.19.3, 1.19.2, 1.19.1, 1.19, 1.18.2
+        game_versions: 1.21.6, 1.21.5, 1.21.4, 1.21.3, 1.21.2, 1.21.1, 1.21, 1.20.6, 1.20.5, 1.20.4, 1.20.3, 1.20.2, 1.20.1, 1.20, 1.19.4, 1.19.3, 1.19.2, 1.19.1, 1.19, 1.18.2
         release_type: ${{ steps.parse-release-type.outputs.release_type }}
         project_relations: ${{ inputs.dbo_project_relations }}
         file_path: ${{ github.workspace }}/${{ inputs.plugin_name }}-${{ steps.release-info.outputs.tag_name }}.jar
