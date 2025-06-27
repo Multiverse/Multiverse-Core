@@ -8,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 
+import java.util.Locale;
+
 /**
  * All the translation keys for the core plugin
  */
@@ -351,7 +353,8 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc
 
-    private final MessageKey key = MessageKey.of("mv-core." + this.name().replace('_', '.').toLowerCase());
+    private final MessageKey key = MessageKey.of("mv-core." + this.name().replace('_', '.')
+            .toLowerCase(Locale.ENGLISH));
 
     /**
      * {@inheritDoc}
