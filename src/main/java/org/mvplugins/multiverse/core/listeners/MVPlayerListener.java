@@ -39,6 +39,7 @@ import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventPriorityKe
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
+import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
@@ -68,6 +69,7 @@ final class MVPlayerListener implements CoreListener {
     private final DestinationsProvider destinationsProvider;
     private final EnforcementHandler enforcementHandler;
     private final DimensionFinder dimensionFinder;
+    private final CorePermissionsChecker corePermissionsChecker;
 
     private final Map<String, String> playerWorld = new ConcurrentHashMap<>();
 
@@ -84,7 +86,8 @@ final class MVPlayerListener implements CoreListener {
             Provider<MVCommandManager> commandManagerProvider,
             DestinationsProvider destinationsProvider,
             EnforcementHandler enforcementHandler,
-            DimensionFinder dimensionFinder) {
+            DimensionFinder dimensionFinder,
+            CorePermissionsChecker corePermissionsChecker) {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
@@ -97,6 +100,7 @@ final class MVPlayerListener implements CoreListener {
         this.destinationsProvider = destinationsProvider;
         this.enforcementHandler = enforcementHandler;
         this.dimensionFinder = dimensionFinder;
+        this.corePermissionsChecker = corePermissionsChecker;
     }
 
     private WorldManager getWorldManager() {
@@ -237,6 +241,10 @@ final class MVPlayerListener implements CoreListener {
         }
         if (config.getJoinDestination().isBlank()) {
             Logging.warning("Joindestination is enabled but no destination has been specified in config!");
+            return;
+        }
+        if (corePermissionsChecker.hasJoinLocationBypassPermission(event.getPlayer())) {
+            Logging.finer("Player %s has bypass permission for JoinDestination", event.getPlayer().getName());
             return;
         }
         Logging.finer("JoinDestination is " + config.getJoinDestination());
