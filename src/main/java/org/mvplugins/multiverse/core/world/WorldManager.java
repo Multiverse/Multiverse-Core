@@ -765,6 +765,7 @@ public final class WorldManager {
         }).andFinally(() -> {
             this.loadTracker.remove(worldCreator.name());
         }).fold(throwable -> Attempt.failure(WorldCreatorFailureReason.BUKKIT_CREATION_FAILED,
+                        Replace.WORLD.with(worldCreator.name()),
                         Replace.ERROR.with(throwable)),
                 Attempt::success);
     }
