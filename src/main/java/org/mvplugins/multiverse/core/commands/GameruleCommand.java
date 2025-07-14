@@ -146,7 +146,7 @@ class GameruleCommand extends CoreCommand {
 
     @Subcommand("gamerule|rule list")
     @CommandPermission("multiverse.core.gamerule.list")
-    @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulecommand @flags:groupName=" + PageFilterFlags.NAME)
+    @CommandCompletion("@mvworlds|@flags:groupName=" + PageFilterFlags.NAME + " @flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.gamerule.list.description}")
     void onGameruleListCommand(
