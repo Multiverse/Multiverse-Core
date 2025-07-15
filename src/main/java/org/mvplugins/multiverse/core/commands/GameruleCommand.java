@@ -42,7 +42,6 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
-@Subcommand("gamerule|rule")
 class GameruleCommand extends CoreCommand {
 
     private final PageFilterFlags flags;
@@ -52,7 +51,7 @@ class GameruleCommand extends CoreCommand {
         this.flags = flags;
     }
 
-    @Subcommand("set")
+    @Subcommand("gamerule|rule set")
     @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules @gamerulesvalues @mvworlds:multiple|*")
     @Syntax("<Gamerule> <Gamerule value> [World or *]")
@@ -103,7 +102,7 @@ class GameruleCommand extends CoreCommand {
     }
 
     @SuppressWarnings("rawtypes,unchecked")
-    @Subcommand("reset")
+    @Subcommand("gamerule|rule reset")
     @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules @mvworlds:multiple|*")
     @Syntax("<Gamerule> [World or *]")
@@ -145,9 +144,9 @@ class GameruleCommand extends CoreCommand {
         }
     }
 
-    @Subcommand("list")
+    @Subcommand("gamerule|rule list")
     @CommandPermission("multiverse.core.gamerule.list")
-    @CommandCompletion("@mvworlds|@flags:groupName=mvgamerulecommand @flags:groupName=" + PageFilterFlags.NAME)
+    @CommandCompletion("@mvworlds|@flags:groupName=" + PageFilterFlags.NAME + " @flags:groupName=" + PageFilterFlags.NAME)
     @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.gamerule.list.description}")
     void onGameruleListCommand(
@@ -218,6 +217,11 @@ class GameruleCommand extends CoreCommand {
         @CommandAlias("mvrule|mvgamerule")
         void onGameruleSetCommand(MVCommandIssuer issuer, GameRule gamerule, GameRuleValue gameRuleValue, LoadedMultiverseWorld[] worlds) {
             super.onGameruleSetCommand(issuer, gamerule, gameRuleValue, worlds);
+        }
+
+        @Override
+        void onGameruleResetCommand(MVCommandIssuer issuer, GameRule gamerule, LoadedMultiverseWorld[] worlds) {
+            super.onGameruleResetCommand(issuer, gamerule, worlds);
         }
 
         @Override
