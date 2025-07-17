@@ -57,7 +57,7 @@ class DeleteCommand extends CoreCommand {
 
     @Subcommand("delete")
     @CommandPermission("multiverse.core.delete")
-    @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=" + RemovePlayerFlags.NAME)
+    @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + RemovePlayerFlags.NAME)
     @Syntax("<world>")
     @Description("{@@mv-core.delete.description}")
     void onDeleteCommand(
