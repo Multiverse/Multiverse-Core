@@ -25,6 +25,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -201,25 +202,26 @@ public final class WorldManager {
         if (bukkitWorld == null || isWorld(bukkitWorld.getName())) {
             return;
         }
-        importWorld(ImportWorldOptions.worldName(bukkitWorld.getName())
-                .environment(bukkitWorld.getEnvironment())
-                .generator(generatorProvider.getDefaultGeneratorForWorld(bukkitWorld.getName())))
+        importBukkitWorld(bukkitWorld)
                 .onFailure(failure ->
                         Logging.severe("Failed to import world %s: %s", bukkitWorld.getName(), failure))
                 .onSuccess(success ->
-                        Logging.fine("Imported existing world %s", bukkitWorld.getName()));
+                        Logging.info("Imported existing world %s", bukkitWorld.getName()));
     }
 
     /**
-     * Loads all worlds that are set to autoload.
+     * Loads all worlds that are set to autoload or already loaded by the server.
      */
     private void autoLoadWorlds() {
         getWorlds().forEach(world -> {
-            if (isLoadedWorld(world) || !world.isAutoLoad()) {
+            if (isLoadedWorld(world)) {
                 return;
             }
-            loadWorld(world).onFailure(failure -> Logging.severe("Failed to load world %s: %s",
-                    world.getName(), failure));
+            if (!world.isAutoLoad() && Bukkit.getWorld(world.getName()) == null) {
+                return;
+            }
+            loadWorld(world).onFailure(failure ->
+                    Logging.severe("Failed to load world %s: %s", world.getName(), failure));
         });
     }
 
@@ -266,7 +268,8 @@ public final class WorldManager {
                             bukkitWorld,
                             generatorString,
                             options.biome(),
-                            options.useSpawnAdjust());
+                            options.useSpawnAdjust(),
+                            true);
                     pluginManager.callEvent(new MVWorldCreatedEvent(loadedWorld));
                     return loadedWorld;
                 });
@@ -278,16 +281,16 @@ public final class WorldManager {
      * @param options The options for customizing the import of an existing world folder.
      * @return The result of the import.
      */
-    public Attempt<LoadedMultiverseWorld, ImportFailureReason> importWorld(
-            ImportWorldOptions options) {
+    public Attempt<LoadedMultiverseWorld, ImportFailureReason> importWorld(ImportWorldOptions options) {
         return validateImportWorldOptions(options).mapAttempt(this::doImportWorld);
     }
 
-    private Attempt<ImportWorldOptions, ImportFailureReason> validateImportWorldOptions(
-            ImportWorldOptions options) {
+    private Attempt<ImportWorldOptions, ImportFailureReason> validateImportWorldOptions(ImportWorldOptions options) {
         String worldName = options.worldName();
         if (!worldNameChecker.isValidWorldName(worldName)) {
             return worldActionResult(ImportFailureReason.INVALID_WORLDNAME, worldName);
+        } else if (Bukkit.getWorld(worldName) != null) {
+            return worldActionResult(ImportFailureReason.WORLD_EXIST_BUKKIT, worldName);
         } else if (!worldNameChecker.isValidWorldFolder(worldName)) {
             return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, worldName);
         } else if (isLoadedWorld(worldName)) {
@@ -298,8 +301,7 @@ public final class WorldManager {
         return worldActionResult(options);
     }
 
-    private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportWorld(
-            ImportWorldOptions options) {
+    private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportWorld(ImportWorldOptions options) {
         String generatorString = generatorProvider.parseGeneratorString(options.worldName(), options.generator());
         WorldCreator worldCreator = WorldCreator.name(options.worldName())
                 .environment(options.environment());
@@ -313,10 +315,36 @@ public final class WorldManager {
                             bukkitWorld,
                             generatorString,
                             options.biome(),
-                            options.useSpawnAdjust());
+                            options.useSpawnAdjust(),
+                            true);
                     pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
                     return loadedWorld;
                 });
+    }
+
+    /**
+     * Imports a world that has already been loaded by Bukkit, either by the server itself or another plugin.
+     *
+     * @param bukkitWorld The Bukkit world to import.
+     * @return The result of the import.
+     */
+    @ApiStatus.AvailableSince("5.2")
+    public Attempt<LoadedMultiverseWorld, ImportFailureReason> importBukkitWorld(@NotNull World bukkitWorld) {
+        String worldName = bukkitWorld.getName();
+        if (isLoadedWorld(worldName)) {
+            return worldActionResult(ImportFailureReason.WORLD_EXIST_LOADED, worldName);
+        } else if (isWorld(worldName)) {
+            return worldActionResult(ImportFailureReason.WORLD_EXIST_UNLOADED, worldName);
+        }
+
+        LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
+                bukkitWorld,
+                generatorProvider.getDefaultGeneratorForWorld(bukkitWorld.getName()),
+                null,
+                false,
+                false);
+        pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
+        return Attempt.success(loadedWorld);
     }
 
     private MultiverseWorld newMultiverseWorld(String worldName, WorldConfig worldConfig) {
@@ -334,11 +362,12 @@ public final class WorldManager {
      * @param adjustSpawn   Whether to adjust spawn.
      */
     private LoadedMultiverseWorld newLoadedMultiverseWorld(
-            @NotNull World world, @Nullable String generator, @Nullable String biome, boolean adjustSpawn) {
+            @NotNull World world, @Nullable String generator, @Nullable String biome, boolean adjustSpawn, boolean autoLoad) {
         WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getName());
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
         worldConfig.setBiome(biome == null ? "" : biome);
+        worldConfig.setAutoLoad(autoLoad);
         worldConfig.save();
 
         MultiverseWorld mvWorld = newMultiverseWorld(world.getName(), worldConfig);
