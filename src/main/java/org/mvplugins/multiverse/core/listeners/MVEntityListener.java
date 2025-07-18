@@ -92,7 +92,8 @@ final class MVEntityListener implements CoreListener {
         // Always allow custom command and plugins to spawn creatures
         if (event.getSpawnReason() == SpawnReason.CUSTOM
                 || event.getSpawnReason() == SpawnReason.COMMAND
-                || event.getSpawnReason() == SpawnReason.BREEDING) {
+                || event.getSpawnReason() == SpawnReason.BREEDING
+                || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
             return;
         }
 
