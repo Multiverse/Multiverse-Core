@@ -23,11 +23,18 @@ import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
+import java.util.Map;
+
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 class ModifyCommand extends CoreCommand {
+
+    private static final Map<String, String> REMOVED_PROPERTIES = Map.of(
+            "animals", "/mv entity-spawn-config modify [world] animal set spawn <true|false>",
+            "monsters", "/mv entity-spawn-config modify [world] monster set spawn <true|false>"
+        );
 
     private final WorldManager worldManager;
 
@@ -65,6 +72,13 @@ class ModifyCommand extends CoreCommand {
             @Syntax("[value]")
             @Description("{@@mv-core.modify.value.description}")
             @Nullable String propertyValue) {
+        if (REMOVED_PROPERTIES.containsKey(propertyName)) {
+            issuer.sendMessage(MVCorei18n.MODIFY_PROPERTYREMOVED,
+                    replace("{property}").with(propertyName),
+                    replace("{replacement}").with(REMOVED_PROPERTIES.get(propertyName)));
+            return;
+        }
+
         MultiverseWorld world = worldValue.value();
 
         if (action.isRequireValue() && propertyValue == null) {
