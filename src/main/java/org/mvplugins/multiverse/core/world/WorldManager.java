@@ -288,7 +288,7 @@ public final class WorldManager {
         String worldName = options.worldName();
         if (!worldNameChecker.isValidWorldName(worldName)) {
             return worldActionResult(ImportFailureReason.INVALID_WORLDNAME, worldName);
-        } else if (!worldNameChecker.isValidWorldFolder(worldName)) {
+        } else if (options.doFolderCheck() && !worldNameChecker.isValidWorldFolder(worldName)) {
             return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, worldName);
         } else if (isLoadedWorld(worldName)) {
             return worldActionResult(ImportFailureReason.WORLD_EXIST_LOADED, worldName);
