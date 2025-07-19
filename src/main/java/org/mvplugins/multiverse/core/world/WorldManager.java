@@ -405,6 +405,12 @@ public final class WorldManager {
     private Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadWorld(@NotNull MultiverseWorld mvWorld) {
         World bukkitWorld = Bukkit.getWorld(mvWorld.getName());
         if (bukkitWorld != null) {
+            if (bukkitWorld.getEnvironment() != mvWorld.getEnvironment()) {
+                return Attempt.failure(LoadFailureReason.BUKKIT_ENVIRONMENT_MISMATCH,
+                        Replace.WORLD.with(mvWorld.getName()),
+                        replace("{bukkitEnvironment}").with(bukkitWorld.getEnvironment().name()),
+                        replace("{mvEnvironment}").with(mvWorld.getEnvironment().name()));
+            }
             // World already loaded, maybe by another plugin
             Logging.finer("World already loaded in bukkit: " + mvWorld.getName());
             return newLoadedMultiverseWorld(mvWorld, bukkitWorld);
