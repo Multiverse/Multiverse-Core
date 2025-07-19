@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.permissions;
 import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -48,6 +49,19 @@ public final class CorePermissionsChecker {
         this.config = config;
         this.destinationsProvider = destinationsProvider;
         this.worldManager = worldManager;
+    }
+
+    /**
+     * Checks if the sender has permission to bypass the join location restriction.
+     *
+     * @param sender The command sender.
+     * @return True if the sender has bypass permission, false otherwise.
+     *
+     * @since 5.2
+     */
+    @ApiStatus.AvailableSince("5.2")
+    public boolean hasJoinLocationBypassPermission(@NotNull CommandSender sender) {
+        return hasPermission(sender, CorePermissions.JOINLOCATION_BYPASS);
     }
 
     /**

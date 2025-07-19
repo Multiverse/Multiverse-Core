@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.permissions;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -15,6 +16,11 @@ import static org.mvplugins.multiverse.core.permissions.PermissionUtils.concatPe
 
 @Service
 public final class CorePermissions {
+    /**
+     * Permission to bypass the join location.
+     */
+    static final String JOINLOCATION_BYPASS = "mv.bypass.joinlocation";
+
     /**
      * Permission to access a world.
      */
@@ -50,6 +56,12 @@ public final class CorePermissions {
     @Inject
     CorePermissions(PluginManager pluginManager) {
         this.pluginManager = pluginManager;
+    }
+
+    @PostConstruct
+    void registerBasePermissions() {
+        pluginManager.addPermission(new Permission(JOINLOCATION_BYPASS, PermissionDefault.FALSE));
+        Logging.fine("Successfully registered base permissions");
     }
 
     public Try<Void> addWorldPermissions(@NotNull MultiverseWorld world) {
