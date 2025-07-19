@@ -278,22 +278,29 @@ public final class WorldManager {
      * @param options The options for customizing the import of an existing world folder.
      * @return The result of the import.
      */
-    public Attempt<LoadedMultiverseWorld, ImportFailureReason> importWorld(
-            ImportWorldOptions options) {
+    public Attempt<LoadedMultiverseWorld, ImportFailureReason> importWorld(ImportWorldOptions options) {
+        String worldName = options.worldName();
+        if (isLoadedWorld(worldName)) {
+            return worldActionResult(ImportFailureReason.WORLD_EXIST_LOADED, worldName);
+        } else if (isWorld(worldName)) {
+            return worldActionResult(ImportFailureReason.WORLD_EXIST_UNLOADED, worldName);
+        }
+
+        World bukkitWorld = Bukkit.getWorld(worldName);
+        if (bukkitWorld != null) {
+            // World is already loaded, maybe by another plugin
+            return doImportBukkitWorld(options, bukkitWorld);
+        }
+
         return validateImportWorldOptions(options).mapAttempt(this::doImportWorld);
     }
 
-    private Attempt<ImportWorldOptions, ImportFailureReason> validateImportWorldOptions(
-            ImportWorldOptions options) {
+    private Attempt<ImportWorldOptions, ImportFailureReason> validateImportWorldOptions(ImportWorldOptions options) {
         String worldName = options.worldName();
         if (!worldNameChecker.isValidWorldName(worldName)) {
             return worldActionResult(ImportFailureReason.INVALID_WORLDNAME, worldName);
         } else if (options.doFolderCheck() && !worldNameChecker.isValidWorldFolder(worldName)) {
             return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, worldName);
-        } else if (isLoadedWorld(worldName)) {
-            return worldActionResult(ImportFailureReason.WORLD_EXIST_LOADED, worldName);
-        } else if (isWorld(worldName)) {
-            return worldActionResult(ImportFailureReason.WORLD_EXIST_UNLOADED, worldName);
         }
         return worldActionResult(options);
     }
@@ -317,6 +324,23 @@ public final class WorldManager {
                     pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
                     return loadedWorld;
                 });
+    }
+
+    private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportBukkitWorld(ImportWorldOptions options, World bukkitWorld) {
+        if (options.environment() != bukkitWorld.getEnvironment()) {
+            return Attempt.failure(ImportFailureReason.BUKKIT_ENVIRONMENT_MISMATCH,
+                    Replace.WORLD.with(bukkitWorld.getName()),
+                    replace("{bukkitEnvironment}").with(bukkitWorld.getEnvironment().name()),
+                    replace("{mvEnvironment}").with(options.environment().name()));
+        }
+
+        LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
+                bukkitWorld,
+                generatorProvider.parseGeneratorString(options.worldName(), options.generator()),
+                options.biome(),
+                options.useSpawnAdjust());
+        pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
+        return Attempt.success(loadedWorld);
     }
 
     private MultiverseWorld newMultiverseWorld(String worldName, WorldConfig worldConfig) {
