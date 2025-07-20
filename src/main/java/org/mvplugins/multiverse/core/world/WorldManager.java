@@ -968,7 +968,7 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable World world) {
-        return world == null ? Option.none() : Option.of((LoadedMultiverseWorld) loadedWorldsMap.get(world.getName()));
+        return world == null ? Option.none() : Option.of(loadedWorldsMap.get(world.getName()));
     }
 
     /**
@@ -978,7 +978,7 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable MultiverseWorld world) {
-        return world == null ? Option.none() : Option.of((LoadedMultiverseWorld) loadedWorldsMap.get(world.getName()));
+        return world == null ? Option.none() : Option.of(loadedWorldsMap.get(world.getName()));
     }
 
     /**
@@ -988,7 +988,7 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable String worldName) {
-        return Option.of((LoadedMultiverseWorld) loadedWorldsMap.get(worldName));
+        return Option.of(loadedWorldsMap.get(worldName));
     }
 
     /**
@@ -1004,8 +1004,8 @@ public final class WorldManager {
 
     private Option<LoadedMultiverseWorld> getLoadedWorldByAlias(@Nullable String alias) {
         return Option.ofOptional(loadedWorldsMap.values().stream()
-                .filter(world -> world.getColourlessAlias().equalsIgnoreCase(ChatColor.stripColor(alias)))
-                .map(world -> (LoadedMultiverseWorld) world)
+                .filter(world -> world.getColourlessAlias()
+                        .equalsIgnoreCase(ChatColor.stripColor(alias)))
                 .findFirst());
     }
 
@@ -1016,7 +1016,6 @@ public final class WorldManager {
      */
     public Collection<LoadedMultiverseWorld> getLoadedWorlds() {
         return loadedWorldsMap.values().stream()
-                .map(world -> (LoadedMultiverseWorld) world)
                 .toList();
     }
 
