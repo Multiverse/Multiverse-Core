@@ -19,7 +19,6 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
@@ -1005,7 +1004,7 @@ public final class WorldManager {
     private Option<LoadedMultiverseWorld> getLoadedWorldByAlias(@Nullable String alias) {
         return Option.ofOptional(loadedWorldsMap.values().stream()
                 .filter(world -> world.getColourlessAlias()
-                        .equalsIgnoreCase(ChatColor.stripColor(alias)))
+                        .equalsIgnoreCase(ChatTextFormatter.removeColor(alias)))
                 .findFirst());
     }
 
