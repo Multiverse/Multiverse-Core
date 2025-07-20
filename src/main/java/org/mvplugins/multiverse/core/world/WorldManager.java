@@ -25,6 +25,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.plugin.PluginManager;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -140,6 +141,7 @@ public final class WorldManager {
      *
      * @return The result of the load.
      */
+    @ApiStatus.Internal
     public Try<Void> initAllWorlds() {
         return updateWorldsFromConfig().andThenTry(() -> {
             importExistingWorlds();
