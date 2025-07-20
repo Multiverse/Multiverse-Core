@@ -63,6 +63,7 @@ import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 import org.mvplugins.multiverse.core.world.options.KeepWorldSettingsOptions;
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
+import org.mvplugins.multiverse.core.world.options.RemoveWorldOptions;
 import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
 import org.mvplugins.multiverse.core.world.reasons.CloneFailureReason;
 import org.mvplugins.multiverse.core.world.reasons.CreateFailureReason;
@@ -513,8 +514,7 @@ public final class WorldManager {
      * @param worldName The name of the world to remove.
      * @return The result of the remove.
      */
-    public Attempt<String, RemoveFailureReason> removeWorld(
-            @NotNull String worldName) {
+    public Attempt<String, RemoveFailureReason> removeWorld(@NotNull String worldName) {
         return getWorld(worldName)
                 .map(this::removeWorld)
                 .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, worldName));
@@ -528,9 +528,7 @@ public final class WorldManager {
      * @return The result of the remove.
      */
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull MultiverseWorld world) {
-        return getLoadedWorld(world).fold(
-                () -> removeWorldFromConfig(world),
-                this::removeWorld);
+        return removeWorld(RemoveWorldOptions.world(world));
     }
 
     /**
@@ -541,7 +539,34 @@ public final class WorldManager {
      * @return The result of the remove.
      */
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
-        return unloadWorld(UnloadWorldOptions.world(loadedWorld))
+        return unloadBeforeRemoveWorld(loadedWorld, RemoveWorldOptions.world(loadedWorld));
+    }
+
+    /**
+     * Removes an existing multiverse world. It will be deleted from the worlds config and will no longer be known
+     * to Multiverse. World files will not be deleted.
+     *
+     * @param options The options for customizing the removal of a world.
+     * @return The result of the remove action.
+     *
+     * @since 5.2
+     */
+    @ApiStatus.AvailableSince("5.2")
+    public Attempt<String, RemoveFailureReason> removeWorld(@NotNull RemoveWorldOptions options) {
+        MultiverseWorld world = options.world();
+        return getLoadedWorld(world).fold(
+                () -> removeWorldFromConfig(world),
+                loadedWorld -> unloadBeforeRemoveWorld(loadedWorld, options)
+        );
+    }
+
+    private Attempt<String, RemoveFailureReason> unloadBeforeRemoveWorld(@NotNull LoadedMultiverseWorld loadedWorld,
+                                                                         @NotNull RemoveWorldOptions options) {
+        UnloadWorldOptions unloadWorldOptions = UnloadWorldOptions.world(loadedWorld)
+                .saveBukkitWorld(options.saveBukkitWorld())
+                .unloadBukkitWorld(options.unloadBukkitWorld());
+
+        return unloadWorld(unloadWorldOptions)
                 .transform(RemoveFailureReason.UNLOAD_FAILED)
                 .mapAttempt(this::removeWorldFromConfig);
     }
