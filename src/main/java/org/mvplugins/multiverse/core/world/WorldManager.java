@@ -957,6 +957,9 @@ public final class WorldManager {
     }
 
     private Option<MultiverseWorld> getUnloadedWorldByAlias(@Nullable String alias) {
+        if (alias == null || alias.isEmpty()) {
+            return Option.none();
+        }
         String colourlessAlias = ChatTextFormatter.removeColor(alias);
         return Option.ofOptional(worldsMap.values().stream()
                 .filter(world -> !world.isLoaded())
@@ -1027,6 +1030,9 @@ public final class WorldManager {
     }
 
     private Option<LoadedMultiverseWorld> getLoadedWorldByAlias(@Nullable String alias) {
+        if (alias == null || alias.isEmpty()) {
+            return Option.none();
+        }
         return Option.ofOptional(loadedWorldsMap.values().stream()
                 .filter(world -> world.getColourlessAlias()
                         .equalsIgnoreCase(ChatTextFormatter.removeColor(alias)))

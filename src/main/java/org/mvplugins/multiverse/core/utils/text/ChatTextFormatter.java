@@ -2,6 +2,8 @@ package org.mvplugins.multiverse.core.utils.text;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.utils.ReflectHelper;
 
 /**
@@ -32,7 +34,7 @@ public final class ChatTextFormatter {
      * @since 5.1
      */
     @ApiStatus.AvailableSince("5.1")
-    public static void sendFormattedMessage(CommandSender sender, String message) {
+    public static void sendFormattedMessage(@NotNull CommandSender sender, @Nullable String message) {
         wrapper.sendFormattedMessage(sender, message);
     }
 
@@ -44,7 +46,7 @@ public final class ChatTextFormatter {
      *
      * @since 5.1
      */
-    public static String removeColor(String message) {
+    public static @Nullable String removeColor(@Nullable String message) {
         return wrapper.removeColor(message);
     }
 
@@ -57,7 +59,7 @@ public final class ChatTextFormatter {
      * @since 5.1
      */
     @ApiStatus.AvailableSince("5.1")
-    public static String removeAmpColor(String message) {
+    public static @Nullable String removeAmpColor(@Nullable String message) {
         return wrapper.removeAmpColor(message);
     }
 
@@ -70,7 +72,7 @@ public final class ChatTextFormatter {
      * @since 5.1
      */
     @ApiStatus.AvailableSince("5.1")
-    public static String removeSectionColor(String message) {
+    public static @Nullable String removeSectionColor(@Nullable String message) {
         return wrapper.removeSectionColor(message);
     }
 
@@ -83,7 +85,7 @@ public final class ChatTextFormatter {
      * @since 5.1
      */
     @ApiStatus.AvailableSince("5.1")
-    public static String colorize(String message) {
+    public static @Nullable String colorize(@Nullable String message) {
         return wrapper.colorize(message);
     }
 }
