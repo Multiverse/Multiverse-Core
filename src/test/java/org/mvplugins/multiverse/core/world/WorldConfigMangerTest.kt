@@ -49,7 +49,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertEquals(MVEconomist.VAULT_ECONOMY_MATERIAL, endWorldConfig.entryFeeCurrency)
         assertEquals(0.0, endWorldConfig.entryFeeAmount)
 
-        val worldConfig = worldConfigManager.getWorldConfig("world").orNull
+        val worldConfig = worldConfigManager.getWorldConfig("world.a.b").orNull
         assertNotNull(worldConfig)
 
         assertEquals(-5176596003035866649, worldConfig.seed)
@@ -57,6 +57,9 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfig.isEntryFeeEnabled)
         assertEquals(Material.DIRT, worldConfig.entryFeeCurrency)
         assertEquals(5.0, worldConfig.entryFeeAmount)
+
+        val world2Config = worldConfigManager.getWorldConfig("world.a.c").orNull
+        assertNotNull(world2Config)
 
         assertConfigEquals("/worlds/migrated_worlds.yml", "worlds.yml")
     }
