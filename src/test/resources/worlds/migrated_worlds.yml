@@ -46,7 +46,7 @@ world_the_end:
       tick-rate: -1
   world-blacklist: []
   version: 1.2
-world:
+world[dot]a[dot]b:
   adjust-spawn: true
   alias: ''
   allow-advancement-grant: true
@@ -94,4 +94,53 @@ world:
       tick-rate: -1
   world-blacklist:
   - test
+  version: 1.2
+world[dot]a[dot]c:
+  adjust-spawn: true
+  alias: ''
+  allow-advancement-grant: true
+  allow-flight: false
+  allow-weather: true
+  anchor-respawn: true
+  auto-heal: true
+  auto-load: true
+  bed-respawn: true
+  difficulty: normal
+  entry-fee:
+    enabled: true
+    amount: 5.0
+    currency: DIRT
+  environment: normal
+  gamemode: survival
+  biome: ''
+  generator: ''
+  hidden: false
+  hunger: true
+  keep-spawn-in-memory: true
+  player-limit: -1
+  portal-form: all
+  pvp: true
+  respawn-world: ''
+  scale: 1.0
+  seed: -5176596003035866649
+  spawn-location:
+    ==: MVSpawnLocation
+    x: -64.0
+    y: 64.0
+    z: 48.0
+    pitch: 0.0
+    yaw: 0.0
+  spawning:
+    animal:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: -1
+      tick-rate: -1
+    monster:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: -1
+      tick-rate: -1
+  world-blacklist:
+    - test
   version: 1.2
