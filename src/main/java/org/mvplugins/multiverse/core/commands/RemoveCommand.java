@@ -15,6 +15,8 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
+import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
@@ -23,19 +25,20 @@ import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
+import org.mvplugins.multiverse.core.world.options.RemoveWorldOptions;
 
 @Service
 class RemoveCommand extends CoreCommand {
 
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
-    private final RemovePlayerFlags flags;
+    private final Flags flags;
 
     @Inject
     RemoveCommand(
             @NotNull WorldManager worldManager,
             @NotNull PlayerWorldTeleporter playerWorldTeleporter,
-            @NotNull RemovePlayerFlags flags
+            @NotNull Flags flags
     ) {
         this.worldManager = worldManager;
         this.playerWorldTeleporter = playerWorldTeleporter;
@@ -44,7 +47,7 @@ class RemoveCommand extends CoreCommand {
 
     @Subcommand("remove")
     @CommandPermission("multiverse.core.remove")
-    @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + RemovePlayerFlags.NAME)
+    @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + Flags.NAME)
     @Syntax("<world>")
     @Description("{@@mv-core.remove.description}")
     void onRemoveCommand(
@@ -64,12 +67,14 @@ class RemoveCommand extends CoreCommand {
                 ? worldManager.getLoadedWorld(world).map(playerWorldTeleporter::removeFromWorld).getOrElse(AsyncAttemptsAggregate::emptySuccess)
                 : AsyncAttemptsAggregate.emptySuccess();
 
-        future.onSuccess(() -> doWorldRemoving(issuer, world))
+        future.onSuccess(() -> doWorldRemoving(issuer, world, parsedFlags))
                 .onFailure(() -> issuer.sendError("Failed to teleport one or more players out of the world!"));
     }
 
-    private void doWorldRemoving(MVCommandIssuer issuer, MultiverseWorld world) {
-        worldManager.removeWorld(world)
+    private void doWorldRemoving(MVCommandIssuer issuer, MultiverseWorld world, ParsedCommandFlags parsedFlags) {
+        worldManager.removeWorld(RemoveWorldOptions.world(world)
+                        .saveBukkitWorld(!parsedFlags.hasFlag(flags.noSave))
+                        .unloadBukkitWorld(!parsedFlags.hasFlag(flags.noUnloadBukkitWorld)))
                 .onSuccess(removedWorldName -> {
                     Logging.fine("World remove success: " + removedWorldName);
                     issuer.sendInfo(MVCorei18n.REMOVE_SUCCESS, Replace.WORLD.with(removedWorldName));
@@ -80,12 +85,31 @@ class RemoveCommand extends CoreCommand {
     }
 
     @Service
+    private static final class Flags extends RemovePlayerFlags {
+
+        private static final String NAME = "mvremove";
+
+        @Inject
+        private Flags(@NotNull CommandFlagsManager flagsManager) {
+            super(NAME, flagsManager);
+        }
+
+        private final CommandFlag noUnloadBukkitWorld = flag(CommandFlag.builder("--no-unload-bukkit-world")
+                .addAlias("-b")
+                .build());
+
+        private final CommandFlag noSave = flag(CommandFlag.builder("--no-save")
+                .addAlias("-n")
+                .build());
+    }
+
+    @Service
     private static final class LegacyAlias extends RemoveCommand implements LegacyAliasCommand {
         @Inject
         LegacyAlias(
                 @NotNull WorldManager worldManager,
                 @NotNull PlayerWorldTeleporter playerWorldTeleporter,
-                RemovePlayerFlags flags
+                @NotNull Flags flags
         ) {
             super(worldManager, playerWorldTeleporter, flags);
         }

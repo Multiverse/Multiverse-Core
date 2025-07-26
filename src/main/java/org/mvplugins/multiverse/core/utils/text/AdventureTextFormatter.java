@@ -4,37 +4,45 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 final class AdventureTextFormatter implements TextFormatter {
     @Override
-    public void sendFormattedMessage(CommandSender sender, String message) {
-        sender.sendMessage(colorize(message));
+    public void sendFormattedMessage(@NotNull CommandSender sender, @Nullable String message) {
+        String colorizedMessage = colorize(message);
+        if (colorizedMessage == null) {
+            return; // Avoid sending null messages
+        }
+        sender.sendMessage(colorizedMessage);
     }
 
     @Override
-    public String removeColor(String message) {
-        TextComponent sectionComponent = LegacyComponentSerializer.legacySection().deserialize(colorize(message));
-        return PlainTextComponentSerializer.plainText().serialize(sectionComponent);
-    }
-
-    public String removeAmpColor(String message) {
-        return PlainTextComponentSerializer.plainText().serialize(toAmpComponent(message));
-    }
-
-    public String removeSectionColor(String message) {
-        return PlainTextComponentSerializer.plainText().serialize(toSectionComponent(message));
+    public @Nullable String removeColor(@Nullable String message) {
+        TextComponent sectionComponent = LegacyComponentSerializer.legacySection().deserializeOrNull(colorize(message));
+        return PlainTextComponentSerializer.plainText().serializeOrNull(sectionComponent);
     }
 
     @Override
-    public String colorize(String message) {
-        return LegacyComponentSerializer.legacySection().serialize(toAmpComponent(message));
+    public @Nullable String removeAmpColor(@Nullable String message) {
+        return PlainTextComponentSerializer.plainText().serializeOrNull(toAmpComponent(message));
     }
 
-    private TextComponent toAmpComponent(String message) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(message);
+    @Override
+    public @Nullable String removeSectionColor(@Nullable String message) {
+        return PlainTextComponentSerializer.plainText().serializeOrNull(toSectionComponent(message));
     }
 
-    private TextComponent toSectionComponent(String message) {
-        return LegacyComponentSerializer.legacySection().deserialize(message);
+    @Override
+    public @Nullable String colorize(@Nullable String message) {
+        return LegacyComponentSerializer.legacySection().serializeOrNull(toAmpComponent(message));
+    }
+
+    private @Nullable TextComponent toAmpComponent(@Nullable String message) {
+        return LegacyComponentSerializer.legacyAmpersand().deserializeOrNull(message);
+    }
+
+    private @Nullable TextComponent toSectionComponent(@Nullable String message) {
+        return LegacyComponentSerializer.legacySection().deserializeOrNull(message);
     }
 }

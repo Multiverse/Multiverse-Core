@@ -181,7 +181,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         if (this instanceof Success) {
             return new Success<>(mapper.apply(get()));
         } else {
-            return new Failure<>(getFailureReason(), getFailureMessage());
+            return new Failure<>((Failure<T, F>) this);
         }
     }
 
@@ -196,7 +196,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         if (this instanceof Success) {
             return new Success<>(mapper.get());
         } else {
-            return new Failure<>(getFailureReason(), getFailureMessage());
+            return new Failure<>((Failure<T, F>) this);
         }
     }
 
@@ -211,7 +211,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         if (this instanceof Success) {
             return mapper.apply(get());
         } else {
-            return new Failure<>(getFailureReason(), getFailureMessage());
+            return new Failure<>((Failure<T, F>) this);
         }
     }
 
@@ -226,7 +226,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         if (this instanceof Success) {
             return mapper.get();
         } else {
-            return new Failure<>(getFailureReason(), getFailureMessage());
+            return new Failure<>((Failure<T, F>) this);
         }
     }
 
@@ -241,7 +241,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         if (this instanceof Success) {
             return new Success<>(get());
         } else {
-            return new Failure<>(failureReason, getFailureMessage());
+            return new Failure<>(failureReason, getFailureMessage(), (Failure<T, F>) this);
         }
     }
 
@@ -415,10 +415,20 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
     final class Failure<T, F extends FailureReason> implements Attempt<T, F> {
         private final F failureReason;
         private final Message message;
+        private final Failure<?, ?> causeBy;
 
         Failure(F failureReason, Message message) {
+            this(failureReason, message, null);
+        }
+
+        Failure(Failure<?, F> failure) {
+            this(failure.failureReason, failure.message, failure.causeBy);
+        }
+
+        Failure(F failureReason, Message message, Failure<?, ?> causeBy) {
             this.failureReason = failureReason;
             this.message = message;
+            this.causeBy = causeBy;
         }
 
         @Override
@@ -465,6 +475,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         public String toString() {
             return "Failure{"
                     + "reason=" + failureReason
+                    + (causeBy != null ? ", causeBy=" + causeBy : "")
                     + '}';
         }
     }

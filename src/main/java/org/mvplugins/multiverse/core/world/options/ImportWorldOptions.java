@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.world.options;
 
 import org.bukkit.World;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +25,7 @@ public final class ImportWorldOptions {
     private World.Environment environment = World.Environment.NORMAL;
     private String generator = null;
     private boolean useSpawnAdjust = true;
+    private boolean doFolderCheck = true;
 
     ImportWorldOptions(String worldName) {
         this.worldName = worldName;
@@ -118,5 +120,31 @@ public final class ImportWorldOptions {
      */
     public boolean useSpawnAdjust() {
         return useSpawnAdjust;
+    }
+
+    /**
+     * Sets whether to ensure the world folder is a valid world before importing it.
+     *
+     * @param doFolderCheckInput Whether to do the folder check
+     * @return This {@link ImportWorldOptions} instance
+     *
+     * @since 5.2
+     */
+    @ApiStatus.AvailableSince("5.2")
+    public @NotNull ImportWorldOptions doFolderCheck(boolean doFolderCheckInput) {
+        this.doFolderCheck = doFolderCheckInput;
+        return this;
+    }
+
+    /**
+     * Gets whether to ensure the world folder is a valid world before importing it.
+     *
+     * @return Whether to do the folder check
+     *
+     * @since 5.2
+     */
+    @ApiStatus.AvailableSince("5.2")
+    public boolean doFolderCheck() {
+        return doFolderCheck;
     }
 }

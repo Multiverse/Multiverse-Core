@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.world.reasons;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
@@ -29,6 +30,14 @@ public enum ImportFailureReason implements FailureReason {
      * The target world is already exist and loaded.
      */
     WORLD_EXIST_LOADED(MVCorei18n.IMPORTWORLD_WORLDEXISTLOADED),
+
+    /**
+     * The import environment input does not match the loaded Bukkit world's environment.
+     *
+     * @since 5.2
+     */
+    @ApiStatus.AvailableSince("5.2")
+    BUKKIT_ENVIRONMENT_MISMATCH(MVCorei18n.IMPORTWORLD_BUKKITENVIRONMENTMISMATCH),
 
     /**
      * Bukkit API failed to create the world.

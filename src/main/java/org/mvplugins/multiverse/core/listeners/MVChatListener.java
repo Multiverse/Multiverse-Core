@@ -88,8 +88,9 @@ final class MVChatListener implements CoreListener {
         String prefixChatFormat = config.getPrefixChatFormat();
         prefixChatFormat = prefixChatFormat.replace("%world%", worldName).replace("%chat%", chat);
         prefixChatFormat = ChatTextFormatter.colorize(prefixChatFormat);
-
-        event.setFormat(prefixChatFormat);
+        if (prefixChatFormat != null) {
+            event.setFormat(prefixChatFormat);
+        }
     }
 
     private String getWorldName(Player player) {
