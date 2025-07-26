@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.world;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,6 +46,7 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.utils.ReflectHelper;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
@@ -688,7 +690,7 @@ public final class WorldManager {
     private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldCopyFolder(@NotNull CloneWorldOptions options) {
         if (options.saveBukkitWorld()) {
             Logging.finer("Saving bukkit world before cloning: " + options.world().getName());
-            options.world().getBukkitWorld().peek(World::save);
+            options.world().getBukkitWorld().peek(this::saveWorldWithFlush);
         }
         File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).get();
         File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
@@ -696,6 +698,17 @@ public final class WorldManager {
                 exception -> worldActionResult(CloneFailureReason.COPY_FAILED,
                         options.world().getName(), exception),
                 success -> worldActionResult(options));
+    }
+
+    // This method is only available since 1.21
+    private final Method saveWithFlush = ReflectHelper.getMethod(World.class, "save", boolean.class);
+    private void saveWorldWithFlush(World world) {
+        if (saveWithFlush != null) {
+            Logging.fine("Using world save method with flush...");
+            ReflectHelper.invokeMethod(world, saveWithFlush, true);
+        } else {
+            world.save();
+        }
     }
 
     private void cloneWorldTransferData(@NotNull CloneWorldOptions options, @NotNull LoadedMultiverseWorld newWorld) {
