@@ -27,7 +27,7 @@ repositories {
 configure(apiDependencies) {
     serverApiVersion = '1.19.4-R0.1-SNAPSHOT'
     mockBukkitServerApiVersion = '1.21'
-    mockBukkitVersion = '4.31.1'
+    mockBukkitVersion = '4.72.2'
 }
 
 dependencies {
@@ -48,9 +48,9 @@ dependencies {
     }
 
     // Utils
-    shadowed 'io.vavr:vavr:0.10.4'
-    shadowed 'org.glassfish.hk2:hk2-locator:3.0.3'
-    shadowed('org.glassfish.hk2:hk2-inhabitant-generator:3.0.3') {
+    shadowed 'io.vavr:vavr:0.10.7'
+    shadowed 'org.glassfish.hk2:hk2-locator:3.1.1'
+    shadowed('org.glassfish.hk2:hk2-inhabitant-generator:3.1.1') {
         exclude group: 'org.apache.maven', module: 'maven-core'
     }
     shadowed('com.dumptruckman.minecraft:Logging:1.1.1') {
@@ -60,8 +60,8 @@ dependencies {
     shadowed('org.bstats:bstats-bukkit:3.1.0') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
-    shadowed 'net.minidev:json-smart:2.4.9'
-    shadowed 'org.jetbrains:annotations:22.0.0'
+    shadowed 'net.minidev:json-smart:2.5.2'
+    shadowed 'org.jetbrains:annotations:26.0.2'
     shadowed 'io.papermc:paperlib:1.0.8'
 
     // Tests
