@@ -171,7 +171,11 @@ public final class WorldManager {
     }
 
     private void removeWorldsNotInConfigs(Collection<String> removedWorlds) {
-        removedWorlds.forEach(worldName -> removeWorld(worldName)
+        removedWorlds.forEach(worldName -> getWorld(worldName)
+                .fold(
+                        () -> Attempt.failure(FailureReason.GENERIC, Message.of("world already removed")),
+                        world -> removeWorld(RemoveWorldOptions.world(world))
+                )
                 .onFailure(failure -> Logging.severe("Failed to unload world %s: %s", worldName, failure))
                 .onSuccess(success -> Logging.fine("Unloaded world %s as it was removed from config", worldName)));
     }
@@ -515,10 +519,14 @@ public final class WorldManager {
      *
      * @param worldName The name of the world to remove.
      * @return The result of the remove.
+     *
+     * @deprecated Get the {@link MultiverseWorld} yourself and use {@link #removeWorld(RemoveWorldOptions)} instead.
      */
+    @Deprecated(since = "5.2", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull String worldName) {
         return getWorld(worldName)
-                .map(this::removeWorld)
+                .map(world -> removeWorld(RemoveWorldOptions.world(world)))
                 .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, worldName));
     }
 
@@ -528,7 +536,11 @@ public final class WorldManager {
      *
      * @param world The multiverse world to remove.
      * @return The result of the remove.
+     *
+     * @deprecated Use {@link #removeWorld(RemoveWorldOptions)} instead.
      */
+    @Deprecated(since = "5.2", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull MultiverseWorld world) {
         return removeWorld(RemoveWorldOptions.world(world));
     }
@@ -539,9 +551,13 @@ public final class WorldManager {
      *
      * @param loadedWorld The multiverse world to remove.
      * @return The result of the remove.
+     *
+     * @deprecated Use {@link #removeWorld(RemoveWorldOptions)} instead.
      */
+    @Deprecated(since = "5.2", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public Attempt<String, RemoveFailureReason> removeWorld(@NotNull LoadedMultiverseWorld loadedWorld) {
-        return unloadBeforeRemoveWorld(loadedWorld, RemoveWorldOptions.world(loadedWorld));
+        return removeWorld(RemoveWorldOptions.world(loadedWorld));
     }
 
     /**
@@ -622,7 +638,11 @@ public final class WorldManager {
                             ? Attempt.failure(DeleteFailureReason.EVENT_CANCELLED)
                             : Attempt.success(null);
                 })
-                .mapAttempt(() -> removeWorld(world).transform(DeleteFailureReason.REMOVE_FAILED))
+                .mapAttempt(() -> removeWorld(RemoveWorldOptions
+                        .world(world)
+                        .unloadBukkitWorld(true)
+                        .saveBukkitWorld(false)
+                ).transform(DeleteFailureReason.REMOVE_FAILED))
                 .mapAttempt(() -> fileUtils.deleteFolder(worldFolder.get(), options.keepFiles()).fold(
                         exception -> worldActionResult(DeleteFailureReason.FAILED_TO_DELETE_FOLDER,
                                 world.getName(), exception),

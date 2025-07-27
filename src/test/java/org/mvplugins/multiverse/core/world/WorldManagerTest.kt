@@ -11,6 +11,7 @@ import org.mvplugins.multiverse.core.world.options.CloneWorldOptions
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions
+import org.mvplugins.multiverse.core.world.options.RemoveWorldOptions
 import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions
 import org.mvplugins.multiverse.core.world.reasons.CloneFailureReason
 import org.mvplugins.multiverse.core.world.reasons.CreateFailureReason
@@ -102,7 +103,7 @@ class WorldManagerTest : TestWithMockBukkit() {
 
     @Test
     fun `Remove world`() {
-        assertTrue(worldManager.removeWorld(world).isSuccess)
+        assertTrue(worldManager.removeWorld(RemoveWorldOptions.world(world)).isSuccess)
         assertFalse(worldManager.getWorld("world").isDefined)
         assertFalse(worldManager.getLoadedWorld("world").isDefined)
         assertFalse(worldManager.getUnloadedWorld("world").isDefined)
