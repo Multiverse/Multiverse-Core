@@ -68,7 +68,8 @@ class ImportCommand extends CoreCommand {
                         .biome(parsedFlags.flagValue(flags.biome, ""))
                         .environment(environment)
                         .generator(parsedFlags.flagValue(flags.generator, String.class))
-                        .useSpawnAdjust(!parsedFlags.hasFlag(flags.noAdjustSpawn)))
+                        .useSpawnAdjust(!parsedFlags.hasFlag(flags.noAdjustSpawn))
+                        .doFolderCheck(!parsedFlags.hasFlag(flags.skipFolderCheck)))
                 .onSuccess(newWorld -> {
                     Logging.fine("World import success: " + newWorld);
                     issuer.sendInfo(MVCorei18n.IMPORT_SUCCESS, Replace.WORLD.with(newWorld.getName()));
@@ -104,6 +105,10 @@ class ImportCommand extends CoreCommand {
 
         private final CommandValueFlag<String> biome = flag(CommandValueFlag.builder("--biome", String.class)
                 .addAlias("-b")
+                .build());
+
+        private final CommandFlag skipFolderCheck = flag(CommandFlag.builder("--skip-folder-check")
+                .addAlias("-f")
                 .build());
     }
 

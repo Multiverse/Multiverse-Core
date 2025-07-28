@@ -518,6 +518,7 @@ final class CoreConfigNodes {
             .build());
 
     final ConfigNode<Boolean> debugPermissions = node(ConfigNode.builder("misc.debug-permissions", Boolean.class)
+            .comment("")
             .comment("Sets whether console will log every permission check done by all multiverse plugins.")
             .comment("This will only work if the above 'global-debug' is set to 1 or more.")
             .defaultValue(false)

@@ -69,9 +69,12 @@ public class RegexContentFilter implements ContentFilter {
         if (!hasValidRegex()) {
             return false;
         }
-        String text = ChatTextFormatter.removeColor(String.valueOf(value)).toLowerCase();
+        String text = ChatTextFormatter.removeColor(String.valueOf(value));
+        if (text == null) {
+            return false;
+        }
         try {
-            return regexPattern.matcher(text).find();
+            return regexPattern.matcher(text.toLowerCase()).find();
         } catch (PatternSyntaxException ignored) {
             Logging.warning("Error parsing regex '%s' for input '%s'", regexString, text);
             return false;

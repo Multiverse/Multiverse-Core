@@ -108,7 +108,7 @@ final class SpawnCommand extends CoreCommand {
         safetyTeleporter.to(mvWorld.getSpawnLocation())
                 .by(issuer)
                 .checkSafety(checkSafety)
-                .teleport(entity)
+                .teleportSingle(entity)
                 .onSuccess(() -> issuer.sendInfo(MVCorei18n.SPAWN_SUCCESS,
                         Replace.PLAYER.with(entity.equals(issuer.getPlayer())
                                 ? Message.of(MVCorei18n.GENERIC_YOU)
@@ -119,7 +119,7 @@ final class SpawnCommand extends CoreCommand {
                                 ? Message.of(MVCorei18n.GENERIC_YOU)
                                 : Message.of(entity.getName())),
                         Replace.WORLD.with(mvWorld.getName()),
-                        Replace.REASON.with(failure.getFailureMessage())));
+                        Replace.REASON.with(failure.getFirst().getFailureMessage())));
     }
 
     private void handleMultiTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
