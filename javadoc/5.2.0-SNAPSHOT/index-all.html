@@ -1411,6 +1411,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets whether to ensure the world folder is a valid world before importing it.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html#doFolderCheck()" class="member-name-link">doFolderCheck()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">LoadWorldOptions</a></dt>
+<dd>
+<div class="block">Sets whether to check if the world folder is valid before loading the world.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/CreateWorldOptions.html#doFolderCheck(boolean)" class="member-name-link">doFolderCheck(boolean)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></dt>
 <dd>
 <div class="block">Sets whether to ensure folder does not exist before creating the world.</div>
@@ -1418,6 +1422,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/world/options/ImportWorldOptions.html#doFolderCheck(boolean)" class="member-name-link">doFolderCheck(boolean)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/ImportWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">ImportWorldOptions</a></dt>
 <dd>
 <div class="block">Sets whether to ensure the world folder is a valid world before importing it.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html#doFolderCheck(boolean)" class="member-name-link">doFolderCheck(boolean)</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">LoadWorldOptions</a></dt>
+<dd>
+<div class="block">Sets whether to check if the world folder is valid before loading the world.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/display/handlers/PagedSendHandler.html#doPagination(boolean)" class="member-name-link">doPagination(boolean)</a> - Method in class org.mvplugins.multiverse.core.display.handlers.<a href="org/mvplugins/multiverse/core/display/handlers/PagedSendHandler.html" title="class in org.mvplugins.multiverse.core.display.handlers">PagedSendHandler</a></dt>
 <dd>
@@ -4017,9 +4025,17 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/world/WorldManager.html#loadWorld(java.lang.String)" class="member-name-link">loadWorld(String)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/WorldManager.html" title="class in org.mvplugins.multiverse.core.world">WorldManager</a></dt>
 <dd>
-<div class="block">Loads an existing world in config.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="org/mvplugins/multiverse/core/world/WorldManager.html#loadWorld(org.mvplugins.multiverse.core.world.options.LoadWorldOptions)"><code>WorldManager.loadWorld(LoadWorldOptions)</code></a> instead.</div>
+</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/world/WorldManager.html#loadWorld(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">loadWorld(MultiverseWorld)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/WorldManager.html" title="class in org.mvplugins.multiverse.core.world">WorldManager</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="org/mvplugins/multiverse/core/world/WorldManager.html#loadWorld(org.mvplugins.multiverse.core.world.options.LoadWorldOptions)"><code>WorldManager.loadWorld(LoadWorldOptions)</code></a> instead.</div>
+</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/WorldManager.html#loadWorld(org.mvplugins.multiverse.core.world.options.LoadWorldOptions)" class="member-name-link">loadWorld(LoadWorldOptions)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/WorldManager.html" title="class in org.mvplugins.multiverse.core.world">WorldManager</a></dt>
 <dd>
 <div class="block">Loads an existing world in config.</div>
 </dd>
@@ -4033,6 +4049,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html#LOADWORLD_WORLDNONEXISTENT" class="member-name-link">LOADWORLD_WORLDNONEXISTENT</a> - Enum constant in enum class org.mvplugins.multiverse.core.locale.<a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html" title="enum class in org.mvplugins.multiverse.core.locale">MVCorei18n</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.options">LoadWorldOptions</a> - Class in <a href="org/mvplugins/multiverse/core/world/options/package-summary.html">org.mvplugins.multiverse.core.world.options</a></dt>
+<dd>
+<div class="block">Options for customizing the loading of a world.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/locale/message/LocalizableMessage.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.locale.message">LocalizableMessage</a> - Interface in <a href="org/mvplugins/multiverse/core/locale/message/package-summary.html">org.mvplugins.multiverse.core.locale.message</a></dt>
 <dd>
 <div class="block">Contains a localizable <a href="org/mvplugins/multiverse/core/locale/message/Message.html" title="class in org.mvplugins.multiverse.core.locale.message"><code>Message</code></a>.</div>
@@ -7176,6 +7196,10 @@ the order they are declared.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html#world()" class="member-name-link">world()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/DeleteWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">DeleteWorldOptions</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html#world()" class="member-name-link">world()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">LoadWorldOptions</a></dt>
+<dd>
+<div class="block">Gets the world to load.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html#world()" class="member-name-link">world()</a> - Method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/RegenWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">RegenWorldOptions</a></dt>
 <dd>
 <div class="block">Gets the world to regenerate.</div>
@@ -7199,6 +7223,10 @@ the order they are declared.</div>
 <dt><a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html#world(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld)" class="member-name-link">world(LoadedMultiverseWorld)</a> - Static method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">UnloadWorldOptions</a></dt>
 <dd>
 <div class="block">Creates a new <a href="org/mvplugins/multiverse/core/world/options/UnloadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>UnloadWorldOptions</code></a> instance with the given world.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html#world(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">world(MultiverseWorld)</a> - Static method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">LoadWorldOptions</a></dt>
+<dd>
+<div class="block">Creates a new <a href="org/mvplugins/multiverse/core/world/options/LoadWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>LoadWorldOptions</code></a> instance with the given world.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/RemoveWorldOptions.html#world(org.mvplugins.multiverse.core.world.MultiverseWorld)" class="member-name-link">world(MultiverseWorld)</a> - Static method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/RemoveWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">RemoveWorldOptions</a></dt>
 <dd>
@@ -7267,6 +7295,10 @@ the order they are declared.</div>
 <div class="block">The target world folder already exists.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/world/reasons/ImportFailureReason.html#WORLD_FOLDER_INVALID" class="member-name-link">WORLD_FOLDER_INVALID</a> - Enum constant in enum class org.mvplugins.multiverse.core.world.reasons.<a href="org/mvplugins/multiverse/core/world/reasons/ImportFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">ImportFailureReason</a></dt>
+<dd>
+<div class="block">The world folder is invalid.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/world/reasons/LoadFailureReason.html#WORLD_FOLDER_INVALID" class="member-name-link">WORLD_FOLDER_INVALID</a> - Enum constant in enum class org.mvplugins.multiverse.core.world.reasons.<a href="org/mvplugins/multiverse/core/world/reasons/LoadFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">LoadFailureReason</a></dt>
 <dd>
 <div class="block">The world folder is invalid.</div>
 </dd>
