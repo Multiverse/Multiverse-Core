@@ -18,6 +18,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.DefaultEventPriority;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.options.LoadWorldOptions;
 import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
 import org.mvplugins.multiverse.core.world.reasons.LoadFailureReason;
 import org.mvplugins.multiverse.core.world.reasons.UnloadFailureReason;
@@ -68,7 +69,7 @@ final class MVWorldListener implements CoreListener {
         worldManager.getUnloadedWorld(event.getWorld().getName())
                 .peek(world -> {
                     Logging.fine("Loading world: " + world.getName());
-                    worldManager.loadWorld(world).onFailure(failure -> {
+                    worldManager.loadWorld(LoadWorldOptions.world(world)).onFailure(failure -> {
                         if (failure.getFailureReason() != LoadFailureReason.WORLD_ALREADY_LOADING) {
                             Logging.severe("Failed to load world: " + failure);
                         }
