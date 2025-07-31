@@ -27,6 +27,14 @@ public enum LoadFailureReason implements FailureReason {
     WORLD_EXIST_FOLDER(MVCorei18n.LOADWORLD_WORLDEXISTFOLDER),
 
     /**
+     * The world folder is invalid.
+     *
+     * @since 5.2
+     */
+    @ApiStatus.AvailableSince("5.2")
+    WORLD_FOLDER_INVALID(MVCorei18n.IMPORTWORLD_WORLDFOLDERINVALID),
+
+    /**
      * The world is already loaded.
      */
     WORLD_EXIST_LOADED(MVCorei18n.LOADWORLD_WORLDEXISTLOADED),

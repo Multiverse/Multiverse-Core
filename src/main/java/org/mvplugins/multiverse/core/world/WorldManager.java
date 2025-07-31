@@ -64,6 +64,7 @@ import org.mvplugins.multiverse.core.world.options.CreateWorldOptions;
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 import org.mvplugins.multiverse.core.world.options.ImportWorldOptions;
 import org.mvplugins.multiverse.core.world.options.KeepWorldSettingsOptions;
+import org.mvplugins.multiverse.core.world.options.LoadWorldOptions;
 import org.mvplugins.multiverse.core.world.options.RegenWorldOptions;
 import org.mvplugins.multiverse.core.world.options.RemoveWorldOptions;
 import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
@@ -226,8 +227,9 @@ public final class WorldManager {
             if (isLoadedWorld(world) || !world.isAutoLoad()) {
                 return;
             }
-            loadWorld(world).onFailure(failure -> Logging.severe("Failed to load world %s: %s",
-                    world.getName(), failure));
+            loadWorld(LoadWorldOptions.world(world))
+                    .onFailure(failure ->
+                            Logging.severe("Failed to load world %s: %s", world.getName(), failure));
         });
     }
 
@@ -403,10 +405,14 @@ public final class WorldManager {
      *
      * @param worldName The name of the world to load.
      * @return The result of the load.
+     *
+     * @deprecated Use {@link #loadWorld(LoadWorldOptions)} instead.
      */
+    @Deprecated(since = "5.2", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public Attempt<LoadedMultiverseWorld, LoadFailureReason> loadWorld(@NotNull String worldName) {
         return getWorld(worldName)
-                .map(this::loadWorld)
+                .map(world -> loadWorld(LoadWorldOptions.world(world)))
                 .getOrElse(() -> worldNameChecker.isValidWorldFolder(worldName)
                         ? worldActionResult(LoadFailureReason.WORLD_EXIST_FOLDER, worldName)
                         : worldActionResult(LoadFailureReason.WORLD_NON_EXISTENT, worldName));
@@ -417,12 +423,30 @@ public final class WorldManager {
      *
      * @param world The world to load.
      * @return The result of the load.
+     *
+     * @deprecated Use {@link #loadWorld(LoadWorldOptions)} instead.
      */
+    @Deprecated(since = "5.2", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public Attempt<LoadedMultiverseWorld, LoadFailureReason> loadWorld(@NotNull MultiverseWorld world) {
-        return validateWorldToLoad(world).mapAttempt(this::doLoadWorld);
+        return loadWorld(LoadWorldOptions.world(world));
     }
 
-    private Attempt<MultiverseWorld, LoadFailureReason> validateWorldToLoad(@NotNull MultiverseWorld mvWorld) {
+    /**
+     * Loads an existing world in config.
+     *
+     * @param options The options for customizing the loading of a world.
+     * @return The result of the load.
+     *
+     * @since 5.2
+     */
+    @ApiStatus.AvailableSince("5.2")
+    public Attempt<LoadedMultiverseWorld, LoadFailureReason> loadWorld(@NotNull LoadWorldOptions options) {
+        return validateWorldToLoad(options).mapAttempt(this::doLoadWorld);
+    }
+
+    private Attempt<LoadWorldOptions, LoadFailureReason> validateWorldToLoad(@NotNull LoadWorldOptions options) {
+        MultiverseWorld mvWorld = options.world();
         if (loadTracker.contains(mvWorld.getName())) {
             // This is to prevent recursive calls by WorldLoadEvent
             Logging.fine("World already loading: " + mvWorld.getName());
@@ -431,21 +455,19 @@ public final class WorldManager {
             Logging.severe("World already loaded: " + mvWorld.getName());
             return worldActionResult(LoadFailureReason.WORLD_EXIST_LOADED, mvWorld.getName());
         }
-        return worldActionResult(mvWorld);
+        return worldActionResult(options);
     }
 
-    private Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadWorld(@NotNull MultiverseWorld mvWorld) {
+    private Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadWorld(@NotNull LoadWorldOptions options) {
+        MultiverseWorld mvWorld = options.world();
+
         World bukkitWorld = Bukkit.getWorld(mvWorld.getName());
         if (bukkitWorld != null) {
-            if (bukkitWorld.getEnvironment() != mvWorld.getEnvironment()) {
-                return Attempt.failure(LoadFailureReason.BUKKIT_ENVIRONMENT_MISMATCH,
-                        Replace.WORLD.with(mvWorld.getName()),
-                        replace("{bukkitEnvironment}").with(bukkitWorld.getEnvironment().name()),
-                        replace("{mvEnvironment}").with(mvWorld.getEnvironment().name()));
-            }
-            // World already loaded, maybe by another plugin
-            Logging.finer("World already loaded in bukkit: " + mvWorld.getName());
-            return newLoadedMultiverseWorld(mvWorld, bukkitWorld);
+            return doLoadBukkitWorld(bukkitWorld, mvWorld);
+        }
+
+        if (options.doFolderCheck() && !worldNameChecker.isValidWorldFolder(mvWorld.getName())) {
+            return worldActionResult(LoadFailureReason.WORLD_FOLDER_INVALID, mvWorld.getName());
         }
 
         WorldCreator worldCreator = WorldCreator.name(mvWorld.getName())
@@ -456,6 +478,18 @@ public final class WorldManager {
                 .mapAttempt(this::createBukkitWorld)
                 .transform(LoadFailureReason.WORLD_CREATOR_FAILED)
                 .mapAttempt(newBukkitWorld -> newLoadedMultiverseWorld(mvWorld, newBukkitWorld));
+    }
+
+    private @NotNull Attempt<LoadedMultiverseWorld, LoadFailureReason> doLoadBukkitWorld(World bukkitWorld, MultiverseWorld mvWorld) {
+        if (bukkitWorld.getEnvironment() != mvWorld.getEnvironment()) {
+            return Attempt.failure(LoadFailureReason.BUKKIT_ENVIRONMENT_MISMATCH,
+                    Replace.WORLD.with(mvWorld.getName()),
+                    replace("{bukkitEnvironment}").with(bukkitWorld.getEnvironment().name()),
+                    replace("{mvEnvironment}").with(mvWorld.getEnvironment().name()));
+        }
+        // World already loaded, maybe by another plugin
+        Logging.finer("World already loaded in bukkit: " + mvWorld.getName());
+        return newLoadedMultiverseWorld(mvWorld, bukkitWorld);
     }
 
     private Attempt<LoadedMultiverseWorld, LoadFailureReason> newLoadedMultiverseWorld(MultiverseWorld mvWorld, World bukkitWorld) {
@@ -615,7 +649,7 @@ public final class WorldManager {
      */
     public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull DeleteWorldOptions options) {
         return getLoadedWorld(options.world()).fold(
-                () -> loadWorld(options.world())
+                () -> loadWorld(LoadWorldOptions.world(options.world()))
                         .transform(DeleteFailureReason.LOAD_FAILED)
                         .mapAttempt(world -> doDeleteWorld(world, options)),
                 world -> doDeleteWorld(world, options));
