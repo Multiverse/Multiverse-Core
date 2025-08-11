@@ -48,9 +48,9 @@ public class RegexStringMatcher implements StringMatcher {
      * {@inheritDoc}
      */
     @Override
-    public boolean matches(String value) {
-        if (regexPattern == null) {
-            return false; // If the regex pattern could not be compiled, we cannot match
+    public boolean matches(@Nullable String value) {
+        if (regexPattern == null || value == null) {
+            return false;
         }
         return regexPattern.matcher(value).matches();
     }

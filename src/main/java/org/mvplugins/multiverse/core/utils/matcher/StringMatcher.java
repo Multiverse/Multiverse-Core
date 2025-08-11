@@ -1,6 +1,8 @@
 package org.mvplugins.multiverse.core.utils.matcher;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +28,7 @@ public interface StringMatcher {
      * @since 5.2
      */
     @ApiStatus.AvailableSince("5.2")
-    static StringMatcher fromString(String matcherString) {
+    static @NotNull StringMatcher fromString(@NotNull String matcherString) {
         if (matcherString.startsWith("r=")) {
             return new RegexStringMatcher(matcherString);
         } else if (matcherString.contains("*")) {
@@ -45,7 +47,7 @@ public interface StringMatcher {
      * @since 5.2
      */
     @ApiStatus.AvailableSince("5.2")
-    boolean matches(String value);
+    boolean matches(@Nullable String value);
 
     /**
      * Filters a list of strings, returning only those that match the pattern defined by this StringMatcher.
@@ -57,7 +59,7 @@ public interface StringMatcher {
      * @since 5.2
      */
     @ApiStatus.AvailableSince("5.2")
-    default List<String> filter(List<String> values) {
+    default @NotNull List<String> filter(@NotNull List<String> values) {
         return values.stream()
                 .filter(this::matches)
                 .collect(Collectors.toList());
