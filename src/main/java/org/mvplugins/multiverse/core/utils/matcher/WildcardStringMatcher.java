@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.utils.matcher;
 
+import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Try;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.regex.Pattern;
@@ -27,7 +29,10 @@ public class WildcardStringMatcher implements StringMatcher {
     @ApiStatus.AvailableSince("5.2")
     public WildcardStringMatcher(String wildcard) {
         this.wildcard = wildcard;
-        this.pattern = Pattern.compile(("\\Q" + wildcard + "\\E").replace("*", "\\E.*\\Q"));
+        this.pattern = Try.of(() -> Pattern.compile(("\\Q" + wildcard + "\\E").replace("*", "\\E.*\\Q")))
+                .onFailure(ex -> Logging.warning("Failed to compile wildcard '%s': %s",
+                        wildcard, ex.getMessage()))
+                .getOrNull();
     }
 
     /**
