@@ -2,6 +2,8 @@ package org.mvplugins.multiverse.core.utils.matcher;
 
 import com.dumptruckman.minecraft.util.Logging;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +40,7 @@ public class MatcherGroup implements StringMatcher {
      * @since 5.2
      */
     @ApiStatus.AvailableSince("5.2")
-    public MatcherGroup(Collection<String> matchStrings) {
+    public MatcherGroup(@NotNull Collection<String> matchStrings) {
         this();
         for (String matchString : matchStrings) {
             addMatcher(matchString);
@@ -53,7 +55,10 @@ public class MatcherGroup implements StringMatcher {
      * @since 5.2
      */
     @ApiStatus.AvailableSince("5.2")
-    public void addMatcher(String matchString) {
+    public void addMatcher(@Nullable String matchString) {
+        if (matchString == null || matchString.isEmpty()) {
+            return;
+        }
         if (isExact(matchString)) {
             exactMatcher.addExactMatch(matchString);
         } else {
@@ -61,7 +66,7 @@ public class MatcherGroup implements StringMatcher {
         }
     }
 
-    private boolean isExact(String matcherString) {
+    private boolean isExact(@NotNull String matcherString) {
         return !matcherString.contains("*") && !matcherString.startsWith("r=");
     }
 
@@ -73,7 +78,7 @@ public class MatcherGroup implements StringMatcher {
      * @since 5.2
      */
     @ApiStatus.AvailableSince("5.2")
-    public void addMatcher(StringMatcher matcher) {
+    public void addMatcher(@NotNull StringMatcher matcher) {
         stringMatchers.add(matcher);
     }
 
@@ -81,7 +86,7 @@ public class MatcherGroup implements StringMatcher {
      * {@inheritDoc}
      */
     @Override
-    public boolean matches(String value) {
+    public boolean matches(@Nullable String value) {
         if (exactMatcher.matches(value)) {
             return true;
         }

@@ -1,6 +1,10 @@
 package org.mvplugins.multiverse.core.utils.matcher;
 
+import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Try;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
 
@@ -25,16 +29,22 @@ public class WildcardStringMatcher implements StringMatcher {
      * @param wildcard the wildcard string to match against.
      */
     @ApiStatus.AvailableSince("5.2")
-    public WildcardStringMatcher(String wildcard) {
+    public WildcardStringMatcher(@NotNull String wildcard) {
         this.wildcard = wildcard;
-        this.pattern = Pattern.compile(("\\Q" + wildcard + "\\E").replace("*", "\\E.*\\Q"));
+        this.pattern = Try.of(() -> Pattern.compile(("\\Q" + wildcard + "\\E").replace("*", "\\E.*\\Q")))
+                .onFailure(ex -> Logging.warning("Failed to compile wildcard '%s': %s",
+                        wildcard, ex.getMessage()))
+                .getOrNull();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean matches(String value) {
+    public boolean matches(@Nullable String value) {
+        if (pattern == null || value == null) {
+            return false;
+        }
         return pattern.matcher(value).matches();
     }
 }
