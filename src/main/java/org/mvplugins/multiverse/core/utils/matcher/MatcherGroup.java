@@ -55,7 +55,6 @@ public class MatcherGroup implements StringMatcher {
     @ApiStatus.AvailableSince("5.2")
     public void addMatcher(String matchString) {
         if (isExact(matchString)) {
-            Logging.warning("Exact: " + matchString);
             exactMatcher.addExactMatch(matchString);
         } else {
             stringMatchers.add(StringMatcher.fromString(matchString));
