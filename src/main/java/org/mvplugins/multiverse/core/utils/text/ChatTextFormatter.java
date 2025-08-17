@@ -18,7 +18,8 @@ public final class ChatTextFormatter {
     private static final TextFormatter wrapper;
 
     static {
-        if (ReflectHelper.hasClass("net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer")) {
+        if (ReflectHelper.hasClass("net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer")
+         && ReflectHelper.hasClass("net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer")) {
             wrapper = new AdventureTextFormatter();
         } else {
             wrapper = new ChatColorTextFormatter();
