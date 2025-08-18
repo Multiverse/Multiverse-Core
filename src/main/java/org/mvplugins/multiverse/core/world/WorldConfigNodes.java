@@ -238,7 +238,7 @@ final class WorldConfigNodes {
                 if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
                 if (newValue == null || newValue instanceof NullSpawnLocation) return;
                 loadedWorld.getBukkitWorld().peek(bukkitWorld -> {
-                    bukkitWorld.setSpawnLocation(newValue.getBlockX(), newValue.getBlockY(), newValue.getBlockZ());
+                    bukkitWorld.setSpawnLocation(newValue);
                     newValue.setWorld(bukkitWorld);
                 });
             }));
