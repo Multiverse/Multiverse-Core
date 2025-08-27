@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.world.entity;
 
 import com.dumptruckman.minecraft.util.Logging;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Entity;
@@ -10,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class EntitySpawnConfig {
@@ -53,7 +52,7 @@ public final class EntitySpawnConfig {
 
     @ApiStatus.Internal
     public static EntitySpawnConfig fromSection(ConfigurationSection section) {
-        Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig = new HashMap<>();
+        Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig = new LinkedHashMap<>();
         section.getValues(false).forEach((key, value) -> {
             if (!(value instanceof ConfigurationSection sectionPart)) {
                 Logging.warning("Invalid spawn category config for " + key + ": " + value);
