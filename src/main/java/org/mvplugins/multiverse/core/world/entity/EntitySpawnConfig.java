@@ -6,6 +6,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.ApiStatus;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
@@ -14,15 +15,21 @@ import java.util.Map;
 
 public final class EntitySpawnConfig {
 
+    private final CoreConfig config;
     private final Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig;
 
-    EntitySpawnConfig(Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig) {
+    EntitySpawnConfig(CoreConfig config, Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig) {
+        this.config = config;
         this.spawnCategoriesConfig = spawnCategoriesConfig;
     }
 
     public SpawnCategoryConfig getSpawnCategoryConfig(SpawnCategory spawnCategory) {
         return spawnCategoriesConfig.computeIfAbsent(spawnCategory,
-                computeSpawnCategory -> new SpawnCategoryConfig(computeSpawnCategory, new MemoryConfiguration()));
+                computeSpawnCategory -> new SpawnCategoryConfig(
+                        config,
+                        computeSpawnCategory,
+                        new MemoryConfiguration()
+                ));
     }
 
     public boolean shouldAllowSpawn(Entity entity) {
@@ -51,7 +58,7 @@ public final class EntitySpawnConfig {
     }
 
     @ApiStatus.Internal
-    public static EntitySpawnConfig fromSection(ConfigurationSection section) {
+    public static EntitySpawnConfig fromSection(CoreConfig config, ConfigurationSection section) {
         Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig = new LinkedHashMap<>();
         section.getValues(false).forEach((key, value) -> {
             if (!(value instanceof ConfigurationSection sectionPart)) {
@@ -59,9 +66,9 @@ public final class EntitySpawnConfig {
                 return;
             }
             SpawnCategory spawnCategory = SpawnCategory.valueOf(key.toUpperCase());
-            spawnCategoriesConfig.put(spawnCategory, new SpawnCategoryConfig(spawnCategory, sectionPart));
+            spawnCategoriesConfig.put(spawnCategory, new SpawnCategoryConfig(config, spawnCategory, sectionPart));
         });
-        return new EntitySpawnConfig(spawnCategoriesConfig);
+        return new EntitySpawnConfig(config, spawnCategoriesConfig);
     }
 
     @ApiStatus.Internal
