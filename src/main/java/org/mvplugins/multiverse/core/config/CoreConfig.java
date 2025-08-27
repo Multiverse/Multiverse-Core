@@ -190,6 +190,26 @@ public final class CoreConfig {
         return configHandle.get(configNodes.enforceFlight);
     }
 
+    @ApiStatus.AvailableSince("5.3")
+    public Try<Void> setApplyEntitySpawnRate(boolean applyEntitySpawnRate) {
+        return configHandle.set(configNodes.applyEntitySpawnRate, applyEntitySpawnRate);
+    }
+
+    @ApiStatus.AvailableSince("5.3")
+    public boolean getApplyEntitySpawnRate() {
+        return configHandle.get(configNodes.applyEntitySpawnRate);
+    }
+
+    @ApiStatus.AvailableSince("5.3")
+    public Try<Void> setApplyEntitySpawnLimit(boolean applyEntitySpawnLimit) {
+        return configHandle.set(configNodes.applyEntitySpawnLimit, applyEntitySpawnLimit);
+    }
+
+    @ApiStatus.AvailableSince("5.3")
+    public boolean getApplyEntitySpawnLimit() {
+        return configHandle.get(configNodes.applyEntitySpawnLimit);
+    }
+
     /**
      * {@inheritDoc}
      */

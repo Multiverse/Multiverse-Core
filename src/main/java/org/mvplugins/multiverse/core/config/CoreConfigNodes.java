@@ -137,6 +137,24 @@ final class CoreConfigNodes {
             .name("enforce-flight")
             .build());
 
+    final ConfigNode<Boolean> applyEntitySpawnRate = node(ConfigNode.builder("world.apply-entity-spawn-rate", Boolean.class)
+            .comment("")
+            .comment("Sets whether Multiverse will apply the world's entity `tick-rate` config in worlds.yml.")
+            .comment("If disabled, the `tick-rate` config in worlds.yml will be ignored.")
+            .comment("Disable this if you want paper-world.yml or another plugin to handle entity spawn rate per world.")
+            .defaultValue(true)
+            .name("apply-entity-spawn-rate")
+            .build());
+
+    final ConfigNode<Boolean> applyEntitySpawnLimit = node(ConfigNode.builder("world.apply-entity-spawn-limit", Boolean.class)
+            .comment("")
+            .comment("Sets whether Multiverse will apply the world's entity `spawn-limit` config when a world is loaded.")
+            .comment("If disabled, the `spawn-limit` config in worlds.yml will be ignored.")
+            .comment("Disable this if you want paper-world.yml or another plugin to handle entity limits per world.")
+            .defaultValue(true)
+            .name("apply-entity-spawn-limit")
+            .build());
+
     final ConfigNode<Boolean> autoPurgeEntities = node(ConfigNode.builder("world.auto-purge-entities", Boolean.class)
             .comment("")
             .comment("Sets whether Multiverse will purge entities on world load based world's entity spawn config.")
