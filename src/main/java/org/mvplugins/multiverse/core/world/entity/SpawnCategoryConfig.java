@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.SpawnCategory;
-import org.mvplugins.multiverse.core.MultiverseCoreApi;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.MemoryConfigurationHandle;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.config.node.ConfigNode;
@@ -22,6 +22,7 @@ import java.util.List;
 
 public final class SpawnCategoryConfig {
 
+    private final CoreConfig config;
     private final SpawnCategory spawnCategory;
     private final MemoryConfigurationHandle handle;
     private final StringPropertyHandle stringPropertyHandle;
@@ -29,7 +30,8 @@ public final class SpawnCategoryConfig {
 
     private MultiverseWorld world;
 
-    SpawnCategoryConfig(SpawnCategory spawnCategory, ConfigurationSection section) {
+    SpawnCategoryConfig(CoreConfig config, SpawnCategory spawnCategory, ConfigurationSection section) {
+        this.config = config;
         this.spawnCategory = spawnCategory;
         this.nodes = new Nodes();
         this.handle = MemoryConfigurationHandle.builder(section, nodes.nodes)
@@ -64,7 +66,7 @@ public final class SpawnCategoryConfig {
     }
 
     private void applyTickPerSpawns(World bukkitWorld) {
-        if (!MultiverseCoreApi.get().getCoreConfig().getApplyEntitySpawnLimit()) {
+        if (!config.getApplyEntitySpawnLimit()) {
             Logging.finer("World %s %s skipping setTicksPerSpawns due to core config", world.getName(), spawnCategory);
             return;
         }
@@ -83,7 +85,7 @@ public final class SpawnCategoryConfig {
     }
 
     private void applySpawnLimit(World bukkitWorld) {
-        if (!MultiverseCoreApi.get().getCoreConfig().getApplyEntitySpawnLimit()) {
+        if (!config.getApplyEntitySpawnLimit()) {
             Logging.finer("Skipping World %s %s setSpawnLimit due to core config", world.getName(), spawnCategory);
             return;
         }
