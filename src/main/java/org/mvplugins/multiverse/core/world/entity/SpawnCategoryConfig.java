@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.SpawnCategory;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.MemoryConfigurationHandle;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.config.node.ConfigNode;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public final class SpawnCategoryConfig {
 
+    private final CoreConfig config;
     private final SpawnCategory spawnCategory;
     private final MemoryConfigurationHandle handle;
     private final StringPropertyHandle stringPropertyHandle;
@@ -28,7 +30,8 @@ public final class SpawnCategoryConfig {
 
     private MultiverseWorld world;
 
-    SpawnCategoryConfig(SpawnCategory spawnCategory, ConfigurationSection section) {
+    SpawnCategoryConfig(CoreConfig config, SpawnCategory spawnCategory, ConfigurationSection section) {
+        this.config = config;
         this.spawnCategory = spawnCategory;
         this.nodes = new Nodes();
         this.handle = MemoryConfigurationHandle.builder(section, nodes.nodes)
@@ -57,21 +60,37 @@ public final class SpawnCategoryConfig {
             return;
         }
         loadedWorld.getBukkitWorld().peek(bukkitWorld -> {
-            if (!isSpawn()) {
-                if (getExceptions().isEmpty()) {
-                    Logging.finer("World %s %s setTicksPerSpawns: 0", world.getName(), spawnCategory);
-                    bukkitWorld.setTicksPerSpawns(spawnCategory, 0);
-                } else {
-                    Logging.finer("World %s %s setTicksPerSpawns: -1", world.getName(), spawnCategory);
-                    bukkitWorld.setTicksPerSpawns(spawnCategory, -1);
-                }
-            } else {
-                Logging.finer("World %s %s setTicksPerSpawns: %d", world.getName(), spawnCategory, getTickRate());
-                bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
-            }
-            Logging.finer("World %s %s setSpawnLimit: %d", world.getName(), spawnCategory, getSpawnLimit());
-            bukkitWorld.setSpawnLimit(spawnCategory, getSpawnLimit());
+            applyTickPerSpawns(bukkitWorld);
+            applySpawnLimit(bukkitWorld);
         });
+    }
+
+    private void applyTickPerSpawns(World bukkitWorld) {
+        if (!config.getApplyEntitySpawnLimit()) {
+            Logging.finer("World %s %s skipping setTicksPerSpawns due to core config", world.getName(), spawnCategory);
+            return;
+        }
+        if (!isSpawn()) {
+            if (getExceptions().isEmpty()) {
+                Logging.finer("World %s %s setTicksPerSpawns: 0", world.getName(), spawnCategory);
+                bukkitWorld.setTicksPerSpawns(spawnCategory, 0);
+            } else {
+                Logging.finer("World %s %s setTicksPerSpawns: -1", world.getName(), spawnCategory);
+                bukkitWorld.setTicksPerSpawns(spawnCategory, -1);
+            }
+        } else {
+            Logging.finer("World %s %s setTicksPerSpawns: %d", world.getName(), spawnCategory, getTickRate());
+            bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
+        }
+    }
+
+    private void applySpawnLimit(World bukkitWorld) {
+        if (!config.getApplyEntitySpawnLimit()) {
+            Logging.finer("Skipping World %s %s setSpawnLimit due to core config", world.getName(), spawnCategory);
+            return;
+        }
+        Logging.finer("World %s %s setSpawnLimit: %d", world.getName(), spawnCategory, getSpawnLimit());
+        bukkitWorld.setSpawnLimit(spawnCategory, getSpawnLimit());
     }
 
     public StringPropertyHandle getStringPropertyHandle() {

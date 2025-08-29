@@ -4,6 +4,8 @@ world:
   enforce-access: false
   enforce-gamemode: true
   enforce-flight: true
+  apply-entity-spawn-rate: true
+  apply-entity-spawn-limit: true
   auto-purge-entities: false
   world-name-format:
     nether: '%overworld%_nether'
