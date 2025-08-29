@@ -512,6 +512,13 @@ final class CoreConfigNodes {
             .name("bukkit-yml-path")
             .build());
 
+    final ConfigNode<String> serverPropertiesPath = node(ConfigNode.builder("misc.server-properties-path", String.class)
+            .comment("Change this if you use a custom path for the server.properties file with `--config` startup flag.")
+            .comment("Note: this config option needs a server restart to take effect.")
+            .defaultValue("server.properties")
+            .name("server-properties-path")
+            .build());
+
     final ConfigNode<Integer> globalDebug = node(ConfigNode.builder("misc.global-debug", Integer.class)
             .comment("")
             .comment("This is our debug flag to help identify issues with Multiverse.")
