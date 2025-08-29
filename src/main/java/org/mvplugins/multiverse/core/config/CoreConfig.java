@@ -623,6 +623,14 @@ public final class CoreConfig {
         return configHandle.get(configNodes.bukkitYmlPath);
     }
 
+    public Try<Void> setServerPropertiesPath(String serverPropertiesPath) {
+        return configHandle.set(configNodes.serverPropertiesPath, serverPropertiesPath);
+    }
+
+    public String getServerPropertiesPath() {
+        return configHandle.get(configNodes.serverPropertiesPath);
+    }
+
     /**
      * {@inheritDoc}
      */
