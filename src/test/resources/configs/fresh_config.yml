@@ -54,6 +54,7 @@ event-priority:
 
 misc:
   bukkit-yml-path: bukkit.yml
+  server-properties-path: server.properties
   global-debug: 0
   debug-permissions: false
   silent-start: false
