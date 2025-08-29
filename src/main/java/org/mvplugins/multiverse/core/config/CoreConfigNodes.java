@@ -513,6 +513,7 @@ final class CoreConfigNodes {
             .build());
 
     final ConfigNode<String> serverPropertiesPath = node(ConfigNode.builder("misc.server-properties-path", String.class)
+            .comment("")
             .comment("Change this if you use a custom path for the server.properties file with `--config` startup flag.")
             .comment("Note: this config option needs a server restart to take effect.")
             .defaultValue("server.properties")
