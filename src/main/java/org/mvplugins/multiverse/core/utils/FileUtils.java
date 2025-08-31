@@ -77,7 +77,7 @@ public final class FileUtils {
      */
     public @Nullable File getServerProperties() {
         if (this.serverProperties == null) {
-            this.serverProperties = findFileFromServerDirectory("server.properties");
+            this.serverProperties = findFileFromServerDirectory(config.getServerPropertiesPath());
             Logging.finer("server.properties: %s", this.serverProperties);
         }
         return this.serverProperties;
