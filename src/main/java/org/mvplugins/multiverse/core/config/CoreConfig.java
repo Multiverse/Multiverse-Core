@@ -623,10 +623,12 @@ public final class CoreConfig {
         return configHandle.get(configNodes.bukkitYmlPath);
     }
 
+    @ApiStatus.AvailableSince("5.3")
     public Try<Void> setServerPropertiesPath(String serverPropertiesPath) {
         return configHandle.set(configNodes.serverPropertiesPath, serverPropertiesPath);
     }
 
+    @ApiStatus.AvailableSince("5.3")
     public String getServerPropertiesPath() {
         return configHandle.get(configNodes.serverPropertiesPath);
     }
