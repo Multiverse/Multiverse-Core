@@ -649,10 +649,16 @@ public final class WorldManager {
      */
     public Attempt<String, DeleteFailureReason> deleteWorld(@NotNull DeleteWorldOptions options) {
         return getLoadedWorld(options.world()).fold(
-                () -> loadWorld(LoadWorldOptions.world(options.world()))
-                        .transform(DeleteFailureReason.LOAD_FAILED)
-                        .mapAttempt(world -> doDeleteWorld(world, options)),
+                () -> loadThenDeleteWorld(options),
                 world -> doDeleteWorld(world, options));
+    }
+
+    private Attempt<String, DeleteFailureReason> loadThenDeleteWorld(@NotNull DeleteWorldOptions options) {
+        return loadWorld(LoadWorldOptions.world(options.world()))
+                .fold(
+                        ignore -> worldActionResult(DeleteFailureReason.LOAD_FAILED, options.world().getName()),
+                        loadedWorld -> doDeleteWorld(loadedWorld, options)
+                );
     }
 
     /**
