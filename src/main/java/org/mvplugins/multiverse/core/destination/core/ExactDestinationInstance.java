@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.destination.core;
 
 import io.vavr.control.Option;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -8,22 +9,30 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.utils.position.EntityPosition;
+import org.mvplugins.multiverse.core.utils.position.VectorPosition;
 import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
  * Destination instance implementation for the {@link ExactDestination}.
  */
 public final class ExactDestinationInstance extends DestinationInstance<ExactDestinationInstance, ExactDestination> {
-    private final UnloadedWorldLocation location;
+    private final String worldName;
+    private final EntityPosition position;
 
     /**
      * Constructor.
      *
-     * @param location The location to teleport to.
+     * @param destination The parent destination.
+     * @param worldName   The name of the world.
+     * @param position    The position in the world.
      */
-    ExactDestinationInstance(@NotNull ExactDestination destination, @NotNull UnloadedWorldLocation location) {
+    ExactDestinationInstance(@NotNull ExactDestination destination,
+                             @NotNull String worldName,
+                             @NotNull EntityPosition position) {
         super(destination);
-        this.location = location;
+        this.worldName = worldName;
+        this.position = position;
     }
 
     /**
@@ -31,10 +40,13 @@ public final class ExactDestinationInstance extends DestinationInstance<ExactDes
      */
     @Override
     public @NotNull Option<Location> getLocation(@NotNull Entity teleportee) {
-        if (location.getWorld() == null) {
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) {
             return Option.none();
         }
-        return Option.of(location.toBukkitLocation());
+        Location destinationLocation = position.toBukkitLocation(teleportee.getLocation());
+        destinationLocation.setWorld(world);
+        return Option.of(destinationLocation);
     }
 
     /**
@@ -58,7 +70,7 @@ public final class ExactDestinationInstance extends DestinationInstance<ExactDes
      */
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
-        return Option.of(location.getWorld()).map(World::getName);
+        return Option.of(worldName);
     }
 
     /**
@@ -66,7 +78,6 @@ public final class ExactDestinationInstance extends DestinationInstance<ExactDes
      */
     @Override
     public @NotNull String serialise() {
-        return location.getWorldName() + ":" + location.getX() + "," + location.getY()
-                + "," + location.getZ() + ":" + location.getPitch() + ":" + location.getYaw();
+        return worldName + ":" + position.toString();
     }
 }

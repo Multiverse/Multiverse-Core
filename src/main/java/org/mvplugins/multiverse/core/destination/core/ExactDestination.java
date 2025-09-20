@@ -19,8 +19,12 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
+import org.mvplugins.multiverse.core.exceptions.utils.position.PositionParseException;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.utils.position.EntityPosition;
+import org.mvplugins.multiverse.core.utils.position.PositionNumber;
+import org.mvplugins.multiverse.core.utils.position.VectorPosition;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -62,7 +66,11 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
      * @return A new {@link ExactDestinationInstance}
      */
     public @NotNull ExactDestinationInstance fromLocation(@NotNull Location location) {
-        return new ExactDestinationInstance(this, new UnloadedWorldLocation(location));
+        return new ExactDestinationInstance(
+                this,
+                location.getWorld().getName(),
+                EntityPosition.ofLocation(location)
+        );
     }
 
     /**
@@ -73,12 +81,16 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
             @NotNull CommandSender sender,
             @NotNull String destinationParams
     ) {
-        String[] items = REPatterns.COLON.split(destinationParams);
+        String[] items = REPatterns.COLON.split(destinationParams, 2);
         if (items.length < 2) {
             if (items[0].equals("@here")) {
                 return getLocationFromSender(sender)
                         .map(location -> Attempt.<ExactDestinationInstance, InstanceFailureReason>success(
-                                new ExactDestinationInstance(this, new UnloadedWorldLocation(location))
+                                new ExactDestinationInstance(
+                                        this,
+                                        location.getWorld().getName(),
+                                        EntityPosition.ofLocation(location)
+                                )
                         ))
                         .getOrElse(() -> Attempt.failure(InstanceFailureReason.INVALID_COORDINATES_FORMAT)); // todo: specific failure reason for this case
             }
@@ -86,41 +98,21 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
         }
 
         String worldName = items[0];
-        String coordinates = items[1];
-        String[] coordinatesParams = REPatterns.COMMA.split(coordinates);
-        if (coordinatesParams.length != 3) {
-            return Attempt.failure(InstanceFailureReason.INVALID_COORDINATES_FORMAT);
-        }
+        String positionStr = items[1];
 
         World world = getLoadedMultiverseWorld(worldName).flatMap(LoadedMultiverseWorld::getBukkitWorld).getOrNull();
         if (world == null) {
             return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldName));
         }
 
-        UnloadedWorldLocation location;
+        EntityPosition position;
         try {
-            location = new UnloadedWorldLocation(
-                    world,
-                    Double.parseDouble(coordinatesParams[0]),
-                    Double.parseDouble(coordinatesParams[1]),
-                    Double.parseDouble(coordinatesParams[2])
-            );
-        } catch (NumberFormatException e) {
+            position = EntityPosition.fromString(positionStr);
+        } catch (PositionParseException e) {
             return Attempt.failure(InstanceFailureReason.INVALID_NUMBER_FORMAT, Replace.ERROR.with(e));
         }
 
-        if (items.length == 4) {
-            String pitch = items[2];
-            String yaw = items[3];
-            try {
-                location.setPitch(Float.parseFloat(pitch));
-                location.setYaw(Float.parseFloat(yaw));
-            } catch (NumberFormatException e) {
-                return Attempt.failure(InstanceFailureReason.INVALID_NUMBER_FORMAT, Replace.ERROR.with(e));
-            }
-        }
-
-        return Attempt.success(new ExactDestinationInstance(this, location));
+        return Attempt.success(new ExactDestinationInstance(this, worldName, position));
     }
 
     //TODO: Extract to a world finder class

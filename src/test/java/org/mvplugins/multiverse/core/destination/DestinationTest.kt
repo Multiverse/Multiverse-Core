@@ -70,6 +70,22 @@ class DestinationTest : TestWithMockBukkit() {
     }
 
     @Test
+    fun `Exact destination instance with relative position`() {
+        val destination = destinationsProvider.parseDestination("e:world:~1.5,2,~-3:10.5:~9.5").orNull
+        assertTrue(destination is ExactDestinationInstance)
+        val expectedLocation = Location(
+            world.bukkitWorld.orNull,
+            player.location.x + 1.5,
+            2.0,
+            player.location.z - 3.0,
+            player.location.yaw + 9.5F,
+            10.5F
+        )
+        assertLocationEquals(expectedLocation, destination.getLocation(player).orNull)
+        assertEquals("e:world:~1.5,2.0,~-3.0:10.5:~9.5", destination.toString())
+    }
+
+    @Test
     fun `Exact destination instance from location`() {
         val exactDestination = serviceLocator.getActiveService(ExactDestination::class.java).takeIf { it != null } ?: run {
             throw IllegalStateException("ExactDestination is not available as a service") }
@@ -123,6 +139,7 @@ class DestinationTest : TestWithMockBukkit() {
         assertTrue(destinationsProvider.parseDestination("b:invalid-bed").isFailure)
         assertTrue(destinationsProvider.parseDestination("ca:invalid-cannon").isFailure)
         assertTrue(destinationsProvider.parseDestination("e:world:1,2,x").isFailure)
+        assertTrue(destinationsProvider.parseDestination("e:world:1,2,3:").isFailure)
         assertTrue(destinationsProvider.parseDestination("pl:invalid-player").isFailure)
         assertTrue(destinationsProvider.parseDestination("w:invalid-world").isFailure)
         // todo: should we make invalid yaw for WorldDestination fail?
