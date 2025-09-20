@@ -4,7 +4,11 @@ import org.bukkit.Location;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.exceptions.utils.position.PositionParseException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Represents an x, y, z position in 3D space, with support for absolute and relative coordinates.
@@ -81,7 +85,8 @@ public class VectorPosition {
     public static VectorPosition fromString(String coordStr) throws PositionParseException {
         String[] parts = REPatterns.COMMA.split(coordStr);
         if (parts.length != 3) {
-            throw new PositionParseException("Invalid coordinates format: " + coordStr + ". Expected format: <x>,<y>,<z>");
+            throw new PositionParseException(Message.of(MVCorei18n.EXCEPTION_POSITIONPARSE_INVALIDCOORDINATES,
+                    replace("{format}").with(coordStr)));
         }
         return new VectorPosition(
                 PositionNumber.fromString(parts[0]),

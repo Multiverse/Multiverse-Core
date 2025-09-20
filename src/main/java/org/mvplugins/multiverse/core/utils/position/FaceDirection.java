@@ -3,7 +3,11 @@ package org.mvplugins.multiverse.core.utils.position;
 import org.bukkit.Location;
 import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.exceptions.utils.position.PositionParseException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Represents a direction to face, defined by pitch and yaw.
@@ -62,7 +66,8 @@ public class FaceDirection {
     public static FaceDirection fromString(String directionStr) throws PositionParseException {
         String[] parts = REPatterns.COLON.split(directionStr, 2);
         if (parts.length != 2) {
-            throw new PositionParseException("Invalid direction string format: " + directionStr + ". Expected format: <pitch>:<yaw>");
+            throw new PositionParseException(Message.of(MVCorei18n.EXCEPTION_POSITIONPARSE_INVALIDDIRECTION,
+                    replace("{format}").with(directionStr)));
         }
         //TODO: Add support for compass directions (N, S, E, W, NE, NW, SE, SW) for yaw
         PositionNumber pitch = PositionNumber.fromString(parts[0]);

@@ -116,7 +116,8 @@ public class MVCommandContexts extends PaperCommandContexts {
         }
 
         return destinationsProvider.parseDestination(context.getSender(), destination)
-                .getOrThrow(failure -> MVInvalidCommandArgument.of(failure.getFailureMessage()));
+                .getOrThrow(failure ->
+                        new InvalidCommandArgument(failure.getFailureMessage().formatted(context.getIssuer())));
     }
 
     private GameRule<?> parseGameRule(BukkitCommandExecutionContext context) {

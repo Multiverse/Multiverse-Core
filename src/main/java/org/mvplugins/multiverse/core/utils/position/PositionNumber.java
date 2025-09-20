@@ -3,6 +3,10 @@ package org.mvplugins.multiverse.core.utils.position;
 import io.vavr.control.Try;
 import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.exceptions.utils.position.PositionParseException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Represents a number that can be either absolute or relative (prefixed with '~').
@@ -65,7 +69,9 @@ public sealed interface PositionNumber permits PositionNumber.Relative, Position
 
     private static double tryParseDouble(String str) throws PositionParseException {
         return Try.of(() -> Double.parseDouble(str))
-                .getOrElseThrow(throwable -> new PositionParseException("Invalid number: " + str));
+                .getOrElseThrow(throwable -> new PositionParseException(
+                        Message.of(MVCorei18n.EXCEPTION_POSITIONPARSE_INVALIDNUMBER,
+                                replace("{number}").with(str))));
     }
 
     /**
