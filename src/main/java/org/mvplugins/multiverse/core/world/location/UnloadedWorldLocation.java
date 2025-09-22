@@ -22,7 +22,7 @@ import java.util.Objects;
  * This is useful to store location with world that may not be loaded yet or have been unloaded at some point.
  */
 @SerializableAs("UnloadedWorldLocation")
-public final class UnloadedWorldLocation extends Location {
+public class UnloadedWorldLocation extends Location {
 
     public static UnloadedWorldLocation fromLocation(@NotNull Location location) {
         return new UnloadedWorldLocation(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
