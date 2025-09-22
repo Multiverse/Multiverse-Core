@@ -633,6 +633,16 @@ public final class CoreConfig {
         return configHandle.get(configNodes.serverPropertiesPath);
     }
 
+    @ApiStatus.AvailableSince("5.3")
+    public Try<Void> setAutoDetectGeneratorPlugins(boolean autoDetectGeneratorPlugins) {
+        return configHandle.set(configNodes.autoDetectGeneratorPlugins, autoDetectGeneratorPlugins);
+    }
+
+    @ApiStatus.AvailableSince("5.3")
+    public boolean getAutoDetectGeneratorPlugins() {
+        return configHandle.get(configNodes.autoDetectGeneratorPlugins);
+    }
+
     /**
      * {@inheritDoc}
      */

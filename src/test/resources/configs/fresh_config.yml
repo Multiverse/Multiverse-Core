@@ -55,6 +55,7 @@ event-priority:
 misc:
   bukkit-yml-path: bukkit.yml
   server-properties-path: server.properties
+  auto-detect-generator-plugins: true
   global-debug: 0
   debug-permissions: false
   silent-start: false

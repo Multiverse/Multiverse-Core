@@ -520,6 +520,15 @@ final class CoreConfigNodes {
             .name("server-properties-path")
             .build());
 
+    final ConfigNode<Boolean> autoDetectGeneratorPlugins = node(ConfigNode.builder("misc.auto-detect-generator-plugins", Boolean.class)
+            .comment("")
+            .comment("When enabled, Multiverse will attempt to automatically detect world generator plugins installed on your server.")
+            .comment("This option only affects tab-completion within `/mv create` command and output of `/mv generators` command.")
+            .comment("Disabling this will not have any affect on the usages of world generator plugins itself.")
+            .defaultValue(true)
+            .name("auto-detect-generator-plugins")
+            .build());
+
     final ConfigNode<Integer> globalDebug = node(ConfigNode.builder("misc.global-debug", Integer.class)
             .comment("")
             .comment("This is our debug flag to help identify issues with Multiverse.")
