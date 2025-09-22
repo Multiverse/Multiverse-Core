@@ -28,7 +28,7 @@ public class UnloadedWorldLocation extends Location {
         return new UnloadedWorldLocation(location.getWorld(), location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
     }
 
-    private String worldName;
+    private @Nullable String worldName;
 
     public UnloadedWorldLocation(@Nullable String worldName, double x, double y, double z) {
         super(null, x, y, z);
@@ -67,7 +67,7 @@ public class UnloadedWorldLocation extends Location {
         this.worldName = worldName;
     }
 
-    public String getWorldName() {
+    public @Nullable String getWorldName() {
         return worldName;
     }
 
@@ -160,10 +160,10 @@ public class UnloadedWorldLocation extends Location {
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 19 * hash + worldName.hashCode();
-        hash = 19 * hash + (int) (Double.doubleToLongBits(this.getX()) ^ (Double.doubleToLongBits(this.getX()) >>> 32));
-        hash = 19 * hash + (int) (Double.doubleToLongBits(this.getY()) ^ (Double.doubleToLongBits(this.getY()) >>> 32));
-        hash = 19 * hash + (int) (Double.doubleToLongBits(this.getZ()) ^ (Double.doubleToLongBits(this.getZ()) >>> 32));
+        hash = 19 * hash + String.valueOf(worldName).hashCode();
+        hash = 19 * hash + Long.hashCode(Double.doubleToLongBits(this.getX()));
+        hash = 19 * hash + Long.hashCode(Double.doubleToLongBits(this.getY()));
+        hash = 19 * hash + Long.hashCode(Double.doubleToLongBits(this.getZ()));
         hash = 19 * hash + Float.floatToIntBits(this.getPitch());
         hash = 19 * hash + Float.floatToIntBits(this.getYaw());
         return hash;
@@ -171,7 +171,7 @@ public class UnloadedWorldLocation extends Location {
 
     @Override
     public String toString() {
-        return "Location{" +
+        return "UnloadedWorldLocation{" +
                 "world=" + worldName +
                 ",x=" + getX() +
                 ",y=" + getY() +
