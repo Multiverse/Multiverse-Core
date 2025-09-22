@@ -261,6 +261,22 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Aggregates a list of <a href="org/mvplugins/multiverse/core/utils/result/Attempt.html" title="interface in org.mvplugins.multiverse.core.utils.result"><code>Attempt</code></a> objects into success and failure categories.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#augmentBukkitLocation(org.bukkit.Location)" class="member-name-link">augmentBukkitLocation(Location)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>
+<div class="block">Augments a given Bukkit Location by applying the relative components of this EntityPosition.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html#augmentBukkitLocation(org.bukkit.Location)" class="member-name-link">augmentBukkitLocation(Location)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a></dt>
+<dd>
+<div class="block">Applies this FaceDirection to a given Bukkit Location, modifying its pitch and yaw.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#augmentBukkitLocation(org.bukkit.Location)" class="member-name-link">augmentBukkitLocation(Location)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Augments the given Bukkit Location in place by applying this VectorPosition's coordinates.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#augmentBukkitVector(org.bukkit.util.Vector)" class="member-name-link">augmentBukkitVector(Vector)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Augments the given Bukkit Vector in place by applying this VectorPosition's coordinates.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:B">B</h2>
 <dl class="index">
@@ -1494,6 +1510,14 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/entrycheck/EntryFeeResult.Success.html#ENOUGH_MONEY" class="member-name-link">ENOUGH_MONEY</a> - Enum constant in enum class org.mvplugins.multiverse.core.world.entrycheck.<a href="org/mvplugins/multiverse/core/world/entrycheck/EntryFeeResult.Success.html" title="enum class in org.mvplugins.multiverse.core.world.entrycheck">EntryFeeResult.Success</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a> - Class in <a href="org/mvplugins/multiverse/core/utils/position/package-summary.html">org.mvplugins.multiverse.core.utils.position</a></dt>
+<dd>
+<div class="block">Represents a position for an entity in 3D space, including both coordinates and facing direction.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#%3Cinit%3E(org.mvplugins.multiverse.core.utils.position.VectorPosition,org.mvplugins.multiverse.core.utils.position.FaceDirection)" class="member-name-link">EntityPosition(VectorPosition, FaceDirection)</a> - Constructor for class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>
+<div class="block">Creates a new EntityPosition with the specified vector and direction.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/entity/EntityPurger.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.world.entity">EntityPurger</a> - Class in <a href="org/mvplugins/multiverse/core/world/entity/package-summary.html">org.mvplugins.multiverse.core.world.entity</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/entity/EntityPurger.html#%3Cinit%3E()" class="member-name-link">EntityPurger()</a> - Constructor for class org.mvplugins.multiverse.core.world.entity.<a href="org/mvplugins/multiverse/core/world/entity/EntityPurger.html" title="class in org.mvplugins.multiverse.core.world.entity">EntityPurger</a></dt>
@@ -1632,6 +1656,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html#EXCEPTION_MULTIVERSEWORLD_UNLOADPLAYERSINWORLD" class="member-name-link">EXCEPTION_MULTIVERSEWORLD_UNLOADPLAYERSINWORLD</a> - Enum constant in enum class org.mvplugins.multiverse.core.locale.<a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html" title="enum class in org.mvplugins.multiverse.core.locale">MVCorei18n</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html#EXCEPTION_POSITIONPARSE_INVALIDCOORDINATES" class="member-name-link">EXCEPTION_POSITIONPARSE_INVALIDCOORDINATES</a> - Enum constant in enum class org.mvplugins.multiverse.core.locale.<a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html" title="enum class in org.mvplugins.multiverse.core.locale">MVCorei18n</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html#EXCEPTION_POSITIONPARSE_INVALIDDIRECTION" class="member-name-link">EXCEPTION_POSITIONPARSE_INVALIDDIRECTION</a> - Enum constant in enum class org.mvplugins.multiverse.core.locale.<a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html" title="enum class in org.mvplugins.multiverse.core.locale">MVCorei18n</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html#EXCEPTION_POSITIONPARSE_INVALIDNUMBER" class="member-name-link">EXCEPTION_POSITIONPARSE_INVALIDNUMBER</a> - Enum constant in enum class org.mvplugins.multiverse.core.locale.<a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html" title="enum class in org.mvplugins.multiverse.core.locale">MVCorei18n</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/command/MVDefaultExceptionHandler.html#execute(co.aikar.commands.BaseCommand,co.aikar.commands.RegisteredCommand,co.aikar.commands.CommandIssuer,java.util.List,java.lang.Throwable)" class="member-name-link">execute(BaseCommand, RegisteredCommand, CommandIssuer, List&lt;String&gt;, Throwable)</a> - Method in class org.mvplugins.multiverse.core.command.<a href="org/mvplugins/multiverse/core/command/MVDefaultExceptionHandler.html" title="class in org.mvplugins.multiverse.core.command">MVDefaultExceptionHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/command/MVRootCommand.html#execute(co.aikar.commands.CommandIssuer,java.lang.String,java.lang.String%5B%5D)" class="member-name-link">execute(CommandIssuer, String, String[])</a> - Method in class org.mvplugins.multiverse.core.command.<a href="org/mvplugins/multiverse/core/command/MVRootCommand.html" title="class in org.mvplugins.multiverse.core.command">MVRootCommand</a></dt>
@@ -1641,6 +1671,14 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:F">F</h2>
 <dl class="index">
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a> - Class in <a href="org/mvplugins/multiverse/core/utils/position/package-summary.html">org.mvplugins.multiverse.core.utils.position</a></dt>
+<dd>
+<div class="block">Represents a direction to face, defined by pitch and yaw.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html#%3Cinit%3E(org.mvplugins.multiverse.core.utils.position.PositionNumber,org.mvplugins.multiverse.core.utils.position.PositionNumber)" class="member-name-link">FaceDirection(PositionNumber, PositionNumber)</a> - Constructor for class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a></dt>
+<dd>
+<div class="block">Creates a new FaceDirection with the specified pitch and yaw.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/reasons/DeleteFailureReason.html#FAILED_TO_DELETE_FOLDER" class="member-name-link">FAILED_TO_DELETE_FOLDER</a> - Enum constant in enum class org.mvplugins.multiverse.core.world.reasons.<a href="org/mvplugins/multiverse/core/world/reasons/DeleteFailureReason.html" title="enum class in org.mvplugins.multiverse.core.world.reasons">DeleteFailureReason</a></dt>
 <dd>
 <div class="block">The world folder could not be deleted.</div>
@@ -1846,6 +1884,22 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/display/filters/RegexContentFilter.html#fromString(java.lang.String)" class="member-name-link">fromString(String)</a> - Static method in class org.mvplugins.multiverse.core.display.filters.<a href="org/mvplugins/multiverse/core/display/filters/RegexContentFilter.html" title="class in org.mvplugins.multiverse.core.display.filters">RegexContentFilter</a></dt>
 <dd>
 <div class="block">Compile regex pattern to create a regex filter.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#fromString(java.lang.String)" class="member-name-link">fromString(String)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>
+<div class="block">Parses an EntityPosition from a string representation.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html#fromString(java.lang.String)" class="member-name-link">fromString(String)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a></dt>
+<dd>
+<div class="block">Parses a FaceDirection from a string representation.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html#fromString(java.lang.String)" class="member-name-link">fromString(String)</a> - Static method in interface org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html" title="interface in org.mvplugins.multiverse.core.utils.position">PositionNumber</a></dt>
+<dd>
+<div class="block">Parses a PositionNumber from a string.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#fromString(java.lang.String)" class="member-name-link">fromString(String)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Parses a VectorPosition from a string representation.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html#fromTo(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld,java.lang.String)" class="member-name-link">fromTo(LoadedMultiverseWorld, String)</a> - Static method in class org.mvplugins.multiverse.core.world.options.<a href="org/mvplugins/multiverse/core/world/options/CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></dt>
 <dd>
@@ -2101,6 +2155,8 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets an immutable copy of the list of asynchronous attempts that this aggregate represents.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getAutoDetectGeneratorPlugins()" class="member-name-link">getAutoDetectGeneratorPlugins()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html#getAutoHeal()" class="member-name-link">getAutoHeal()</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a></dt>
 <dd>
 <div class="block">Gets whether or not a world will auto-heal players if the difficulty is on peaceful.</div>
@@ -2343,6 +2399,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html#getDifficulty()" class="member-name-link">getDifficulty()</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a></dt>
 <dd>
 <div class="block">Gets the difficulty of this world.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#getDirection()" class="member-name-link">getDirection()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>
+<div class="block">Gets the facing direction (pitch and yaw).</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/teleportation/LocationManipulation.html#getDirection(org.bukkit.Location)" class="member-name-link">getDirection(Location)</a> - Method in class org.mvplugins.multiverse.core.teleportation.<a href="org/mvplugins/multiverse/core/teleportation/LocationManipulation.html" title="class in org.mvplugins.multiverse.core.teleportation">LocationManipulation</a></dt>
 <dd>
@@ -2885,6 +2945,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the YAML path of the node.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getPerPlayerLocale()" class="member-name-link">getPerPlayerLocale()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html#getPitch()" class="member-name-link">getPitch()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a></dt>
+<dd>
+<div class="block">Gets the pitch component of this FaceDirection.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/event/MVPlayerTouchedPortalEvent.html#getPlayer()" class="member-name-link">getPlayer()</a> - Method in class org.mvplugins.multiverse.core.event.<a href="org/mvplugins/multiverse/core/event/MVPlayerTouchedPortalEvent.html" title="class in org.mvplugins.multiverse.core.event">MVPlayerTouchedPortalEvent</a></dt>
 <dd>
 <div class="block">Gets the <code>Player</code> that's touching the portal.</div>
@@ -2941,6 +3005,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets whether or not PVP is enabled in this world in some form (fake or not).</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html#getRawValue()" class="member-name-link">getRawValue()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Absolute</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html#getRawValue()" class="member-name-link">getRawValue()</a> - Method in interface org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html" title="interface in org.mvplugins.multiverse.core.utils.position">PositionNumber</a></dt>
+<dd>
+<div class="block">Gets the raw stored value without any base adjustment.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html#getRawValue()" class="member-name-link">getRawValue()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Relative</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/result/Result.Failure.html#getReasonMessage()" class="member-name-link">getReasonMessage()</a> - Method in class org.mvplugins.multiverse.core.utils.result.<a href="org/mvplugins/multiverse/core/utils/result/Result.Failure.html" title="class in org.mvplugins.multiverse.core.utils.result">Result.Failure</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/result/Result.html#getReasonMessage()" class="member-name-link">getReasonMessage()</a> - Method in interface org.mvplugins.multiverse.core.utils.result.<a href="org/mvplugins/multiverse/core/utils/result/Result.html" title="interface in org.mvplugins.multiverse.core.utils.result">Result</a></dt>
@@ -3160,8 +3232,20 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getUseConfirmOtp()" class="member-name-link">getUseConfirmOtp()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#getUseFinerTeleportPermissions()" class="member-name-link">getUseFinerTeleportPermissions()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html#getValue(double)" class="member-name-link">getValue(double)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Absolute</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html#getValue(double)" class="member-name-link">getValue(double)</a> - Method in interface org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html" title="interface in org.mvplugins.multiverse.core.utils.position">PositionNumber</a></dt>
+<dd>
+<div class="block">Calculates the effective value based on the base value.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html#getValue(double)" class="member-name-link">getValue(double)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Relative</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/display/parsers/MapContentProvider.html#getValueColor()" class="member-name-link">getValueColor()</a> - Method in class org.mvplugins.multiverse.core.display.parsers.<a href="org/mvplugins/multiverse/core/display/parsers/MapContentProvider.html" title="class in org.mvplugins.multiverse.core.display.parsers">MapContentProvider</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#getVector()" class="member-name-link">getVector()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>
+<div class="block">Gets the vector position (coordinates).</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/destination/core/AnchorDestinationInstance.html#getVelocity(org.bukkit.entity.Entity)" class="member-name-link">getVelocity(Entity)</a> - Method in class org.mvplugins.multiverse.core.destination.core.<a href="org/mvplugins/multiverse/core/destination/core/AnchorDestinationInstance.html" title="class in org.mvplugins.multiverse.core.destination.core">AnchorDestinationInstance</a></dt>
 <dd>
 <div class="block">Gets the velocity to apply to an entity after teleporting.</div>
@@ -3270,9 +3354,25 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Gets the type of this world.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#getX()" class="member-name-link">getX()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Gets the PositionNumber for the x coordinate.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#getY()" class="member-name-link">getY()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Gets the PositionNumber for the y coordinate.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html#getYaw()" class="member-name-link">getYaw()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a></dt>
+<dd>
+<div class="block">Gets the yaw component of this FaceDirection.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/teleportation/LocationManipulation.html#getYaw(java.lang.String)" class="member-name-link">getYaw(String)</a> - Method in class org.mvplugins.multiverse.core.teleportation.<a href="org/mvplugins/multiverse/core/teleportation/LocationManipulation.html" title="class in org.mvplugins.multiverse.core.teleportation">LocationManipulation</a></dt>
 <dd>
 <div class="block">Returns the float yaw position for the given cardinal direction.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#getZ()" class="member-name-link">getZ()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Gets the PositionNumber for the z coordinate.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/webpaste/PasteServiceType.html#GITHUB" class="member-name-link">GITHUB</a> - Enum constant in enum class org.mvplugins.multiverse.core.utils.webpaste.<a href="org/mvplugins/multiverse/core/utils/webpaste/PasteServiceType.html" title="enum class in org.mvplugins.multiverse.core.utils.webpaste">PasteServiceType</a></dt>
 <dd>&nbsp;</dd>
@@ -3526,6 +3626,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Calls a <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/Method.html" title="class or interface in java.lang.reflect" class="external-link"><code>Method</code></a>.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html#isAbsolute()" class="member-name-link">isAbsolute()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Absolute</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html#isAbsolute()" class="member-name-link">isAbsolute()</a> - Method in interface org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html" title="interface in org.mvplugins.multiverse.core.utils.position">PositionNumber</a></dt>
+<dd>
+<div class="block">Checks if this PositionNumber is absolute.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html#isAbsolute()" class="member-name-link">isAbsolute()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Relative</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html#isAllowAdvancementGrant()" class="member-name-link">isAllowAdvancementGrant()</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a></dt>
 <dd>
 <div class="block">Whether player's actions in this world will award them the relevant advancements.</div>
@@ -3688,6 +3796,14 @@ loadScripts(document, 'script');</script>
 <div class="block">Checks if the given portal type is allowed.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#isRegisterPapiHook()" class="member-name-link">isRegisterPapiHook()</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html#isRelative()" class="member-name-link">isRelative()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Absolute</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html#isRelative()" class="member-name-link">isRelative()</a> - Method in interface org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html" title="interface in org.mvplugins.multiverse.core.utils.position">PositionNumber</a></dt>
+<dd>
+<div class="block">Checks if this PositionNumber is relative.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html#isRelative()" class="member-name-link">isRelative()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Relative</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/handle/PropertyModifyAction.html#isRequireValue()" class="member-name-link">isRequireValue()</a> - Method in enum class org.mvplugins.multiverse.core.config.handle.<a href="org/mvplugins/multiverse/core/config/handle/PropertyModifyAction.html" title="enum class in org.mvplugins.multiverse.core.config.handle">PropertyModifyAction</a></dt>
 <dd>
 <div class="block">Whether this action requires a value.</div>
@@ -4679,6 +4795,42 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/exceptions/command/MVInvalidCommandArgument.html#of(org.mvplugins.multiverse.core.locale.message.Message,boolean)" class="member-name-link">of(Message, boolean)</a> - Static method in exception class org.mvplugins.multiverse.core.exceptions.command.<a href="org/mvplugins/multiverse/core/exceptions/command/MVInvalidCommandArgument.html" title="class in org.mvplugins.multiverse.core.exceptions.command">MVInvalidCommandArgument</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html#ofAbsolute(double)" class="member-name-link">ofAbsolute(double)</a> - Static method in interface org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html" title="interface in org.mvplugins.multiverse.core.utils.position">PositionNumber</a></dt>
+<dd>
+<div class="block">Creates an absolute PositionNumber.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html#ofAbsolute(double,double)" class="member-name-link">ofAbsolute(double, double)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a></dt>
+<dd>
+<div class="block">Creates a FaceDirection with absolute pitch and yaw.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#ofAbsolute(double,double,double)" class="member-name-link">ofAbsolute(double, double, double)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Creates a VectorPosition with absolute coordinates.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#ofAbsolute(double,double,double,double,double)" class="member-name-link">ofAbsolute(double, double, double, double, double)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>
+<div class="block">Creates an EntityPosition with absolute coordinates and direction.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#ofLocation(org.bukkit.Location)" class="member-name-link">ofLocation(Location)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>
+<div class="block">Creates an EntityPosition from a Bukkit Location with absolute coordinates and direction.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html#ofLocation(org.bukkit.Location)" class="member-name-link">ofLocation(Location)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a></dt>
+<dd>
+<div class="block">Gets the pitch and yaw from a Bukkit Location to create an FaceDirection with absolute values.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#ofLocation(org.bukkit.Location)" class="member-name-link">ofLocation(Location)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Creates a VectorPosition from a Bukkit Location, using absolute coordinates.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html#ofRelative(double)" class="member-name-link">ofRelative(double)</a> - Static method in interface org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html" title="interface in org.mvplugins.multiverse.core.utils.position">PositionNumber</a></dt>
+<dd>
+<div class="block">Creates a relative PositionNumber.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#ofVector(org.bukkit.util.Vector)" class="member-name-link">ofVector(Vector)</a> - Static method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Creates a VectorPosition from a Bukkit Vector, using absolute coordinates.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/module/MultiverseModule.html#onDisable()" class="member-name-link">onDisable()</a> - Method in class org.mvplugins.multiverse.core.module.<a href="org/mvplugins/multiverse/core/module/MultiverseModule.html" title="class in org.mvplugins.multiverse.core.module">MultiverseModule</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/MultiverseCore.html#onDisable()" class="member-name-link">onDisable()</a> - Method in class org.mvplugins.multiverse.core.<a href="org/mvplugins/multiverse/core/MultiverseCore.html" title="class in org.mvplugins.multiverse.core">MultiverseCore</a></dt>
 <dt><a href="org/mvplugins/multiverse/core/module/MultiverseModule.html#onEnable()" class="member-name-link">onEnable()</a> - Method in class org.mvplugins.multiverse.core.module.<a href="org/mvplugins/multiverse/core/module/MultiverseModule.html" title="class in org.mvplugins.multiverse.core.module">MultiverseModule</a></dt>
@@ -4943,6 +5095,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/exceptions/command/package-summary.html">org.mvplugins.multiverse.core.exceptions.command</a> - package org.mvplugins.multiverse.core.exceptions.command</dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/exceptions/utils/position/package-summary.html">org.mvplugins.multiverse.core.exceptions.utils.position</a> - package org.mvplugins.multiverse.core.exceptions.utils.position</dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/exceptions/world/package-summary.html">org.mvplugins.multiverse.core.exceptions.world</a> - package org.mvplugins.multiverse.core.exceptions.world</dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/inject/package-summary.html">org.mvplugins.multiverse.core.inject</a> - package org.mvplugins.multiverse.core.inject</dt>
@@ -4970,6 +5124,8 @@ loadScripts(document, 'script');</script>
 <div class="block">This package contains all Utility-clases.</div>
 </dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/matcher/package-summary.html">org.mvplugins.multiverse.core.utils.matcher</a> - package org.mvplugins.multiverse.core.utils.matcher</dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/package-summary.html">org.mvplugins.multiverse.core.utils.position</a> - package org.mvplugins.multiverse.core.utils.position</dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/result/package-summary.html">org.mvplugins.multiverse.core.utils.result</a> - package org.mvplugins.multiverse.core.utils.result</dt>
 <dd>&nbsp;</dd>
@@ -5286,6 +5442,24 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">This method is used to find out who is teleporting a player.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.html" class="type-name-link" title="interface in org.mvplugins.multiverse.core.utils.position">PositionNumber</a> - Interface in <a href="org/mvplugins/multiverse/core/utils/position/package-summary.html">org.mvplugins.multiverse.core.utils.position</a></dt>
+<dd>
+<div class="block">Represents a number that can be either absolute or relative (prefixed with '~').</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Absolute</a> - Class in <a href="org/mvplugins/multiverse/core/utils/position/package-summary.html">org.mvplugins.multiverse.core.utils.position</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Relative</a> - Class in <a href="org/mvplugins/multiverse/core/utils/position/package-summary.html">org.mvplugins.multiverse.core.utils.position</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.exceptions.utils.position">PositionParseException</a> - Exception Class in <a href="org/mvplugins/multiverse/core/exceptions/utils/position/package-summary.html">org.mvplugins.multiverse.core.exceptions.utils.position</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html#%3Cinit%3E(java.lang.String,java.lang.Throwable)" class="member-name-link">PositionParseException(String, Throwable)</a> - Constructor for exception class org.mvplugins.multiverse.core.exceptions.utils.position.<a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html" title="class in org.mvplugins.multiverse.core.exceptions.utils.position">PositionParseException</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html#%3Cinit%3E(java.lang.String)" class="member-name-link">PositionParseException(String)</a> - Constructor for exception class org.mvplugins.multiverse.core.exceptions.utils.position.<a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html" title="class in org.mvplugins.multiverse.core.exceptions.utils.position">PositionParseException</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html#%3Cinit%3E(org.mvplugins.multiverse.core.locale.message.Message)" class="member-name-link">PositionParseException(Message)</a> - Constructor for exception class org.mvplugins.multiverse.core.exceptions.utils.position.<a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html" title="class in org.mvplugins.multiverse.core.exceptions.utils.position">PositionParseException</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html#%3Cinit%3E(org.mvplugins.multiverse.core.locale.message.Message,java.lang.Throwable)" class="member-name-link">PositionParseException(Message, Throwable)</a> - Constructor for exception class org.mvplugins.multiverse.core.exceptions.utils.position.<a href="org/mvplugins/multiverse/core/exceptions/utils/position/PositionParseException.html" title="class in org.mvplugins.multiverse.core.exceptions.utils.position">PositionParseException</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/webpaste/PasteService.html#postData(java.lang.String)" class="member-name-link">postData(String)</a> - Method in class org.mvplugins.multiverse.core.utils.webpaste.<a href="org/mvplugins/multiverse/core/utils/webpaste/PasteService.html" title="class in org.mvplugins.multiverse.core.utils.webpaste">PasteService</a></dt>
 <dd>
 <div class="block">Post data to the Web.</div>
@@ -5890,6 +6064,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setApplyEntitySpawnRate(boolean)" class="member-name-link">setApplyEntitySpawnRate(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/config/CoreConfig.html#setAutoDetectGeneratorPlugins(boolean)" class="member-name-link">setAutoDetectGeneratorPlugins(boolean)</a> - Method in class org.mvplugins.multiverse.core.config.<a href="org/mvplugins/multiverse/core/config/CoreConfig.html" title="class in org.mvplugins.multiverse.core.config">CoreConfig</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html#setAutoHeal(boolean)" class="member-name-link">setAutoHeal(boolean)</a> - Method in class org.mvplugins.multiverse.core.world.<a href="org/mvplugins/multiverse/core/world/MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a></dt>
 <dd>
 <div class="block">Sets whether or not a world will auto-heal players if the difficulty is on peaceful.</div>
@@ -6451,6 +6627,18 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Makes a bukkit <code>Location</code> copy from this SpawnLocation.</div>
 </dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#toBukkitLocation(org.bukkit.Location)" class="member-name-link">toBukkitLocation(Location)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>
+<div class="block">Converts this EntityPosition to a new Bukkit Location based on a given base Location.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#toBukkitLocation(org.bukkit.Location)" class="member-name-link">toBukkitLocation(Location)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Converts this VectorPosition to a new Bukkit Location based on a given base Location.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#toBukkitVector(org.bukkit.util.Vector)" class="member-name-link">toBukkitVector(Vector)</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Converts this VectorPosition to a new Bukkit Vector based on a given base Vector.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/world/entity/EntitySpawnConfig.html#toSection()" class="member-name-link">toSection()</a> - Method in class org.mvplugins.multiverse.core.world.entity.<a href="org/mvplugins/multiverse/core/world/entity/EntitySpawnConfig.html" title="class in org.mvplugins.multiverse.core.world.entity">EntitySpawnConfig</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/command/context/GameRuleValue.html#toString()" class="member-name-link">toString()</a> - Method in record class org.mvplugins.multiverse.core.command.context.<a href="org/mvplugins/multiverse/core/command/context/GameRuleValue.html" title="class in org.mvplugins.multiverse.core.command.context">GameRuleValue</a></dt>
@@ -6483,6 +6671,16 @@ loadScripts(document, 'script');</script>
 <dt><a href="org/mvplugins/multiverse/core/permissions/CorePermissionsChecker.Scope.html#toString()" class="member-name-link">toString()</a> - Method in enum class org.mvplugins.multiverse.core.permissions.<a href="org/mvplugins/multiverse/core/permissions/CorePermissionsChecker.Scope.html" title="enum class in org.mvplugins.multiverse.core.permissions">CorePermissionsChecker.Scope</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/matcher/MatcherGroup.html#toString()" class="member-name-link">toString()</a> - Method in class org.mvplugins.multiverse.core.utils.matcher.<a href="org/mvplugins/multiverse/core/utils/matcher/MatcherGroup.html" title="class in org.mvplugins.multiverse.core.utils.matcher">MatcherGroup</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html#toString()" class="member-name-link">toString()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/EntityPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">EntityPosition</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html#toString()" class="member-name-link">toString()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/FaceDirection.html" title="class in org.mvplugins.multiverse.core.utils.position">FaceDirection</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html#toString()" class="member-name-link">toString()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Absolute.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Absolute</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html#toString()" class="member-name-link">toString()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/PositionNumber.Relative.html" title="class in org.mvplugins.multiverse.core.utils.position">PositionNumber.Relative</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#toString()" class="member-name-link">toString()</a> - Method in class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/utils/result/Attempt.Failure.html#toString()" class="member-name-link">toString()</a> - Method in class org.mvplugins.multiverse.core.utils.result.<a href="org/mvplugins/multiverse/core/utils/result/Attempt.Failure.html" title="class in org.mvplugins.multiverse.core.utils.result">Attempt.Failure</a></dt>
 <dd>&nbsp;</dd>
@@ -7070,6 +7268,14 @@ the order they are declared.</div>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/economy/MVEconomist.html#VAULT_ECONOMY_MATERIAL" class="member-name-link">VAULT_ECONOMY_MATERIAL</a> - Static variable in class org.mvplugins.multiverse.core.economy.<a href="org/mvplugins/multiverse/core/economy/MVEconomist.html" title="class in org.mvplugins.multiverse.core.economy">MVEconomist</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" class="type-name-link" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a> - Class in <a href="org/mvplugins/multiverse/core/utils/position/package-summary.html">org.mvplugins.multiverse.core.utils.position</a></dt>
+<dd>
+<div class="block">Represents an x, y, z position in 3D space, with support for absolute and relative coordinates.</div>
+</dd>
+<dt><a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html#%3Cinit%3E(org.mvplugins.multiverse.core.utils.position.PositionNumber,org.mvplugins.multiverse.core.utils.position.PositionNumber,org.mvplugins.multiverse.core.utils.position.PositionNumber)" class="member-name-link">VectorPosition(PositionNumber, PositionNumber, PositionNumber)</a> - Constructor for class org.mvplugins.multiverse.core.utils.position.<a href="org/mvplugins/multiverse/core/utils/position/VectorPosition.html" title="class in org.mvplugins.multiverse.core.utils.position">VectorPosition</a></dt>
+<dd>
+<div class="block">Creates a new VectorPosition with the specified PositionNumbers for x, y, and z.</div>
+</dd>
 <dt><a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html#VERSION_AUTHORS" class="member-name-link">VERSION_AUTHORS</a> - Enum constant in enum class org.mvplugins.multiverse.core.locale.<a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html" title="enum class in org.mvplugins.multiverse.core.locale">MVCorei18n</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html#VERSION_DESCRIPTION" class="member-name-link">VERSION_DESCRIPTION</a> - Enum constant in enum class org.mvplugins.multiverse.core.locale.<a href="org/mvplugins/multiverse/core/locale/MVCorei18n.html" title="enum class in org.mvplugins.multiverse.core.locale">MVCorei18n</a></dt>

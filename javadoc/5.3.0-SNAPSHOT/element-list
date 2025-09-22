@@ -27,6 +27,7 @@ org.mvplugins.multiverse.core.event
 org.mvplugins.multiverse.core.event.world
 org.mvplugins.multiverse.core.exceptions
 org.mvplugins.multiverse.core.exceptions.command
+org.mvplugins.multiverse.core.exceptions.utils.position
 org.mvplugins.multiverse.core.exceptions.world
 org.mvplugins.multiverse.core.inject
 org.mvplugins.multiverse.core.inject.binder
@@ -38,6 +39,7 @@ org.mvplugins.multiverse.core.permissions
 org.mvplugins.multiverse.core.teleportation
 org.mvplugins.multiverse.core.utils
 org.mvplugins.multiverse.core.utils.matcher
+org.mvplugins.multiverse.core.utils.position
 org.mvplugins.multiverse.core.utils.result
 org.mvplugins.multiverse.core.utils.text
 org.mvplugins.multiverse.core.utils.webpaste
