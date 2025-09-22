@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.utils.FileUtils;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 
@@ -38,15 +39,17 @@ import org.mvplugins.multiverse.core.utils.REPatterns;
 public final class GeneratorProvider implements Listener {
     private final Map<String, String> defaultGenerators;
     private final Map<String, GeneratorPlugin> generatorPlugins;
+    private final CoreConfig coreConfig;
     private final FileUtils fileUtils;
 
     @Inject
-    GeneratorProvider(@NotNull MultiverseCore multiverseCore, @NotNull FileUtils fileUtils) {
+    GeneratorProvider(@NotNull MultiverseCore plugin, @NotNull CoreConfig coreConfig, @NotNull FileUtils fileUtils) {
+        this.coreConfig = coreConfig;
         this.fileUtils = fileUtils;
         defaultGenerators = new HashMap<>();
         generatorPlugins = new HashMap<>();
 
-        Bukkit.getPluginManager().registerEvents(this, multiverseCore);
+        Bukkit.getPluginManager().registerEvents(this, plugin);
         loadDefaultWorldGenerators();
         loadPluginGenerators();
     }
@@ -73,11 +76,14 @@ public final class GeneratorProvider implements Listener {
      * Find generator plugins from plugins loaded and register them.
      */
     private void loadPluginGenerators() {
-        Arrays.stream(Bukkit.getPluginManager().getPlugins()).forEach(plugin -> {
+        if (!coreConfig.getAutoDetectGeneratorPlugins()) {
+            return;
+        }
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             if (testIsGeneratorPlugin(plugin)) {
                 registerGeneratorPlugin(new SimpleGeneratorPlugin(plugin.getName()));
             }
-        });
+        }
     }
 
     /**
@@ -88,14 +94,19 @@ public final class GeneratorProvider implements Listener {
      */
     private boolean testIsGeneratorPlugin(Plugin plugin) {
         String worldName = Bukkit.getWorlds().stream().findFirst().map(World::getName).orElse("world");
-        return Try.of(() -> plugin.getDefaultWorldGenerator(worldName, "") != null)
-                .recover(IllegalArgumentException.class, true)
-                .recover(throwable -> {
-                    Logging.warning("Plugin %s threw an exception when testing if it is a generator plugin!",
-                            plugin.getName());
-                    throwable.printStackTrace();
-                    return false;
-                }).getOrElse(false);
+        try {
+            return plugin.getDefaultWorldGenerator(worldName, null) != null;
+        } catch (UnsupportedOperationException e) {
+            // Some plugins throw this if they don't support world generation
+            return false;
+        } catch (Throwable t) {
+            Logging.warning("Plugin %s threw an exception when testing if it is a generator plugin! ",
+                    plugin.getName());
+            Logging.warning("This is NOT a bug in Multiverse. Do NOT report this to Multiverse support.");
+            t.printStackTrace();
+            // Assume it's a generator plugin since it tried to do something, most likely the id is wrong.
+            return true;
+        }
     }
 
     /**
@@ -206,6 +217,9 @@ public final class GeneratorProvider implements Listener {
      */
     @EventHandler
     private void onPluginEnable(PluginEnableEvent event) {
+        if (!coreConfig.getAutoDetectGeneratorPlugins()) {
+            return;
+        }
         if (!testIsGeneratorPlugin(event.getPlugin())) {
             Logging.finest("Plugin %s is not a generator plugin.", event.getPlugin().getName());
             return;
