@@ -19,6 +19,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 /**
  * Manages the worlds.yml file.
@@ -81,8 +82,9 @@ final class WorldsConfigManager {
                     }
 
                     // Copy old config file to `worlds.yml.old`
-                    Path oldWorldConfig = worldConfigFile.toPath().getParent().resolve(CONFIG_FILENAME + ".old");
-                    Files.copy(worldConfigFile.toPath(), oldWorldConfig, COPY_ATTRIBUTES);
+                    Path oldWorldConfig = worldConfigFile.toPath().getParent()
+                            .resolve(CONFIG_FILENAME + ".old." + System.currentTimeMillis());
+                    Files.copy(worldConfigFile.toPath(), oldWorldConfig, COPY_ATTRIBUTES, REPLACE_EXISTING);
 
                     return configData.replace("==: MVWorld", "w@: world")
                             .replace("==: MVSpawnSettings", "")
