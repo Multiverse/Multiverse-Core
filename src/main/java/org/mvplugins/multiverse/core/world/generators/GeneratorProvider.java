@@ -95,7 +95,7 @@ public final class GeneratorProvider implements Listener {
     private boolean testIsGeneratorPlugin(Plugin plugin) {
         String worldName = Bukkit.getWorlds().stream().findFirst().map(World::getName).orElse("world");
         try {
-            return plugin.getDefaultWorldGenerator(worldName, null) != null;
+            return plugin.getDefaultWorldGenerator(worldName, "") != null;
         } catch (UnsupportedOperationException e) {
             // Some plugins throw this if they don't support world generation
             return false;
