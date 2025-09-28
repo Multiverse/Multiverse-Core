@@ -87,7 +87,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerStaticCompletion("difficulties", suggestEnums(Difficulty.class));
-        registerStaticCompletion("environments", suggestEnums(World.Environment.class));
+        registerStaticCompletion("environments", List.of("normal", "nether", "the_end")); // Don't tab complete the "custom" environment
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
         registerStaticCompletion("gamerules", this::suggestGamerules);
