@@ -95,15 +95,19 @@ public final class GeneratorProvider implements Listener {
     private boolean testIsGeneratorPlugin(Plugin plugin) {
         String worldName = Bukkit.getWorlds().stream().findFirst().map(World::getName).orElse("world");
         try {
-            return plugin.getDefaultWorldGenerator(worldName, null) != null;
+            return plugin.getDefaultWorldGenerator(worldName, "") != null;
         } catch (UnsupportedOperationException e) {
             // Some plugins throw this if they don't support world generation
             return false;
         } catch (Throwable t) {
             Logging.warning("Plugin %s threw an exception when testing if it is a generator plugin! ",
                     plugin.getName());
-            Logging.warning("This is NOT a bug in Multiverse. Do NOT report this to Multiverse support.");
-            t.printStackTrace();
+            Logging.warning("Error by plugin %s: %s", plugin.getName(), t.getMessage());
+            Logging.warning("This is NOT a bug in Multiverse. Do NOT report this to Multiverse support. " +
+                    "Enable debug mode with `/mv debug 1` to see the full stack trace.");
+            if (coreConfig.getGlobalDebug() >= 1) {
+                t.printStackTrace();
+            }
             // Assume it's a generator plugin since it tried to do something, most likely the id is wrong.
             return true;
         }
