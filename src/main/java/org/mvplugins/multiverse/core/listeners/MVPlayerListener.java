@@ -113,7 +113,7 @@ final class MVPlayerListener implements CoreListener {
         return commandManagerProvider.get();
     }
 
-    public PluginLocales getLocales() {
+    private PluginLocales getLocales() {
         return getCommandManager().getLocales();
     }
 
@@ -122,7 +122,7 @@ final class MVPlayerListener implements CoreListener {
      *
      * @return the playerWorld-map
      */
-    public Map<String, String> getPlayerWorld() {
+    Map<String, String> getPlayerWorld() {
         return playerWorld;
     }
 
@@ -134,7 +134,7 @@ final class MVPlayerListener implements CoreListener {
     @EventMethod
     @EventPriorityKey("mvcore-player-respawn")
     @DefaultEventPriority(EventPriority.LOW)
-    public void playerRespawn(PlayerRespawnEvent event) {
+    void playerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         LoadedMultiverseWorld mvWorld = getWorldManager().getLoadedWorld(player.getWorld()).getOrNull();
         if (mvWorld == null) {
@@ -271,7 +271,7 @@ final class MVPlayerListener implements CoreListener {
      */
     @EventMethod
     @DefaultEventPriority(EventPriority.MONITOR)
-    public void playerChangedWorld(PlayerChangedWorldEvent event) {
+    void playerChangedWorld(PlayerChangedWorldEvent event) {
         // Permissions now determine whether or not to handle a gamemode.
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
         playerWorld.put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
@@ -284,7 +284,7 @@ final class MVPlayerListener implements CoreListener {
     @EventMethod
     @EventPriorityKey("mvcore-player-teleport")
     @DefaultEventPriority(EventPriority.HIGHEST)
-    public void playerTeleport(PlayerTeleportEvent event) {
+    void playerTeleport(PlayerTeleportEvent event) {
         Logging.finer("Got teleport event for player '"
                 + event.getPlayer().getName() + "' with cause '" + event.getCause() + "'");
         if (event.isCancelled()) {
@@ -355,7 +355,7 @@ final class MVPlayerListener implements CoreListener {
      */
     @EventMethod
     @DefaultEventPriority(EventPriority.LOWEST)
-    public void playerPortalCheck(PlayerPortalEvent event) {
+    void playerPortalCheck(PlayerPortalEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -381,7 +381,7 @@ final class MVPlayerListener implements CoreListener {
     @EventMethod
     @EventPriorityKey("mvcore-player-portal")
     @DefaultEventPriority(EventPriority.HIGH)
-    public void playerPortal(PlayerPortalEvent event) {
+    void playerPortal(PlayerPortalEvent event) {
         if (event.isCancelled()) {
             return;
         }

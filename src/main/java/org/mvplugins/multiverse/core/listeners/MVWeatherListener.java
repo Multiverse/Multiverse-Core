@@ -9,7 +9,6 @@ package org.mvplugins.multiverse.core.listeners;
 
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.jvnet.hk2.annotations.Service;
@@ -35,7 +34,7 @@ final class MVWeatherListener implements CoreListener {
      * @param event The Event that was fired.
      */
     @EventMethod
-    public void weatherChange(WeatherChangeEvent event) {
+    void weatherChange(WeatherChangeEvent event) {
         if (event.isCancelled() || !event.toWeatherState()) {
             return;
         }
@@ -54,7 +53,7 @@ final class MVWeatherListener implements CoreListener {
      * @param event The Event that was fired.
      */
     @EventMethod
-    public void thunderChange(ThunderChangeEvent event) {
+    void thunderChange(ThunderChangeEvent event) {
         if (event.isCancelled() || !event.toThunderState()) {
             return;
         }
