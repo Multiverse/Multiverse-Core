@@ -167,12 +167,20 @@ public final class SpawnCategoryConfig {
         final ConfigNode<Integer> tickRate = node(ConfigNode.builder("tick-rate", Integer.class)
                 .defaultValue(-1)
                 .suggester(input -> List.of("-1", "10", "100", "400", "1000"))
+                .validator(input -> config.getApplyEntitySpawnRate()
+                        ? Try.success(null)
+                        : Try.failure(new IllegalStateException("Cannot set tick rate as 'apply-entity-spawn-rate' is false in config. " +
+                        "You can re-enable this option with '/mv config set apply-entity-spawn-rate true' command.")))
                 .onSetValue((oldValue, newValue) -> applyConfigToWorld())
                 .build());
 
         final ConfigNode<Integer> spawnLimit = node(ConfigNode.builder("spawn-limit", Integer.class)
                 .defaultValue(-1)
                 .suggester(input -> List.of("-1", "10", "100", "400", "1000"))
+                .validator(input -> config.getApplyEntitySpawnLimit()
+                        ? Try.success(null)
+                        : Try.failure(new IllegalStateException("Cannot set spawn limit as 'apply-entity-spawn-limit' is false in config. " +
+                        "You can re-enable this option with '/mv config set apply-entity-spawn-limit true' command.")))
                 .onSetValue((oldValue, newValue) -> applyConfigToWorld())
                 .build());
 

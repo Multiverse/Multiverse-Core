@@ -113,9 +113,9 @@ final class EntitySpawnConfigCommand extends CoreCommand {
                 .getSpawnCategoryConfig(spawnCategory)
                 .getStringPropertyHandle()
                 .modifyPropertyString(property, value, action)
-                .onSuccess(ignore -> issuer.sendMessage("Successfully set " + property + " to " + value
+                .onSuccess(ignore -> issuer.sendInfo("Successfully set " + property + " to " + value
                         + " for " + spawnCategory.name() + " in " + world.getName()))
-                .onFailure(e -> issuer.sendMessage("Unable to set " + property + " to " + value
+                .onFailure(e -> issuer.sendError("Unable to set " + property + " to " + value
                         + " for " + spawnCategory.name() + " in " + world.getName() + ": " + e.getMessage()));
 
         worldManager.saveWorldsConfig();
