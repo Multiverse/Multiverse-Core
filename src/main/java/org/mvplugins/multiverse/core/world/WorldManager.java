@@ -370,12 +370,20 @@ public final class WorldManager {
     private LoadedMultiverseWorld newLoadedMultiverseWorld(
             @NotNull World world, @Nullable String generator, @Nullable String biome, boolean adjustSpawn) {
         WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getName());
+
+        // Properties from multiverse input
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
         worldConfig.setBiome(biome == null ? "" : biome);
+
+        // Properties from the bukkit world
+        worldConfig.setDifficulty(world.getDifficulty());
+        worldConfig.setKeepSpawnInMemory(world.getKeepSpawnInMemory());
+        worldConfig.setScale(world.getCoordinateScale());
+
         worldConfig.save();
 
-        MultiverseWorld mvWorld = newMultiverseWorld(world.getName(), worldConfig);
+        newMultiverseWorld(world.getName(), worldConfig);
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                 world,
                 worldConfig,
@@ -384,20 +392,10 @@ public final class WorldManager {
                 locationManipulation,
                 entityPurger
         );
-        setDefaultEnvironmentScale(mvWorld);
         loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return loadedWorld;
-    }
-
-    private void setDefaultEnvironmentScale(MultiverseWorld world) {
-        double scale = switch (world.getEnvironment()) {
-            case NETHER -> 8.0;
-            case THE_END -> 16.0;
-            default -> 1.0;
-        };
-        world.setScale(scale);
     }
 
     /**
