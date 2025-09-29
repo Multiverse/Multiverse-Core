@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core;
 
 import com.google.common.collect.Lists;
-import io.vavr.control.Option;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -20,9 +19,8 @@ import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 final class PlaceholderExpansionHook extends PlaceholderExpansion {
@@ -123,7 +121,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                                                       @NotNull List<String> placeholderParams,
                                                       @NotNull LoadedMultiverseWorld world) {
         // Switch to find what specific placeholder we want
-        switch (placeholder.toLowerCase()) {
+        switch (placeholder.toLowerCase(Locale.ENGLISH)) {
             case "alias" -> {
                 return world.getAliasOrName();
             }

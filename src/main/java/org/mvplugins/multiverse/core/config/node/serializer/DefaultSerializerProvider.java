@@ -48,12 +48,12 @@ public final class DefaultSerializerProvider {
             if (type.isInstance(object)) {
                 return (Enum<?>) object;
             }
-            return Enum.valueOf(type, String.valueOf(object).toUpperCase());
+            return Enum.valueOf(type, String.valueOf(object).toUpperCase(Locale.ENGLISH));
         }
 
         @Override
         public Object serialize(Enum object, Class<Enum> type) {
-            return object.name().toLowerCase();
+            return object.name().toLowerCase(Locale.ENGLISH);
         }
     };
 
@@ -80,7 +80,7 @@ public final class DefaultSerializerProvider {
             }
             String input = String.valueOf(object);
             //todo: this is a copy from string parser
-            return switch (input.toLowerCase()) {
+            return switch (input.toLowerCase(Locale.ENGLISH)) {
                 case "t", "true", "on", "y", "yes", "1", "allow" -> true;
                 case "f", "false", "off", "n", "no", "0", "deny" -> false;
                 default -> throw new RuntimeException("Unable to convert '" + input + "' to boolean.");

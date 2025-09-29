@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.world;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -417,7 +418,7 @@ final class WorldConfig {
 
             if (alias.get().isEmpty()) return;
 
-            Try.of(() -> Enum.valueOf(EnglishChatColor.class, color.toUpperCase()))
+            Try.of(() -> Enum.valueOf(EnglishChatColor.class, color.toUpperCase(Locale.ENGLISH)))
                     .map(c -> c.color)
                     .onSuccess(c -> {
                         if (c != ChatColor.WHITE) {
@@ -425,7 +426,7 @@ final class WorldConfig {
                         }
                     });
 
-            Try.of(() -> Enum.valueOf(EnglishChatStyle.class, style.toUpperCase()))
+            Try.of(() -> Enum.valueOf(EnglishChatStyle.class, style.toUpperCase(Locale.ENGLISH)))
                     .map(c -> c.color)
                     .onSuccess(s -> {
                         if (s != null) {
