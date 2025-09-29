@@ -11,7 +11,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -43,7 +42,7 @@ final class MVEntityListener implements CoreListener {
      * @param event The Event that was fired.
      */
     @EventMethod
-    public void foodLevelChange(FoodLevelChangeEvent event) {
+    void foodLevelChange(FoodLevelChangeEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -65,7 +64,7 @@ final class MVEntityListener implements CoreListener {
      * @param event The Event that was fired.
      */
     @EventMethod
-    public void entityRegainHealth(EntityRegainHealthEvent event) {
+    void entityRegainHealth(EntityRegainHealthEvent event) {
         if (event.isCancelled() || event.getRegainReason() != RegainReason.REGEN) {
             return;
         }
@@ -84,7 +83,7 @@ final class MVEntityListener implements CoreListener {
      * @param event The event.
      */
     @EventMethod
-    public void creatureSpawn(CreatureSpawnEvent event) {
+    void creatureSpawn(CreatureSpawnEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -110,7 +109,7 @@ final class MVEntityListener implements CoreListener {
      * Handle Spawn Category settings for non-creature entities.
      */
     @EventMethod
-    public void entitySpawn(EntitySpawnEvent event) {
+    void entitySpawn(EntitySpawnEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
             // Handled by CreatureSpawnEvent
             return;

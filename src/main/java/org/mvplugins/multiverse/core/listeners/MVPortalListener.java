@@ -12,7 +12,6 @@ import jakarta.inject.Inject;
 import org.bukkit.Material;
 import org.bukkit.PortalType;
 import org.bukkit.block.BlockState;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -48,7 +47,7 @@ final class MVPortalListener implements CoreListener {
      */
     @EventMethod
     @IgnoreIfCancelled
-    public void portalCreate(PortalCreateEvent event) {
+    void portalCreate(PortalCreateEvent event) {
         Logging.fine("Attempting to create portal at '%s' with reason: %s",
                 event.getWorld().getName(), event.getReason());
 
@@ -93,7 +92,7 @@ final class MVPortalListener implements CoreListener {
      */
     @EventMethod
     @IgnoreIfCancelled
-    public void playerInteract(PlayerInteractEvent event) {
+    void playerInteract(PlayerInteractEvent event) {
         if (isCreateEndPortalInteraction(event)) {
             return;
         }
@@ -122,7 +121,7 @@ final class MVPortalListener implements CoreListener {
      * @param event The Event that was fired.
      */
     @EventMethod
-    public void entityPortal(EntityPortalEvent event) {
+    void entityPortal(EntityPortalEvent event) {
         if (event.isCancelled() || event.getTo() == null) {
             return;
         }
