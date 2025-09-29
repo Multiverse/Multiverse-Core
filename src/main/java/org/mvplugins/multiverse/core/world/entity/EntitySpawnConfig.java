@@ -11,6 +11,7 @@ import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public final class EntitySpawnConfig {
@@ -52,7 +53,7 @@ public final class EntitySpawnConfig {
     public ConfigurationSection toSection() {
         MemoryConfiguration section = new MemoryConfiguration();
         spawnCategoriesConfig.forEach((spawnCategory, spawnCategoryConfig) -> {
-            section.set(spawnCategory.toString().toLowerCase(), spawnCategoryConfig.saveSection());
+            section.set(spawnCategory.toString().toLowerCase(Locale.ENGLISH), spawnCategoryConfig.saveSection());
         });
         return section;
     }
@@ -65,7 +66,7 @@ public final class EntitySpawnConfig {
                 Logging.warning("Invalid spawn category config for " + key + ": " + value);
                 return;
             }
-            SpawnCategory spawnCategory = SpawnCategory.valueOf(key.toUpperCase());
+            SpawnCategory spawnCategory = SpawnCategory.valueOf(key.toUpperCase(Locale.ENGLISH));
             spawnCategoriesConfig.put(spawnCategory, new SpawnCategoryConfig(config, spawnCategory, sectionPart));
         });
         return new EntitySpawnConfig(config, spawnCategoriesConfig);

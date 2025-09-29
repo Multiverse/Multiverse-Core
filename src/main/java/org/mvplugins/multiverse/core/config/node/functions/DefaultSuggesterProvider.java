@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.config.node.functions;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -43,7 +44,7 @@ public final class DefaultSuggesterProvider {
     private static NodeSuggester enumSuggester(Class<?> clazz) {
         return input -> Arrays.stream(clazz.getEnumConstants())
                 .map(Object::toString)
-                .map(String::toLowerCase)
+                .map(name -> name.toLowerCase(Locale.ENGLISH))
                 .collect(Collectors.toList());
     }
 

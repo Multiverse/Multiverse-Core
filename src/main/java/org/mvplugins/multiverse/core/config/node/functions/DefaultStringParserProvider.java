@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.config.node.functions;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import co.aikar.commands.ACFUtil;
@@ -41,13 +42,13 @@ public final class DefaultStringParserProvider {
     }
 
     private static final NodeStringParser<Enum> ENUM_STRING_PARSER = (input, type) -> Try.of(
-            () -> Enum.valueOf(type, input.toUpperCase()));
+            () -> Enum.valueOf(type, input.toUpperCase(Locale.ENGLISH)));
 
     private static final NodeStringParser<String> STRING_STRING_PARSER = (input, type) -> Try.of(
             () -> input);
 
     private static final NodeStringParser<Boolean> BOOLEAN_STRING_PARSER = (input, type) -> Try.of(
-            () -> switch (String.valueOf(input).toLowerCase()) {
+            () -> switch (String.valueOf(input).toLowerCase(Locale.ENGLISH)) {
                 case "t", "true", "on", "y", "yes", "1", "allow" -> true;
                 case "f", "false", "off", "n", "no", "0", "deny" -> false;
                 default -> throw new MultiverseException("Unable to convert '" + input + "' to boolean. Please use 'true' or 'false'");

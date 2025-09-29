@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -176,7 +177,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     public <T extends Enum<T>> Collection<String> suggestEnums(Class<T> enumClass) {
         return EnumSet.allOf(enumClass).stream()
                 .map(Enum::name)
-                .map(String::toLowerCase)
+                .map(name -> name.toLowerCase(Locale.ENGLISH))
                 .toList();
     }
 

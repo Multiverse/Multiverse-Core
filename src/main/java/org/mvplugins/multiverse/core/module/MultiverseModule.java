@@ -10,17 +10,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.ApiStatus;
 import org.jvnet.hk2.annotations.Contract;
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.MultiverseCoreApi;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.MultiverseCommand;
-import org.mvplugins.multiverse.core.commands.CoreCommand;
 import org.mvplugins.multiverse.core.dynamiclistener.DynamicListener;
 import org.mvplugins.multiverse.core.dynamiclistener.DynamicListenerRegistration;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocator;
 import org.mvplugins.multiverse.core.inject.PluginServiceLocatorFactory;
-import org.mvplugins.multiverse.core.inject.binder.PluginBinder;
-import org.mvplugins.multiverse.core.listeners.CoreListener;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+
+import java.util.Locale;
 
 /**
  * Common plugin class for all Multiverse plugins.
@@ -151,7 +149,7 @@ public abstract class MultiverseModule extends JavaPlugin {
                 .andThen(pluginLocales -> {
                     pluginLocales.addFileResClassLoader(this);
                     pluginLocales.addBundleClassLoader(this.getClassLoader());
-                    pluginLocales.addMessageBundles(this.getDescription().getName().toLowerCase());
+                    pluginLocales.addMessageBundles(this.getName().toLowerCase(Locale.ENGLISH));
                 })
                 .onFailure(e -> {
                     Logging.severe("Failed to register locales");

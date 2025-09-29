@@ -228,8 +228,8 @@ public final class LocationManipulation {
         if (orientation == null) {
             return 0;
         }
-        if (ORIENTATION_INTS.containsKey(orientation.toLowerCase())) {
-            return ORIENTATION_INTS.get(orientation.toLowerCase());
+        if (ORIENTATION_INTS.containsKey(orientation.toLowerCase(Locale.ENGLISH))) {
+            return ORIENTATION_INTS.get(orientation.toLowerCase(Locale.ENGLISH));
         }
         return 0;
     }

@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.command.flag;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 import co.aikar.commands.InvalidCommandArgument;
@@ -220,7 +221,7 @@ public class CommandValueFlag<T> extends CommandFlag {
         private void setEnumContext() {
             this.context = (String value) -> {
                 try {
-                    return Enum.valueOf(type, value.toUpperCase());
+                    return Enum.valueOf(type, value.toUpperCase(Locale.ENGLISH));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidCommandArgument("Invalid value for argument " + key + ": " + value);
                 }
@@ -229,7 +230,7 @@ public class CommandValueFlag<T> extends CommandFlag {
 
         private void setEnumCompletion() {
             List<String> types = Arrays.stream(type.getEnumConstants())
-                    .map(typeClass -> typeClass.name().toLowerCase())
+                    .map(typeClass -> typeClass.name().toLowerCase(Locale.ENGLISH))
                     .toList();
 
             this.completion = (input) -> types;

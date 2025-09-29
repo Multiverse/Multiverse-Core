@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.world.helpers;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -130,7 +131,7 @@ public final class WorldNameChecker {
      * @return True if it looks like a world, else false.
      */
     private boolean folderHasDat(@NotNull File worldFolder) {
-        File[] files = worldFolder.listFiles((file, name) -> name.toLowerCase().endsWith(".dat"));
+        File[] files = worldFolder.listFiles((file, name) -> name.toLowerCase(Locale.ENGLISH).endsWith(".dat"));
         return files != null && files.length > 0;
     }
 
