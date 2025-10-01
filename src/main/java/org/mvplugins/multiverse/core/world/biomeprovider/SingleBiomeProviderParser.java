@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.world.biomeprovider;
 
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.BiomeProvider;
 import org.jetbrains.annotations.NotNull;
@@ -18,13 +20,16 @@ final class SingleBiomeProviderParser implements BiomeProviderParser {
 
     @Override
     public BiomeProvider parseBiomeProvider(@NotNull String worldName, @NotNull String params) {
-        return new SingleBiomeProvider(Biome.valueOf(params.toUpperCase(Locale.ENGLISH)));
+        NamespacedKey biomeKey = NamespacedKey.fromString(params.toLowerCase(Locale.ENGLISH));
+        return new SingleBiomeProvider(Registry.BIOME.get(biomeKey));
     }
 
     @Override
     public Collection<String> suggestParams(@NotNull String currentInput) {
         if (biomes == null) {
-            biomes = Arrays.stream(Biome.values()).map(biome -> biome.toString().toLowerCase(Locale.ENGLISH)).toList();
+            biomes = Registry.BIOME.stream()
+                    .map(biome -> biome.getKey().getKey().toLowerCase(Locale.ENGLISH))
+                    .toList();
         }
         return biomes;
     }
