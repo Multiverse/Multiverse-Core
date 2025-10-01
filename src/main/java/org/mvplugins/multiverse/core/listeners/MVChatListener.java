@@ -16,6 +16,7 @@ import org.mvplugins.multiverse.core.dynamiclistener.annotations.IgnoreIfCancell
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.SkipIfEventExist;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.WorldManager;
+import org.mvplugins.multiverse.core.world.helpers.ConcurrentPlayerWorldTracker;
 
 /**
  * Multiverse's Listener for players.
@@ -24,16 +25,17 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 final class MVChatListener implements CoreListener {
     private final CoreConfig config;
     private final WorldManager worldManager;
-    private final MVPlayerListener playerListener;
+    private final ConcurrentPlayerWorldTracker playerWorldTracker;
 
     @Inject
     MVChatListener(
             CoreConfig config,
             WorldManager worldManager,
-            MVPlayerListener playerListener) {
+            ConcurrentPlayerWorldTracker playerWorldTracker
+    ) {
         this.config = config;
         this.worldManager = worldManager;
-        this.playerListener = playerListener;
+        this.playerWorldTracker = playerWorldTracker;
     }
 
     @EventClass("io.papermc.paper.event.player.AsyncChatEvent")
@@ -94,10 +96,9 @@ final class MVChatListener implements CoreListener {
     }
 
     private String getWorldName(Player player) {
-        String world = playerListener.getPlayerWorld().get(player.getName());
+        String world = playerWorldTracker.getPlayerWorld(player.getName());
         if (world == null) {
             world = player.getWorld().getName();
-            playerListener.getPlayerWorld().put(player.getName(), world);
         }
         return this.worldManager.getLoadedWorld(world)
                 .map(mvworld -> mvworld.isHidden() ? "" : mvworld.getAliasOrName())
