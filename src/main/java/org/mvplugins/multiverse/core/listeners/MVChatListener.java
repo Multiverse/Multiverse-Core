@@ -96,11 +96,9 @@ final class MVChatListener implements CoreListener {
     }
 
     private String getWorldName(Player player) {
-        String world = playerWorldTracker.getPlayerWorld(player.getName());
-        if (world == null) {
-            world = player.getWorld().getName();
-        }
-        return this.worldManager.getLoadedWorld(world)
+        String worldName = playerWorldTracker.getPlayerWorld(player.getName())
+                .getOrElse(() -> player.getWorld().getName());
+        return this.worldManager.getLoadedWorld(worldName)
                 .map(mvworld -> mvworld.isHidden() ? "" : mvworld.getAliasOrName())
                 .getOrElse("");
     }
