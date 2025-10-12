@@ -8,11 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
-
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 
 /**
  * Destination instance implementation for the {@link WorldDestination}.
@@ -85,6 +82,14 @@ public final class WorldDestinationInstance extends DestinationInstance<WorldDes
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
         return Option.of(world.getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Message getDisplayMessage() {
+        return Message.of(world.getAliasOrName());
     }
 
     /**
