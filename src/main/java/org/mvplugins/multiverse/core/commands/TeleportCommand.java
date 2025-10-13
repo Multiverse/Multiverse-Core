@@ -105,7 +105,7 @@ final class TeleportCommand extends CoreCommand {
                 .teleportSingle(player)
                 .onSuccess(() -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                         Replace.PLAYER.with(getYouOrName(issuer, player)),
-                        Replace.DESTINATION.with(destination.toString())))
+                        Replace.DESTINATION.with(destination.getDisplayMessage())))
                 .onFailureCount(reasonsCountMap -> {
                     for (var entry : reasonsCountMap.entrySet()) {
                         Logging.finer("Failed to teleport %s players to %s: %s",
@@ -138,7 +138,7 @@ final class TeleportCommand extends CoreCommand {
                 .teleport(List.of(players))
                 .onSuccessCount(successCount -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
                         Replace.PLAYER.with(successCount + " players"),
-                        Replace.DESTINATION.with(destination.toString())))
+                        Replace.DESTINATION.with(destination.getDisplayMessage())))
                 .onFailureCount(reasonsCountMap -> {
                     for (var entry : reasonsCountMap.entrySet()) {
                         Logging.finer("Failed to teleport %s players to %s: %s",
