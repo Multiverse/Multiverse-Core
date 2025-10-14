@@ -114,8 +114,9 @@ jobs:
 
     - name: Upload to DBO
       if: ${{ !cancelled() && inputs.upload_dbo == 'true' }}
-      uses: benwoo1110/dbo-upload-action@v1
+      uses: benwoo1110/dbo-upload-action@test
       with:
+        debug: true
         api_token: ${{ secrets.DBO_UPLOAD_API_TOKEN }}
         project_id: ${{ inputs.dbo_project_id }}
         changelog: ${{ steps.release-artifact.outputs.body }}
