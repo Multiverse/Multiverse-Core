@@ -19,7 +19,10 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.context.issueraware.PlayerArrayValue;
+import org.mvplugins.multiverse.core.command.flag.CommandFlag;
+import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.command.flags.UnsafeFlags;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
@@ -35,14 +38,14 @@ final class TeleportCommand extends CoreCommand {
     private final CoreConfig config;
     private final CorePermissionsChecker permissionsChecker;
     private final AsyncSafetyTeleporter safetyTeleporter;
-    private final UnsafeFlags flags;
+    private final Flags flags;
 
     @Inject
     TeleportCommand(
             @NotNull CoreConfig config,
             @NotNull CorePermissionsChecker permissionsChecker,
             @NotNull AsyncSafetyTeleporter safetyTeleporter,
-            @NotNull UnsafeFlags flags
+            @NotNull Flags flags
     ) {
         this.config = config;
         this.permissionsChecker = permissionsChecker;
@@ -54,14 +57,14 @@ final class TeleportCommand extends CoreCommand {
     @Subcommand("teleport|tp")
     @CommandPermission("@mvteleport")
     @CommandCompletion("@playersarray:checkPermissions=@mvteleportother|@destinations:byIssuerForArg=arg1 "
-            + "@destinations:notByIssuerForArg=arg1|@flags:byIssuerForArg=arg1,groupName=" + UnsafeFlags.NAME + " "
-            + "@flags:notByIssuerForArg=arg1,groupName=" + UnsafeFlags.NAME)
+            + "@destinations:notByIssuerForArg=arg1|@flags:byIssuerForArg=arg1,groupName=" + Flags.NAME + " "
+            + "@flags:notByIssuerForArg=arg1,groupName=" + Flags.NAME)
     @Syntax("[player] <destination> [--unsafe]")
     @Description("{@@mv-core.teleport.description}")
     void onTeleportCommand(
             MVCommandIssuer issuer,
 
-            @Flags("resolve=issuerAware")
+            @co.aikar.commands.annotation.Flags("resolve=issuerAware")
             @Syntax("[player]")
             @Description("{@@mv-core.teleport.player.description}")
             PlayerArrayValue playersValue,
@@ -103,16 +106,21 @@ final class TeleportCommand extends CoreCommand {
                 .checkSafety(!parsedFlags.hasFlag(flags.unsafe) && destination.checkTeleportSafety())
                 .passengerMode(config.getPassengerMode())
                 .teleportSingle(player)
-                .onSuccess(() -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                        Replace.PLAYER.with(getYouOrName(issuer, player)),
-                        Replace.DESTINATION.with(destination.getDisplayMessage())))
+                .onSuccess(() -> {
+                    if (parsedFlags.hasFlag(flags.silent)) {
+                        return;
+                    }
+                    issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                            Replace.PLAYER.with(getYouOrName(issuer, player)),
+                            Replace.DESTINATION.with(destination.getDisplayMessage()));
+                })
                 .onFailureCount(reasonsCountMap -> {
                     for (var entry : reasonsCountMap.entrySet()) {
                         Logging.finer("Failed to teleport %s players to %s: %s",
                                 entry.getValue(), destination, entry.getKey());
                         issuer.sendError(MVCorei18n.TELEPORT_FAILED,
                                 Replace.PLAYER.with(player.getName()),
-                                Replace.DESTINATION.with(destination.toString()),
+                                Replace.DESTINATION.with(destination.getDisplayMessage()),
                                 Replace.REASON.with(Message.of(entry.getKey())));
                     }
                 });
@@ -136,18 +144,38 @@ final class TeleportCommand extends CoreCommand {
                 .checkSafety(!parsedFlags.hasFlag(flags.unsafe) && destination.checkTeleportSafety())
                 .passengerMode(config.getPassengerMode())
                 .teleport(List.of(players))
-                .onSuccessCount(successCount -> issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                        Replace.PLAYER.with(successCount + " players"),
-                        Replace.DESTINATION.with(destination.getDisplayMessage())))
+                .onSuccessCount(successCount -> {
+                    if (parsedFlags.hasFlag(flags.silent)) {
+                        return;
+                    }
+                    issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
+                            Replace.PLAYER.with(successCount + " players"),
+                            Replace.DESTINATION.with(destination.getDisplayMessage()));
+                })
                 .onFailureCount(reasonsCountMap -> {
                     for (var entry : reasonsCountMap.entrySet()) {
                         Logging.finer("Failed to teleport %s players to %s: %s",
                                 entry.getValue(), destination, entry.getKey());
                         issuer.sendError(MVCorei18n.TELEPORT_FAILED,
                                 Replace.PLAYER.with(entry.getValue() + " players"),
-                                Replace.DESTINATION.with(destination.toString()),
+                                Replace.DESTINATION.with(destination.getDisplayMessage()),
                                 Replace.REASON.with(Message.of(entry.getKey())));
                     }
                 });
+    }
+
+    @Service
+    private static final class Flags extends UnsafeFlags {
+
+        private static final String NAME = "mvteleport";
+
+        @Inject
+        private Flags(@NotNull CommandFlagsManager flagsManager) {
+            super(NAME, flagsManager);
+        }
+
+        private final CommandFlag silent = flag(CommandFlag.builder("--silent")
+                .addAlias("-s")
+                .build());
     }
 }
