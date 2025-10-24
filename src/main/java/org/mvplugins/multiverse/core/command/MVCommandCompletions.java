@@ -279,19 +279,16 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             case "both" -> {
                 return worldManager.getWorlds().stream()
                         .map(MultiverseWorld::getTabCompleteName)
-                        .map(StringFormatter::quoteMultiWordString)
                         .toList();
             }
             case "loaded" -> {
                 return worldManager.getLoadedWorlds().stream()
                         .map(MultiverseWorld::getTabCompleteName)
-                        .map(StringFormatter::quoteMultiWordString)
                         .toList();
             }
             case "unloaded" -> {
                 return worldManager.getUnloadedWorlds().stream()
                         .map(MultiverseWorld::getTabCompleteName)
-                        .map(StringFormatter::quoteMultiWordString)
                         .toList();
             }
             case "potential" -> {
