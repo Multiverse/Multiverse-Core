@@ -100,7 +100,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
         registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName);
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
-        registerAsyncCompletion("playersarray", this::suggestPlayersArray);
+        registerCompletion("playersarray", this::suggestPlayersArray); // getting online players cannot be async
         registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
         registerStaticCompletion("spawncategories", suggestEnums(SpawnCategory.class));
         registerAsyncCompletion("spawncategorypropsname", this::suggestSpawnCategoryPropsName);
