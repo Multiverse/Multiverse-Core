@@ -27,6 +27,7 @@ import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
@@ -224,18 +225,19 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                         // Most likely console did not specify a player
                         return Collections.<String>emptyList();
                     }
-                    if (context.hasConfig("othersOnly") && (players.length == 1 && players[0].equals(context.getIssuer().getIssuer()))) {
+                    CommandSender sender = context.getIssuer().getIssuer();
+                    if (context.hasConfig("othersOnly") && (players.length == 1 && players[0].equals(sender))) {
                         return Collections.<String>emptyList();
                     }
-                    return suggestDestinationsWithPerms(context.getIssuer().getIssuer(), players, context.getInput());
+                    return suggestDestinationsWithPerms(sender, Arrays.asList(players), context.getInput());
                 })
                 .getOrElse(Collections.emptyList());
     }
 
-    private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, Player[] players, String deststring) {
+    private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, List<Entity> teleportees, String deststring) {
         return destinationsProvider.suggestDestinations(teleporter, deststring).stream()
                 .filter(packet -> corePermissionsChecker
-                        .checkDestinationPacketPermission(teleporter, Arrays.asList(players), packet))
+                        .checkDestinationPacketPermission(teleporter, teleportees, packet))
                 .map(DestinationSuggestionPacket::parsableString)
                 .toList();
     }
