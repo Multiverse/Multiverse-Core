@@ -22,6 +22,9 @@ public class MVRootCommand extends BukkitRootCommand {
     @Override
     public List<String> getTabCompletions(CommandIssuer sender, String alias, String[] args, boolean commandsOnly, boolean isAsync) {
         String[] quoteFormatedArgs = StringFormatter.parseQuotesInArgs(args).toArray(String[]::new);
-        return super.getTabCompletions(sender, alias, quoteFormatedArgs, commandsOnly, isAsync);
+        return super.getTabCompletions(sender, alias, quoteFormatedArgs, commandsOnly, isAsync)
+                .stream()
+                .map(StringFormatter::quoteMultiWordString)
+                .toList();
     }
 }
