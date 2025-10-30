@@ -41,6 +41,7 @@ messaging:
 
 command:
   resolve-alias-name: true
+  simplified-destination-tab-completion: false
   confirm-mode: enable
   use-confirm-otp: true
   confirm-timeout: 30

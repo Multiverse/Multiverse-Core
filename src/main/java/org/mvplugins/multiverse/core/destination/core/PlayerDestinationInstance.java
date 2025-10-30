@@ -9,6 +9,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.locale.message.Message;
 
 import java.util.UUID;
 
@@ -64,6 +65,14 @@ public final class PlayerDestinationInstance extends DestinationInstance<PlayerD
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
         return Option.of(playerName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Message getDisplayMessage() {
+        return Message.of(playerName);
     }
 
     /**
