@@ -8,16 +8,13 @@ import java.util.Locale;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
-import jakarta.inject.Provider;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventPriority;
-import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.queue.ConfirmMode;
 import org.mvplugins.multiverse.core.config.handle.CommentedConfigurationHandle;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
@@ -28,7 +25,6 @@ import org.mvplugins.multiverse.core.config.migration.action.InvertBoolMigratorA
 import org.mvplugins.multiverse.core.config.migration.action.MoveMigratorAction;
 import org.mvplugins.multiverse.core.config.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.config.migration.action.SetMigratorAction;
-import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.teleportation.PassengerMode;
 import org.mvplugins.multiverse.core.teleportation.PassengerModes;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
@@ -537,6 +533,16 @@ public final class CoreConfig {
      */
     public boolean getResolveAliasName() {
         return configHandle.get(configNodes.resolveAliasName);
+    }
+
+    @ApiStatus.AvailableSince("5.4")
+    public Try<Void> setSimplifiedDestinationTabCompletion(boolean simplifiedDestinationTabCompletion) {
+        return configHandle.set(configNodes.simplifiedDestinationTabCompletion, simplifiedDestinationTabCompletion);
+    }
+
+    @ApiStatus.AvailableSince("5.4")
+    public boolean getSimplifiedDestinationTabCompletion() {
+        return configHandle.get(configNodes.simplifiedDestinationTabCompletion);
     }
 
     /**

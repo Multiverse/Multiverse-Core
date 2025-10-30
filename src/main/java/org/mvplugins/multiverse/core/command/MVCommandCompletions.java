@@ -44,9 +44,9 @@ import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.utils.REPatterns;
-import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -236,6 +236,9 @@ public class MVCommandCompletions extends PaperCommandCompletions {
 
     private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, List<Entity> teleportees, String deststring) {
         return destinationsProvider.suggestDestinations(teleporter, deststring).stream()
+                .filter(packet -> !config.getSimplifiedDestinationTabCompletion()
+                        || packet.destination() instanceof WorldDestination
+                        || deststring.startsWith(packet.destination().getIdentifier() + ":"))
                 .filter(packet -> corePermissionsChecker
                         .checkDestinationPacketPermission(teleporter, teleportees, packet))
                 .map(DestinationSuggestionPacket::parsableString)
