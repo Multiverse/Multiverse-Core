@@ -38,7 +38,7 @@ public final class UnloadWorldOptions {
      * Sets whether to unload the bukkit world.
      * <br />
      * By setting this to false, multiverse will essentially untrack the world, but the world itself is still loaded.
-     * This should be only used in edge cases where the world is used by other plugins byt you don't want multiverse
+     * This should be only used in edge cases where the world is used by other plugins but you don't want multiverse
      * to handle it.
      *
      * @param unloadBukkitWorldInput  Whether to unload the bukkit world.
