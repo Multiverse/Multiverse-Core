@@ -80,7 +80,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
             return null;
         }
 
-        final var placeholder = paramsArray.removeFirst();
+        final var placeholder = paramsArray.remove(0);
 
         String worldName = parseWorldName(offlinePlayer, paramsArray);
         if (worldName == null) return null;
@@ -103,9 +103,9 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
         }
 
         // Try get from params
-        String paramWorldName = paramsArray.getLast();
+        String paramWorldName = paramsArray.get(paramsArray.size() - 1);
         if (worldManager.isLoadedWorld(paramWorldName)) {
-            paramsArray.removeLast();
+            paramsArray.remove(paramsArray.size() - 1);
             return paramWorldName;
         }
 
@@ -177,7 +177,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
                 return String.valueOf(world.getSeed());
             }
             case "time" -> {
-                String timeFormat = !placeholderParams.isEmpty() ? placeholderParams.getFirst() : "";
+                String timeFormat = !placeholderParams.isEmpty() ? placeholderParams.get(0) : "";
                 long time = world.getBukkitWorld().map(World::getTime).getOrElse(0L);
                 switch (timeFormat) {
                     case "" -> {
