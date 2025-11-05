@@ -260,7 +260,7 @@ final class MVPlayerListener implements CoreListener {
                 .onSuccess(result -> Logging.fine("Player %s has been teleported on join",
                         player.getName()))
                 .onFailure(failure -> Logging.warning("Failed to teleport player %s on join: %s",
-                        player.getName(), failure.getFirst()));
+                        player.getName(), failure.get(0)));
     }
 
     /**
