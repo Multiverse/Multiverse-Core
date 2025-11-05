@@ -11,9 +11,9 @@ jobs:
       pull-requests: write
     continue-on-error: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
 
-      - uses: dbelyaev/action-checkstyle@v0.8.4
+      - uses: dbelyaev/action-checkstyle@v3
         continue-on-error: true
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
