@@ -9,12 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.locale.message.Message;
 
 /**
  * Destination instance implementation for the {@link BedDestination}.
  */
 public final class BedDestinationInstance extends DestinationInstance<BedDestinationInstance, BedDestination> {
-    private final Player player;
+    private final @Nullable Player player;
 
     /**
      * Constructor.
@@ -62,6 +63,15 @@ public final class BedDestinationInstance extends DestinationInstance<BedDestina
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
         return Option.of(player != null ? player.getName() : BedDestination.OWN_BED_STRING);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Message getDisplayMessage() {
+        //TODO Localize
+        return Message.of(player == null ? "your bed/respawn point" : player.getName() + "'s bed/respawn point");
     }
 
     /**

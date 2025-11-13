@@ -74,8 +74,6 @@ final class MVPlayerListener implements CoreListener {
     private final CorePermissionsChecker corePermissionsChecker;
     private final AsyncSafetyTeleporter asyncSafetyTeleporter;
 
-    private final Map<String, String> playerWorld = new ConcurrentHashMap<>();
-
     @Inject
     MVPlayerListener(
             MultiverseCore plugin,
@@ -118,15 +116,6 @@ final class MVPlayerListener implements CoreListener {
 
     private PluginLocales getLocales() {
         return getCommandManager().getLocales();
-    }
-
-    /**
-     * Gets the map of player and the world name they are in.
-     *
-     * @return the playerWorld-map
-     */
-    Map<String, String> getPlayerWorld() {
-        return playerWorld;
     }
 
     /**
@@ -272,7 +261,6 @@ final class MVPlayerListener implements CoreListener {
     void playerChangedWorld(PlayerChangedWorldEvent event) {
         // Permissions now determine whether or not to handle a gamemode.
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
-        playerWorld.put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
     }
 
     /**

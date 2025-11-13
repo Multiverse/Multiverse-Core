@@ -27,6 +27,7 @@ import org.bukkit.GameRule;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
@@ -43,9 +44,9 @@ import org.mvplugins.multiverse.core.config.handle.PropertyModifyAction;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.utils.REPatterns;
-import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -100,7 +101,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
         registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName);
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
-        registerAsyncCompletion("playersarray", this::suggestPlayersArray);
+        registerCompletion("playersarray", this::suggestPlayersArray); // getting online players cannot be async
         registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
         registerStaticCompletion("spawncategories", suggestEnums(SpawnCategory.class));
         registerAsyncCompletion("spawncategorypropsname", this::suggestSpawnCategoryPropsName);
@@ -224,18 +225,22 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                         // Most likely console did not specify a player
                         return Collections.<String>emptyList();
                     }
-                    if (context.hasConfig("othersOnly") && (players.length == 1 && players[0].equals(context.getIssuer().getIssuer()))) {
+                    CommandSender sender = context.getIssuer().getIssuer();
+                    if (context.hasConfig("othersOnly") && (players.length == 1 && players[0].equals(sender))) {
                         return Collections.<String>emptyList();
                     }
-                    return suggestDestinationsWithPerms(context.getIssuer().getIssuer(), players, context.getInput());
+                    return suggestDestinationsWithPerms(sender, Arrays.asList(players), context.getInput());
                 })
                 .getOrElse(Collections.emptyList());
     }
 
-    private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, Player[] players, String deststring) {
+    private Collection<String> suggestDestinationsWithPerms(CommandSender teleporter, List<Entity> teleportees, String deststring) {
         return destinationsProvider.suggestDestinations(teleporter, deststring).stream()
+                .filter(packet -> !config.getSimplifiedDestinationTabCompletion()
+                        || packet.destination() instanceof WorldDestination
+                        || deststring.startsWith(packet.destination().getIdentifier() + ":"))
                 .filter(packet -> corePermissionsChecker
-                        .checkDestinationPacketPermission(teleporter, Arrays.asList(players), packet))
+                        .checkDestinationPacketPermission(teleporter, teleportees, packet))
                 .map(DestinationSuggestionPacket::parsableString)
                 .toList();
     }
