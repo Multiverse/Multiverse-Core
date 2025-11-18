@@ -94,7 +94,6 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
         return keepWorldConfig;
     }
 
-
     /**
      * Sets whether to keep the world border of the world during cloning.
      *
