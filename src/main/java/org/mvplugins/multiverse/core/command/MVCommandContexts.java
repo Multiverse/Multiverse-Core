@@ -278,7 +278,12 @@ public class MVCommandContexts extends PaperCommandContexts {
                 })
                 .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player."))
                 .issuerAwareInputFailMessage((context, input) -> Message.of("Invalid player: " + input + ". Either specify an online player or use this command as a player."))
-                .inputOnlyFailMessage((context, input) -> Message.of("Player " + input + " not found."));
+                .inputOnlyFailMessage((context, input) -> {
+                    if (PlayerFinder.isSelector(input)) {
+                        return Message.of("No player(s) matched selector: " + input + ".");
+                    }
+                    return Message.of("Player(s) " + input + " not found.");
+                });
     }
 
     private PlayerLocation parsePlayerLocation(BukkitCommandExecutionContext context) {
