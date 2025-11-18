@@ -119,7 +119,7 @@ final class SpawnCommand extends CoreCommand {
                                 ? Message.of(MVCorei18n.GENERIC_YOU)
                                 : Message.of(entity.getName())),
                         Replace.WORLD.with(mvWorld.getName()),
-                        Replace.REASON.with(failure.getFirst().getFailureMessage())));
+                        Replace.REASON.with(failure.get(0).getFailureMessage())));
     }
 
     private void handleMultiTeleport(MVCommandIssuer issuer, LoadedMultiverseWorld mvWorld,
