@@ -107,18 +107,14 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      *
      * @return Whether this attempt is a success.
      */
-    default boolean isSuccess() {
-        return this instanceof Success;
-    }
+    boolean isSuccess();
 
     /**
      * Returns whether this attempt is a failure.
      *
      * @return Whether this attempt is a failure.
      */
-    default boolean isFailure() {
-        return this instanceof Failure;
-    }
+    boolean isFailure();
 
     /**
      * Converts this {@link Attempt} instance to an equivalent {@link Try} representation. Defaults to a
@@ -143,19 +139,25 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
     @ApiStatus.AvailableSince("5.1")
     Try<T> toTry(Function<Failure<T, F>, Throwable> throwableFunction);
 
+    /**
+     * Runs the given runnable after this attempt regardless of success or failure.
+     *
+     * @param runnable  The runnable.
+     * @return This attempt.
+     */
     default Attempt<T, F> thenRun(Runnable runnable) {
         runnable.run();
         return this;
     }
 
-    default Attempt<T, F> thenAccept(Consumer<Either<T, F>> consumer) {
-        if (this instanceof Success) {
-            consumer.accept(Either.left(get()));
-        } else {
-            consumer.accept(Either.right(getFailureReason()));
-        }
-        return this;
-    }
+    /**
+     * Accepts either the value or the failure reason depending on the result type.
+     * This will run regardless of success or failure.
+     *
+     * @param consumer The consumer with either the value or the failure reason.
+     * @return This attempt.
+     */
+    Attempt<T, F> thenAccept(Consumer<Either<T, F>> consumer);
 
     /**
      * Peeks at the value if this is a success attempt.
@@ -163,12 +165,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param consumer The consumer with the value.
      * @return This attempt.
      */
-    default Attempt<T, F> peek(Consumer<T> consumer) {
-        if (this instanceof Success) {
-            consumer.accept(get());
-        }
-        return this;
-    }
+     Attempt<T, F> peek(Consumer<T> consumer);
 
     /**
      * Maps the value to another value if this is a success attempt.
@@ -177,13 +174,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param <U>       The type of the new value.
      * @return The new attempt.
      */
-    default <U> Attempt<U, F> map(Function<? super T, ? extends U> mapper) {
-        if (this instanceof Success) {
-            return new Success<>(mapper.apply(get()));
-        } else {
-            return new Failure<>((Failure<T, F>) this);
-        }
-    }
+    <U> Attempt<U, F> map(Function<? super T, ? extends U> mapper);
 
     /**
      * Maps the value to another attempt if this is a success attempt.
@@ -192,13 +183,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param <U>       The type of the new value.
      * @return The new attempt.
      */
-    default <U> Attempt<U, F> map(Supplier<? extends U> mapper) {
-        if (this instanceof Success) {
-            return new Success<>(mapper.get());
-        } else {
-            return new Failure<>((Failure<T, F>) this);
-        }
-    }
+    <U> Attempt<U, F> map(Supplier<? extends U> mapper);
 
     /**
      * Maps the value to another attempt with the same fail reason if this is a success attempt.
@@ -207,13 +192,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param <U>       The type of the new value.
      * @return The new attempt.
      */
-    default <U> Attempt<U, F> mapAttempt(Function<? super T, Attempt<U, F>> mapper) {
-        if (this instanceof Success) {
-            return mapper.apply(get());
-        } else {
-            return new Failure<>((Failure<T, F>) this);
-        }
-    }
+    <U> Attempt<U, F> mapAttempt(Function<? super T, Attempt<U, F>> mapper);
 
     /**
      * Maps the value to another attempt with the same fail reason if this is a success attempt.
@@ -222,13 +201,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param <U>       The type of the new value.
      * @return The new attempt.
      */
-    default <U> Attempt<U, F> mapAttempt(Supplier<Attempt<U, F>> mapper) {
-        if (this instanceof Success) {
-            return mapper.get();
-        } else {
-            return new Failure<>((Failure<T, F>) this);
-        }
-    }
+    <U> Attempt<U, F> mapAttempt(Supplier<Attempt<U, F>> mapper);
 
     /**
      * Maps to another attempt with a different fail reason.
@@ -237,13 +210,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param <UF>          The type of the new fail reason.
      * @return The new attempt.
      */
-    default <UF extends FailureReason> Attempt<T, UF> transform(UF failureReason) {
-        if (this instanceof Success) {
-            return new Success<>(get());
-        } else {
-            return new Failure<>(failureReason, getFailureMessage(), (Failure<T, F>) this);
-        }
-    }
+    <UF extends FailureReason> Attempt<T, UF> transform(UF failureReason);
 
     /**
      * Maps attempt result to another value.
@@ -256,13 +223,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @since 5.1
      */
     @ApiStatus.AvailableSince("5.1")
-    default <U> U transform(Function<T, U> successMapper, Function<F, U> failureMapper) {
-        if (this instanceof Success) {
-            return successMapper.apply(get());
-        } else {
-            return failureMapper.apply(getFailureReason());
-        }
-    }
+    <U> U transform(Function<T, U> successMapper, Function<F, U> failureMapper);
 
     /**
      * Calls either the failure or success function depending on the result type.
@@ -272,13 +233,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param <N>           The type of the new value.
      * @return The result of the function.
      */
-    default <N> N fold(Function<Failure<T, F>, N> failureMapper, Function<T, N> successMapper) {
-        if (this instanceof Success) {
-            return successMapper.apply(get());
-        } else {
-            return failureMapper.apply((Failure<T, F>) this);
-        }
-    }
+    <N> N fold(Function<Failure<T, F>, N> failureMapper, Function<T, N> successMapper);
 
     /**
      * Calls the given runnable if this is a success attempt.
@@ -286,12 +241,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param runnable  The runnable.
      * @return This attempt.
      */
-    default Attempt<T, F> onSuccess(Runnable runnable) {
-        if (this instanceof Success) {
-            runnable.run();
-        }
-        return this;
-    }
+    Attempt<T, F> onSuccess(Runnable runnable);
 
     /**
      * Calls the given consumer if this is a success attempt.
@@ -299,12 +249,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param consumer  The consumer with the value.
      * @return This attempt.
      */
-    default Attempt<T, F> onSuccess(Consumer<T> consumer) {
-        if (this instanceof Success) {
-            consumer.accept(get());
-        }
-        return this;
-    }
+    Attempt<T, F> onSuccess(Consumer<T> consumer);
 
     /**
      * Calls the given consumer if this is a failure attempt.
@@ -312,12 +257,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param runnable  The runnable.
      * @return This attempt.
      */
-    default Attempt<T, F> onFailure(Runnable runnable) {
-        if (this instanceof Failure) {
-            runnable.run();
-        }
-        return this;
-    }
+    Attempt<T, F> onFailure(Runnable runnable);
 
     /**
      * Calls the given consumer if this is a failure attempt.
@@ -325,12 +265,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param consumer  The consumer with the failure instance.
      * @return This attempt.
      */
-    default Attempt<T, F> onFailure(Consumer<Failure<T, F>> consumer) {
-        if (this instanceof Failure) {
-            consumer.accept((Failure<T, F>) this);
-        }
-        return this;
-    }
+    Attempt<T, F> onFailure(Consumer<Failure<T, F>> consumer);
 
     /**
      * Calls the given runnable if this is a failure attempt.
@@ -338,12 +273,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param consumer  The consumer with the failure reason.
      * @return This attempt.
      */
-    default Attempt<T, F> onFailureReason(Consumer<F> consumer) {
-        if (this instanceof Failure) {
-            consumer.accept(getFailureReason());
-        }
-        return this;
-    }
+    Attempt<T, F> onFailureReason(Consumer<F> consumer);
 
     /**
      * Represents a successful attempt with a value.
@@ -379,6 +309,26 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         }
 
         @Override
+        public F getFailureReason() {
+            throw new UnsupportedOperationException("No failure reason as attempt is a success");
+        }
+
+        @Override
+        public Message getFailureMessage() {
+            throw new UnsupportedOperationException("No failure message as attempt is a success");
+        }
+
+        @Override
+        public boolean isSuccess() {
+            return true;
+        }
+
+        @Override
+        public boolean isFailure() {
+            return false;
+        }
+
+        @Override
         public Try<T> toTry() {
             return Try.success(value);
         }
@@ -389,13 +339,83 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         }
 
         @Override
-        public F getFailureReason() {
-            throw new UnsupportedOperationException("No failure reason as attempt is a success");
+        public Attempt<T, F> thenAccept(Consumer<Either<T, F>> consumer) {
+            consumer.accept(Either.left(value));
+            return this;
         }
 
         @Override
-        public Message getFailureMessage() {
-            throw new UnsupportedOperationException("No failure message as attempt is a success");
+        public Attempt<T, F> peek(Consumer<T> consumer) {
+            consumer.accept(value);
+            return this;
+        }
+
+        @Override
+        public <U> Attempt<U, F> map(Function<? super T, ? extends U> mapper) {
+            return new Success<>(mapper.apply(value));
+        }
+
+        @Override
+        public <U> Attempt<U, F> map(Supplier<? extends U> mapper) {
+            return new Success<>(mapper.get());
+        }
+
+        @Override
+        public <U> Attempt<U, F> mapAttempt(Function<? super T, Attempt<U, F>> mapper) {
+            return mapper.apply(value);
+        }
+
+        @Override
+        public <U> Attempt<U, F> mapAttempt(Supplier<Attempt<U, F>> mapper) {
+            return mapper.get();
+        }
+
+        @Override
+        public <UF extends FailureReason> Attempt<T, UF> transform(UF failureReason) {
+            return changeFailureType();
+        }
+
+        @Override
+        public <U> U transform(Function<T, U> successMapper, Function<F, U> failureMapper) {
+            return successMapper.apply(value);
+        }
+
+        @Override
+        public <N> N fold(Function<Failure<T, F>, N> failureMapper, Function<T, N> successMapper) {
+            return successMapper.apply(value);
+        }
+
+        @Override
+        public Attempt<T, F> onSuccess(Runnable runnable) {
+            runnable.run();
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> onSuccess(Consumer<T> consumer) {
+            consumer.accept(value);
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> onFailure(Runnable runnable) {
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> onFailure(Consumer<Failure<T, F>> consumer) {
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> onFailureReason(Consumer<F> consumer) {
+            return this;
+        }
+
+        private <UF extends FailureReason> Attempt<T, UF> changeFailureType() {
+            @SuppressWarnings("unchecked")
+            Attempt<T, UF> mappedSuccess = (Attempt<T, UF>) this;
+            return mappedSuccess;
         }
 
         @Override
@@ -452,6 +472,26 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         }
 
         @Override
+        public F getFailureReason() {
+            return failureReason;
+        }
+
+        @Override
+        public Message getFailureMessage() {
+            return message;
+        }
+
+        @Override
+        public boolean isSuccess() {
+            return false;
+        }
+
+        @Override
+        public boolean isFailure() {
+            return true;
+        }
+
+        @Override
         public Try<T> toTry() {
             return Try.failure(new MultiverseException(message));
         }
@@ -462,13 +502,83 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         }
 
         @Override
-        public F getFailureReason() {
-            return failureReason;
+        public Attempt<T, F> thenAccept(Consumer<Either<T, F>> consumer) {
+            consumer.accept(Either.right(failureReason));
+            return this;
         }
 
         @Override
-        public Message getFailureMessage() {
-            return message;
+        public Attempt<T, F> peek(Consumer<T> consumer) {
+            return this;
+        }
+
+        @Override
+        public <U> Attempt<U, F> map(Function<? super T, ? extends U> mapper) {
+            return changeValueType();
+        }
+
+        @Override
+        public <U> Attempt<U, F> map(Supplier<? extends U> mapper) {
+            return changeValueType();
+        }
+
+        @Override
+        public <U> Attempt<U, F> mapAttempt(Function<? super T, Attempt<U, F>> mapper) {
+            return changeValueType();
+        }
+
+        @Override
+        public <U> Attempt<U, F> mapAttempt(Supplier<Attempt<U, F>> mapper) {
+            return changeValueType();
+        }
+
+        @Override
+        public <UF extends FailureReason> Attempt<T, UF> transform(UF failureReason) {
+            return new Failure<>(failureReason, getFailureMessage(), this);
+        }
+
+        @Override
+        public <U> U transform(Function<T, U> successMapper, Function<F, U> failureMapper) {
+            return failureMapper.apply(failureReason);
+        }
+
+        @Override
+        public <N> N fold(Function<Failure<T, F>, N> failureMapper, Function<T, N> successMapper) {
+            return failureMapper.apply(this);
+        }
+
+        @Override
+        public Attempt<T, F> onSuccess(Runnable runnable) {
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> onSuccess(Consumer<T> consumer) {
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> onFailure(Runnable runnable) {
+            runnable.run();
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> onFailure(Consumer<Failure<T, F>> consumer) {
+            consumer.accept(this);
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> onFailureReason(Consumer<F> consumer) {
+            consumer.accept(failureReason);
+            return this;
+        }
+
+        private <U> Attempt<U, F> changeValueType() {
+            @SuppressWarnings("unchecked")
+            Attempt<U, F> mappedFailure = (Attempt<U, F>) this;
+            return mappedFailure;
         }
 
         @Override
