@@ -174,12 +174,12 @@ public final class WorldManager {
 
     private void removeWorldsNotInConfigs(Collection<String> removedWorlds) {
         removedWorlds.forEach(worldName -> getWorld(worldName)
-                .fold(
-                        () -> Attempt.failure(FailureReason.GENERIC, Message.of("world already removed")),
-                        world -> removeWorld(RemoveWorldOptions.world(world))
-                )
-                .onFailure(failure -> Logging.severe("Failed to unload world %s: %s", worldName, failure))
-                .onSuccess(success -> Logging.fine("Unloaded world %s as it was removed from config", worldName)));
+                .map(world -> removeWorld(RemoveWorldOptions.world(world)))
+                .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, worldName))
+                .onFailure(failure ->
+                        Logging.severe("Failed to unload world %s: %s", worldName, failure))
+                .onSuccess(success ->
+                        Logging.fine("Unloaded world %s as it was removed from config", worldName)));
     }
 
     /**
@@ -208,30 +208,29 @@ public final class WorldManager {
     }
 
     private void importExistingBukkitWorld(World bukkitWorld) {
-        if (bukkitWorld == null || isWorld(bukkitWorld.getName())) {
-            return;
-        }
-        importWorld(ImportWorldOptions.worldName(bukkitWorld.getName())
-                .environment(bukkitWorld.getEnvironment())
-                .generator(generatorProvider.getDefaultGeneratorForWorld(bukkitWorld.getName())))
-                .onFailure(failure ->
-                        Logging.severe("Failed to import world %s: %s", bukkitWorld.getName(), failure))
-                .onSuccess(success ->
-                        Logging.fine("Imported existing world %s", bukkitWorld.getName()));
+        Option.of(bukkitWorld)
+                .filter(world -> !isWorld(world.getName()))
+                .map(world -> importWorld(
+                        ImportWorldOptions.worldName(world.getName())
+                                .environment(world.getEnvironment())
+                                .generator(generatorProvider.getDefaultGeneratorForWorld(world.getName())))
+                        .onFailure(failure ->
+                                Logging.severe("Failed to import world %s: %s", world.getName(), failure))
+                        .onSuccess(newMVWorld ->
+                                Logging.fine("Imported existing world %s", newMVWorld.getName())));
     }
 
     /**
      * Loads all worlds that are set to autoload.
      */
     private void autoLoadWorlds() {
-        getWorlds().forEach(world -> {
-            if (isLoadedWorld(world) || !world.isAutoLoad()) {
-                return;
-            }
-            loadWorld(LoadWorldOptions.world(world))
-                    .onFailure(failure ->
-                            Logging.severe("Failed to load world %s: %s", world.getName(), failure));
-        });
+        getWorlds().stream()
+                .filter(world -> !isLoadedWorld(world) && world.isAutoLoad())
+                .forEach(world -> loadWorld(LoadWorldOptions.world(world))
+                        .onFailure(failure ->
+                                Logging.severe("Failed to autoload world %s: %s", world.getName(), failure))
+                        .onSuccess(newMVWorld ->
+                                Logging.fine("Autoloaded world %s", newMVWorld.getName())));
     }
 
     /**
@@ -272,15 +271,12 @@ public final class WorldManager {
                 .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
                 .mapAttempt(this::createBukkitWorld)
                 .transform(CreateFailureReason.WORLD_CREATOR_FAILED)
-                .map(bukkitWorld -> {
-                    LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
+                .map(bukkitWorld -> newLoadedMultiverseWorld(
                             bukkitWorld,
                             generatorString,
                             options.biome(),
-                            options.useSpawnAdjust());
-                    pluginManager.callEvent(new MVWorldCreatedEvent(loadedWorld));
-                    return loadedWorld;
-                });
+                            options.useSpawnAdjust()))
+                .peek(loadedWorld -> pluginManager.callEvent(new MVWorldCreatedEvent(loadedWorld)));
     }
 
     /**
@@ -296,14 +292,9 @@ public final class WorldManager {
         } else if (isWorld(worldName)) {
             return worldActionResult(ImportFailureReason.WORLD_EXIST_UNLOADED, worldName);
         }
-
-        World bukkitWorld = Bukkit.getWorld(worldName);
-        if (bukkitWorld != null) {
-            // World is already loaded, maybe by another plugin
-            return doImportBukkitWorld(options, bukkitWorld);
-        }
-
-        return validateImportWorldOptions(options).mapAttempt(this::doImportWorld);
+        return Option.of(Bukkit.getWorld(worldName))
+                .map(bukkitWorld -> doImportBukkitWorld(options, bukkitWorld))
+                .getOrElse(() -> validateImportWorldOptions(options).mapAttempt(this::doImportWorld));
     }
 
     private Attempt<ImportWorldOptions, ImportFailureReason> validateImportWorldOptions(ImportWorldOptions options) {
@@ -326,15 +317,12 @@ public final class WorldManager {
                 .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
                 .mapAttempt(this::createBukkitWorld)
                 .transform(ImportFailureReason.WORLD_CREATOR_FAILED)
-                .map(bukkitWorld -> {
-                    LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
-                            bukkitWorld,
-                            generatorString,
-                            options.biome(),
-                            options.useSpawnAdjust());
-                    pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
-                    return loadedWorld;
-                });
+                .map(bukkitWorld -> newLoadedMultiverseWorld(
+                        bukkitWorld,
+                        generatorString,
+                        options.biome(),
+                        options.useSpawnAdjust()))
+                .peek(loadedWorld -> pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld)));
     }
 
     private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportBukkitWorld(ImportWorldOptions options, World bukkitWorld) {
@@ -701,12 +689,13 @@ public final class WorldManager {
 
     private Attempt<File, DeleteFailureReason> validateWorldToDelete(
             @NotNull LoadedMultiverseWorld world) {
-        File worldFolder = world.getBukkitWorld().map(World::getWorldFolder).getOrNull();
-        if (worldFolder == null || !worldNameChecker.isValidWorldFolder(worldFolder)) {
-            Logging.severe("Failed to get world folder for world: " + world.getName());
-            return worldActionResult(DeleteFailureReason.WORLD_FOLDER_NOT_FOUND, world.getName());
-        }
-        return worldActionResult(worldFolder);
+        return world.getBukkitWorld().map(World::getWorldFolder)
+                .filter(worldNameChecker::isValidWorldFolder)
+                .map(this::<File, DeleteFailureReason>worldActionResult)
+                .getOrElse(() -> {
+                    Logging.severe("World folder does not exist for world: " + world.getName());
+                    return worldActionResult(DeleteFailureReason.WORLD_FOLDER_NOT_FOUND, world.getName());
+                });
     }
 
     /**
