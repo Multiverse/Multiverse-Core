@@ -64,7 +64,7 @@ final class TeleportCommand extends CoreCommand {
     void onTeleportCommand(
             MVCommandIssuer issuer,
 
-            @co.aikar.commands.annotation.Flags("resolve=issuerAware")
+            @co.aikar.commands.annotation.Flags("resolve=issuerAware,maxArgForAware=1")
             @Syntax("[player]")
             @Description("{@@mv-core.teleport.player.description}")
             PlayerArrayValue playersValue,

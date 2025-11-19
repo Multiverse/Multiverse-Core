@@ -123,48 +123,8 @@ public final class IssuerAwareContextBuilder<T> {
      */
     @ApiStatus.AvailableSince("5.1")
     public IssuerAwareContextResolver<T, BukkitCommandExecutionContext> generateContext() {
-        Objects.requireNonNull(fromPlayer);
-        Objects.requireNonNull(fromInput);
-        Objects.requireNonNull(issuerOnlyFailMessage);
-        Objects.requireNonNull(issuerAwarePlayerFailMessage);
-        Objects.requireNonNull(issuerAwareInputFailMessage);
-        Objects.requireNonNull(inputOnlyFailMessage);
-
-        return context -> {
-            BukkitCommandIssuer issuer = context.getIssuer();
-            String resolve = context.getFlagValue("resolve", "");
-
-            if (resolve.equals("issuerOnly")) {
-                if (issuer.isPlayer()) {
-                    T result = fromPlayer.apply(context, issuer.getPlayer());
-                    if (result != null) {
-                        return result;
-                    }
-                }
-                throw new InvalidCommandArgument(issuerOnlyFailMessage.apply(context).formatted(issuer));
-            }
-
-            String input = context.getFirstArg();
-            T result = fromInput.apply(context, input);
-            if (result != null) {
-                context.popFirstArg();
-                return result;
-            }
-
-            if (resolve.equals("issuerAware")) {
-                if (issuer.isPlayer()) {
-                    Player player = issuer.getPlayer();
-                    result = fromPlayer.apply(context, player);
-                    if (result != null) {
-                        return result;
-                    }
-                    throw new InvalidCommandArgument(issuerAwarePlayerFailMessage.apply(context, player).formatted(issuer));
-                }
-                throw new InvalidCommandArgument(issuerAwareInputFailMessage.apply(context, input).formatted(issuer));
-            }
-
-            throw new InvalidCommandArgument(inputOnlyFailMessage.apply(context, input).formatted(issuer));
-        };
+        validateRequiredVariables();
+        return context -> resolveValue(context, GenericIssuerAwareValue::new).value;
     }
 
     /**
@@ -178,49 +138,66 @@ public final class IssuerAwareContextBuilder<T> {
      */
     @ApiStatus.AvailableSince("5.1")
     public <I extends IssuerAwareValue> IssuerAwareContextResolver<I, BukkitCommandExecutionContext> generateContext(BiFunction<Boolean, T, I> createValue) {
-        // todo: This is a copy and paste from above
+        validateRequiredVariables();
+        return context -> resolveValue(context, createValue);
+    }
 
+    private void validateRequiredVariables() {
         Objects.requireNonNull(fromPlayer);
         Objects.requireNonNull(fromInput);
         Objects.requireNonNull(issuerOnlyFailMessage);
         Objects.requireNonNull(issuerAwarePlayerFailMessage);
         Objects.requireNonNull(issuerAwareInputFailMessage);
         Objects.requireNonNull(inputOnlyFailMessage);
+    }
 
-        return context -> {
-            BukkitCommandIssuer issuer = context.getIssuer();
-            String resolve = context.getFlagValue("resolve", "");
+    private <I extends IssuerAwareValue> I resolveValue(BukkitCommandExecutionContext context, BiFunction<Boolean, T, I> createValue) {
+        BukkitCommandIssuer issuer = context.getIssuer();
+        String resolve = context.getFlagValue("resolve", "");
 
-            if (resolve.equals("issuerOnly")) {
-                if (issuer.isPlayer()) {
-                    T result = fromPlayer.apply(context, issuer.getPlayer());
-                    if (result != null) {
-                        return createValue.apply(true, result);
-                    }
+        if (resolve.equals("issuerOnly")) {
+            if (issuer.isPlayer()) {
+                T result = fromPlayer.apply(context, issuer.getPlayer());
+                if (result != null) {
+                    return createValue.apply(true, result);
                 }
-                throw new InvalidCommandArgument(issuerOnlyFailMessage.apply(context).formatted(issuer));
             }
+            throw new InvalidCommandArgument(issuerOnlyFailMessage.apply(context).formatted(issuer));
+        }
 
-            String input = context.getFirstArg();
-            T result = fromInput.apply(context, input);
-            if (result != null) {
-                context.popFirstArg();
-                return createValue.apply(false, result);
-            }
+        String input = context.getFirstArg();
+        T result = fromInput.apply(context, input);
+        if (result != null) {
+            context.popFirstArg();
+            return createValue.apply(false, result);
+        }
 
-            if (resolve.equals("issuerAware")) {
-                if (issuer.isPlayer()) {
-                    Player player = issuer.getPlayer();
-                    result = fromPlayer.apply(context, player);
-                    if (result != null) {
-                        return createValue.apply(true, result);
-                    }
-                    throw new InvalidCommandArgument(issuerAwarePlayerFailMessage.apply(context, player).formatted(issuer));
+        int maxArgForAware = context.getFlagValue("maxArgForAware", Integer.MAX_VALUE);
+        long argLengthWithoutFlags = context.getArgs().stream()
+                .takeWhile(value -> !value.startsWith("--") && !value.isEmpty())
+                .count();
+
+        if (resolve.equals("issuerAware") && argLengthWithoutFlags <= maxArgForAware) {
+            if (issuer.isPlayer()) {
+                Player player = issuer.getPlayer();
+                result = fromPlayer.apply(context, player);
+                if (result != null) {
+                    return createValue.apply(true, result);
                 }
-                throw new InvalidCommandArgument(issuerAwareInputFailMessage.apply(context, input).formatted(issuer));
+                throw new InvalidCommandArgument(issuerAwarePlayerFailMessage.apply(context, player).formatted(issuer));
             }
+            throw new InvalidCommandArgument(issuerAwareInputFailMessage.apply(context, input).formatted(issuer));
+        }
 
-            throw new InvalidCommandArgument(inputOnlyFailMessage.apply(context, input).formatted(issuer));
-        };
+        throw new InvalidCommandArgument(inputOnlyFailMessage.apply(context, input).formatted(issuer));
+    }
+
+    private static class GenericIssuerAwareValue<T> extends IssuerAwareValue {
+        private final T value;
+
+        public GenericIssuerAwareValue(boolean byIssuer, T value) {
+            super(byIssuer);
+            this.value = value;
+        }
     }
 }

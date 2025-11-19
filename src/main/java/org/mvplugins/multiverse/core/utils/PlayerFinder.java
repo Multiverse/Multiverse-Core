@@ -3,7 +3,6 @@ package org.mvplugins.multiverse.core.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -11,6 +10,7 @@ import com.google.common.base.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,7 +112,16 @@ public final class PlayerFinder {
         return playerResults;
     }
 
-    private static boolean isSelector(@NotNull String playerIdentifier) {
+    /**
+     * Check if the player identifier is a selector.
+     *
+     * @param playerIdentifier  An identifier of name, UUID or selector.
+     * @return True if the identifier is a selector, else false.
+     *
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    public static boolean isSelector(@NotNull String playerIdentifier) {
         return VANILLA_SELECTORS.stream().anyMatch(playerIdentifier::startsWith);
     }
 
