@@ -414,6 +414,15 @@ final class CoreConfigNodes {
             .name("resolve-alias-name")
             .build());
 
+    final ConfigNode<Boolean> simplifiedDestinationTabCompletion = node(ConfigNode.builder("command.simplified-destination-tab-completion", Boolean.class)
+            .comment("")
+            .comment("If this is set to true, Multiverse will only suggest simple destination formats in tab completion.")
+            .comment("This means only world names will be suggested without other destination type such as `e:worldname:x,y,z` or `p:playername`.")
+            .comment("Note: This DOES NOT prevent players from using the destinations, as that is controlled by permissions.")
+            .defaultValue(false)
+            .name("simplified-destination-tab-completion")
+            .build());
+
     final ConfigNode<ConfirmMode> confirmMode = node(ConfigNode.builder("command.confirm-mode", ConfirmMode.class)
             .comment("")
             .comment("This config option defines whether `/mv confirm` is needed before running a DANGEROUS action.")

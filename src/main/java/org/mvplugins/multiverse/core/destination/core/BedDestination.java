@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
-import org.bukkit.Bukkit;
+import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +20,7 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
-
-import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
+import org.mvplugins.multiverse.core.world.helpers.ConcurrentPlayerWorldTracker;
 
 /**
  * {@link Destination} implementation for beds.
@@ -30,7 +29,11 @@ import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.re
 public final class BedDestination implements Destination<BedDestination, BedDestinationInstance, BedDestination.InstanceFailureReason> {
     static final String OWN_BED_STRING = "playerbed";
 
-    BedDestination() {
+    private final ConcurrentPlayerWorldTracker worldTracker;
+
+    @Inject
+    BedDestination(@NotNull ConcurrentPlayerWorldTracker worldTracker) {
+        this.worldTracker = worldTracker;
     }
 
     /**
@@ -62,8 +65,8 @@ public final class BedDestination implements Destination<BedDestination, BedDest
     @Override
     public @NotNull Collection<DestinationSuggestionPacket> suggestDestinations(
             @NotNull CommandSender sender, @Nullable String destinationParams) {
-        List<DestinationSuggestionPacket> collect = Bukkit.getOnlinePlayers().stream()
-                .map(player -> new DestinationSuggestionPacket(this, player.getName(), player.getName()))
+        List<DestinationSuggestionPacket> collect = worldTracker.getOnlinePlayers().stream()
+                .map(player -> new DestinationSuggestionPacket(this, player, player))
                 .collect(Collectors.toList());
         if (sender instanceof Player) {
             collect.add(new DestinationSuggestionPacket(this, OWN_BED_STRING, OWN_BED_STRING));

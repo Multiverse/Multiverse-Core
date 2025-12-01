@@ -7,6 +7,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.locale.message.Message;
 
 /**
  * Destination instance implementation for the {@link AnchorDestination}.
@@ -61,6 +62,15 @@ public final class AnchorDestinationInstance extends DestinationInstance<AnchorD
     @Override
     public @NotNull Option<String> getFinerPermissionSuffix() {
         return Option.of(anchorName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull Message getDisplayMessage() {
+        //TODO Localize
+        return Message.of("anchor '" + anchorName + "'");
     }
 
     /**

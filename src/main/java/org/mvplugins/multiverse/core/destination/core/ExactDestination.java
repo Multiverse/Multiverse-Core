@@ -23,14 +23,11 @@ import org.mvplugins.multiverse.core.exceptions.utils.position.PositionParseExce
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.position.EntityPosition;
-import org.mvplugins.multiverse.core.utils.position.PositionNumber;
-import org.mvplugins.multiverse.core.utils.position.VectorPosition;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
-import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
 
@@ -68,6 +65,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
     public @NotNull ExactDestinationInstance fromLocation(@NotNull Location location) {
         return new ExactDestinationInstance(
                 this,
+                worldManager,
                 location.getWorld().getName(),
                 EntityPosition.ofLocation(location)
         );
@@ -88,6 +86,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
                         .map(location -> Attempt.<ExactDestinationInstance, InstanceFailureReason>success(
                                 new ExactDestinationInstance(
                                         this,
+                                        worldManager,
                                         location.getWorld().getName(),
                                         EntityPosition.ofLocation(location)
                                 )
@@ -112,7 +111,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
             return Attempt.failure(InstanceFailureReason.INVALID_NUMBER_FORMAT, Replace.ERROR.with(e));
         }
 
-        return Attempt.success(new ExactDestinationInstance(this, worldName, position));
+        return Attempt.success(new ExactDestinationInstance(this, worldManager, worldName, position));
     }
 
     //TODO: Extract to a world finder class

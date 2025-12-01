@@ -35,7 +35,7 @@ final class WorldBorderCommand extends CoreCommand {
             @Syntax("[time]")
             int time,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
@@ -54,7 +54,7 @@ final class WorldBorderCommand extends CoreCommand {
             @Syntax("[z]")
             double z,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
@@ -79,7 +79,7 @@ final class WorldBorderCommand extends CoreCommand {
             @Syntax("<damage>")
             double damage,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
@@ -103,7 +103,7 @@ final class WorldBorderCommand extends CoreCommand {
             @Syntax("<distance>")
             double distance,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
@@ -124,7 +124,7 @@ final class WorldBorderCommand extends CoreCommand {
     void onWorldBorderGet(
             MVCommandIssuer issuer,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
@@ -147,7 +147,7 @@ final class WorldBorderCommand extends CoreCommand {
             @Syntax("[time]")
             int time,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
@@ -179,7 +179,7 @@ final class WorldBorderCommand extends CoreCommand {
             @Syntax("<distance>")
             int distance,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
@@ -203,7 +203,7 @@ final class WorldBorderCommand extends CoreCommand {
             @Syntax("<time>")
             int time,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {

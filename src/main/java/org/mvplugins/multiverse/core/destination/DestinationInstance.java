@@ -4,8 +4,9 @@ import io.vavr.control.Option;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.mvplugins.multiverse.core.utils.result.FailureReason;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.world.location.UnloadedWorldLocation;
 
 /**
@@ -78,6 +79,20 @@ public abstract class DestinationInstance<I extends  DestinationInstance<I, T>, 
      * @return The permission suffix.
      */
     public abstract @NotNull Option<String> getFinerPermissionSuffix();
+
+    /**
+     * Gets a user-friendly display text for this destination instance. This is used when displaying the destination
+     * to the player. By default, this returns the same as {@link #toString()}. Override this method to provide a more
+     * user-friendly display text with colors, formatting and localization support.
+     *
+     * @return The display message.
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    @NotNull
+    public Message getDisplayMessage() {
+        return Message.of(this.toString());
+    }
 
     /**
      * Serialises the destination instance to a savable string.

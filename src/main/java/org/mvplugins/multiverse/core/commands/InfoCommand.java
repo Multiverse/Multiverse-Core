@@ -61,8 +61,8 @@ class InfoCommand extends CoreCommand {
     public void onInfoCommand(
             MVCommandIssuer issuer,
 
-            @Flags("resolve=issuerAware")
-            @Syntax("<world>")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
+            @Syntax("[world]")
             @Description("{@@mv-core.info.description.world}")
             LoadedMultiverseWorld world,
 

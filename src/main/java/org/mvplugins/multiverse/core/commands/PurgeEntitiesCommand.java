@@ -28,7 +28,7 @@ final class PurgeEntitiesCommand extends CoreCommand {
     void onPurgeEntityCommand(
             MVCommandIssuer issuer,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {

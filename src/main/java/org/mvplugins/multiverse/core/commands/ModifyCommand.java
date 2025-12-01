@@ -49,12 +49,12 @@ class ModifyCommand extends CoreCommand {
             "@propsmodifyaction:notByIssuerForArg=arg1|@mvworldpropsname:byIssuerForArg=arg1 " +
             "@mvworldpropsname:notByIssuerForArg=arg1|@mvworldpropsvalue:byIssuerForArg=arg1 " +
             "@mvworldpropsvalue:notByIssuerForArg=arg1")
-    @Syntax("[world] <set|add|remove|reset> <property> <value>")
+    @Syntax("[world] <set|add|remove|reset> <property> [value]")
     @Description("{@@mv-core.modify.description}")
     void onModifyCommand(// SUPPRESS CHECKSTYLE: ParameterNumber
             MVCommandIssuer issuer,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=3")
             @Syntax("[world]")
             @Description("{@@mv-core.modify.world.description}")
             @NotNull MultiverseWorldValue worldValue,

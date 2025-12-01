@@ -74,12 +74,12 @@ class WhoCommand extends CoreCommand {
     @Subcommand("who")
     @CommandPermission("multiverse.core.list.who")
     @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + PageFilterFlags.NAME)
-    @Syntax("<world> [--page <page>] [--filter <filter>]")
+    @Syntax("[world] [--page <page>] [--filter <filter>]")
     @Description("{@@mv-core.who.description}")
     void onWhoCommand(
             MVCommandIssuer issuer,
-            @Flags("resolve=issuerAware")
-            @Syntax("<world>")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
+            @Syntax("[world]")
             @Description("{@@mv-core.who.world.description}")
             LoadedMultiverseWorld inputtedWorld,
 

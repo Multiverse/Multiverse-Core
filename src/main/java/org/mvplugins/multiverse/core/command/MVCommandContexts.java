@@ -11,6 +11,7 @@ import co.aikar.commands.MinecraftMessageKeys;
 import co.aikar.commands.PaperCommandContexts;
 import co.aikar.commands.contexts.ContextResolver;
 import com.google.common.base.Strings;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
@@ -272,13 +273,25 @@ public class MVCommandContexts extends PaperCommandContexts {
     private IssuerAwareContextBuilder<Player[]> playerArrayContextBuilder() {
         return new IssuerAwareContextBuilder<Player[]>()
                 .fromPlayer((context, player) -> new Player[]{player})
-                .fromInput((context, input) -> {
-                    Player[] players = PlayerFinder.getMulti(input, context.getSender()).toArray(new Player[0]);
-                    return (players.length == 0) ? null : players;
-                })
+                .fromInput((context, input) -> PlayerFinder
+                        .tryGetMulti(input, context.getSender())
+                        .map(list -> list.toArray(new Player[0]))
+                        .map(arr -> (arr.length == 0) ? null : arr)
+                        .getOrElseThrow(failure -> {
+                            if (failure instanceof MVInvalidCommandArgument mvFailure) {
+                                throw mvFailure;
+                            }
+                            throw new InvalidCommandArgument(failure.getLocalizedMessage() + " "
+                                    + Option.of(failure.getCause()).map(Throwable::getLocalizedMessage).getOrElse(""));
+                        }))
                 .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player."))
                 .issuerAwareInputFailMessage((context, input) -> Message.of("Invalid player: " + input + ". Either specify an online player or use this command as a player."))
-                .inputOnlyFailMessage((context, input) -> Message.of("Player " + input + " not found."));
+                .inputOnlyFailMessage((context, input) -> {
+                    if (PlayerFinder.isSelector(input)) {
+                        return Message.of("No player(s) matched selector: " + input + ".");
+                    }
+                    return Message.of("Player(s) " + input + " not found.");
+                });
     }
 
     private PlayerLocation parsePlayerLocation(BukkitCommandExecutionContext context) {

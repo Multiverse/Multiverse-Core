@@ -52,7 +52,7 @@ final class EntitySpawnConfigCommand extends CoreCommand {
     void onInfoCommand(
             MVCommandIssuer issuer,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             MultiverseWorld world,
 
@@ -91,7 +91,7 @@ final class EntitySpawnConfigCommand extends CoreCommand {
     void onModifyCommand(
             MVCommandIssuer issuer,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=4")
             @Syntax("[world]")
             MultiverseWorld world,
 

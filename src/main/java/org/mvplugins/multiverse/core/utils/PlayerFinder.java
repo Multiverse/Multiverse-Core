@@ -1,16 +1,18 @@
 package org.mvplugins.multiverse.core.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
+import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,22 +78,33 @@ public final class PlayerFinder {
     public static @NotNull List<Player> getMulti(@Nullable String playerIdentifiers,
                                                  @NotNull CommandSender sender
     ) {
-        List<Player> playerResults = new ArrayList<>();
+        return tryGetMulti(playerIdentifiers, sender)
+                .getOrElse(Collections.emptyList());
+    }
 
+    /**
+     * Get multiple {@link Player} based on many identifiers of name UUID or selector.
+     *
+     * @param playerIdentifiers An identifier of multiple names, UUIDs or selectors, separated by comma.
+     * @param sender            Target sender for selector.
+     * @return A list of all the {@link Player} found.
+     *
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    public static @NotNull Try<@NotNull List<Player>> tryGetMulti(@Nullable String playerIdentifiers,
+                                                                   @NotNull CommandSender sender
+    ) {
         if (playerIdentifiers == null || Strings.isNullOrEmpty(playerIdentifiers)) {
-            return playerResults;
+            return Try.success(Collections.emptyList());
         }
 
         // TODO: Currently just assume entire string is a selector. Add support for comma seperated mixture of names, uuids and selectors
         if (isSelector(playerIdentifiers)) {
-            Logging.finer("Using selector: %s", playerIdentifiers);
-            List<Player> targetPlayers = getMultiBySelector(playerIdentifiers, sender);
-            if (targetPlayers != null) {
-                playerResults.addAll(targetPlayers);
-            }
-            return playerResults;
+            return tryGetMultiBySelector(playerIdentifiers, sender);
         }
 
+        List<Player> playerResults = new ArrayList<>();
         String[] playerIdentifierArray = REPatterns.COMMA.split(playerIdentifiers);
         for (String playerIdentifier : playerIdentifierArray) {
             Player targetPlayer = getByName(playerIdentifier);
@@ -104,15 +117,25 @@ public final class PlayerFinder {
                 playerResults.add(targetPlayer);
                 continue;
             }
-            List<Player> targetPlayers = getMultiBySelector(playerIdentifier, sender);
-            if (targetPlayers != null) {
-                playerResults.addAll(targetPlayers);
+            Try<@NotNull List<Player>> selectorParseResult = tryGetMultiBySelector(playerIdentifier, sender);
+            if  (selectorParseResult.isFailure()) {
+                return Try.failure(selectorParseResult.getCause());
             }
+            playerResults.addAll(selectorParseResult.getOrElse(Collections.emptyList()));
         }
-        return playerResults;
+        return Try.success(playerResults);
     }
 
-    private static boolean isSelector(@NotNull String playerIdentifier) {
+    /**
+     * Check if the player identifier is a selector.
+     *
+     * @param playerIdentifier  An identifier of name, UUID or selector.
+     * @return True if the identifier is a selector, else false.
+     *
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    public static boolean isSelector(@NotNull String playerIdentifier) {
         return VANILLA_SELECTORS.stream().anyMatch(playerIdentifier::startsWith);
     }
 
@@ -167,7 +190,7 @@ public final class PlayerFinder {
                                                  @NotNull CommandSender sender
     ) {
         List<Player> matchedPlayers = getMultiBySelector(playerSelector, sender);
-        if (matchedPlayers == null || matchedPlayers.isEmpty()) {
+        if (matchedPlayers.isEmpty()) {
             Logging.fine("No player found with selector '%s' for %s.", playerSelector, sender.getName());
             return null;
         }
@@ -186,22 +209,36 @@ public final class PlayerFinder {
      * @param sender            Target sender for selector.
      * @return A list of all the {@link Player} found.
      */
-    public static @Nullable List<Player> getMultiBySelector(@NotNull String playerSelector,
+    public static @NotNull List<Player> getMultiBySelector(@NotNull String playerSelector,
                                                             @NotNull CommandSender sender
     ) {
+        return tryGetMultiBySelector(playerSelector, sender)
+                .onFailure(throwable -> Logging.warning(
+                        "Error selecting entities with selector '%s' for %s: %s",
+                        playerSelector, sender.getName(), throwable.getMessage()
+                ))
+                .getOrElse(Collections::emptyList);
+    }
+
+    /**
+     * Get multiple {@link Player} based on <a href="https://minecraft.gamepedia.com/Commands#Target_selectors">vanilla selectors</a>.
+     *
+     * @param playerSelector    A target selector, usually starts with an '@'.
+     * @param sender            Target sender for selector.
+     * @return A list of all the {@link Player} found.
+     *
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    public static @NotNull Try<@NotNull List<Player>> tryGetMultiBySelector(@NotNull String playerSelector,
+                                                                            @NotNull CommandSender sender
+    ) {
         if (playerSelector.charAt(0) != '@') {
-            return null;
+            return Try.success(Collections.emptyList());
         }
-        try {
-            return Bukkit.selectEntities(sender, playerSelector).stream()
-                    .filter(e -> e instanceof Player)
-                    .map(e -> ((Player) e))
-                    .collect(Collectors.toList());
-        } catch (IllegalArgumentException e) {
-            Logging.warning("An error occurred while parsing selector '%s' for %s. Is it is the correct format?",
-                    playerSelector, sender.getName());
-            e.printStackTrace();
-            return null;
-        }
+        return Try.of(() -> Bukkit.selectEntities(sender, playerSelector).stream()
+                .filter(e -> e instanceof Player)
+                .map(e -> ((Player) e))
+                .collect(Collectors.toList()));
     }
 }
