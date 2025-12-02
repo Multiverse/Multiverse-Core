@@ -164,6 +164,12 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
             case "name" -> {
                 return world.getName();
             }
+            case "playercount" -> {
+                return String.valueOf(world.getBukkitWorld()
+                        .map(World::getPlayers)
+                        .map(List::size)
+                        .getOrElse(-1));
+            }
             case "playerlimit" -> {
                 return String.valueOf(world.getPlayerLimit());
             }
