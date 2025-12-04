@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
@@ -136,6 +137,9 @@ final class DumpsService {
     }
 
     private String getPluginList() {
-        return " - " + StringUtils.join(plugin.getServer().getPluginManager().getPlugins(), "\n - ");
+        return " - " + StringUtils.join(Arrays.stream(plugin.getServer().getPluginManager().getPlugins())
+                .map(Object::toString)
+                .sorted()
+                .toList(), "\n - ");
     }
 }
