@@ -38,6 +38,7 @@ class WorldNameCheckerTest : TestWithMockBukkit() {
     fun `Blacklisted world name`() {
         assertEquals(WorldNameChecker.NameStatus.BLACKLISTED, worldNameChecker.checkName("logs"))
         assertEquals(WorldNameChecker.NameStatus.BLACKLISTED, worldNameChecker.checkName("plugins"))
+        assertEquals(WorldNameChecker.NameStatus.BLACKLISTED, worldNameChecker.checkName("CACHE"))
     }
 
     @Test
