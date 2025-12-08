@@ -19,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.node.functions.DefaultStringParserProvider;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
+import org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback;
+import org.mvplugins.multiverse.core.config.node.functions.NodeLoadCallback;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser;
@@ -67,7 +69,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @Nullable NodeStringParser<List<I>> stringParser,
             @Nullable NodeSerializer<List<I>> serializer,
             @Nullable Function<List<I>, Try<Void>> validator,
-            @Nullable BiConsumer<List<I>, List<I>> onSetValue,
+            @Nullable NodeLoadCallback<List<I>> onLoad,
+            @Nullable NodeChangeCallback<List<I>> onLoadAndChange,
+            @Nullable NodeChangeCallback<List<I>> onChange,
             @NotNull Class<I> itemType,
             @Nullable NodeSuggester itemSuggester,
             @Nullable NodeStringParser<I> itemStringParser,
@@ -75,7 +79,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @Nullable Function<I, Try<Void>> itemValidator,
             @Nullable BiConsumer<I, I> onSetItemValue) {
         super(path, comments, name, type, aliases, defaultValueSupplier, suggester, stringParser, serializer,
-                validator, onSetValue);
+                validator, onLoad, onLoadAndChange, onChange);
         this.itemType = itemType;
         this.itemSuggester = itemSuggester != null
                 ? itemSuggester
@@ -105,8 +109,8 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         if (this.itemSerializer != null && this.serializer == null) {
             setDefaultSerialiser();
         }
-        if (this.onSetItemValue != null && this.onSetValue == null) {
-            setDefaultOnSetValue();
+        if (this.onSetItemValue != null && this.onLoadAndChange == null) {
+            setDefaultOnLoadAndChange();
         }
         if (this.defaultValue == null) {
             this.defaultValue = ArrayList::new;
@@ -168,8 +172,8 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
         };
     }
 
-    private void setDefaultOnSetValue() {
-        this.onSetValue = (oldValue, newValue) -> {
+    private void setDefaultOnLoadAndChange() {
+        this.onLoadAndChange = (oldValue, newValue) -> {
             if (oldValue != null) {
                 oldValue.stream()
                         .filter(value -> !newValue.contains(value))
@@ -381,7 +385,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
                     stringParser,
                     serializer,
                     validator,
-                    onSetValue,
+                    onLoad,
+                    onLoadAndChange,
+                    onChange,
                     itemType,
                     itemSuggester,
                     itemStringParser,

@@ -386,7 +386,7 @@ final class CoreConfigNodes {
             .comment("This config option defines the default language Multiverse should use.")
             .defaultValue(Locale.ENGLISH)
             .name("default-locale")
-            .onSetValue((oldValue, newValue) ->
+            .onLoadAndChange((oldValue, newValue) ->
                     commandManager.get().getLocales().setDefaultLocale(newValue))
             .build());
 
@@ -396,9 +396,8 @@ final class CoreConfigNodes {
             .comment("If the player's language does not have a translation, it will use the default language set above instead.")
             .defaultValue(true)
             .name("per-player-locale")
-            .onSetValue((oldValue, newValue) -> {
-                commandManager.get().usePerIssuerLocale(newValue);
-            })
+            .onLoadAndChange((oldValue, newValue) ->
+                    commandManager.get().usePerIssuerLocale(newValue))
             .build());
 
     private final ConfigHeaderNode commandHeader = node(ConfigHeaderNode.builder("command")
@@ -477,7 +476,7 @@ final class CoreConfigNodes {
             .comment("")
             .comment("This config option defines the priority for the PlayerPortalEvent.")
             .name("event-priority-player-portal")
-            .onSetValue((oldValue, newValue) ->
+            .onLoadAndChange((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-portal", newValue))
             .build());
 
@@ -486,7 +485,7 @@ final class CoreConfigNodes {
             .name("event-priority-player-respawn")
             .comment("")
             .comment("This config option defines the priority for the PlayerRespawnEvent.")
-            .onSetValue((oldValue, newValue) ->
+            .onLoadAndChange((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-respawn", newValue))
             .build());
 
@@ -494,7 +493,8 @@ final class CoreConfigNodes {
             .defaultValue(EventPriority.NORMAL)
             .comment("")
             .comment("This config option defines the priority for the PlayerSpawnLocationEvent.")
-            .name("event-priority-player-spawn-location").onSetValue((oldValue, newValue) ->
+            .name("event-priority-player-spawn-location")
+            .onLoadAndChange((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-spawn-location", newValue))
             .build());
 
@@ -503,7 +503,7 @@ final class CoreConfigNodes {
             .name("event-priority-player-teleport")
             .comment("")
             .comment("This config option defines the priority for the PlayerTeleportEvent.")
-            .onSetValue((oldValue, newValue) ->
+            .onLoadAndChange((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-teleport", newValue))
             .build());
 
@@ -551,7 +551,7 @@ final class CoreConfigNodes {
             .validator(value -> (value < 0 || value > 3)
                     ? Try.failure(new MultiverseException("Debug level must be between 0 and 3."))
                     : Try.success(null))
-            .onSetValue((oldValue, newValue) -> {
+            .onLoadAndChange((oldValue, newValue) -> {
                 if (newValue != Logging.getDebugLevel()) {
                     Logging.setDebugLevel(newValue);
                     pluginManager.callEvent(new MVDebugModeEvent(newValue));
@@ -565,7 +565,7 @@ final class CoreConfigNodes {
             .comment("This will only work if the above 'global-debug' is set to 1 or more.")
             .defaultValue(false)
             .name("debug-permissions")
-            .onSetValue((oldValue, newValue) -> PermissionUtils.setDebugPermissions(newValue))
+            .onLoadAndChange((oldValue, newValue) -> PermissionUtils.setDebugPermissions(newValue))
             .build());
 
     final ConfigNode<Boolean> silentStart = node(ConfigNode.builder("misc.silent-start", Boolean.class)
@@ -573,7 +573,7 @@ final class CoreConfigNodes {
             .comment("If true, the startup console messages will no longer show.")
             .defaultValue(false)
             .name("silent-start")
-            .onSetValue((oldValue, newValue) -> Logging.setShowingConfig(!newValue))
+            .onLoadAndChange((oldValue, newValue) -> Logging.setShowingConfig(!newValue))
             .build());
 
     final ConfigNode<Boolean> showDonationMessage = node(ConfigNode.builder("misc.show-donation-message", Boolean.class)

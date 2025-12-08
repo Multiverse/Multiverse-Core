@@ -5,11 +5,13 @@ import java.util.Collection;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.apache.logging.log4j.util.Strings;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.config.handle.BaseConfigurationHandle;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 
 public interface ValueNode<T> extends Node {
@@ -109,10 +111,50 @@ public interface ValueNode<T> extends Node {
     Try<Void> validate(@Nullable T value);
 
     /**
+     * Called when the value of this node is loaded by {@link BaseConfigurationHandle#load()}.
+     *
+     * @param value The loaded value.
+     *
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    void onLoad(@Nullable T value);
+
+    /**
+     * Called when the value of this node is loaded or changed.
+     *
+     * @param sender   The sender who triggered the change. If triggered by loading or no target sender is specified,
+     *                 it will be the console sender.
+     * @param oldValue The old value, will always be null on load.
+     * @param newValue The new value.
+     *
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    void onLoadAndChange(@NotNull CommandSender sender, @Nullable T oldValue, @Nullable T newValue);
+
+    /**
+     * Called when the value of this node is changed by {@link BaseConfigurationHandle#set(ValueNode, Object)}.
+     *
+     * @param sender    The sender who changed the value, or console sender if no target sender specified.
+     * @param oldValue  The old value.
+     * @param newValue  The new value.
+     *
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    void onChange(@NotNull CommandSender sender, @Nullable T oldValue, @Nullable T newValue);
+
+    /**
      * Called when the value of this node is set.
      *
      * @param oldValue The old value.
      * @param newValue The new value.
+     *
+     * @deprecated Use {@link #onLoadAndChange(CommandSender, Object, Object)} instead.
      */
-    void onSetValue(@Nullable T oldValue, @Nullable T newValue);
+    @Deprecated(since = "5.4", forRemoval = true)
+    default void onSetValue(@Nullable T oldValue, @Nullable T newValue) {
+        onLoadAndChange(Bukkit.getConsoleSender(), oldValue, newValue);
+    }
 }

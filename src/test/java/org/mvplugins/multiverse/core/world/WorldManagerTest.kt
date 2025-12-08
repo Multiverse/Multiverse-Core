@@ -5,6 +5,7 @@ import org.bukkit.World
 import org.bukkit.WorldType
 import org.hamcrest.MatcherAssert.assertThat
 import org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventClassMatcher.hasFiredEventInstance
+import org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventClassMatcher.hasNotFiredEventInstance
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.event.world.*
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions
@@ -308,5 +309,19 @@ class WorldManagerTest : TestWithMockBukkit() {
         assertFalse(worldManager.isLoadedWorld("WoRlD2"))
         assertTrue(worldManager.isUnloadedWorld("WoRlD2"))
         assertTrue(worldManager.isWorld("wORLD2"))
+    }
+
+    @Test
+    fun `Set different value - MVWorldPropertyChangedEvent event is fired`() {
+        server.pluginManager.clearEvents()
+        world.scale = 8.0
+        assertThat(server.pluginManager, hasFiredEventInstance(MVWorldPropertyChangedEvent::class.java))
+    }
+
+    @Test
+    fun `Set equal value - MVWorldPropertyChangedEvent event is not fired`() {
+        server.pluginManager.clearEvents()
+        world.scale = 1.0
+        assertThat(server.pluginManager, hasNotFiredEventInstance(MVWorldPropertyChangedEvent::class.java))
     }
 }
