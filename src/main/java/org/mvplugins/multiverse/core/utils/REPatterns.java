@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.utils;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -16,7 +18,17 @@ public class REPatterns {
     public static final Pattern COMMA = get(",");
     public static final Pattern DOT = get("\\.");
     public static final Pattern EQUALS = get("=");
+    @ApiStatus.AvailableSince("5.4")
+    public static final Pattern HYPHEN = get("-");
+    @ApiStatus.AvailableSince("5.4")
+    public static final Pattern NAMESPACE = get("^[a-z0-9_.-]+$");
+    @ApiStatus.AvailableSince("5.4")
+    public static final Pattern NAMESPACE_KEY = get("^[a-z0-9/_.-]+$");
     public static final Pattern SEMICOLON = get(";");
+    @ApiStatus.AvailableSince("5.4")
+    public static final Pattern SPACE = get(" ");
     public static final Pattern UNDERSCORE = get("_");
     public static final Pattern UUID = get("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
+    @ApiStatus.AvailableSince("5.4")
+    public static final Pattern YAML_KEY = get("^[a-zA-Z0-9\\[\\]_-]+$");
 }
