@@ -3,13 +3,13 @@ package org.mvplugins.multiverse.core.world.helpers;
 import java.io.File;
 import java.util.Locale;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import io.vavr.control.Option;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.utils.REPatterns;
 
 /**
  * <p>Utility class in helping to check the status of a world name and it's associated world folder.</p>
@@ -20,11 +20,11 @@ import org.jvnet.hk2.annotations.Service;
 @Service
 public final class WorldNameChecker {
 
-    private static final Pattern WORLD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9/._-]+");
     private static final Set<String> BLACKLIST_NAMES = Set.of(
             "cache",
             "config",
             "crash-reports",
+            "libraries",
             "logs",
             "plugins",
             "versions");
@@ -47,18 +47,21 @@ public final class WorldNameChecker {
      */
     @NotNull
     public NameStatus checkName(@Nullable String worldName) {
-        return Option.of(worldName).map(name -> {
-            if (name.isEmpty()) {
-                return NameStatus.EMPTY;
-            }
-            if (BLACKLIST_NAMES.contains(name)) {
-                return NameStatus.BLACKLISTED;
-            }
-            if (!WORLD_NAME_PATTERN.matcher(name).matches()) {
-                return NameStatus.INVALID_CHARS;
-            }
-            return NameStatus.VALID;
-        }).getOrElse(NameStatus.EMPTY);
+        return Option.of(worldName)
+                .map(name -> name.toLowerCase(Locale.ENGLISH))
+                .map(name -> {
+                    if (name.isEmpty()) {
+                        return NameStatus.EMPTY;
+                    }
+                    if (BLACKLIST_NAMES.contains(name)) {
+                        return NameStatus.BLACKLISTED;
+                    }
+                    if (!REPatterns.NAMESPACE_KEY.matcher(name).matches()) {
+                        return NameStatus.INVALID_CHARS;
+                    }
+                    return NameStatus.VALID;
+                })
+                .getOrElse(NameStatus.EMPTY);
     }
 
     /**

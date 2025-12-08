@@ -43,7 +43,7 @@ class WorldManagerTest : TestWithMockBukkit() {
     @Test
     fun `Create world with custom options`() {
         assertTrue(worldManager.createWorld(
-            CreateWorldOptions.worldName("world_nether")
+            CreateWorldOptions.worldName("Section/my-nether_world")
             .environment(World.Environment.NETHER)
             .generateStructures(false)
             .seed(1234L)
@@ -51,11 +51,11 @@ class WorldManagerTest : TestWithMockBukkit() {
             .worldType(WorldType.FLAT)
         ).isSuccess)
 
-        val getWorld = worldManager.getLoadedWorld("world_nether")
+        val getWorld = worldManager.getLoadedWorld("Section/my-nether_world")
         assertTrue(getWorld.isDefined)
         val world = getWorld.get()
         assertNotNull(world)
-        assertEquals("world_nether", world.name)
+        assertEquals("Section/my-nether_world", world.name)
         assertEquals(World.Environment.NETHER, world.environment)
         assertFalse(world.canGenerateStructures().get())
         assertEquals(1234L, world.seed)
@@ -81,6 +81,18 @@ class WorldManagerTest : TestWithMockBukkit() {
         assertEquals(
             CreateFailureReason.WORLD_EXIST_LOADED,
             worldManager.createWorld(CreateWorldOptions.worldName("world")).failureReason
+        )
+    }
+
+    @Test
+    fun `Create world failed - world exists and loaded (case insensitive)`() {
+        assertEquals(
+            CreateFailureReason.WORLD_EXIST_LOADED,
+            worldManager.createWorld(CreateWorldOptions.worldName("WoRld2")).failureReason
+        )
+        assertEquals(
+            CreateFailureReason.WORLD_EXIST_LOADED,
+            worldManager.createWorld(CreateWorldOptions.worldName("WORLD2")).failureReason
         )
     }
 
@@ -254,5 +266,47 @@ class WorldManagerTest : TestWithMockBukkit() {
         assertEquals(world, worldManager.getLoadedWorldByNameOrAlias("testalias").orNull)
         assertEquals(world, worldManager.getWorldByNameOrAlias("testalias").orNull)
         assertNull(worldManager.getUnloadedWorldByNameOrAlias("testalias").orNull)
+    }
+
+    @Test
+    fun `Get world`() {
+        assertEquals(world, worldManager.getLoadedWorld("world").orNull)
+        assertNull(worldManager.getUnloadedWorld("world").orNull)
+        assertEquals(world, worldManager.getWorld("world").orNull)
+
+        assertTrue(worldManager.isLoadedWorld("world"))
+        assertFalse(worldManager.isUnloadedWorld("world"))
+        assertTrue(worldManager.isWorld("world"))
+
+        val unloadedWorld = worldManager.unloadWorld(UnloadWorldOptions.world(world)).get()
+
+        assertNull(worldManager.getLoadedWorld("world").orNull)
+        assertEquals(unloadedWorld, worldManager.getUnloadedWorld("world").orNull)
+        assertEquals(unloadedWorld, worldManager.getWorld("world").orNull)
+
+        assertFalse(worldManager.isLoadedWorld("world"))
+        assertTrue(worldManager.isUnloadedWorld("world"))
+        assertTrue(worldManager.isWorld("world"))
+    }
+
+    @Test
+    fun `Get world is case insensitive`() {
+        assertEquals(world2, worldManager.getLoadedWorld("WORLD2").orNull)
+        assertNull(worldManager.getUnloadedWorld("wOrld2").orNull)
+        assertEquals(world2, worldManager.getWorld("wOrld2").orNull)
+
+        assertTrue(worldManager.isLoadedWorld("WoRlD2"))
+        assertFalse(worldManager.isUnloadedWorld("WoRlD2"))
+        assertTrue(worldManager.isWorld("wORLD2"))
+
+        val unloadedWorld2 = worldManager.unloadWorld(UnloadWorldOptions.world(world2)).get()
+
+        assertNull(worldManager.getLoadedWorld("wOrld2").orNull)
+        assertEquals(unloadedWorld2, worldManager.getUnloadedWorld("wOrld2").orNull)
+        assertEquals(unloadedWorld2, worldManager.getWorld("wORLD2").orNull)
+
+        assertFalse(worldManager.isLoadedWorld("WoRlD2"))
+        assertTrue(worldManager.isUnloadedWorld("WoRlD2"))
+        assertTrue(worldManager.isWorld("wORLD2"))
     }
 }

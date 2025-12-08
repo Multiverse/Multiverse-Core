@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -344,7 +345,7 @@ public final class WorldManager {
 
     private MultiverseWorld newMultiverseWorld(String worldName, WorldConfig worldConfig) {
         MultiverseWorld mvWorld = new MultiverseWorld(worldName, worldConfig, config);
-        worldsMap.put(mvWorld.getName(), mvWorld);
+        worldsMap.put(mvWorld.getName().toLowerCase(Locale.ENGLISH), mvWorld);
         corePermissions.addWorldPermissions(mvWorld);
         return mvWorld;
     }
@@ -381,7 +382,7 @@ public final class WorldManager {
                 locationManipulation,
                 entityPurger
         );
-        loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
+        loadedWorldsMap.put(loadedWorld.getName().toLowerCase(Locale.ENGLISH), loadedWorld);
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return loadedWorld;
@@ -500,7 +501,7 @@ public final class WorldManager {
                 locationManipulation,
                 entityPurger
         );
-        loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
+        loadedWorldsMap.put(loadedWorld.getName().toLowerCase(Locale.ENGLISH), loadedWorld);
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return Attempt.success(loadedWorld);
@@ -967,7 +968,9 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getWorld(@Nullable String worldName) {
-        return getLoadedWorld(worldName).fold(() -> getUnloadedWorld(worldName), Option::of);
+        return getLoadedWorld(worldName)
+                .map(world -> (MultiverseWorld) world)
+                .orElse(() -> getUnloadedWorld(worldName));
     }
 
     /**
@@ -979,7 +982,8 @@ public final class WorldManager {
      */
     public Option<MultiverseWorld> getWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
         return getLoadedWorldByNameOrAlias(worldNameOrAlias)
-                .fold(() -> getUnloadedWorldByNameOrAlias(worldNameOrAlias), Option::of);
+                .map(world -> (MultiverseWorld) world)
+                .orElse(() -> getUnloadedWorldByNameOrAlias(worldNameOrAlias));
     }
 
     /**
@@ -994,7 +998,8 @@ public final class WorldManager {
     public Collection<MultiverseWorld> getWorlds() {
         return worldsMap.values().stream()
                 .map(world -> getLoadedWorld(world)
-                        .fold(() -> world, loadedWorld -> loadedWorld))
+                        .map(loadedWorld -> (MultiverseWorld) loadedWorld)
+                        .getOrElse(world))
                 .toList();
     }
 
@@ -1005,7 +1010,7 @@ public final class WorldManager {
      * @return True if the world is a world is known to multiverse, but may or may not be loaded.
      */
     public boolean isWorld(@Nullable String worldName) {
-        return worldsMap.containsKey(worldName);
+        return worldName != null && worldsMap.containsKey(worldName.toLowerCase(Locale.ENGLISH));
     }
 
     /**
@@ -1015,7 +1020,9 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getUnloadedWorld(@Nullable String worldName) {
-        return isLoadedWorld(worldName) ? Option.none() : Option.of(worldsMap.get(worldName));
+        return isLoadedWorld(worldName)
+                ? Option.none()
+                : Option.of(worldName).flatMap(name -> Option.of(worldsMap.get(name.toLowerCase(Locale.ENGLISH))));
     }
 
     /**
@@ -1067,7 +1074,7 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable World world) {
-        return world == null ? Option.none() : Option.of(loadedWorldsMap.get(world.getName()));
+        return Option.of(world).flatMap(notNullWorld -> getLoadedWorld(notNullWorld.getName()));
     }
 
     /**
@@ -1077,7 +1084,7 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable MultiverseWorld world) {
-        return world == null ? Option.none() : Option.of(loadedWorldsMap.get(world.getName()));
+        return Option.of(world).flatMap(notNullWorld -> getLoadedWorld(notNullWorld.getName()));
     }
 
     /**
@@ -1087,7 +1094,8 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable String worldName) {
-        return Option.of(loadedWorldsMap.get(worldName));
+        return Option.of(worldName)
+                .flatMap(name -> Option.of(loadedWorldsMap.get(name.toLowerCase(Locale.ENGLISH))));
     }
 
     /**
@@ -1148,7 +1156,7 @@ public final class WorldManager {
      * @return True if the world is a multiverse world that is loaded.
      */
     public boolean isLoadedWorld(@Nullable String worldName) {
-        return loadedWorldsMap.containsKey(worldName);
+        return worldName != null && loadedWorldsMap.containsKey(worldName.toLowerCase(Locale.ENGLISH));
     }
 
     /**
