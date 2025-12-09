@@ -103,7 +103,7 @@ public sealed class Message permits LocalizedMessage {
      * @return The replacements
      */
     public @NotNull String[] getReplacements(@NotNull Locales locales, @Nullable CommandIssuer commandIssuer) {
-        return getReplacements();
+        return toReplacementsArray(locales, commandIssuer, replacements);
     }
 
     /**
@@ -152,7 +152,7 @@ public sealed class Message permits LocalizedMessage {
      * @return The formatted, localized message
      */
     public @NotNull String formatted(@NotNull CommandIssuer commandIssuer) {
-        return formatted();
+        return formatted(commandIssuer.getManager().getLocales(), commandIssuer);
     }
 
     /**
@@ -166,7 +166,11 @@ public sealed class Message permits LocalizedMessage {
      * @return The formatted, localized message
      */
     public @NotNull String formatted(@NotNull Locales locales, @Nullable CommandIssuer commandIssuer) {
-        return formatted();
+        String[] parsedReplacements = getReplacements(locales, commandIssuer);
+        if (parsedReplacements.length == 0) {
+            return raw();
+        }
+        return ACFUtil.replaceStrings(message, parsedReplacements);
     }
 
     private static String[] toReplacementsArray(@NotNull MessageReplacement... replacements) {
@@ -175,6 +179,21 @@ public sealed class Message permits LocalizedMessage {
         for (MessageReplacement replacement : replacements) {
             replacementsArray[i++] = replacement.getKey();
             replacementsArray[i++] = replacement.getReplacement().fold(s -> s, Message::formatted);
+        }
+        return replacementsArray;
+    }
+
+    private static String[] toReplacementsArray(
+            @NotNull Locales locales,
+            @Nullable CommandIssuer commandIssuer,
+            @NotNull MessageReplacement... replacements) {
+        String[] replacementsArray = new String[replacements.length * 2];
+        int i = 0;
+        for (MessageReplacement replacement : replacements) {
+            replacementsArray[i++] = replacement.getKey();
+            replacementsArray[i++] = replacement.getReplacement().fold(
+                    str -> str,
+                    message -> message.formatted(locales, commandIssuer));
         }
         return replacementsArray;
     }

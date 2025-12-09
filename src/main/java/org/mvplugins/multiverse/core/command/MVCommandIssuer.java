@@ -112,9 +112,9 @@ public class MVCommandIssuer extends BukkitCommandIssuer {
         } else {
             var formatter = getManager().getFormat(messageType);
             if (formatter != null) {
-                sendMessage(formatter.format(message.formatted()));
+                sendMessage(formatter.format(message.formatted(getManager().getLocales(), this)));
             } else {
-                sendMessage(message.formatted());
+                sendMessage(message.formatted(getManager().getLocales(), this));
             }
         }
     }
