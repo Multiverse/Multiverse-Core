@@ -130,7 +130,9 @@ final class WorldConfig {
     }
 
     Try<Void> save() {
-        return configHandle.save();
+        return configHandle.save().onFailure(ex ->
+                Logging.warning("Failed to save world config for world '%s'. %s",
+                        worldName, ex.getLocalizedMessage()));
     }
 
     ConfigurationSection getConfigurationSection() {

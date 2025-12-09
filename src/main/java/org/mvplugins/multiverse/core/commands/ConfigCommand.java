@@ -67,12 +67,10 @@ class ConfigCommand extends CoreCommand {
     private void updateConfigValue(MVCommandIssuer issuer, String name, String value) {
         var stringPropertyHandle = config.getStringPropertyHandle();
         stringPropertyHandle.setPropertyString(issuer.getIssuer(), name, value)
-                .onSuccess(ignore -> {
-                    config.save();
-                    issuer.sendMessage(MVCorei18n.CONFIG_SET_SUCCESS,
-                            Replace.NAME.with(name),
-                            Replace.VALUE.with(stringPropertyHandle.getProperty(name).getOrNull()));
-                })
+                .andThenTry(config::save)
+                .onSuccess(ignore -> issuer.sendMessage(MVCorei18n.CONFIG_SET_SUCCESS,
+                        Replace.NAME.with(name),
+                        Replace.VALUE.with(stringPropertyHandle.getProperty(name).getOrNull())))
                 .onFailure(e -> issuer.sendMessage(MVCorei18n.CONFIG_SET_ERROR,
                         Replace.NAME.with(name),
                         Replace.VALUE.with(value),

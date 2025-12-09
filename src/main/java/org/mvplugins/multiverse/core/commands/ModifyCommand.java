@@ -94,28 +94,28 @@ class ModifyCommand extends CoreCommand {
         }
 
         StringPropertyHandle worldPropertyHandle = world.getStringPropertyHandle();
-        worldPropertyHandle.modifyPropertyString(issuer.getIssuer(), propertyName, propertyValue, action).onSuccess(ignore -> {
-            issuer.sendMessage(MVCorei18n.MODIFY_SUCCESS,
+        worldPropertyHandle.modifyPropertyString(issuer.getIssuer(), propertyName, propertyValue, action)
+                .andThenTry(worldManager::saveWorldsConfig)
+                .onSuccess(ignore -> issuer.sendMessage(MVCorei18n.MODIFY_SUCCESS,
                     replace("{action}").with(action.name().toLowerCase()),
                     replace("{property}").with(propertyName),
                     Replace.VALUE.with(worldPropertyHandle.getProperty(propertyName).getOrNull()),
-                    Replace.WORLD.with(world.getName()));
-            worldManager.saveWorldsConfig();
-        }).onFailure(exception -> {
-            if (propertyValue == null) {
-                issuer.sendMessage(MVCorei18n.MODIFY_FAILURE_NOVALUE,
-                        replace("{action}").with(action.name().toLowerCase()),
-                        replace("{property}").with(propertyName),
-                        Replace.WORLD.with(world.getName()),
-                        Replace.ERROR.with(exception.getMessage()));
-            } else {
-                issuer.sendMessage(MVCorei18n.MODIFY_FAILURE,
-                        replace("{action}").with(action.name().toLowerCase()),
-                        replace("{property}").with(propertyName),
-                        Replace.VALUE.with(propertyValue),
-                        Replace.WORLD.with(world.getName()),
-                        Replace.ERROR.with(exception.getMessage()));
-            }
+                    Replace.WORLD.with(world.getName())))
+                .onFailure(exception -> {
+                    if (propertyValue == null) {
+                        issuer.sendMessage(MVCorei18n.MODIFY_FAILURE_NOVALUE,
+                                replace("{action}").with(action.name().toLowerCase()),
+                                replace("{property}").with(propertyName),
+                                Replace.WORLD.with(world.getName()),
+                                Replace.ERROR.with(exception.getMessage()));
+                    } else {
+                        issuer.sendMessage(MVCorei18n.MODIFY_FAILURE,
+                                replace("{action}").with(action.name().toLowerCase()),
+                                replace("{property}").with(propertyName),
+                                Replace.VALUE.with(propertyValue),
+                                Replace.WORLD.with(world.getName()),
+                                Replace.ERROR.with(exception.getMessage()));
+                    }
         });
     }
 

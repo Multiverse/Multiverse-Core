@@ -215,11 +215,11 @@ public class MultiverseCore extends MultiverseModule {
      */
     private Try<Void> saveAllConfigs() {
         return configProvider.get().save()
-                .flatMap(ignore -> worldManagerProvider.get().saveWorldsConfig())
-                .flatMap(ignore ->anchorManagerProvider.get().saveAllAnchors())
-                .onFailure(e -> {
-                    Logging.severe("Failed to save configs, things may not work as expected.");
-                });
+                .andThenTry(() -> worldManagerProvider.get().saveWorldsConfig())
+                .andThenTry(() -> anchorManagerProvider.get().saveAllAnchors())
+                .onFailure(e ->
+                        Logging.severe("Failed to save all configs, things may not work as expected. %s",
+                                e.getLocalizedMessage()));
     }
 
     /**
