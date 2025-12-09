@@ -14,6 +14,9 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback;
+import org.mvplugins.multiverse.core.config.node.functions.NodeValueCallback;
+import org.mvplugins.multiverse.core.config.node.functions.SenderNodeChangeCallback;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
@@ -53,7 +56,9 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
     protected @Nullable NodeStringParser<T> stringParser;
     protected @Nullable NodeSerializer<T> serializer;
     protected @Nullable Function<T, Try<Void>> validator;
-    protected @Nullable BiConsumer<T, T> onSetValue;
+    protected @Nullable NodeValueCallback<T> onLoad;
+    protected @Nullable NodeChangeCallback<T> onLoadAndChange;
+    protected @Nullable NodeChangeCallback<T> onChange;
 
     protected ConfigNode(
             @NotNull String path,
@@ -66,7 +71,9 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             @Nullable NodeStringParser<T> stringParser,
             @Nullable NodeSerializer<T> serializer,
             @Nullable Function<T, Try<Void>> validator,
-            @Nullable BiConsumer<T, T> onSetValue) {
+            @Nullable NodeValueCallback<T> onLoad,
+            @Nullable NodeChangeCallback<T> onLoadAndChange,
+            @Nullable NodeChangeCallback<T> onChange) {
         super(path, comments);
         this.name = name;
         this.type = type;
@@ -82,7 +89,9 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
                 ? serializer
                 : DefaultSerializerProvider.getDefaultSerializer(type);
         this.validator = validator;
-        this.onSetValue = onSetValue;
+        this.onLoad = onLoad;
+        this.onLoadAndChange = onLoadAndChange;
+        this.onChange = onChange;
     }
 
     /**
@@ -186,9 +195,29 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * {@inheritDoc}
      */
     @Override
-    public void onSetValue(@Nullable T oldValue, @Nullable T newValue) {
-        if (onSetValue != null) {
-            onSetValue.accept(oldValue, newValue);
+    public void onLoad(@Nullable T value) {
+        if (onLoad != null) {
+            onLoad.run(value);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onLoadAndChange(@NotNull CommandSender sender, @Nullable T oldValue, @Nullable T newValue) {
+        if (onLoadAndChange != null) {
+            onLoadAndChange.run(sender, oldValue, newValue);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onChange(@NotNull CommandSender sender, @Nullable T oldValue, @Nullable T newValue) {
+        if (onChange != null) {
+            onChange.run(sender, oldValue, newValue);
         }
     }
 
@@ -208,7 +237,9 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         protected @Nullable NodeStringParser<T> stringParser;
         protected @Nullable NodeSerializer<T> serializer;
         protected @Nullable Function<T, Try<Void>> validator;
-        protected @Nullable BiConsumer<T, T> onSetValue;
+        protected @Nullable NodeValueCallback<T> onLoad;
+        protected @Nullable NodeChangeCallback<T> onLoadAndChange;
+        protected @Nullable NodeChangeCallback<T> onChange;
 
         /**
          * Creates a new builder.
@@ -369,14 +400,82 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         }
 
         /**
+         * Sets the action to be performed when the value is loaded.
+         *
+         * @param onLoad    The action to be performed.
+         * @return This builder.
+         */
+        @ApiStatus.AvailableSince("5.4")
+        public @NotNull B onLoad(@NotNull NodeValueCallback<T> onLoad) {
+            this.onLoad = this.onLoad == null ? onLoad : this.onLoad.then(onLoad);
+            return self();
+        }
+
+        /**
+         * Sets the action to be performed when the value is loaded and changed.
+         *
+         * @param onLoadAndChange    The action to be performed.
+         * @return This builder.
+         *
+         * @since 5.4
+         */
+        @ApiStatus.AvailableSince("5.4")
+        public @NotNull B onLoadAndChange(@NotNull NodeChangeCallback<T> onLoadAndChange) {
+            this.onLoadAndChange = this.onLoadAndChange == null ? onLoadAndChange : this.onLoadAndChange.then(onLoadAndChange);
+            return self();
+        }
+
+        /**
+         * Sets the action to be performed when the value is loaded and changed.
+         *
+         * @param onLoadAndChange    The action to be performed.
+         * @return This builder.
+         *
+         * @since 5.4
+         */
+        @ApiStatus.AvailableSince("5.4")
+        public @NotNull B onLoadAndChange(@NotNull SenderNodeChangeCallback<T> onLoadAndChange) {
+            return onLoadAndChange((NodeChangeCallback<T>) onLoadAndChange);
+        }
+
+        /**
+         * Sets the action to be performed when the value is changed.
+         *
+         * @param onChange    The action to be performed.
+         * @return This builder.
+         *
+         * @since 5.4
+         */
+        @ApiStatus.AvailableSince("5.4")
+        public @NotNull B onChange(@NotNull NodeChangeCallback<T> onChange) {
+            this.onChange = this.onChange == null ? onChange : this.onChange.then(onChange);
+            return self();
+        }
+
+        /**
+         * Sets the action to be performed when the value is changed.
+         *
+         * @param onChange    The action to be performed.
+         * @return This builder.
+         *
+         * @since 5.4
+         */
+        @ApiStatus.AvailableSince("5.4")
+        public @NotNull B onChange(@NotNull SenderNodeChangeCallback<T> onChange) {
+            return onChange((NodeChangeCallback<T>) onChange);
+        }
+
+        /**
          * Sets the action to be performed when the value is set.
          *
          * @param onSetValue    The action to be performed.
          * @return This builder.
+         *
+         * @deprecated Use {@link #onLoadAndChange(NodeChangeCallback)} instead.
          */
+        @Deprecated(since = "5.4", forRemoval = true)
         public @NotNull B onSetValue(@NotNull BiConsumer<T, T> onSetValue) {
-            this.onSetValue = this.onSetValue == null ? onSetValue : this.onSetValue.andThen(onSetValue);
-            return self();
+            return onLoadAndChange(onSetValue::accept);
         }
 
         /**
@@ -385,7 +484,8 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         @Override
         public @NotNull ConfigNode<T> build() {
             return new ConfigNode<>(path, comments.toArray(new String[0]),
-                    name, type, aliases, defaultValue, suggester, stringParser, serializer, validator, onSetValue);
+                    name, type, aliases, defaultValue, suggester, stringParser, serializer, validator,
+                    onLoad, onLoadAndChange, onChange);
         }
     }
 }

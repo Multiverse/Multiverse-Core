@@ -226,7 +226,7 @@ public class StringPropertyHandle {
     public Try<Void> setPropertyString(@NotNull CommandSender sender, @Nullable String name, @Nullable String value) {
         return findNode(name, ValueNode.class)
                 .flatMap(node -> node.parseFromString(sender, value)
-                        .flatMap(parsedValue -> handle.set(node, parsedValue)));
+                        .flatMap(parsedValue -> handle.set(sender, node, parsedValue)));
     }
 
     /**

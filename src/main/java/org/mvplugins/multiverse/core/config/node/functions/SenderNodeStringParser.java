@@ -11,8 +11,11 @@ import org.jetbrains.annotations.Nullable;
  * A function that parses a string into a node value object of type {@link T} with contextual information from the sender.
  *
  * @param <T>   The type of the object to parse.
+ *
+ * @since 5.1
  */
 @ApiStatus.AvailableSince("5.1")
+@FunctionalInterface
 public interface SenderNodeStringParser<T> extends NodeStringParser<T> {
     /**
      * Parses a string into a node value object of type {@link T} with contextual information from the sender.

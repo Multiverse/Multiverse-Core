@@ -3,19 +3,22 @@ package org.mvplugins.multiverse.core.config.handle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.config.node.ListValueNode;
-import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.config.node.ValueNode;
 
@@ -84,7 +87,8 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         });
 
         nodeValueMap.forEach((valueNode, value) -> {
-            valueNode.onSetValue(value, value);
+            valueNode.onLoad(value);
+            valueNode.onLoadAndChange(Bukkit.getConsoleSender(), null, value);
         });
     }
 
@@ -156,10 +160,29 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      * @return Empty try if the value was set, try containing an error otherwise.
      */
     public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
+        return set(Bukkit.getConsoleSender(), node, value);
+    }
+
+    /**
+     * Sets the value of a node, if the validator is not null, it will be tested first.
+     *
+     * @param sender The sender who triggered the change.
+     * @param node   The node to set the value of.
+     * @param value  The value to set.
+     * @param <T>    The type of the node value.
+     * @return Empty try if the value was set, try containing an error otherwise.
+     *
+     * @since 5.4
+     */
+    @ApiStatus.AvailableSince("5.4")
+    public <T> Try<Void> set(@NotNull CommandSender sender, @NotNull ValueNode<T> node, T value) {
         return node.validate(value).map(ignore -> {
             T oldValue = get(node);
             nodeValueMap.put(node, value);
-            node.onSetValue(oldValue, get(node));
+            if (!Objects.equals(oldValue, value)) {
+                node.onLoadAndChange(sender, oldValue, value);
+                node.onChange(sender, oldValue, value);
+            }
             return null;
         });
     }

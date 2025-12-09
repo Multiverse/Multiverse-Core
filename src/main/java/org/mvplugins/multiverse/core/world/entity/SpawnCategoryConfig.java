@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world.entity;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -161,19 +162,31 @@ public final class SpawnCategoryConfig {
 
         final ConfigNode<Boolean> spawn = node(ConfigNode.builder("spawn", Boolean.class)
                 .defaultValue(true)
-                .onSetValue((oldValue, newValue) -> applyConfigToWorld())
+                .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
                 .build());
 
         final ConfigNode<Integer> tickRate = node(ConfigNode.builder("tick-rate", Integer.class)
                 .defaultValue(-1)
                 .suggester(input -> List.of("-1", "10", "100", "400", "1000"))
-                .onSetValue((oldValue, newValue) -> applyConfigToWorld())
+                .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
+                .onChange((sender, oldValue, newValue) -> {
+                    if (!config.getApplyEntitySpawnRate()) {
+                        sender.sendMessage(ChatColor.RED + "Warning: Changing tick rates has no effect because " +
+                                "'apply-entity-spawn-rate' is disabled in the core config.");
+                    }
+                })
                 .build());
 
         final ConfigNode<Integer> spawnLimit = node(ConfigNode.builder("spawn-limit", Integer.class)
                 .defaultValue(-1)
                 .suggester(input -> List.of("-1", "10", "100", "400", "1000"))
-                .onSetValue((oldValue, newValue) -> applyConfigToWorld())
+                .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
+                .onChange((sender, oldValue, newValue) -> {
+                    if (!config.getApplyEntitySpawnLimit()) {
+                        sender.sendMessage(ChatColor.RED + "Warning: Changing spawn limits has no effect because " +
+                                "'apply-entity-spawn-limit' is disabled in the core config.");
+                    }
+                })
                 .build());
 
         final ListConfigNode<EntityType> exceptions = node(ListConfigNode.listBuilder("exceptions", EntityType.class)
@@ -181,7 +194,7 @@ public final class SpawnCategoryConfig {
                 .itemSuggester(input -> SpawnCategoryMapper.getEntityTypes(spawnCategory).stream()
                         .map(EntityType::name)
                         .toList())
-                .onSetValue((oldValue, newValue) -> applyConfigToWorld())
+                .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
                 .build());
     }
 }
