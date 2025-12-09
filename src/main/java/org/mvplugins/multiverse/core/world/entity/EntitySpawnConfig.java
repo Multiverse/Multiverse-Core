@@ -38,8 +38,9 @@ public final class EntitySpawnConfig {
     }
 
     public void applyConfigToWorld() {
-        spawnCategoriesConfig.values()
-                .forEach(SpawnCategoryConfig::applyConfigToWorld);
+        for (SpawnCategory category : SpawnCategory.values()) {
+            getSpawnCategoryConfig(category).applyConfigToWorld();
+        }
     }
 
     @Override
@@ -61,14 +62,18 @@ public final class EntitySpawnConfig {
     @ApiStatus.Internal
     public static EntitySpawnConfig fromSection(CoreConfig config, ConfigurationSection section) {
         Map<SpawnCategory, SpawnCategoryConfig> spawnCategoriesConfig = new LinkedHashMap<>();
-        section.getValues(false).forEach((key, value) -> {
-            if (!(value instanceof ConfigurationSection sectionPart)) {
-                Logging.warning("Invalid spawn category config for " + key + ": " + value);
-                return;
+        Map<String, Object> existingCategories = section.getValues(false);
+        for (SpawnCategory category : SpawnCategory.values()) {
+            Object value = existingCategories.get(category.toString().toLowerCase(Locale.ENGLISH));
+            if (!(value instanceof ConfigurationSection)) {
+                if (value != null) {
+                    Logging.warning("Invalid spawn category config for " + category + ": " + value);
+                }
+                value = section.createSection(category.toString());
             }
-            SpawnCategory spawnCategory = SpawnCategory.valueOf(key.toUpperCase(Locale.ENGLISH));
-            spawnCategoriesConfig.put(spawnCategory, new SpawnCategoryConfig(config, spawnCategory, sectionPart));
-        });
+            ConfigurationSection sectionPart = (ConfigurationSection) value;
+            spawnCategoriesConfig.put(category, new SpawnCategoryConfig(config, category, sectionPart));
+        }
         return new EntitySpawnConfig(config, spawnCategoriesConfig);
     }
 
