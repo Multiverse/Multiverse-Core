@@ -124,7 +124,6 @@ public class MultiverseCore extends MultiverseModule {
     public void onDisable() {
         super.onDisable();
         MultiverseCoreApi.shutdown();
-        saveAllConfigs();
         shutdownDependencyInjection();
         PluginServiceLocatorFactory.get().shutdown();
         Logging.shutdown();
