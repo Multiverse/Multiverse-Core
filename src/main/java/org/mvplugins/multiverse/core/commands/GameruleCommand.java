@@ -67,7 +67,7 @@ class GameruleCommand extends CoreCommand {
             @Description("{@@mv-core.gamerule.set.value.description}")
             GameRuleValue gameRuleValue,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=2")
             @Syntax("[World or *]")
             @Description("{@@mv-core.gamerule.set.world.description}")
             LoadedMultiverseWorld[] worlds) {
@@ -114,7 +114,7 @@ class GameruleCommand extends CoreCommand {
             @Description("{@@mv-core.gamerule.reset.gamerule.description}")
             GameRule gamerule,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=1")
             @Syntax("[World or *]")
             @Description("{@@mv-core.gamerule.reset.world.description}")
             LoadedMultiverseWorld[] worlds) {
@@ -152,7 +152,7 @@ class GameruleCommand extends CoreCommand {
     void onGameruleListCommand(
             MVCommandIssuer issuer,
 
-            @Flags("resolve=issuerAware")
+            @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("<world>")
             @Description("{@@mv-core.gamerule.list.description.world}")
             LoadedMultiverseWorld world,
