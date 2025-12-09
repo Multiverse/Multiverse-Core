@@ -4,6 +4,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.PluginManager;
@@ -139,8 +140,12 @@ final class CoreConfigNodes {
             .comment("Sets whether Multiverse will apply the world's entity `tick-rate` config in worlds.yml.")
             .comment("If disabled, the `tick-rate` config in worlds.yml will be ignored.")
             .comment("Disable this if you want paper-world.yml or another plugin to handle entity spawn rate per world.")
+            .comment("!!!NOTE: This will only apply after a server restart!")
             .defaultValue(true)
             .name("apply-entity-spawn-rate")
+            .onChange(((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'apply-entity-spawn-rate' config option will only take " +
+                            "full effect after a server restart.")))
             .build());
 
     final ConfigNode<Boolean> applyEntitySpawnLimit = node(ConfigNode.builder("world.apply-entity-spawn-limit", Boolean.class)
@@ -148,8 +153,12 @@ final class CoreConfigNodes {
             .comment("Sets whether Multiverse will apply the world's entity `spawn-limit` config when a world is loaded.")
             .comment("If disabled, the `spawn-limit` config in worlds.yml will be ignored.")
             .comment("Disable this if you want paper-world.yml or another plugin to handle entity limits per world.")
+            .comment("!!!NOTE: This will only apply after a server restart!")
             .defaultValue(true)
             .name("apply-entity-spawn-limit")
+            .onChange(((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'apply-entity-spawn-limit' config option will only take" +
+                            " full effect after a server restart.")))
             .build());
 
     final ConfigNode<Boolean> autoPurgeEntities = node(ConfigNode.builder("world.auto-purge-entities", Boolean.class)
@@ -478,6 +487,9 @@ final class CoreConfigNodes {
             .name("event-priority-player-portal")
             .onLoadAndChange((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-portal", newValue))
+            .onChange(((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'event-priority.player-portal' config option will only take " +
+                            "full effect after a server restart.")))
             .build());
 
     final ConfigNode<EventPriority> eventPriorityPlayerRespawn = node(ConfigNode.builder("event-priority.player-respawn", EventPriority.class)
@@ -487,6 +499,9 @@ final class CoreConfigNodes {
             .comment("This config option defines the priority for the PlayerRespawnEvent.")
             .onLoadAndChange((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-respawn", newValue))
+            .onChange((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'event-priority.player-respawn' config option will only take " +
+                            "full effect after a server restart."))
             .build());
 
     final ConfigNode<EventPriority> eventPriorityPlayerSpawnLocation = node(ConfigNode.builder("event-priority.player-spawn-location", EventPriority.class)
@@ -496,6 +511,9 @@ final class CoreConfigNodes {
             .name("event-priority-player-spawn-location")
             .onLoadAndChange((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-spawn-location", newValue))
+            .onChange((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'event-priority.player-spawn-location' config option will only take " +
+                            "full effect after a server restart."))
             .build());
 
     final ConfigNode<EventPriority> eventPriorityPlayerTeleport = node(ConfigNode.builder("event-priority.player-teleport", EventPriority.class)
@@ -505,6 +523,9 @@ final class CoreConfigNodes {
             .comment("This config option defines the priority for the PlayerTeleportEvent.")
             .onLoadAndChange((oldValue, newValue) ->
                     eventPriorityMapper.get().setPriority("mvcore-player-teleport", newValue))
+            .onChange((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'event-priority.player-teleport' config option will only take " +
+                            "full effect after a server restart."))
             .build());
 
     private final ConfigHeaderNode miscHeader = node(ConfigHeaderNode.builder("misc")
@@ -517,6 +538,9 @@ final class CoreConfigNodes {
             .comment("Note: this config option needs a server restart to take effect.")
             .defaultValue("bukkit.yml")
             .name("bukkit-yml-path")
+            .onChange(((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'bukkit-yml-path' config option will only take " +
+                            "full effect after a server restart.")))
             .build());
 
     final ConfigNode<String> serverPropertiesPath = node(ConfigNode.builder("misc.server-properties-path", String.class)
@@ -525,6 +549,9 @@ final class CoreConfigNodes {
             .comment("Note: this config option needs a server restart to take effect.")
             .defaultValue("server.properties")
             .name("server-properties-path")
+            .onChange(((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'server-properties-path' config option will only take " +
+                            "full effect after a server restart.")))
             .build());
 
     final ConfigNode<Boolean> autoDetectGeneratorPlugins = node(ConfigNode.builder("misc.auto-detect-generator-plugins", Boolean.class)
