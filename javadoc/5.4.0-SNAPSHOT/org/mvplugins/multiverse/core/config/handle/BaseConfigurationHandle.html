@@ -230,14 +230,21 @@ loadScripts(document, 'script');</script>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#serializeNodeToConfig(org.mvplugins.multiverse.core.config.node.ValueNode)" class="member-name-link">serializeNodeToConfig</a><wbr>(<a href="../node/ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&nbsp;node)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;io.vavr.control.Try<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(org.mvplugins.multiverse.core.config.node.ValueNode,T)" class="member-name-link">set</a><wbr>(@NotNull <a href="../node/ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&lt;T&gt;&nbsp;node,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(org.bukkit.command.CommandSender,org.mvplugins.multiverse.core.config.node.ValueNode,T)" class="member-name-link">set</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ @NotNull <a href="../node/ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&lt;T&gt;&nbsp;node,
  T&nbsp;value)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the value of a node, if the validator is not null, it will be tested first.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setUpNodes()" class="member-name-link">setUpNodes</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;io.vavr.control.Try<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#set(org.mvplugins.multiverse.core.config.node.ValueNode,T)" class="member-name-link">set</a><wbr>(@NotNull <a href="../node/ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&lt;T&gt;&nbsp;node,
+ T&nbsp;value)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the value of a node, if the validator is not null, it will be tested first.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setUpNodes()" class="member-name-link">setUpNodes</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets up the nodes.</div>
 </div>
 </div>
@@ -402,6 +409,30 @@ loadScripts(document, 'script');</script>
 <dd><code>value</code> - The value to set.</dd>
 <dt>Returns:</dt>
 <dd>Empty try if the value was set, try containing an error otherwise.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="set(org.bukkit.command.CommandSender,org.mvplugins.multiverse.core.config.node.ValueNode,T)">
+<h3 id="set(org.bukkit.command.CommandSender,org.mvplugins.multiverse.core.config.node.ValueNode,java.lang.Object)">set</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+</span><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type">io.vavr.control.Try&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</span>&nbsp;<span class="element-name">set</span><wbr><span class="parameters">(@NotNull
+ @NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ @NotNull
+ @NotNull <a href="../node/ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&lt;T&gt;&nbsp;node,
+ T&nbsp;value)</span></div>
+<div class="block">Sets the value of a node, if the validator is not null, it will be tested first.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - The type of the node value.</dd>
+<dt>Parameters:</dt>
+<dd><code>sender</code> - The sender who triggered the change.</dd>
+<dd><code>node</code> - The node to set the value of.</dd>
+<dd><code>value</code> - The value to set.</dd>
+<dt>Returns:</dt>
+<dd>Empty try if the value was set, try containing an error otherwise.</dd>
+<dt>Since:</dt>
+<dd>5.4</dd>
 </dl>
 </section>
 </li>

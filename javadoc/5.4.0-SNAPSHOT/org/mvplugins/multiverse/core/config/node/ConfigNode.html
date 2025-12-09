@@ -146,8 +146,14 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
 <div class="col-first even-row-color"><code>protected final @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#name" class="member-name-link">name</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a><wbr>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>,<wbr><a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></div>
-<div class="col-second odd-row-color"><code><a href="#onSetValue" class="member-name-link">onSetValue</a></code></div>
+<div class="col-first odd-row-color"><code>protected @Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a><wbr>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></div>
+<div class="col-second odd-row-color"><code><a href="#onChange" class="member-name-link">onChange</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>protected @Nullable <a href="functions/NodeValueCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeValueCallback</a><wbr>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#onLoad" class="member-name-link">onLoad</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected @Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a><wbr>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></div>
+<div class="col-second odd-row-color"><code><a href="#onLoadAndChange" class="member-name-link">onLoadAndChange</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>protected @Nullable <a href="serializer/NodeSerializer.html" title="interface in org.mvplugins.multiverse.core.config.node.serializer">NodeSerializer</a><wbr>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#serializer" class="member-name-link">serializer</a></code></div>
@@ -177,7 +183,7 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String%5B%5D,java.lang.String,java.lang.Class,java.lang.String%5B%5D,java.util.function.Supplier,org.mvplugins.multiverse.core.config.node.functions.NodeSuggester,org.mvplugins.multiverse.core.config.node.functions.NodeStringParser,org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer,java.util.function.Function,java.util.function.BiConsumer)" class="member-name-link">ConfigNode</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;path,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String%5B%5D,java.lang.String,java.lang.Class,java.lang.String%5B%5D,java.util.function.Supplier,org.mvplugins.multiverse.core.config.node.functions.NodeSuggester,org.mvplugins.multiverse.core.config.node.functions.NodeStringParser,org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer,java.util.function.Function,org.mvplugins.multiverse.core.config.node.functions.NodeValueCallback,org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback,org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback)" class="member-name-link">ConfigNode</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;path,
  @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]&nbsp;comments,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
  @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;type,
@@ -187,7 +193,9 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
  @Nullable <a href="functions/NodeStringParser.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeStringParser</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;stringParser,
  @Nullable <a href="serializer/NodeSerializer.html" title="interface in org.mvplugins.multiverse.core.config.node.serializer">NodeSerializer</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;serializer,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>,<wbr>io.vavr.control.Try&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;&gt;&nbsp;validator,
- @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>,<wbr><a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;onSetValue)</code></div>
+ @Nullable <a href="functions/NodeValueCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeValueCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;onLoad,
+ @Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;onLoadAndChange,
+ @Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;onChange)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -235,10 +243,23 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
 <div class="block">Gets the class type <a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node"><code>ValueNode</code></a> of the node value.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onSetValue(T,T)" class="member-name-link">onSetValue</a><wbr>(<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;oldValue,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onChange(org.bukkit.command.CommandSender,T,T)" class="member-name-link">onChange</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;oldValue,
  <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;newValue)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Called when the value of this node is set.</div>
+<div class="block">Called when the value of this node is changed by <a href="../handle/BaseConfigurationHandle.html#set(org.mvplugins.multiverse.core.config.node.ValueNode,T)"><code>BaseConfigurationHandle.set(ValueNode, Object)</code></a>.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onLoad(T)" class="member-name-link">onLoad</a><wbr>(<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Called when the value of this node is loaded by <a href="../handle/BaseConfigurationHandle.html#load()"><code>BaseConfigurationHandle.load()</code></a>.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onLoadAndChange(org.bukkit.command.CommandSender,T,T)" class="member-name-link">onLoadAndChange</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;oldValue,
+ <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;newValue)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Called when the value of this node is loaded or changed.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull io.vavr.control.Try<wbr>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#parseFromString(java.lang.String)" class="member-name-link">parseFromString</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
@@ -279,6 +300,9 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.mvplugins.multiverse.core.config.node.Node">Methods inherited from interface&nbsp;org.mvplugins.multiverse.core.config.node.<a href="Node.html" title="interface in org.mvplugins.multiverse.core.config.node">Node</a></h3>
 <code><a href="Node.html#getPath()">getPath</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-org.mvplugins.multiverse.core.config.node.ValueNode">Methods inherited from interface&nbsp;org.mvplugins.multiverse.core.config.node.<a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a></h3>
+<code><a href="ValueNode.html#onSetValue(T,T)">onSetValue</a></code></div>
 </section>
 </li>
 </ul>
@@ -347,10 +371,24 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
 </section>
 </li>
 <li>
-<section class="detail" id="onSetValue">
-<h3>onSetValue</h3>
+<section class="detail" id="onLoad">
+<h3>onLoad</h3>
 <div class="member-signature"><span class="annotations">@Nullable
-</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>,<wbr><a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</span>&nbsp;<span class="element-name">onSetValue</span></div>
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="functions/NodeValueCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeValueCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</span>&nbsp;<span class="element-name">onLoad</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="onLoadAndChange">
+<h3>onLoadAndChange</h3>
+<div class="member-signature"><span class="annotations">@Nullable
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</span>&nbsp;<span class="element-name">onLoadAndChange</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="onChange">
+<h3>onChange</h3>
+<div class="member-signature"><span class="annotations">@Nullable
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</span>&nbsp;<span class="element-name">onChange</span></div>
 </section>
 </li>
 </ul>
@@ -362,7 +400,7 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String[],java.lang.String,java.lang.Class,java.lang.String[],java.util.function.Supplier,org.mvplugins.multiverse.core.config.node.functions.NodeSuggester,org.mvplugins.multiverse.core.config.node.functions.NodeStringParser,org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer,java.util.function.Function,java.util.function.BiConsumer)">
+<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String[],java.lang.String,java.lang.Class,java.lang.String[],java.util.function.Supplier,org.mvplugins.multiverse.core.config.node.functions.NodeSuggester,org.mvplugins.multiverse.core.config.node.functions.NodeStringParser,org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer,java.util.function.Function,org.mvplugins.multiverse.core.config.node.functions.NodeValueCallback,org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback,org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback)">
 <h3>ConfigNode</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">ConfigNode</span><wbr><span class="parameters">(@NotNull
  @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;path,
@@ -385,7 +423,11 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
  @Nullable
  @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>,<wbr>io.vavr.control.Try&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;&gt;&nbsp;validator,
  @Nullable
- @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>,<wbr><a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;onSetValue)</span></div>
+ @Nullable <a href="functions/NodeValueCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeValueCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;onLoad,
+ @Nullable
+ @Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;onLoadAndChange,
+ @Nullable
+ @Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;&nbsp;onChange)</span></div>
 </section>
 </li>
 </ul>
@@ -582,17 +624,55 @@ implements <a href="ValueNode.html" title="interface in org.mvplugins.multiverse
 </section>
 </li>
 <li>
-<section class="detail" id="onSetValue(T,T)">
-<h3 id="onSetValue(java.lang.Object,java.lang.Object)">onSetValue</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onSetValue</span><wbr><span class="parameters">(@Nullable
+<section class="detail" id="onLoad(T)">
+<h3 id="onLoad(java.lang.Object)">onLoad</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onLoad</span><wbr><span class="parameters">(@Nullable
+ <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;value)</span></div>
+<div class="block">Called when the value of this node is loaded by <a href="../handle/BaseConfigurationHandle.html#load()"><code>BaseConfigurationHandle.load()</code></a>.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="ValueNode.html#onLoad(T)">onLoad</a></code>&nbsp;in interface&nbsp;<code><a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></dd>
+<dt>Parameters:</dt>
+<dd><code>value</code> - The loaded value.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onLoadAndChange(org.bukkit.command.CommandSender,T,T)">
+<h3 id="onLoadAndChange(org.bukkit.command.CommandSender,java.lang.Object,java.lang.Object)">onLoadAndChange</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onLoadAndChange</span><wbr><span class="parameters">(@NotNull
+ @NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ @Nullable
  <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;oldValue,
  @Nullable
  <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;newValue)</span></div>
-<div class="block">Called when the value of this node is set.</div>
+<div class="block">Called when the value of this node is loaded or changed.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="ValueNode.html#onSetValue(T,T)">onSetValue</a></code>&nbsp;in interface&nbsp;<code><a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></dd>
+<dd><code><a href="ValueNode.html#onLoadAndChange(org.bukkit.command.CommandSender,T,T)">onLoadAndChange</a></code>&nbsp;in interface&nbsp;<code><a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></dd>
 <dt>Parameters:</dt>
+<dd><code>sender</code> - The sender who triggered the change. If triggered by loading or no target sender is specified,
+                 it will be the console sender.</dd>
+<dd><code>oldValue</code> - The old value, will always be null on load.</dd>
+<dd><code>newValue</code> - The new value.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onChange(org.bukkit.command.CommandSender,T,T)">
+<h3 id="onChange(org.bukkit.command.CommandSender,java.lang.Object,java.lang.Object)">onChange</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onChange</span><wbr><span class="parameters">(@NotNull
+ @NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ @Nullable
+ <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;oldValue,
+ @Nullable
+ <a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&nbsp;newValue)</span></div>
+<div class="block">Called when the value of this node is changed by <a href="../handle/BaseConfigurationHandle.html#set(org.mvplugins.multiverse.core.config.node.ValueNode,T)"><code>BaseConfigurationHandle.set(ValueNode, Object)</code></a>.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="ValueNode.html#onChange(org.bukkit.command.CommandSender,T,T)">onChange</a></code>&nbsp;in interface&nbsp;<code><a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node">ValueNode</a>&lt;<a href="ConfigNode.html" title="type parameter in ConfigNode">T</a>&gt;</code></dd>
+<dt>Parameters:</dt>
+<dd><code>sender</code> - The sender who changed the value, or console sender if no target sender specified.</dd>
 <dd><code>oldValue</code> - The old value.</dd>
 <dd><code>newValue</code> - The new value.</dd>
 </dl>

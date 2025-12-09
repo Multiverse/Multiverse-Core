@@ -129,8 +129,14 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#name" class="member-name-link">name</a></code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-first odd-row-color"><code>protected @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a><wbr>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>,<wbr><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</code></div>
-<div class="col-second odd-row-color"><code><a href="#onSetValue" class="member-name-link">onSetValue</a></code></div>
+<div class="col-first odd-row-color"><code>protected @Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a><wbr>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</code></div>
+<div class="col-second odd-row-color"><code><a href="#onChange" class="member-name-link">onChange</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>protected @Nullable <a href="functions/NodeValueCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeValueCallback</a><wbr>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</code></div>
+<div class="col-second even-row-color"><code><a href="#onLoad" class="member-name-link">onLoad</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>protected @Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a><wbr>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</code></div>
+<div class="col-second odd-row-color"><code><a href="#onLoadAndChange" class="member-name-link">onLoadAndChange</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 <div class="col-first even-row-color"><code>protected @Nullable <a href="serializer/NodeSerializer.html" title="interface in org.mvplugins.multiverse.core.config.node.serializer">NodeSerializer</a><wbr>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</code></div>
 <div class="col-second even-row-color"><code><a href="#serializer" class="member-name-link">serializer</a></code></div>
@@ -176,7 +182,7 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -218,43 +224,70 @@ loadScripts(document, 'script');</script>
 <div class="block">Sets the name of this node.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onSetValue(java.util.function.BiConsumer)" class="member-name-link">onSetValue</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>,<wbr><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onSetValue)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onChange(org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback)" class="member-name-link">onChange</a><wbr>(@NotNull <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onChange)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets the action to be performed when the value is set.</div>
+<div class="block">Sets the action to be performed when the value is changed.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#path()" class="member-name-link">path</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onChange(org.mvplugins.multiverse.core.config.node.functions.SenderNodeChangeCallback)" class="member-name-link">onChange</a><wbr>(@NotNull <a href="functions/SenderNodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">SenderNodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onChange)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the action to be performed when the value is changed.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onLoad(org.mvplugins.multiverse.core.config.node.functions.NodeValueCallback)" class="member-name-link">onLoad</a><wbr>(@NotNull <a href="functions/NodeValueCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeValueCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onLoad)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the action to be performed when the value is loaded.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onLoadAndChange(org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback)" class="member-name-link">onLoadAndChange</a><wbr>(@NotNull <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onLoadAndChange)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the action to be performed when the value is loaded and changed.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onLoadAndChange(org.mvplugins.multiverse.core.config.node.functions.SenderNodeChangeCallback)" class="member-name-link">onLoadAndChange</a><wbr>(@NotNull <a href="functions/SenderNodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">SenderNodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onLoadAndChange)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets the action to be performed when the value is loaded and changed.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#onSetValue(java.util.function.BiConsumer)" class="member-name-link">onSetValue</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>,<wbr><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onSetValue)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#onLoadAndChange(org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback)"><code>onLoadAndChange(NodeChangeCallback)</code></a> instead.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#path()" class="member-name-link">path</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the path of this node.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#serializer(org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer)" class="member-name-link">serializer</a><wbr>(@NotNull <a href="serializer/NodeSerializer.html" title="interface in org.mvplugins.multiverse.core.config.node.serializer">NodeSerializer</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;serializer)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#serializer(org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer)" class="member-name-link">serializer</a><wbr>(@NotNull <a href="serializer/NodeSerializer.html" title="interface in org.mvplugins.multiverse.core.config.node.serializer">NodeSerializer</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;serializer)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the serializer for this node.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stringParser(org.mvplugins.multiverse.core.config.node.functions.NodeStringParser)" class="member-name-link">stringParser</a><wbr>(@NotNull <a href="functions/NodeStringParser.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeStringParser</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;stringParser)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stringParser(org.mvplugins.multiverse.core.config.node.functions.NodeStringParser)" class="member-name-link">stringParser</a><wbr>(@NotNull <a href="functions/NodeStringParser.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeStringParser</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;stringParser)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the string parser for this node.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stringParser(org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser)" class="member-name-link">stringParser</a><wbr>(@NotNull <a href="functions/SenderNodeStringParser.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">SenderNodeStringParser</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;stringParser)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stringParser(org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser)" class="member-name-link">stringParser</a><wbr>(@NotNull <a href="functions/SenderNodeStringParser.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">SenderNodeStringParser</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;stringParser)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the string parser for this node with sender context.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#suggester(org.mvplugins.multiverse.core.config.node.functions.NodeSuggester)" class="member-name-link">suggester</a><wbr>(@NotNull <a href="functions/NodeSuggester.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeSuggester</a>&nbsp;suggester)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#suggester(org.mvplugins.multiverse.core.config.node.functions.NodeSuggester)" class="member-name-link">suggester</a><wbr>(@NotNull <a href="functions/NodeSuggester.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeSuggester</a>&nbsp;suggester)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the suggester for this node.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#suggester(org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester)" class="member-name-link">suggester</a><wbr>(@NotNull <a href="functions/SenderNodeSuggester.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">SenderNodeSuggester</a>&nbsp;suggester)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#suggester(org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester)" class="member-name-link">suggester</a><wbr>(@NotNull <a href="functions/SenderNodeSuggester.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">SenderNodeSuggester</a>&nbsp;suggester)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the suggester for this node with sender context.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#validator(java.util.function.Function)" class="member-name-link">validator</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>,<wbr>io.vavr.control.Try&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;&gt;&nbsp;validator)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#validator(java.util.function.Function)" class="member-name-link">validator</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Function.html" title="class or interface in java.util.function" class="external-link">Function</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>,<wbr>io.vavr.control.Try&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;&gt;&nbsp;validator)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the validator for this node.</div>
 </div>
 </div>
@@ -334,10 +367,24 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="onSetValue">
-<h3>onSetValue</h3>
+<section class="detail" id="onLoad">
+<h3>onLoad</h3>
 <div class="member-signature"><span class="annotations">@Nullable
-</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>,<wbr><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</span>&nbsp;<span class="element-name">onSetValue</span></div>
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="functions/NodeValueCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeValueCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</span>&nbsp;<span class="element-name">onLoad</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="onLoadAndChange">
+<h3>onLoadAndChange</h3>
+<div class="member-signature"><span class="annotations">@Nullable
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</span>&nbsp;<span class="element-name">onLoadAndChange</span></div>
+</section>
+</li>
+<li>
+<section class="detail" id="onChange">
+<h3>onChange</h3>
+<div class="member-signature"><span class="annotations">@Nullable
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">@Nullable <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;</span>&nbsp;<span class="element-name">onChange</span></div>
 </section>
 </li>
 </ul>
@@ -567,11 +614,104 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="onLoad(org.mvplugins.multiverse.core.config.node.functions.NodeValueCallback)">
+<h3>onLoad</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></span>&nbsp;<span class="element-name">onLoad</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="functions/NodeValueCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeValueCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onLoad)</span></div>
+<div class="block">Sets the action to be performed when the value is loaded.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>onLoad</code> - The action to be performed.</dd>
+<dt>Returns:</dt>
+<dd>This builder.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onLoadAndChange(org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback)">
+<h3>onLoadAndChange</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></span>&nbsp;<span class="element-name">onLoadAndChange</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onLoadAndChange)</span></div>
+<div class="block">Sets the action to be performed when the value is loaded and changed.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>onLoadAndChange</code> - The action to be performed.</dd>
+<dt>Returns:</dt>
+<dd>This builder.</dd>
+<dt>Since:</dt>
+<dd>5.4</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onLoadAndChange(org.mvplugins.multiverse.core.config.node.functions.SenderNodeChangeCallback)">
+<h3>onLoadAndChange</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></span>&nbsp;<span class="element-name">onLoadAndChange</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="functions/SenderNodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">SenderNodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onLoadAndChange)</span></div>
+<div class="block">Sets the action to be performed when the value is loaded and changed.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>onLoadAndChange</code> - The action to be performed.</dd>
+<dt>Returns:</dt>
+<dd>This builder.</dd>
+<dt>Since:</dt>
+<dd>5.4</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onChange(org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback)">
+<h3>onChange</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></span>&nbsp;<span class="element-name">onChange</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="functions/NodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">NodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onChange)</span></div>
+<div class="block">Sets the action to be performed when the value is changed.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>onChange</code> - The action to be performed.</dd>
+<dt>Returns:</dt>
+<dd>This builder.</dd>
+<dt>Since:</dt>
+<dd>5.4</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onChange(org.mvplugins.multiverse.core.config.node.functions.SenderNodeChangeCallback)">
+<h3>onChange</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></span>&nbsp;<span class="element-name">onChange</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="functions/SenderNodeChangeCallback.html" title="interface in org.mvplugins.multiverse.core.config.node.functions">SenderNodeChangeCallback</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onChange)</span></div>
+<div class="block">Sets the action to be performed when the value is changed.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>onChange</code> - The action to be performed.</dd>
+<dt>Returns:</dt>
+<dd>This builder.</dd>
+<dt>Since:</dt>
+<dd>5.4</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="onSetValue(java.util.function.BiConsumer)">
 <h3>onSetValue</h3>
-<div class="member-signature"><span class="annotations">@NotNull
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="5.4",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+@NotNull
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">B</a></span>&nbsp;<span class="element-name">onSetValue</span><wbr><span class="parameters">(@NotNull
  @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/BiConsumer.html" title="class or interface in java.util.function" class="external-link">BiConsumer</a>&lt;<a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>,<wbr><a href="ConfigNode.Builder.html" title="type parameter in ConfigNode.Builder">T</a>&gt;&nbsp;onSetValue)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#onLoadAndChange(org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback)"><code>onLoadAndChange(NodeChangeCallback)</code></a> instead.</div>
+</div>
 <div class="block">Sets the action to be performed when the value is set.</div>
 <dl class="notes">
 <dt>Parameters:</dt>

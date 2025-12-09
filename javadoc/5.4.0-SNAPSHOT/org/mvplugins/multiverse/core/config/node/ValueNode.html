@@ -109,7 +109,7 @@ extends <a href="Node.html" title="interface in org.mvplugins.multiverse.core.co
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab3" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab3', 3)" class="table-tab">Abstract Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -141,36 +141,57 @@ extends <a href="Node.html" title="interface in org.mvplugins.multiverse.core.co
 <div class="block">Gets the class type <a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node"><code>ValueNode</code></a> of the node value.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#onSetValue(T,T)" class="member-name-link">onSetValue</a><wbr>(<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;oldValue,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#onChange(org.bukkit.command.CommandSender,T,T)" class="member-name-link">onChange</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;oldValue,
  <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;newValue)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Called when the value of this node is set.</div>
+<div class="block">Called when the value of this node is changed by <a href="../handle/BaseConfigurationHandle.html#set(org.mvplugins.multiverse.core.config.node.ValueNode,T)"><code>BaseConfigurationHandle.set(ValueNode, Object)</code></a>.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NotNull io.vavr.control.Try<wbr>&lt;<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#parseFromString(java.lang.String)" class="member-name-link">parseFromString</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#onLoad(T)" class="member-name-link">onLoad</a><wbr>(<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;value)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Called when the value of this node is loaded by <a href="../handle/BaseConfigurationHandle.html#load()"><code>BaseConfigurationHandle.load()</code></a>.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#onLoadAndChange(org.bukkit.command.CommandSender,T,T)" class="member-name-link">onLoadAndChange</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;oldValue,
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;newValue)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Called when the value of this node is loaded or changed.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code>default void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6"><code><a href="#onSetValue(T,T)" class="member-name-link">onSetValue</a><wbr>(<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;oldValue,
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;newValue)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#onLoadAndChange(org.bukkit.command.CommandSender,T,T)"><code>onLoadAndChange(CommandSender, Object, Object)</code></a> instead.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NotNull io.vavr.control.Try<wbr>&lt;<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#parseFromString(java.lang.String)" class="member-name-link">parseFromString</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Parses the given string into a value of type <a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node"><code>ValueNode</code></a>.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default @NotNull io.vavr.control.Try<wbr>&lt;<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#parseFromString(org.bukkit.command.CommandSender,java.lang.String)" class="member-name-link">parseFromString</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default @NotNull io.vavr.control.Try<wbr>&lt;<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#parseFromString(org.bukkit.command.CommandSender,java.lang.String)" class="member-name-link">parseFromString</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
  @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
 <div class="block">Parses the given string into a value of type <a href="ValueNode.html" title="interface in org.mvplugins.multiverse.core.config.node"><code>ValueNode</code></a> with context from the sender.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#suggest(java.lang.String)" class="member-name-link">suggest</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Suggests possible string values for this node.</div>
-</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#suggest(org.bukkit.command.CommandSender,java.lang.String)" class="member-name-link">suggest</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
- @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#suggest(java.lang.String)" class="member-name-link">suggest</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Suggests possible string values for this node.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>io.vavr.control.Try<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#validate(T)" class="member-name-link">validate</a><wbr>(<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;value)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#suggest(org.bukkit.command.CommandSender,java.lang.String)" class="member-name-link">suggest</a><wbr>(@NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;input)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Suggests possible string values for this node.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>io.vavr.control.Try<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#validate(T)" class="member-name-link">validate</a><wbr>(<a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;value)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Validates the value of this node.</div>
 </div>
 </div>
@@ -344,12 +365,75 @@ extends <a href="Node.html" title="interface in org.mvplugins.multiverse.core.co
 </section>
 </li>
 <li>
-<section class="detail" id="onSetValue(T,T)">
-<h3 id="onSetValue(java.lang.Object,java.lang.Object)">onSetValue</h3>
-<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">onSetValue</span><wbr><span class="parameters">(@Nullable
+<section class="detail" id="onLoad(T)">
+<h3 id="onLoad(java.lang.Object)">onLoad</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+</span><span class="return-type">void</span>&nbsp;<span class="element-name">onLoad</span><wbr><span class="parameters">(@Nullable
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;value)</span></div>
+<div class="block">Called when the value of this node is loaded by <a href="../handle/BaseConfigurationHandle.html#load()"><code>BaseConfigurationHandle.load()</code></a>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>value</code> - The loaded value.</dd>
+<dt>Since:</dt>
+<dd>5.4</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onLoadAndChange(org.bukkit.command.CommandSender,T,T)">
+<h3 id="onLoadAndChange(org.bukkit.command.CommandSender,java.lang.Object,java.lang.Object)">onLoadAndChange</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+</span><span class="return-type">void</span>&nbsp;<span class="element-name">onLoadAndChange</span><wbr><span class="parameters">(@NotNull
+ @NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ @Nullable
  <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;oldValue,
  @Nullable
  <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;newValue)</span></div>
+<div class="block">Called when the value of this node is loaded or changed.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>sender</code> - The sender who triggered the change. If triggered by loading or no target sender is specified,
+                 it will be the console sender.</dd>
+<dd><code>oldValue</code> - The old value, will always be null on load.</dd>
+<dd><code>newValue</code> - The new value.</dd>
+<dt>Since:</dt>
+<dd>5.4</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onChange(org.bukkit.command.CommandSender,T,T)">
+<h3 id="onChange(org.bukkit.command.CommandSender,java.lang.Object,java.lang.Object)">onChange</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.4")
+</span><span class="return-type">void</span>&nbsp;<span class="element-name">onChange</span><wbr><span class="parameters">(@NotNull
+ @NotNull org.bukkit.command.CommandSender&nbsp;sender,
+ @Nullable
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;oldValue,
+ @Nullable
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;newValue)</span></div>
+<div class="block">Called when the value of this node is changed by <a href="../handle/BaseConfigurationHandle.html#set(org.mvplugins.multiverse.core.config.node.ValueNode,T)"><code>BaseConfigurationHandle.set(ValueNode, Object)</code></a>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>sender</code> - The sender who changed the value, or console sender if no target sender specified.</dd>
+<dd><code>oldValue</code> - The old value.</dd>
+<dd><code>newValue</code> - The new value.</dd>
+<dt>Since:</dt>
+<dd>5.4</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="onSetValue(T,T)">
+<h3 id="onSetValue(java.lang.Object,java.lang.Object)">onSetValue</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="5.4",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">onSetValue</span><wbr><span class="parameters">(@Nullable
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;oldValue,
+ @Nullable
+ <a href="ValueNode.html" title="type parameter in ValueNode">T</a>&nbsp;newValue)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#onLoadAndChange(org.bukkit.command.CommandSender,T,T)"><code>onLoadAndChange(CommandSender, Object, Object)</code></a> instead.</div>
+</div>
 <div class="block">Called when the value of this node is set.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
