@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultStringParserProvider;
 import org.mvplugins.multiverse.core.config.node.functions.DefaultSuggesterProvider;
 import org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback;
-import org.mvplugins.multiverse.core.config.node.functions.NodeLoadCallback;
+import org.mvplugins.multiverse.core.config.node.functions.NodeValueCallback;
 import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.NodeSuggester;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser;
@@ -69,7 +69,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             @Nullable NodeStringParser<List<I>> stringParser,
             @Nullable NodeSerializer<List<I>> serializer,
             @Nullable Function<List<I>, Try<Void>> validator,
-            @Nullable NodeLoadCallback<List<I>> onLoad,
+            @Nullable NodeValueCallback<List<I>> onLoad,
             @Nullable NodeChangeCallback<List<I>> onLoadAndChange,
             @Nullable NodeChangeCallback<List<I>> onChange,
             @NotNull Class<I> itemType,

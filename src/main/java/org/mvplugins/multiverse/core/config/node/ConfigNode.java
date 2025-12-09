@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.node.functions.NodeChangeCallback;
-import org.mvplugins.multiverse.core.config.node.functions.NodeLoadCallback;
+import org.mvplugins.multiverse.core.config.node.functions.NodeValueCallback;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeChangeCallback;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParser;
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
@@ -56,7 +56,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
     protected @Nullable NodeStringParser<T> stringParser;
     protected @Nullable NodeSerializer<T> serializer;
     protected @Nullable Function<T, Try<Void>> validator;
-    protected @Nullable NodeLoadCallback<T> onLoad;
+    protected @Nullable NodeValueCallback<T> onLoad;
     protected @Nullable NodeChangeCallback<T> onLoadAndChange;
     protected @Nullable NodeChangeCallback<T> onChange;
 
@@ -71,7 +71,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
             @Nullable NodeStringParser<T> stringParser,
             @Nullable NodeSerializer<T> serializer,
             @Nullable Function<T, Try<Void>> validator,
-            @Nullable NodeLoadCallback<T> onLoad,
+            @Nullable NodeValueCallback<T> onLoad,
             @Nullable NodeChangeCallback<T> onLoadAndChange,
             @Nullable NodeChangeCallback<T> onChange) {
         super(path, comments);
@@ -237,7 +237,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
         protected @Nullable NodeStringParser<T> stringParser;
         protected @Nullable NodeSerializer<T> serializer;
         protected @Nullable Function<T, Try<Void>> validator;
-        protected @Nullable NodeLoadCallback<T> onLoad;
+        protected @Nullable NodeValueCallback<T> onLoad;
         protected @Nullable NodeChangeCallback<T> onLoadAndChange;
         protected @Nullable NodeChangeCallback<T> onChange;
 
@@ -406,7 +406,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * @return This builder.
          */
         @ApiStatus.AvailableSince("5.4")
-        public @NotNull B onLoad(@NotNull NodeLoadCallback<T> onLoad) {
+        public @NotNull B onLoad(@NotNull NodeValueCallback<T> onLoad) {
             this.onLoad = this.onLoad == null ? onLoad : this.onLoad.then(onLoad);
             return self();
         }
