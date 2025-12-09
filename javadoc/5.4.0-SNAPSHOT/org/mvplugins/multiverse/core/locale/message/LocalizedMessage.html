@@ -123,31 +123,20 @@ implements co.aikar.locales.MessageKeyProvider</span></div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#formatted(co.aikar.commands.CommandIssuer)" class="member-name-link">formatted</a><wbr>(@NotNull co.aikar.commands.CommandIssuer&nbsp;commandIssuer)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#formatted(co.aikar.commands.Locales,co.aikar.commands.CommandIssuer)" class="member-name-link">formatted</a><wbr>(@NotNull co.aikar.commands.Locales&nbsp;locales,
+ @Nullable co.aikar.commands.CommandIssuer&nbsp;commandIssuer)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the formatted message from localization data.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#formatted(co.aikar.commands.Locales,co.aikar.commands.CommandIssuer)" class="member-name-link">formatted</a><wbr>(@NotNull co.aikar.commands.Locales&nbsp;locales,
- @Nullable co.aikar.commands.CommandIssuer&nbsp;commandIssuer)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the formatted message from localization data.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>co.aikar.locales.MessageKey</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMessageKey()" class="member-name-link">getMessageKey</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getReplacements(co.aikar.commands.Locales,co.aikar.commands.CommandIssuer)" class="member-name-link">getReplacements</a><wbr>(@NotNull co.aikar.commands.Locales&nbsp;locales,
- @Nullable co.aikar.commands.CommandIssuer&nbsp;commandIssuer)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the replacements for this message with localization support.</div>
-</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>co.aikar.locales.MessageKey</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMessageKey()" class="member-name-link">getMessageKey</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-org.mvplugins.multiverse.core.locale.message.Message">Methods inherited from class&nbsp;org.mvplugins.multiverse.core.locale.message.<a href="Message.html" title="class in org.mvplugins.multiverse.core.locale.message">Message</a></h3>
-<code><a href="Message.html#formatted()">formatted</a>, <a href="Message.html#formatted(co.aikar.commands.Locales)">formatted</a>, <a href="Message.html#getReplacements()">getReplacements</a>, <a href="Message.html#of(co.aikar.locales.MessageKeyProvider,java.lang.String,org.mvplugins.multiverse.core.locale.message.MessageReplacement...)">of</a>, <a href="Message.html#of(co.aikar.locales.MessageKeyProvider,org.mvplugins.multiverse.core.locale.message.MessageReplacement...)">of</a>, <a href="Message.html#of(java.lang.String,org.mvplugins.multiverse.core.locale.message.MessageReplacement...)">of</a>, <a href="Message.html#raw()">raw</a></code></div>
+<code><a href="Message.html#formatted()">formatted</a>, <a href="Message.html#formatted(co.aikar.commands.CommandIssuer)">formatted</a>, <a href="Message.html#formatted(co.aikar.commands.Locales)">formatted</a>, <a href="Message.html#getReplacements()">getReplacements</a>, <a href="Message.html#getReplacements(co.aikar.commands.Locales,co.aikar.commands.CommandIssuer)">getReplacements</a>, <a href="Message.html#of(co.aikar.locales.MessageKeyProvider,java.lang.String,org.mvplugins.multiverse.core.locale.message.MessageReplacement...)">of</a>, <a href="Message.html#of(co.aikar.locales.MessageKeyProvider,org.mvplugins.multiverse.core.locale.message.MessageReplacement...)">of</a>, <a href="Message.html#of(java.lang.String,org.mvplugins.multiverse.core.locale.message.MessageReplacement...)">of</a>, <a href="Message.html#raw()">raw</a></code></div>
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#equals(java.lang.Object)" title="class or interface in java.lang" class="external-link">equals</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#hashCode()" title="class or interface in java.lang" class="external-link">hashCode</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
@@ -169,51 +158,6 @@ implements co.aikar.locales.MessageKeyProvider</span></div>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code>getMessageKey</code>&nbsp;in interface&nbsp;<code>co.aikar.locales.MessageKeyProvider</code></dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="getReplacements(co.aikar.commands.Locales,co.aikar.commands.CommandIssuer)">
-<h3>getReplacements</h3>
-<div class="member-signature"><span class="annotations">@NotNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>[]</span>&nbsp;<span class="element-name">getReplacements</span><wbr><span class="parameters">(@NotNull
- @NotNull co.aikar.commands.Locales&nbsp;locales,
- @Nullable
- @Nullable co.aikar.commands.CommandIssuer&nbsp;commandIssuer)</span></div>
-<div class="block"><span class="description-from-type-label">Description copied from class:&nbsp;<code><a href="Message.html#getReplacements(co.aikar.commands.Locales,co.aikar.commands.CommandIssuer)">Message</a></code></span></div>
-<div class="block">Gets the replacements for this message with localization support.
- <br/>
- This array is guaranteed to be of even length and suitable for use with
- <code>ACFUtil.replaceStrings(String, String...)</code>.</div>
-<dl class="notes">
-<dt>Overrides:</dt>
-<dd><code><a href="Message.html#getReplacements(co.aikar.commands.Locales,co.aikar.commands.CommandIssuer)">getReplacements</a></code>&nbsp;in class&nbsp;<code><a href="Message.html" title="class in org.mvplugins.multiverse.core.locale.message">Message</a></code></dd>
-<dt>Parameters:</dt>
-<dd><code>locales</code> - The MultiverseCore locales provider</dd>
-<dd><code>commandIssuer</code> - The command issuer the message is for, or null for the console (default locale)</dd>
-<dt>Returns:</dt>
-<dd>The replacements</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="formatted(co.aikar.commands.CommandIssuer)">
-<h3>formatted</h3>
-<div class="member-signature"><span class="annotations">@NotNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">formatted</span><wbr><span class="parameters">(@NotNull
- @NotNull co.aikar.commands.CommandIssuer&nbsp;commandIssuer)</span></div>
-<div class="block"><span class="description-from-type-label">Description copied from class:&nbsp;<code><a href="Message.html#formatted(co.aikar.commands.CommandIssuer)">Message</a></code></span></div>
-<div class="block">Gets the formatted message from localization data.
- <br/>
- This is the localized message with replacements applied. The message is localized using the locale of the given
- command issuer, if not null.</div>
-<dl class="notes">
-<dt>Overrides:</dt>
-<dd><code><a href="Message.html#formatted(co.aikar.commands.CommandIssuer)">formatted</a></code>&nbsp;in class&nbsp;<code><a href="Message.html" title="class in org.mvplugins.multiverse.core.locale.message">Message</a></code></dd>
-<dt>Parameters:</dt>
-<dd><code>commandIssuer</code> - The command issuer the message is for, or null for the console (default locale)</dd>
-<dt>Returns:</dt>
-<dd>The formatted, localized message</dd>
 </dl>
 </section>
 </li>
