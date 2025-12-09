@@ -15,6 +15,7 @@ import org.mvplugins.multiverse.core.config.node.ConfigNode;
 import org.mvplugins.multiverse.core.config.node.ListConfigNode;
 import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
+import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
@@ -71,23 +72,26 @@ public final class SpawnCategoryConfig {
             Logging.finer("World %s %s skipping setTicksPerSpawns due to core config", world.getName(), spawnCategory);
             return;
         }
-        if (!isSpawn()) {
-            if (getExceptions().isEmpty()) {
-                Logging.finer("World %s %s setTicksPerSpawns: 0", world.getName(), spawnCategory);
-                bukkitWorld.setTicksPerSpawns(spawnCategory, 0);
-            } else {
-                Logging.finer("World %s %s setTicksPerSpawns: -1", world.getName(), spawnCategory);
-                bukkitWorld.setTicksPerSpawns(spawnCategory, -1);
-            }
-        } else {
-            Logging.finer("World %s %s setTicksPerSpawns: %d", world.getName(), spawnCategory, getTickRate());
-            bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
+        if (!isSpawn() && getExceptions().isEmpty()) {
+            Logging.finer("World %s %s setTicksPerSpawns: 0", world.getName(), spawnCategory);
+            bukkitWorld.setTicksPerSpawns(spawnCategory, 0);
+            return;
         }
+        if (getTickRate() == -2) {
+            Logging.finer("World %s %s skipping setTicksPerSpawns as tick-rate is UNSET", world.getName(), spawnCategory);
+            return;
+        }
+        Logging.finer("World %s %s setTicksPerSpawns: %d", world.getName(), spawnCategory, getTickRate());
+        bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
     }
 
     private void applySpawnLimit(World bukkitWorld) {
         if (!config.getApplyEntitySpawnLimit()) {
             Logging.finer("Skipping World %s %s setSpawnLimit due to core config", world.getName(), spawnCategory);
+            return;
+        }
+        if (getSpawnLimit() == -2) {
+            Logging.finer("World %s %s skipping setSpawnLimit as spawn-limit is UNSET", world.getName(), spawnCategory);
             return;
         }
         Logging.finer("World %s %s setSpawnLimit: %d", world.getName(), spawnCategory, getSpawnLimit());
@@ -166,25 +170,33 @@ public final class SpawnCategoryConfig {
                 .build());
 
         final ConfigNode<Integer> tickRate = node(ConfigNode.builder("tick-rate", Integer.class)
-                .defaultValue(-1)
-                .suggester(input -> List.of("-1", "10", "100", "400", "1000"))
+                .defaultValue(-2)
+                .suggester(input -> List.of("@unset", "@bukkit", "10", "100", "400", "1000"))
+                .serializer(SpawnValueSerializer.INSTANCE)
                 .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
                 .onChange((sender, oldValue, newValue) -> {
                     if (!config.getApplyEntitySpawnRate()) {
                         sender.sendMessage(ChatColor.RED + "Warning: Changing tick rates has no effect because " +
                                 "'apply-entity-spawn-rate' is disabled in the core config.");
+                    } else if (newValue == -2) {
+                        sender.sendMessage(ChatColor.YELLOW + "Note: Setting tick-rate to '@unset' may not reset to " +
+                                "the server default until the world is reloaded or server is restarted.");
                     }
                 })
                 .build());
 
         final ConfigNode<Integer> spawnLimit = node(ConfigNode.builder("spawn-limit", Integer.class)
-                .defaultValue(-1)
-                .suggester(input -> List.of("-1", "10", "100", "400", "1000"))
+                .defaultValue(-2)
+                .suggester(input -> List.of("@unset", "@bukkit", "10", "100", "400", "1000"))
+                .serializer(SpawnValueSerializer.INSTANCE)
                 .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
                 .onChange((sender, oldValue, newValue) -> {
                     if (!config.getApplyEntitySpawnLimit()) {
                         sender.sendMessage(ChatColor.RED + "Warning: Changing spawn limits has no effect because " +
                                 "'apply-entity-spawn-limit' is disabled in the core config.");
+                    } else if (newValue == -2) {
+                        sender.sendMessage(ChatColor.YELLOW + "Note: Setting spawn-limit to '@unset' may not reset to " +
+                                "the server default until the world is reloaded or server is restarted.");
                     }
                 })
                 .build());
@@ -196,5 +208,30 @@ public final class SpawnCategoryConfig {
                         .toList())
                 .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
                 .build());
+    }
+
+    private static class SpawnValueSerializer implements NodeSerializer<Integer> {
+        private static final SpawnValueSerializer INSTANCE = new SpawnValueSerializer();
+
+        @Override
+        public Integer deserialize(Object object, Class<Integer> type) {
+            String str = String.valueOf(object);
+            if (str.equalsIgnoreCase("@unset")) {
+                return -2;
+            }
+            if (str.equalsIgnoreCase("@bukkit")) {
+                return -1;
+            }
+            return Integer.parseInt(str);
+        }
+
+        @Override
+        public Object serialize(Integer object, Class<Integer> type) {
+            return switch (object) {
+                case -2 -> "@unset";
+                case -1 -> "@bukkit";
+                default -> object;
+            };
+        }
     }
 }

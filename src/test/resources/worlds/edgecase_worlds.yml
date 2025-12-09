@@ -34,11 +34,46 @@ world:
     pitch: 0.0
     yaw: 0.0
   spawning:
+    monster:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
     animal:
       spawn: falSe
       tick-rate: 123
-      spawn-limit: -1
-      exceptions: [cow]
+      spawn-limit: '@unset'
+      exceptions: [ cow ]
+    water_animal:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    water_ambient:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    water_underground_creature:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    ambient:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    axolotl:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    misc:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
   world-blacklist: # should be parsed as list of string
     - a
     - 1
@@ -78,6 +113,46 @@ world_nether:
     z: 48.0
     pitch: 0.0
     yaw: 0.0
-  spawning: {}
+  spawning:
+    monster:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    animal:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    water_animal:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    water_ambient:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    water_underground_creature:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    ambient:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    axolotl:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
+    misc:
+      exceptions: [ ]
+      spawn: true
+      spawn-limit: '@unset'
+      tick-rate: '@unset'
   world-blacklist: []
   version: 1.2
