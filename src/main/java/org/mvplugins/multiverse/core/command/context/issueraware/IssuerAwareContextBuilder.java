@@ -174,7 +174,7 @@ public final class IssuerAwareContextBuilder<T> {
 
         int maxArgForAware = context.getFlagValue("maxArgForAware", Integer.MAX_VALUE);
         long argLengthWithoutFlags = context.getArgs().stream()
-                .takeWhile(value -> !value.startsWith("--") && !value.isEmpty())
+                .takeWhile(value -> !value.startsWith("-") && !value.isEmpty()) // ignore the flags
                 .count();
 
         if (resolve.equals("issuerAware") && argLengthWithoutFlags <= maxArgForAware) {
