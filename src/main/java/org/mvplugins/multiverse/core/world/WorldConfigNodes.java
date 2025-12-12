@@ -61,6 +61,7 @@ final class WorldConfigNodes {
 
     private <T> ConfigNode<T> node(ConfigNode.Builder<T, ?> nodeBuilder) {
         nodeBuilder.onChange((oldValue, newValue) -> {
+            if (Objects.equals(oldValue, newValue)) return;
             if (world == null) return;
             MVWorldPropertyChangedEvent<?> mvWorldPropertyChangeEvent = new MVWorldPropertyChangedEvent<>(
                     world,

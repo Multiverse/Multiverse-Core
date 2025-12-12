@@ -179,10 +179,8 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         return node.validate(value).map(ignore -> {
             T oldValue = get(node);
             nodeValueMap.put(node, value);
-            if (!Objects.equals(oldValue, value)) {
-                node.onLoadAndChange(sender, oldValue, value);
-                node.onChange(sender, oldValue, value);
-            }
+            node.onLoadAndChange(sender, oldValue, value);
+            node.onChange(sender, oldValue, value);
             return null;
         });
     }
