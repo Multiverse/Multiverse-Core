@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.world;
 import java.util.List;
 
 import com.google.common.base.Strings;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -10,6 +11,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,12 +68,30 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
-     * Gets whether this world is loaded.
+     * Gets whether this world is loaded. Note that this may return false even if this is a stored instance of
+     * {@link LoadedMultiverseWorld} as worlds can be unloaded anytime.
      *
      * @return True if the world is loaded, else false.
      */
     public boolean isLoaded() {
         return worldConfig.isLoadedWorld();
+    }
+
+    /**
+     * Attempts to get loaded world instance. Only returns a value if the world is loaded at the time of calling, even
+     * if this is a stored instance of {@link LoadedMultiverseWorld}.
+     * <br/>
+     * You may use {@link #isLoaded()} to check if the world is loaded first.
+     *
+     * @return Loaded world instance wrapped in an Option, or None if the world is not loaded.
+     *
+     * @since 5.5
+     */
+    @ApiStatus.AvailableSince("5.5")
+    public Option<LoadedMultiverseWorld> asLoadedWorld() {
+        return Option.of(worldConfig.getMVWorld())
+                .filter(world -> world instanceof LoadedMultiverseWorld)
+                .map(world -> (LoadedMultiverseWorld) world);
     }
 
     /**

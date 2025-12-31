@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core;
 
 import com.google.common.collect.Lists;
+import io.vavr.control.Option;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -17,6 +18,7 @@ import org.mvplugins.multiverse.core.utils.MinecraftTimeFormatter;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 import java.util.List;
@@ -80,14 +82,16 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
             return null;
         }
 
-        final var placeholder = paramsArray.remove(0);
+        final var placeholder = paramsArray.remove(0).toLowerCase(Locale.ENGLISH);
 
         String worldName = parseWorldName(offlinePlayer, paramsArray);
         if (worldName == null) return null;
 
-        return worldManager.getLoadedWorld(worldName)
+        return worldManager.getWorld(worldName)
                 .onEmpty(() -> warning("Multiverse World not found: " + worldName))
-                .map(world -> getWorldPlaceHolderValue(placeholder, paramsArray, world))
+                .flatMap(world -> world.asLoadedWorld()
+                        .flatMap(loadedWorld -> getLoadedWorldPlaceHolderValue(placeholder, paramsArray, loadedWorld))
+                        .orElse(() -> getWorldPlaceHolderValue(placeholder, paramsArray, world)))
                 .getOrNull();
     }
 
@@ -104,7 +108,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
 
         // Try get from params
         String paramWorldName = paramsArray.get(paramsArray.size() - 1);
-        if (worldManager.isLoadedWorld(paramWorldName)) {
+        if (worldManager.isWorld(paramWorldName)) {
             paramsArray.remove(paramsArray.size() - 1);
             return paramWorldName;
         }
@@ -117,99 +121,64 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
         return null;
     }
 
-    private @Nullable String getWorldPlaceHolderValue(@NotNull String placeholder,
-                                                      @NotNull List<String> placeholderParams,
-                                                      @NotNull LoadedMultiverseWorld world) {
-        // Switch to find what specific placeholder we want
-        switch (placeholder.toLowerCase(Locale.ENGLISH)) {
-            case "alias" -> {
-                return world.getAliasOrName();
+    private @NotNull Option<String> getWorldPlaceHolderValue(@NotNull String placeholder,
+                                                             @NotNull List<String> placeholderParams,
+                                                             @NotNull MultiverseWorld world) {
+        return Option.of(switch (placeholder) {
+            case "alias" -> world.getAliasOrName();
+            case "animalspawn" -> String.valueOf(world.getEntitySpawnConfig()
+                    .getSpawnCategoryConfig(SpawnCategory.ANIMAL)
+                    .isSpawn());
+            case "autoheal" -> String.valueOf(world.getAutoHeal());
+            case "blacklist" -> String.join(", ", world.getWorldBlacklist());
+            case "currency" -> String.valueOf(world.getCurrency());
+            case "difficulty" -> world.getDifficulty().toString();
+            case "entryfee" -> economist.formatPrice(world.getPrice(), world.getCurrency());
+            case "environment" -> world.getEnvironment().toString().toLowerCase();
+            case "flight" -> String.valueOf(world.isAllowFlight());
+            case "gamemode" -> world.getGameMode().toString().toLowerCase();
+            case "generator" -> world.getGenerator();
+            case "hunger" -> String.valueOf(world.isHunger());
+            case "monstersspawn" -> String.valueOf(world.getEntitySpawnConfig()
+                    .getSpawnCategoryConfig(SpawnCategory.MONSTER)
+                    .isSpawn());
+            case "name" -> world.getName();
+            case "playerlimit" -> String.valueOf(world.getPlayerLimit());
+            case "price" -> String.valueOf(world.getPrice());
+            case "pvp" -> String.valueOf(world.getPvp());
+            case "seed" -> String.valueOf(world.getSeed());
+            case "weather" -> String.valueOf(world.isAllowWeather());
+            case "playercount", "time", "type" -> {
+                warning("Placeholder '" + placeholder + "' is only available for loaded worlds.");
+                yield null;
             }
-            case "animalspawn" -> {
-                return String.valueOf(world.getEntitySpawnConfig().getSpawnCategoryConfig(SpawnCategory.ANIMAL).isSpawn());
+            default -> {
+                warning("Unknown Placeholder: " + placeholder);
+                yield null;
             }
-            case "autoheal" -> {
-                return String.valueOf(world.getAutoHeal());
-            }
-            case "blacklist" -> {
-                return String.join(", ", world.getWorldBlacklist());
-            }
-            case "currency" -> {
-                return String.valueOf(world.getCurrency());
-            }
-            case "difficulty" -> {
-                return world.getDifficulty().toString();
-            }
-            case "entryfee" -> {
-                return economist.formatPrice(world.getPrice(), world.getCurrency());
-            }
-            case "environment" -> {
-                return world.getEnvironment().toString().toLowerCase();
-            }
-            case "flight" -> {
-                return String.valueOf(world.isAllowFlight());
-            }
-            case "gamemode" -> {
-                return world.getGameMode().toString().toLowerCase();
-            }
-            case "generator" -> {
-                return world.getGenerator();
-            }
-            case "hunger" -> {
-                return String.valueOf(world.isHunger());
-            }
-            case "monstersspawn" -> {
-                return String.valueOf(world.getEntitySpawnConfig().getSpawnCategoryConfig(SpawnCategory.MONSTER).isSpawn());
-            }
-            case "name" -> {
-                return world.getName();
-            }
-            case "playercount" -> {
-                return String.valueOf(world.getBukkitWorld()
-                        .map(World::getPlayers)
-                        .map(List::size)
-                        .getOrElse(-1));
-            }
-            case "playerlimit" -> {
-                return String.valueOf(world.getPlayerLimit());
-            }
-            case "price" -> {
-                return String.valueOf(world.getPrice());
-            }
-            case "pvp" -> {
-                return String.valueOf(world.getPvp());
-            }
-            case "seed" -> {
-                return String.valueOf(world.getSeed());
-            }
+        });
+    }
+
+    private @NotNull Option<String> getLoadedWorldPlaceHolderValue(@NotNull String placeholder,
+                                                                   @NotNull List<String> placeholderParams,
+                                                                   @NotNull LoadedMultiverseWorld world) {
+        return Option.of(switch (placeholder) {
+            case "playercount" -> String.valueOf(world.getBukkitWorld()
+                    .map(World::getPlayers)
+                    .map(List::size)
+                    .getOrElse(-1));
             case "time" -> {
                 String timeFormat = !placeholderParams.isEmpty() ? placeholderParams.get(0) : "";
                 long time = world.getBukkitWorld().map(World::getTime).getOrElse(0L);
-                switch (timeFormat) {
-                    case "" -> {
-                        return String.valueOf(time);
-                    }
-                    case "12h" -> {
-                        return MinecraftTimeFormatter.format12h(time);
-                    }
-                    case "24h" -> {
-                        return MinecraftTimeFormatter.format24h(time);
-                    }
-                    default -> {
-                        return MinecraftTimeFormatter.formatTime(time, timeFormat);
-                    }
-                }
+                yield switch (timeFormat) {
+                    case "" -> String.valueOf(time);
+                    case "12h" -> MinecraftTimeFormatter.format12h(time);
+                    case "24h" -> MinecraftTimeFormatter.format24h(time);
+                    default -> MinecraftTimeFormatter.formatTime(time, timeFormat);
+                };
             }
-            case "type" -> {
-                return world.getBukkitWorld().map(World::getWorldType).map(Enum::name).getOrElse("null");
-            }
-            case "weather" -> {
-                return String.valueOf(world.isAllowWeather());
-            }
-            default -> {
-                warning("Unknown placeholder: " + placeholder);
-                return null;
-            }
-        }
+            case "type" -> world.getBukkitWorld().map(World::getWorldType).map(Enum::name).getOrElse("null");
+            default -> null;
+        });
     }
 }

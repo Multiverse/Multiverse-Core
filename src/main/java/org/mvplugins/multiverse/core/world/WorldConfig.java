@@ -381,6 +381,10 @@ final class WorldConfig {
         configNodes.setWorld(world);
     }
 
+    MultiverseWorld getMVWorld() {
+        return configNodes.getWorld();
+    }
+
     boolean isLoadedWorld() {
         return configNodes.getWorld() instanceof LoadedMultiverseWorld;
     }
