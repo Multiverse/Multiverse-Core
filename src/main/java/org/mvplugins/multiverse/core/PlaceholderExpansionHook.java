@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.utils.MinecraftTimeFormatter;
 import org.mvplugins.multiverse.core.utils.REPatterns;
@@ -28,12 +29,17 @@ import java.util.Locale;
 final class PlaceholderExpansionHook extends PlaceholderExpansion {
 
     private final MultiverseCore plugin;
+    private final CoreConfig coreConfig;
     private final WorldManager worldManager;
     private final MVEconomist economist;
 
     @Inject
-    public PlaceholderExpansionHook(MultiverseCore plugin, WorldManager worldManager, MVEconomist economist) {
+    public PlaceholderExpansionHook(@NotNull MultiverseCore plugin,
+                                    @NotNull CoreConfig coreConfig,
+                                    @NotNull WorldManager worldManager,
+                                    @NotNull MVEconomist economist) {
         this.plugin = plugin;
+        this.coreConfig = coreConfig;
         this.worldManager = worldManager;
         this.economist = economist;
     }
@@ -42,6 +48,13 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
     @Override
     public boolean register() {
         return super.register();
+    }
+
+    @Override
+    public void warning(String msg) {
+        if (coreConfig.getWarnInvalidPapiFormat()) {
+            super.warning(msg);
+        }
     }
 
     @Override
@@ -84,22 +97,20 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
 
         final var placeholder = paramsArray.remove(0).toLowerCase(Locale.ENGLISH);
 
-        String worldName = parseWorldName(offlinePlayer, paramsArray);
-        if (worldName == null) return null;
-
-        return worldManager.getWorld(worldName)
-                .onEmpty(() -> warning("Multiverse World not found: " + worldName))
+        return parseWorldName(offlinePlayer, paramsArray)
+                .flatMap(worldName -> worldManager.getWorld(worldName)
+                    .onEmpty(() -> warning("Multiverse World not found: " + worldName)))
                 .flatMap(world -> world.asLoadedWorld()
                         .flatMap(loadedWorld -> getLoadedWorldPlaceHolderValue(placeholder, paramsArray, loadedWorld))
                         .orElse(() -> getWorldPlaceHolderValue(placeholder, paramsArray, world)))
-                .getOrNull();
+                .getOrElse(() -> coreConfig.getInvalidPapiFormatReturnsBlank() ? "" : null);
     }
 
-    private @Nullable String parseWorldName(OfflinePlayer offlinePlayer, List<String> paramsArray) {
+    private @NotNull Option<String> parseWorldName(OfflinePlayer offlinePlayer, List<String> paramsArray) {
         // No world defined, get from player
         if (paramsArray.isEmpty()) {
             if (offlinePlayer instanceof Player player) {
-                return player.getWorld().getName();
+                return Option.of(player.getWorld().getName());
             } else {
                 warning("You must specify a world name for non-player placeholders");
                 return null;
@@ -110,15 +121,15 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
         String paramWorldName = paramsArray.get(paramsArray.size() - 1);
         if (worldManager.isWorld(paramWorldName)) {
             paramsArray.remove(paramsArray.size() - 1);
-            return paramWorldName;
+            return Option.of(paramWorldName);
         }
 
         // Param not a world, fallback to player
         if (offlinePlayer instanceof Player player) {
-            return player.getWorld().getName();
+            return Option.of(player.getWorld().getName());
         }
         warning("Multiverse World not found: " + paramWorldName);
-        return null;
+        return Option.none();
     }
 
     private @NotNull Option<String> getWorldPlaceHolderValue(@NotNull String placeholder,

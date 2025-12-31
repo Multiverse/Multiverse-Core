@@ -36,6 +36,8 @@ messaging:
   enable-chat-prefix: false
   chat-prefix-format: '[%world%]%chat%'
   register-papi-hook: true
+  warn-invalid-papi-format: true
+  invalid-papi-format-returns-blank: false
   default-locale: en
   per-player-locale: true
 
