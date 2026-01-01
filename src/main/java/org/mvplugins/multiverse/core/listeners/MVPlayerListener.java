@@ -7,9 +7,7 @@
 
 package org.mvplugins.multiverse.core.listeners;
 
-import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
@@ -402,21 +400,31 @@ final class MVPlayerListener implements CoreListener {
     }
 
     /**
-     * Handles the gamemode for the specified {@link Player}.
+     * Handles the gamemode for the specified {@link Player}. Delays the enforcement if configured to do so
+     * to ensure multiverse has final say over other plugins changing gamemodes.
      *
      * @param player The {@link Player}.
      * @param world  The {@link World} the player is supposed to be in.
      */
     private void handleGameModeAndFlight(final Player player, World world) {
-        // We perform this task one tick later to MAKE SURE that the player actually reaches the
-        // destination world, otherwise we'd be changing the player mode if they havent moved anywhere.
-        this.server.getScheduler().runTaskLater(this.plugin, () -> {
-            if (!player.isOnline() || !player.getWorld().equals(world)) {
-                return;
-            }
-            Logging.finer("Handling gamemode and flight for player %s in world '%s'", player.getName(), world.getName());
-            enforcementHandler.handleFlightEnforcement(player);
-            enforcementHandler.handleGameModeEnforcement(player);
-        }, 1L);
+        if (config.getGamemodeAndFlightEnforceDelay() <= 0) {
+            doGameModeAndFlightEnforcement(player, world);
+            return;
+        }
+        server.getScheduler().runTaskLater(
+                this.plugin,
+                () -> doGameModeAndFlightEnforcement(player, world),
+                config.getGamemodeAndFlightEnforceDelay()
+        );
+    }
+
+    private void doGameModeAndFlightEnforcement(Player player, World world) {
+        if (!player.isOnline() || !player.getWorld().equals(world)) {
+            Logging.finer("Player %s is no longer online or not in the expected world '%s'", player.getName(), world.getName());
+            return;
+        }
+        Logging.finer("Handling gamemode and flight for player %s in world '%s'", player.getName(), world.getName());
+        enforcementHandler.handleFlightEnforcement(player);
+        enforcementHandler.handleGameModeEnforcement(player);
     }
 }

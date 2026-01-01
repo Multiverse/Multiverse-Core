@@ -135,6 +135,16 @@ final class CoreConfigNodes {
             .name("enforce-flight")
             .build());
 
+    final ConfigNode<Integer> gamemodeAndFlightEnforceDelay = node(ConfigNode.builder("world.gamemode-and-flight-enforce-delay", Integer.class)
+            .comment("")
+            .comment("Sets the delay in ticks before Multiverse enforces gamemode and flight ability on world change.")
+            .comment("Increase this value if you are experiencing issues with other plugins overriding gamemode or flight ability.")
+            .comment("Or set to 0 to enforce immediately during world change event.")
+            .defaultValue(1)
+            .name("gamemode-and-flight-enforce-delay")
+            .suggester((sender -> List.of("0", "1", "2", "5", "10")))
+            .build());
+
     final ConfigNode<Boolean> applyEntitySpawnRate = node(ConfigNode.builder("world.apply-entity-spawn-rate", Boolean.class)
             .comment("")
             .comment("Sets whether Multiverse will apply the world's entity `tick-rate` config in worlds.yml.")
