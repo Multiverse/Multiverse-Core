@@ -132,6 +132,10 @@ public final class BlockSafety {
      */
     public boolean canSpawnAtBlockSafely(@NotNull Block block) {
         Logging.finest("Checking spawn safety for location: %s, %s, %s", block.getX(), block.getY(), block.getZ());
+        if (!block.getWorld().getWorldBorder().isInside(block.getLocation())) {
+            Logging.finest("Location is outside world border.");
+            return false;
+        }
         if (isUnsafeSpawnBody(block)) {
             // Player body will be stuck in solid
             Logging.finest("Unsafe location for player's body: " + block);
