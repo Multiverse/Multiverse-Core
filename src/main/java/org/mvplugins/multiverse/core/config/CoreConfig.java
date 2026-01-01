@@ -186,6 +186,16 @@ public final class CoreConfig {
         return configHandle.get(configNodes.enforceFlight);
     }
 
+    @ApiStatus.AvailableSince("5.5")
+    public Try<Void> setGamemodeAndFlightEnforceDelay(int delayTicks) {
+        return configHandle.set(configNodes.gamemodeAndFlightEnforceDelay, delayTicks);
+    }
+
+    @ApiStatus.AvailableSince("5.5")
+    public int getGamemodeAndFlightEnforceDelay() {
+        return configHandle.get(configNodes.gamemodeAndFlightEnforceDelay);
+    }
+
     @ApiStatus.AvailableSince("5.3")
     public Try<Void> setApplyEntitySpawnRate(boolean applyEntitySpawnRate) {
         return configHandle.set(configNodes.applyEntitySpawnRate, applyEntitySpawnRate);
