@@ -48,6 +48,7 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+import org.mvplugins.multiverse.core.utils.CaseInsensitiveStringMap;
 import org.mvplugins.multiverse.core.utils.ReflectHelper;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
@@ -91,8 +92,8 @@ public final class WorldManager {
     private static final DimensionFormat DEFAULT_NETHER_FORMAT = new DimensionFormat("%overworld%_nether");
     private static final DimensionFormat DEFAULT_END_FORMAT = new DimensionFormat("%overworld%_the_end");
 
-    private final Map<String, MultiverseWorld> worldsMap;
-    private final Map<String, LoadedMultiverseWorld> loadedWorldsMap;
+    private final CaseInsensitiveStringMap<MultiverseWorld> worldsMap;
+    private final CaseInsensitiveStringMap<LoadedMultiverseWorld> loadedWorldsMap;
     private final List<String> unloadTracker;
     private final List<String> loadTracker;
     private final WorldsConfigManager worldsConfigManager;
@@ -135,8 +136,8 @@ public final class WorldManager {
         this.config = config;
         this.entityPurger = entityPurger;
 
-        this.worldsMap = new HashMap<>();
-        this.loadedWorldsMap = new HashMap<>();
+        this.worldsMap = new CaseInsensitiveStringMap<>();
+        this.loadedWorldsMap = new CaseInsensitiveStringMap<>();
         this.unloadTracker = new ArrayList<>();
         this.loadTracker = new ArrayList<>();
     }
@@ -345,7 +346,7 @@ public final class WorldManager {
 
     private MultiverseWorld newMultiverseWorld(String worldName, WorldConfig worldConfig) {
         MultiverseWorld mvWorld = new MultiverseWorld(worldName, worldConfig, config);
-        worldsMap.put(mvWorld.getName().toLowerCase(Locale.ENGLISH), mvWorld);
+        worldsMap.put(mvWorld.getName(), mvWorld);
         corePermissions.addWorldPermissions(mvWorld);
         return mvWorld;
     }
@@ -382,7 +383,7 @@ public final class WorldManager {
                 locationManipulation,
                 entityPurger
         );
-        loadedWorldsMap.put(loadedWorld.getName().toLowerCase(Locale.ENGLISH), loadedWorld);
+        loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return loadedWorld;
@@ -501,7 +502,7 @@ public final class WorldManager {
                 locationManipulation,
                 entityPurger
         );
-        loadedWorldsMap.put(loadedWorld.getName().toLowerCase(Locale.ENGLISH), loadedWorld);
+        loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return Attempt.success(loadedWorld);
@@ -1010,7 +1011,7 @@ public final class WorldManager {
      * @return True if the world is a world is known to multiverse, but may or may not be loaded.
      */
     public boolean isWorld(@Nullable String worldName) {
-        return worldName != null && worldsMap.containsKey(worldName.toLowerCase(Locale.ENGLISH));
+        return worldName != null && worldsMap.containsKey(worldName);
     }
 
     /**
@@ -1022,7 +1023,7 @@ public final class WorldManager {
     public Option<MultiverseWorld> getUnloadedWorld(@Nullable String worldName) {
         return isLoadedWorld(worldName)
                 ? Option.none()
-                : Option.of(worldName).flatMap(name -> Option.of(worldsMap.get(name.toLowerCase(Locale.ENGLISH))));
+                : Option.of(worldName).flatMap(name -> Option.of(worldsMap.get(name)));
     }
 
     /**
@@ -1095,7 +1096,7 @@ public final class WorldManager {
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable String worldName) {
         return Option.of(worldName)
-                .flatMap(name -> Option.of(loadedWorldsMap.get(name.toLowerCase(Locale.ENGLISH))));
+                .flatMap(name -> Option.of(loadedWorldsMap.get(name)));
     }
 
     /**
@@ -1156,7 +1157,7 @@ public final class WorldManager {
      * @return True if the world is a multiverse world that is loaded.
      */
     public boolean isLoadedWorld(@Nullable String worldName) {
-        return worldName != null && loadedWorldsMap.containsKey(worldName.toLowerCase(Locale.ENGLISH));
+        return worldName != null && loadedWorldsMap.containsKey(worldName);
     }
 
     /**

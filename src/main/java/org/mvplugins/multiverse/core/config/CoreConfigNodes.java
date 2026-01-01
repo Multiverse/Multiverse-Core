@@ -390,6 +390,23 @@ final class CoreConfigNodes {
             .name("register-papi-hook")
             .build());
 
+    final ConfigNode<Boolean> warnInvalidPapiFormat = node(ConfigNode.builder("messaging.warn-invalid-papi-format", Boolean.class)
+            .comment("")
+            .comment("This config option defines whether or not Multiverse should warn about invalid PlaceholderAPI formats.")
+            .comment("Only applies if PlaceholderAPI is installed, and only to multiverse placeholders.")
+            .defaultValue(true)
+            .name("warn-invalid-papi-format")
+            .build());
+
+    final ConfigNode<Boolean> invalidPapiFormatReturnsBlank = node(ConfigNode.builder("messaging.invalid-papi-format-returns-blank", Boolean.class)
+            .comment("")
+            .comment("By default, invalid formats will return the original placeholder string.")
+            .comment("This config option defines whether or not Multiverse should show invalid PlaceholderAPI formats as blank.")
+            .comment("Only applies if PlaceholderAPI is installed, and only to multiverse placeholders.")
+            .defaultValue(false)
+            .name("invalid-papi-format-returns-blank")
+            .build());
+
     final ConfigNode<Locale> defaultLocale = node(ConfigNode.builder("messaging.default-locale", Locale.class)
             .comment("")
             .comment("This config option defines the default language Multiverse should use.")

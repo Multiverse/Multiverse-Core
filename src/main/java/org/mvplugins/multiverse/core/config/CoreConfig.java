@@ -493,6 +493,26 @@ public final class CoreConfig {
         return configHandle.get(configNodes.registerPapiHook);
     }
 
+    @ApiStatus.AvailableSince("5.5")
+    public Try<Void> setWarnInvalidPapiFormat(boolean warnInvalidPapiFormat) {
+        return configHandle.set(configNodes.warnInvalidPapiFormat, warnInvalidPapiFormat);
+    }
+
+    @ApiStatus.AvailableSince("5.5")
+    public boolean getWarnInvalidPapiFormat() {
+        return configHandle.get(configNodes.warnInvalidPapiFormat);
+    }
+
+    @ApiStatus.AvailableSince("5.5")
+    public Try<Void> setInvalidPapiFormatReturnsBlank(boolean invalidPapiFormatReturnsBlank) {
+        return configHandle.set(configNodes.invalidPapiFormatReturnsBlank, invalidPapiFormatReturnsBlank);
+    }
+
+    @ApiStatus.AvailableSince("5.5")
+    public  boolean getInvalidPapiFormatReturnsBlank() {
+        return configHandle.get(configNodes.invalidPapiFormatReturnsBlank);
+    }
+
     /**
      * {@inheritDoc}
      */
