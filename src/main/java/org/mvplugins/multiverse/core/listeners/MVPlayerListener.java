@@ -255,9 +255,9 @@ final class MVPlayerListener implements CoreListener {
      * @param event The Event that was fired.
      */
     @EventMethod
-    @DefaultEventPriority(EventPriority.MONITOR)
+    @EventPriorityKey("mvcore-player-changed-world")
+    @DefaultEventPriority(EventPriority.NORMAL)
     void playerChangedWorld(PlayerChangedWorldEvent event) {
-        // Permissions now determine whether or not to handle a gamemode.
         this.handleGameModeAndFlight(event.getPlayer(), event.getPlayer().getWorld());
     }
 
