@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.utils;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,11 +72,30 @@ public final class StringFormatter {
 
     /**
      * Appends a list of suggestions to the end of the input string, separated by commas.
+     *
      * @param input     The current input
      * @param addons    The autocomplete suggestions
      * @return A collection of suggestions with the next suggestion appended
+     *
+     * @deprecated Method name has a spelling error. Use {@link #addOnToCommaSeparated(String, Collection)} instead.
      */
+    @Deprecated(forRemoval = true, since = "5.5")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public static Collection<String> addonToCommaSeperated(@Nullable String input, @NotNull Collection<String> addons) {
+        return addOnToCommaSeparated(input, addons);
+    }
+
+    /**
+     * Appends a list of suggestions to the end of the input string, separated by commas.
+     *
+     * @param input     The current input
+     * @param addons    The autocomplete suggestions
+     * @return A collection of suggestions with the next suggestion appended
+     *
+     * @since 5.5
+     */
+    @ApiStatus.AvailableSince("5.5")
+    public static Collection<String> addOnToCommaSeparated(@Nullable String input, @NotNull Collection<String> addons) {
         if (Strings.isNullOrEmpty(input)) {
             return addons;
         }
