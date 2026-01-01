@@ -545,6 +545,18 @@ final class CoreConfigNodes {
                             "full effect after a server restart."))
             .build());
 
+    final ConfigNode<EventPriority> eventPriorityPlayerWorldChange = node(ConfigNode.builder("event-priority.player-changed-world", EventPriority.class)
+            .defaultValue(EventPriority.NORMAL)
+            .name("event-priority-player-changed-world")
+            .comment("")
+            .comment("This config option defines the priority for the PlayerChangedWorldEvent.")
+            .onLoadAndChange((oldValue, newValue) ->
+                    eventPriorityMapper.get().setPriority("mvcore-player-changed-world", newValue))
+            .onChange((sender, oldValue, newValue) ->
+                    sender.sendMessage(ChatColor.YELLOW + "'event-priority.player-changed-world' config option will only take " +
+                            "full effect after a server restart."))
+            .build());
+
     private final ConfigHeaderNode miscHeader = node(ConfigHeaderNode.builder("misc")
             .comment("")
             .comment("")

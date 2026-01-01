@@ -641,6 +641,16 @@ public final class CoreConfig {
         return configHandle.get(configNodes.eventPriorityPlayerTeleport);
     }
 
+    @ApiStatus.AvailableSince("5.5")
+    public Try<Void> setEventPriorityPlayerWorldChange(EventPriority eventPriorityPlayerWorldChange) {
+        return configHandle.set(configNodes.eventPriorityPlayerWorldChange, eventPriorityPlayerWorldChange);
+    }
+
+    @ApiStatus.AvailableSince("5.5")
+    public EventPriority getEventPriorityPlayerWorldChange() {
+        return configHandle.get(configNodes.eventPriorityPlayerWorldChange);
+    }
+
     public Try<Void> setBukkitYmlPath(String bukkitYmlPath) {
         return configHandle.set(configNodes.bukkitYmlPath, bukkitYmlPath);
     }

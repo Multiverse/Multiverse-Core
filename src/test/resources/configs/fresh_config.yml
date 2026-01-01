@@ -54,6 +54,7 @@ event-priority:
   player-respawn: low
   player-spawn-location: normal
   player-teleport: highest
+  player-changed-world: normal
 
 misc:
   bukkit-yml-path: bukkit.yml
