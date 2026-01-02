@@ -5,11 +5,13 @@ import com.google.common.collect.Sets;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -161,5 +163,25 @@ public final class StringFormatter {
      */
     public static String quoteMultiWordString(String input) {
         return input.contains(" ") ? "\"" + input + "\"" : input;
+    }
+
+    /**
+     * Parses a CSV string of key=value pairs into a map.
+     * E.g. "key1=value1,key2=value2" -> {key1=value1, key2=value2}
+     *
+     * @param input The CSV string to parse
+     * @return The parsed map
+     *
+     * @since 5.5
+     */
+    @ApiStatus.AvailableSince("5.5")
+    public static @Unmodifiable Map<String, String> parseCSVMap(@Nullable String input) {
+        if (Strings.isNullOrEmpty(input)) {
+            return Map.of();
+        }
+        return REPatterns.COMMA.splitAsStream(input)
+                .map(s -> REPatterns.EQUALS.split(s, 2))
+                .filter(parts -> parts.length == 2)
+                .collect(Collectors.toUnmodifiableMap(parts -> parts[0], parts -> parts[1]));
     }
 }
