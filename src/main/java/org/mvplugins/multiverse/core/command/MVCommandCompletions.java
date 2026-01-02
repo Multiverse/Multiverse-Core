@@ -53,7 +53,7 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
-import static org.mvplugins.multiverse.core.utils.StringFormatter.addonToCommaSeperated;
+import static org.mvplugins.multiverse.core.utils.StringFormatter.addOnToCommaSeparated;
 
 @Service
 public class MVCommandCompletions extends PaperCommandCompletions {
@@ -163,7 +163,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             }
         }
         if (context.hasConfig("multiple")) {
-            return addonToCommaSeperated(context.getInput(), handler.getCompletions(context));
+            return addOnToCommaSeparated(context.getInput(), handler.getCompletions(context));
         }
         return handler.getCompletions(context);
     }
@@ -334,7 +334,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                 matchedPlayers.add(name);
             }
         }
-        return addonToCommaSeperated(context.getInput(), matchedPlayers);
+        return addOnToCommaSeparated(context.getInput(), matchedPlayers);
     }
 
     private Collection<String> suggestSpawnCategoryPropsName(BukkitCommandCompletionContext context) {
