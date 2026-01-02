@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.utils
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class StringFormatterTest {
     @Test
@@ -42,6 +43,7 @@ class StringFormatterTest {
             "test",
             StringFormatter.quoteMultiWordString("test")
         )
+        assertNull(StringFormatter.quoteMultiWordString(null))
     }
 
     @Test
