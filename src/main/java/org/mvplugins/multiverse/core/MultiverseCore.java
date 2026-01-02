@@ -126,6 +126,7 @@ public class MultiverseCore extends MultiverseModule {
         MultiverseCoreApi.shutdown();
         shutdownDependencyInjection();
         PluginServiceLocatorFactory.get().shutdown();
+        Logging.info("- Disabled");
         Logging.shutdown();
     }
 
