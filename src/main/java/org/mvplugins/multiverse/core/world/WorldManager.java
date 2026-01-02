@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -278,7 +276,16 @@ public final class WorldManager {
                             generatorString,
                             options.biome(),
                             options.useSpawnAdjust()))
-                .peek(loadedWorld -> pluginManager.callEvent(new MVWorldCreatedEvent(loadedWorld)));
+                .peek(loadedWorld -> postCreateWorld(loadedWorld, options));
+    }
+
+    private void postCreateWorld(LoadedMultiverseWorld loadedWorld, CreateWorldOptions options) {
+        options.worldPropertyStrings().forEach((key, value) -> loadedWorld.getStringPropertyHandle()
+                .setPropertyString(key, value)
+                .onFailure(failure -> Logging.warning("Failed to set property '%s' to '%s' for world %s: %s",
+                        key, value, loadedWorld.getName(), failure.getMessage())));
+        pluginManager.callEvent(new MVWorldCreatedEvent(loadedWorld));
+        saveWorldsConfig();
     }
 
     /**

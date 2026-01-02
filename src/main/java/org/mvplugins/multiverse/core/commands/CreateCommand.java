@@ -19,7 +19,6 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
@@ -27,6 +26,7 @@ import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
+import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.utils.result.Attempt.Failure;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -78,14 +78,15 @@ class CreateCommand extends CoreCommand {
         issuer.sendInfo(MVCorei18n.CREATE_LOADING);
 
         worldManager.createWorld(CreateWorldOptions.worldName(worldName)
-                .biome(parsedFlags.flagValue(flags.biome, ""))
-                .environment(environment)
-                .seed(parsedFlags.flagValue(flags.seed))
-                .worldType(parsedFlags.flagValue(flags.worldType, WorldType.NORMAL))
-                .useSpawnAdjust(!parsedFlags.hasFlag(flags.noAdjustSpawn))
-                .generator(parsedFlags.flagValue(flags.generator, ""))
-                .generatorSettings(parsedFlags.flagValue(flags.generatorSettings, ""))
-                .generateStructures(!parsedFlags.hasFlag(flags.noStructures)))
+                        .biome(parsedFlags.flagValue(flags.biome, ""))
+                        .environment(environment)
+                        .seed(parsedFlags.flagValue(flags.seed))
+                        .worldType(parsedFlags.flagValue(flags.worldType, WorldType.NORMAL))
+                        .useSpawnAdjust(!parsedFlags.hasFlag(flags.noAdjustSpawn))
+                        .generator(parsedFlags.flagValue(flags.generator, ""))
+                        .generatorSettings(parsedFlags.flagValue(flags.generatorSettings, ""))
+                        .generateStructures(!parsedFlags.hasFlag(flags.noStructures))
+                        .worldPropertyStrings(StringFormatter.parseCSVMap(parsedFlags.flagValue(flags.properties))))
                 .onSuccess(newWorld -> messageSuccess(issuer, newWorld))
                 .onFailure(failure -> messageFailure(issuer, failure));
     }
@@ -179,6 +180,10 @@ class CreateCommand extends CoreCommand {
         private final CommandValueFlag<String> biome = flag(CommandValueFlag.builder("--biome", String.class)
                 .addAlias("-b")
                 .completion(input -> biomeProviderFactory.suggestBiomeString(input))
+                .build());
+
+        private final CommandValueFlag<String> properties = flag(CommandValueFlag.builder("--properties", String.class)
+                .addAlias("-p")
                 .build());
     }
 
