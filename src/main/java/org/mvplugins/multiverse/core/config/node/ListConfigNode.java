@@ -120,9 +120,9 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
     private void setDefaultSuggester() {
         if (itemSuggester instanceof SenderNodeSuggester senderItemSuggester) {
             this.suggester = (SenderNodeSuggester)(sender, input) ->
-                    StringFormatter.addonToCommaSeperated(input, senderItemSuggester.suggest(sender, input));
+                    StringFormatter.addOnToCommaSeparated(input, senderItemSuggester.suggest(sender, input));
         } else {
-            this.suggester = input -> StringFormatter.addonToCommaSeperated(input, itemSuggester.suggest(input));
+            this.suggester = input -> StringFormatter.addOnToCommaSeparated(input, itemSuggester.suggest(input));
         }
     }
 

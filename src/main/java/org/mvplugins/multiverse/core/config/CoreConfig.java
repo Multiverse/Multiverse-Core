@@ -186,6 +186,16 @@ public final class CoreConfig {
         return configHandle.get(configNodes.enforceFlight);
     }
 
+    @ApiStatus.AvailableSince("5.5")
+    public Try<Void> setGamemodeAndFlightEnforceDelay(int delayTicks) {
+        return configHandle.set(configNodes.gamemodeAndFlightEnforceDelay, delayTicks);
+    }
+
+    @ApiStatus.AvailableSince("5.5")
+    public int getGamemodeAndFlightEnforceDelay() {
+        return configHandle.get(configNodes.gamemodeAndFlightEnforceDelay);
+    }
+
     @ApiStatus.AvailableSince("5.3")
     public Try<Void> setApplyEntitySpawnRate(boolean applyEntitySpawnRate) {
         return configHandle.set(configNodes.applyEntitySpawnRate, applyEntitySpawnRate);
@@ -639,6 +649,16 @@ public final class CoreConfig {
 
     public EventPriority getEventPriorityPlayerTeleport() {
         return configHandle.get(configNodes.eventPriorityPlayerTeleport);
+    }
+
+    @ApiStatus.AvailableSince("5.5")
+    public Try<Void> setEventPriorityPlayerWorldChange(EventPriority eventPriorityPlayerWorldChange) {
+        return configHandle.set(configNodes.eventPriorityPlayerWorldChange, eventPriorityPlayerWorldChange);
+    }
+
+    @ApiStatus.AvailableSince("5.5")
+    public EventPriority getEventPriorityPlayerWorldChange() {
+        return configHandle.get(configNodes.eventPriorityPlayerWorldChange);
     }
 
     public Try<Void> setBukkitYmlPath(String bukkitYmlPath) {

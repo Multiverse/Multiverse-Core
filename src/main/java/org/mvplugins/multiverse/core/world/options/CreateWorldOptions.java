@@ -3,8 +3,14 @@ package org.mvplugins.multiverse.core.world.options;
 import co.aikar.commands.ACFUtil;
 import org.bukkit.World;
 import org.bukkit.WorldType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnmodifiableView;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Options for customizing the creation of a new world.
@@ -31,6 +37,7 @@ public final class CreateWorldOptions {
     private boolean useSpawnAdjust = true;
     private WorldType worldType = WorldType.NORMAL;
     private boolean doFolderCheck = true;
+    private final Map<String, String> worldPropertyStrings = new HashMap<>();
 
     /**
      * Creates a new {@link CreateWorldOptions} instance with the given world name.
@@ -259,5 +266,47 @@ public final class CreateWorldOptions {
      */
     public boolean doFolderCheck() {
         return doFolderCheck;
+    }
+
+    /**
+     * Sets a world property string key-value pair. Overwrites any existing key.
+     *
+     * @param key   The key of the world property string.
+     * @param value The value of the world property string.
+     * @return This {@link CreateWorldOptions} instance.
+     *
+     * @since 5.5
+     */
+    @ApiStatus.AvailableSince("5.5")
+    public @NotNull CreateWorldOptions worldPropertyString(@NotNull String key, @Nullable String value) {
+        this.worldPropertyStrings.put(key, value);
+        return this;
+    }
+
+    /**
+     * Sets multiple world property string key-value pairs. Overwrites any existing keys.
+     *
+     * @param worldProperties   A map of world property string key-value pairs.
+     * @return This {@link CreateWorldOptions} instance.
+     *
+     * @since 5.5
+     */
+    @ApiStatus.AvailableSince("5.5")
+    public @NotNull CreateWorldOptions worldPropertyStrings(@NotNull Map<@NotNull String, @Nullable String> worldProperties) {
+        this.worldPropertyStrings.putAll(worldProperties);
+        return this;
+    }
+
+    /**
+     * Gets an unmodifiable view of the world property strings. Use {@link #worldPropertyString(String, String)} and
+     * {@link #worldPropertyStrings(Map)} to modify the world property strings.
+     *
+     * @return An unmodifiable view of the world property strings.
+     *
+     * @since 5.5
+     */
+    @ApiStatus.AvailableSince("5.5")
+    public @UnmodifiableView @NotNull Map<String, String> worldPropertyStrings() {
+        return Collections.unmodifiableMap(worldPropertyStrings);
     }
 }

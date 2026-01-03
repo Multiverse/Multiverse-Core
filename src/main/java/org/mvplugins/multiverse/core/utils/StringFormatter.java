@@ -2,13 +2,17 @@ package org.mvplugins.multiverse.core.utils;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,15 +34,15 @@ public final class StringFormatter {
      * @param list the list of strings to join. If the list is empty, an empty string is returned.
      * @return the concatenated string
      */
-    public static @NotNull String joinAnd(List<String> list) {
+    public static @NotNull String joinAnd(@Nullable List<String> list) {
         return join(list, ", ", " and ");
     }
 
-    public static @NotNull String join(Collection list, String separator) {
+    public static @NotNull String join(@Nullable Collection<?> list, @NotNull String separator) {
         if (list == null || list.isEmpty()) {
             return "";
         }
-        return list.stream().map(String::valueOf).collect(Collectors.joining(separator)).toString();
+        return list.stream().map(String::valueOf).collect(Collectors.joining(separator));
     }
 
     /**
@@ -50,7 +54,7 @@ public final class StringFormatter {
      * @param lastSeparator the separator to use before the last element. For example, " and ".
      * @return the concatenated string
      */
-    public static @NotNull String join(List<String> list, String separator, String lastSeparator) {
+    public static @NotNull String join(@Nullable List<String> list, @NotNull String separator, @NotNull String lastSeparator) {
         if (list == null || list.isEmpty()) {
             return "";
         }
@@ -71,11 +75,30 @@ public final class StringFormatter {
 
     /**
      * Appends a list of suggestions to the end of the input string, separated by commas.
+     *
      * @param input     The current input
      * @param addons    The autocomplete suggestions
      * @return A collection of suggestions with the next suggestion appended
+     *
+     * @deprecated Method name has a spelling error. Use {@link #addOnToCommaSeparated(String, Collection)} instead.
      */
+    @Deprecated(forRemoval = true, since = "5.5")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public static Collection<String> addonToCommaSeperated(@Nullable String input, @NotNull Collection<String> addons) {
+        return addOnToCommaSeparated(input, addons);
+    }
+
+    /**
+     * Appends a list of suggestions to the end of the input string, separated by commas.
+     *
+     * @param input     The current input
+     * @param addons    The autocomplete suggestions
+     * @return A collection of suggestions with the next suggestion appended
+     *
+     * @since 5.5
+     */
+    @ApiStatus.AvailableSince("5.5")
+    public static Collection<String> addOnToCommaSeparated(@Nullable String input, @NotNull Collection<String> addons) {
         if (Strings.isNullOrEmpty(input)) {
             return addons;
         }
@@ -94,7 +117,7 @@ public final class StringFormatter {
      * @param args  The args to parse
      * @return The parsed args
      */
-    public static Collection<String> parseQuotesInArgs(String[] args) {
+    public static @NotNull Collection<String> parseQuotesInArgs(@NotNull String[] args) {
         List<String> result = new ArrayList<>(args.length);
         StringBuilder current = new StringBuilder();
         boolean inQuotes = false;
@@ -139,7 +162,28 @@ public final class StringFormatter {
      * @param input The string to add quotes to
      * @return The quoted string
      */
-    public static String quoteMultiWordString(String input) {
-        return input.contains(" ") ? "\"" + input + "\"" : input;
+    @Contract("null -> null")
+    public static @Nullable String quoteMultiWordString(@Nullable String input) {
+        return input != null && input.contains(" ") ? "\"" + input + "\"" : input;
+    }
+
+    /**
+     * Parses a CSV string of key=value pairs into a map.
+     * E.g. "key1=value1,key2=value2" -> {key1=value1, key2=value2}
+     *
+     * @param input The CSV string to parse
+     * @return The parsed map
+     *
+     * @since 5.5
+     */
+    @ApiStatus.AvailableSince("5.5")
+    public static @Unmodifiable Map<String, String> parseCSVMap(@Nullable String input) {
+        if (Strings.isNullOrEmpty(input)) {
+            return Map.of();
+        }
+        return REPatterns.COMMA.splitAsStream(input)
+                .map(s -> REPatterns.EQUALS.split(s, 2))
+                .filter(parts -> parts.length == 2)
+                .collect(Collectors.toUnmodifiableMap(parts -> parts[0], parts -> parts[1]));
     }
 }
