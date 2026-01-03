@@ -202,14 +202,30 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Creates a new <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CreateWorldOptions</code></a> instance with the given world name.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull org.bukkit.WorldType</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#worldType()" class="member-name-link">worldType</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#worldPropertyString(java.lang.String,java.lang.String)" class="member-name-link">worldPropertyString</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets a world property string key-value pair.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@UnmodifiableView @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#worldPropertyStrings()" class="member-name-link">worldPropertyStrings</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets an unmodifiable view of the world property strings.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#worldPropertyStrings(java.util.Map)" class="member-name-link">worldPropertyStrings</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;worldProperties)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets multiple world property string key-value pairs.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull org.bukkit.WorldType</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#worldType()" class="member-name-link">worldType</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the world type.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#worldType(org.bukkit.WorldType)" class="member-name-link">worldType</a><wbr>(@NotNull org.bukkit.WorldType&nbsp;worldTypeInput)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#worldType(org.bukkit.WorldType)" class="member-name-link">worldType</a><wbr>(@NotNull org.bukkit.WorldType&nbsp;worldTypeInput)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the world type.</div>
 </div>
 </div>
@@ -520,6 +536,61 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>Whether to do the folder check</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="worldPropertyString(java.lang.String,java.lang.String)">
+<h3>worldPropertyString</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.5")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></span>&nbsp;<span class="element-name">worldPropertyString</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
+ @Nullable
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;value)</span></div>
+<div class="block">Sets a world property string key-value pair. Overwrites any existing key.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>key</code> - The key of the world property string.</dd>
+<dd><code>value</code> - The value of the world property string.</dd>
+<dt>Returns:</dt>
+<dd>This <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CreateWorldOptions</code></a> instance.</dd>
+<dt>Since:</dt>
+<dd>5.5</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="worldPropertyStrings(java.util.Map)">
+<h3>worldPropertyStrings</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.5")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CreateWorldOptions</a></span>&nbsp;<span class="element-name">worldPropertyStrings</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr>@Nullable <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;worldProperties)</span></div>
+<div class="block">Sets multiple world property string key-value pairs. Overwrites any existing keys.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>worldProperties</code> - A map of world property string key-value pairs.</dd>
+<dt>Returns:</dt>
+<dd>This <a href="CreateWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CreateWorldOptions</code></a> instance.</dd>
+<dt>Since:</dt>
+<dd>5.5</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="worldPropertyStrings()">
+<h3>worldPropertyStrings</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.5")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@UnmodifiableView @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">worldPropertyStrings</span>()</div>
+<div class="block">Gets an unmodifiable view of the world property strings. Use <a href="#worldPropertyString(java.lang.String,java.lang.String)"><code>worldPropertyString(String, String)</code></a> and
+ <a href="#worldPropertyStrings(java.util.Map)"><code>worldPropertyStrings(Map)</code></a> to modify the world property strings.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>An unmodifiable view of the world property strings.</dd>
+<dt>Since:</dt>
+<dd>5.5</dd>
 </dl>
 </section>
 </li>
