@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.utils;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
@@ -33,15 +34,15 @@ public final class StringFormatter {
      * @param list the list of strings to join. If the list is empty, an empty string is returned.
      * @return the concatenated string
      */
-    public static @NotNull String joinAnd(List<String> list) {
+    public static @NotNull String joinAnd(@Nullable List<String> list) {
         return join(list, ", ", " and ");
     }
 
-    public static @NotNull String join(Collection list, String separator) {
+    public static @NotNull String join(@Nullable Collection<?> list, @NotNull String separator) {
         if (list == null || list.isEmpty()) {
             return "";
         }
-        return list.stream().map(String::valueOf).collect(Collectors.joining(separator)).toString();
+        return list.stream().map(String::valueOf).collect(Collectors.joining(separator));
     }
 
     /**
@@ -53,7 +54,7 @@ public final class StringFormatter {
      * @param lastSeparator the separator to use before the last element. For example, " and ".
      * @return the concatenated string
      */
-    public static @NotNull String join(List<String> list, String separator, String lastSeparator) {
+    public static @NotNull String join(@Nullable List<String> list, @NotNull String separator, @NotNull String lastSeparator) {
         if (list == null || list.isEmpty()) {
             return "";
         }
@@ -116,7 +117,7 @@ public final class StringFormatter {
      * @param args  The args to parse
      * @return The parsed args
      */
-    public static Collection<String> parseQuotesInArgs(String[] args) {
+    public static @NotNull Collection<String> parseQuotesInArgs(@NotNull String[] args) {
         List<String> result = new ArrayList<>(args.length);
         StringBuilder current = new StringBuilder();
         boolean inQuotes = false;
@@ -161,8 +162,9 @@ public final class StringFormatter {
      * @param input The string to add quotes to
      * @return The quoted string
      */
-    public static String quoteMultiWordString(String input) {
-        return input.contains(" ") ? "\"" + input + "\"" : input;
+    @Contract("null -> null")
+    public static @Nullable String quoteMultiWordString(@Nullable String input) {
+        return input != null && input.contains(" ") ? "\"" + input + "\"" : input;
     }
 
     /**
