@@ -288,6 +288,8 @@ public final class CreateWorldOptions {
      *
      * @param worldProperties   A map of world property string key-value pairs.
      * @return This {@link CreateWorldOptions} instance.
+     *
+     * @since 5.5
      */
     @ApiStatus.AvailableSince("5.5")
     public @NotNull CreateWorldOptions worldPropertyStrings(@NotNull Map<@NotNull String, @Nullable String> worldProperties) {
