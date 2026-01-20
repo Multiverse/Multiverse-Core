@@ -36,6 +36,7 @@ import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.DefaultEventPriority;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventPriorityKey;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.IgnoreIfCancelled;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.event.MVRespawnEvent;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
@@ -269,12 +270,28 @@ final class MVPlayerListener implements CoreListener {
     @EventPriorityKey("mvcore-player-teleport")
     @DefaultEventPriority(EventPriority.HIGHEST)
     void playerTeleport(PlayerTeleportEvent event) {
-        Logging.finer("Got teleport event for player '"
-                + event.getPlayer().getName() + "' with cause '" + event.getCause() + "'");
+        Player teleportee = event.getPlayer();
+
         if (event.isCancelled()) {
+            Logging.finer("Teleport event for player '" + teleportee.getName() + "' was already cancelled.");
             return;
         }
-        Player teleportee = event.getPlayer();
+
+        Logging.finer("Got teleport event for player '"
+                + teleportee.getName() + "' with cause '" + event.getCause() + "'");
+
+        Location fromLocation = event.getFrom();
+        if (fromLocation == null || fromLocation.getWorld() == null) { // should never be null, but just in case
+            Logging.finer("Teleport event for player '" + teleportee.getName() + "' has null from-location or world.");
+            return;
+        }
+
+        Location toLocation = event.getTo();
+        if (toLocation == null || toLocation.getWorld() == null) { // may be null on spigot
+            Logging.finer("Teleport event for player '" + teleportee.getName() + "' has null to-location or world.");
+            return;
+        }
+
         Option<String> teleporterName = teleportQueue.popFromQueue(teleportee.getName());
         CommandSender teleporter = teleporterName.map(name -> {
             if (name.equalsIgnoreCase("CONSOLE")) {
@@ -295,17 +312,17 @@ final class MVPlayerListener implements CoreListener {
         }
 
         Logging.finer("Teleporter %s is teleporting %s from %s to %s", teleporter.getName(), teleportee.getName(),
-                event.getFrom(), event.getTo());
+                fromLocation, toLocation);
 
-        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld()).getOrNull();
-        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld()).getOrNull();
+        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(fromLocation.getWorld()).getOrNull();
+        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(toLocation.getWorld()).getOrNull();
         if (toWorld == null) {
             Logging.fine("Player '" + teleportee.getName() + "' is teleporting to world '"
-                    + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
+                    + toLocation.getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
                     + "actions will be taken by Multiverse-Core.");
             return;
         }
-        if (event.getFrom().getWorld().equals(event.getTo().getWorld())) {
+        if (fromLocation.getWorld().equals(toLocation.getWorld())) {
             // The player is Teleporting to the same world.
             Logging.finer("Player '" + teleportee.getName() + "' is teleporting to the same world.");
             this.stateSuccess(teleportee.getName(), toWorld.getName());
@@ -339,20 +356,19 @@ final class MVPlayerListener implements CoreListener {
      */
     @EventMethod
     @DefaultEventPriority(EventPriority.LOWEST)
+    @IgnoreIfCancelled
     void playerPortalCheck(PlayerPortalEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-        if (event.getFrom().getWorld() == null) {
+        Location fromLocation = event.getFrom();
+        if (fromLocation == null || fromLocation.getWorld() == null) {
             Logging.warning("PlayerPortalEvent's from world is null!");
             return;
         }
-        if (event.getFrom().getWorld().getBlockAt(event.getFrom()).getType() == Material.NETHER_PORTAL) {
+        if (fromLocation.getWorld().getBlockAt(fromLocation).getType() == Material.NETHER_PORTAL) {
             return;
         }
 
         // Player was actually outside of the portal, adjust the from location
-        Location newLocation = blockSafety.findPortalBlockNextTo(event.getFrom());
+        Location newLocation = blockSafety.findPortalBlockNextTo(fromLocation);
         if (newLocation != null) {
             event.setFrom(newLocation);
         }
@@ -365,28 +381,33 @@ final class MVPlayerListener implements CoreListener {
     @EventMethod
     @EventPriorityKey("mvcore-player-portal")
     @DefaultEventPriority(EventPriority.HIGH)
+    @IgnoreIfCancelled
     void playerPortal(PlayerPortalEvent event) {
-        if (event.isCancelled()) {
+        Location fromLocation = event.getFrom();
+        if (fromLocation == null || fromLocation.getWorld() == null) { // should never be null, but just in case
+            Logging.finer("PlayerPortalEvent's from world is null!");
             return;
         }
-        if (event.getTo() == null || event.getTo().getWorld() == null) {
+
+        Location toLocation = event.getTo();
+        if (toLocation == null || toLocation.getWorld() == null) { // may be null on spigot
             Logging.finer("PlayerPortalEvent's to world is null!");
             return;
         }
         if (config.isUsingCustomPortalSearch()) {
             event.setSearchRadius(config.getCustomPortalSearchRadius());
         }
-        if (Objects.equals(event.getFrom().getWorld(), event.getTo().getWorld())) {
+        if (Objects.equals(fromLocation.getWorld(), toLocation.getWorld())) {
             // The player is Portaling to the same world.
             Logging.finer("Player '" + event.getPlayer().getName() + "' is portaling to the same world.");
             return;
         }
 
-        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(event.getFrom().getWorld()).getOrNull();
-        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(event.getTo().getWorld()).getOrNull();
+        MultiverseWorld fromWorld = getWorldManager().getLoadedWorld(fromLocation.getWorld()).getOrNull();
+        LoadedMultiverseWorld toWorld = getWorldManager().getLoadedWorld(toLocation.getWorld()).getOrNull();
         if (toWorld == null) {
             Logging.fine("Player '" + event.getPlayer().getName() + "' is portaling to world '"
-                    + event.getTo().getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
+                    + toLocation.getWorld().getName() + "' which is not managed by Multiverse-Core.  No further "
                     + "actions will be taken by Multiverse-Core.");
             return;
         }
