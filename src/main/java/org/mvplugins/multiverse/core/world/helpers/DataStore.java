@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * A data store for storing and restoring data from an object.
@@ -90,14 +91,14 @@ public interface DataStore<T> {
     /**
      * A {@link DataStore} for storing and restoring world properties for a multiverse world.
      */
-    class WorldConfigStore implements DataStore<LoadedMultiverseWorld> {
+    class WorldConfigStore<T extends MultiverseWorld> implements DataStore<T> {
         private Map<String, Object> configMap;
 
         /**
          * {@inheritDoc}
          */
         @Override
-        public WorldConfigStore copyFrom(LoadedMultiverseWorld world) {
+        public WorldConfigStore<T> copyFrom(T world) {
             this.configMap = new HashMap<>();
             StringPropertyHandle worldPropertyHandler = world.getStringPropertyHandle();
             worldPropertyHandler.getAllPropertyNames().forEach(name -> worldPropertyHandler.getProperty(name)
@@ -111,7 +112,7 @@ public interface DataStore<T> {
          * {@inheritDoc}
          */
         @Override
-        public WorldConfigStore pasteTo(LoadedMultiverseWorld world) {
+        public WorldConfigStore<T> pasteTo(T world) {
             if (configMap == null) {
                 return this;
             }

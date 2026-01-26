@@ -20,8 +20,10 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.plugin.PluginManager;
@@ -719,18 +721,19 @@ public final class WorldManager {
                 .mapAttempt(validatedOptions -> {
                     ImportWorldOptions importWorldOptions = ImportWorldOptions
                             .worldName(validatedOptions.newWorldName())
-                            .biome(validatedOptions.world().getBiome())
-                            .environment(validatedOptions.world().getEnvironment())
-                            .generator(validatedOptions.world().getGenerator());
+                            .biome(validatedOptions.fromWorld().getBiome())
+                            .environment(validatedOptions.fromWorld().getEnvironment())
+                            .generator(validatedOptions.fromWorld().getGenerator());
                     return importWorld(importWorldOptions).transform(CloneFailureReason.IMPORT_FAILED);
                 })
                 .onSuccess(newWorld -> {
                     cloneWorldTransferData(options, newWorld);
                     if (options.keepWorldConfig()) {
-                        newWorld.setSpawnLocation(options.world().getSpawnLocation());
+                        // Special case for spawn location as it's considered a hidden config
+                        newWorld.setSpawnLocation(options.fromWorld().getSpawnLocation());
                     }
                     saveWorldsConfig();
-                    pluginManager.callEvent(new MVWorldClonedEvent(newWorld, options.world()));
+                    pluginManager.callEvent(new MVWorldClonedEvent(newWorld, options.fromWorld()));
                 });
     }
 
@@ -752,19 +755,24 @@ public final class WorldManager {
         if (worldNameChecker.hasWorldFolder(newWorldName)) {
             return worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, newWorldName);
         }
+        if (!worldNameChecker.isValidWorldFolder(options.fromWorld().getName())) {
+            return worldActionResult(CloneFailureReason.FROM_WORLD_FOLDER_INVALID, options.fromWorld().getName());
+        }
         return worldActionResult(options);
     }
 
     private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldCopyFolder(@NotNull CloneWorldOptions options) {
         if (options.saveBukkitWorld()) {
-            Logging.finer("Saving bukkit world before cloning: " + options.world().getName());
-            options.world().getBukkitWorld().peek(this::saveWorldWithFlush);
+            options.fromWorld().asLoadedWorld().peek(loadedWorld -> {
+                Logging.finer("Saving world before cloning: " + loadedWorld.getName());
+                loadedWorld.getBukkitWorld().peek(this::saveWorldWithFlush);
+            });
         }
-        File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).get();
+        File worldFolder = new File(Bukkit.getWorldContainer(), options.fromWorld().getName());
         File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
         return fileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
                 exception -> worldActionResult(CloneFailureReason.COPY_FAILED,
-                        options.world().getName(), exception),
+                        options.fromWorld().getName(), exception),
                 success -> worldActionResult(options));
     }
 
@@ -780,25 +788,30 @@ public final class WorldManager {
     }
 
     private void cloneWorldTransferData(@NotNull CloneWorldOptions options, @NotNull LoadedMultiverseWorld newWorld) {
-        DataTransfer<LoadedMultiverseWorld> dataTransfer = transferData(options, options.world());
-        dataTransfer.pasteAllTo(newWorld);
-    }
-
-    private DataTransfer<LoadedMultiverseWorld> transferData(
-            @NotNull KeepWorldSettingsOptions options, @NotNull LoadedMultiverseWorld world) {
-        DataTransfer<LoadedMultiverseWorld> dataTransfer = new DataTransfer<>();
-
         if (options.keepWorldConfig()) {
-            dataTransfer.addDataStore(new WorldConfigStore(), world);
-        }
-        if (options.keepGameRule()) {
-            dataTransfer.addDataStore(new GameRulesStore(), world);
-        }
-        if (options.keepWorldBorder()) {
-            dataTransfer.addDataStore(new WorldBorderStore(), world);
+            new DataTransfer<MultiverseWorld>()
+                    .addDataStore(new WorldConfigStore<>(), options.fromWorld())
+                    .pasteAllTo(newWorld);
         }
 
-        return dataTransfer;
+        newWorld.getBukkitWorld().peek(bukkitWorld -> {
+            if (!options.keepWorldBorder()) {
+                WorldBorder worldBorder = bukkitWorld.getWorldBorder();
+                worldBorder.reset();
+            }
+
+            if (!options.keepGameRule()) {
+                Arrays.stream(bukkitWorld.getGameRules())
+                        .map(gameRuleName -> GameRule.getByName(gameRuleName))
+                        .filter(Objects::nonNull)
+                        .forEach(gameRule -> {
+                            Object gameRuleDefault = bukkitWorld.getGameRuleDefault(gameRule);
+                            if (gameRuleDefault != null) {
+                                bukkitWorld.setGameRule(gameRule, gameRuleDefault);
+                            }
+                        });
+            }
+        });
     }
 
     /**
@@ -809,7 +822,7 @@ public final class WorldManager {
      */
     public Attempt<LoadedMultiverseWorld, RegenFailureReason> regenWorld(@NotNull RegenWorldOptions options) {
         LoadedMultiverseWorld world = options.world();
-        DataTransfer<LoadedMultiverseWorld> dataTransfer = transferData(options, world);
+        DataTransfer<LoadedMultiverseWorld> dataTransfer = regenWorldTransferData(options, world);
         boolean shouldKeepSpawnLocation = options.keepWorldConfig() && options.seed() == world.getSeed();
         Location spawnLocation = world.getSpawnLocation();
 
@@ -835,6 +848,23 @@ public final class WorldManager {
                     saveWorldsConfig();
                     pluginManager.callEvent(new MVWorldRegeneratedEvent(newWorld));
                 });
+    }
+
+    private DataTransfer<LoadedMultiverseWorld> regenWorldTransferData(
+            @NotNull KeepWorldSettingsOptions options, @NotNull LoadedMultiverseWorld world) {
+        DataTransfer<LoadedMultiverseWorld> dataTransfer = new DataTransfer<>();
+
+        if (options.keepWorldConfig()) {
+            dataTransfer.addDataStore(new WorldConfigStore<>(), world);
+        }
+        if (options.keepGameRule()) {
+            dataTransfer.addDataStore(new GameRulesStore(), world);
+        }
+        if (options.keepWorldBorder()) {
+            dataTransfer.addDataStore(new WorldBorderStore(), world);
+        }
+
+        return dataTransfer;
     }
 
     private <T, F extends FailureReason> Attempt<T, F> worldActionResult(@NotNull T value) {
