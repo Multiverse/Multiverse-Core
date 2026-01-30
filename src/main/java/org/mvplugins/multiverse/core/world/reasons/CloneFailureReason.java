@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.world.reasons;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
@@ -29,6 +30,14 @@ public enum CloneFailureReason implements FailureReason {
      * The target new world is already loaded.
      */
     WORLD_EXIST_LOADED(MVCorei18n.CLONEWORLD_WORLDEXISTLOADED),
+
+    /**
+     * The source world folder is invalid.
+     *
+     * @since 5.6
+     */
+    @ApiStatus.AvailableSince("5.6")
+    FROM_WORLD_FOLDER_INVALID(MVCorei18n.CLONEWORLD_FROMWORLDFOLDERINVALID),
 
     /**
      * Failed to copy the world folder contents.
