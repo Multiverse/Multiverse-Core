@@ -814,6 +814,7 @@ public final class WorldManager {
         Location spawnLocation = world.getSpawnLocation();
 
         CreateWorldOptions createWorldOptions = CreateWorldOptions.worldName(world.getName())
+                .biome(world.getBiome())
                 .environment(world.getEnvironment())
                 .generateStructures(world.canGenerateStructures().getOrElse(true))
                 .generator(world.getGenerator())
