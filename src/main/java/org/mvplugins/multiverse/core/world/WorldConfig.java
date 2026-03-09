@@ -396,7 +396,7 @@ final class WorldConfig {
     /**
      * Migrates the entry fee settings. Assumes entry fee is disabled if currency is not set.
      */
-    static final class EntryFeeMigrator implements MigratorAction {
+    private static final class EntryFeeMigrator implements MigratorAction {
         @Override
         public void migrate(ConfigurationSection config) {
             String currency = config.getString("entry-fee.currency", "");
