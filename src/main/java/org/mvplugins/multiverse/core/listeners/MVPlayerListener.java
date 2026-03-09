@@ -244,7 +244,7 @@ final class MVPlayerListener implements CoreListener {
     }
 
     private void teleportToDestinationOnJoin(Player player, DestinationInstance<?, ?> destination) {
-        asyncSafetyTeleporter.to(destination).teleportSingle(player)
+        asyncSafetyTeleporter.to(destination).passengerMode(config.getPassengerMode()).teleportSingle(player)
                 .onSuccess(result -> Logging.fine("Player %s has been teleported on join",
                         player.getName()))
                 .onFailure(failure -> Logging.warning("Failed to teleport player %s on join: %s",
