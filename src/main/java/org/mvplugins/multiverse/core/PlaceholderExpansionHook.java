@@ -150,6 +150,7 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
             case "gamemode" -> world.getGameMode().toString().toLowerCase();
             case "generator" -> world.getGenerator();
             case "hunger" -> String.valueOf(world.isHunger());
+            case "isloaded" -> String.valueOf(world.isLoaded());
             case "monstersspawn" -> String.valueOf(world.getEntitySpawnConfig()
                     .getSpawnCategoryConfig(SpawnCategory.MONSTER)
                     .isSpawn());
