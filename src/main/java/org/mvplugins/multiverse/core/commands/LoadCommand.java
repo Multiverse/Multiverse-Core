@@ -16,8 +16,8 @@ import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
+import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
@@ -38,7 +38,7 @@ class LoadCommand extends CoreCommand {
 
     @Subcommand("load")
     @CommandPermission("multiverse.core.load")
-    @CommandCompletion("@mvworlds:scope=unloaded")
+    @CommandCompletion("@mvworlds:scope=unloaded @flags:groupName=" + Flags.NAME)
     @Syntax("<world>")
     @Description("{@@mv-core.load.description}")
     void onLoadCommand(
@@ -49,7 +49,7 @@ class LoadCommand extends CoreCommand {
             MultiverseWorld world,
 
             @Optional
-            @Syntax("[--remove-players]")
+            @Syntax("[--skip-folder-check]")
             @Description("")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
@@ -67,9 +67,9 @@ class LoadCommand extends CoreCommand {
     }
 
     @Service
-    private static final class Flags extends RemovePlayerFlags {
+    private static final class Flags extends FlagBuilder {
 
-        private static final String NAME = "mvunload";
+        private static final String NAME = "mvload";
 
         @Inject
         private Flags(@NotNull CommandFlagsManager flagsManager) {
