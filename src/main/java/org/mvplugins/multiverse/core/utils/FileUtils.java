@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -25,6 +26,7 @@ import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 
@@ -210,16 +212,19 @@ public final class FileUtils {
 
         private final Path sourceDir;
         private final Path targetDir;
-        private final List<String> excludeFiles;
+        private final List<Path> excludeFiles;
 
         private CopyDirFileVisitor(@NotNull Path sourceDir, @NotNull Path targetDir, @NotNull List<String> excludeFiles) {
             this.sourceDir = sourceDir;
             this.targetDir = targetDir;
-            this.excludeFiles = excludeFiles;
+            this.excludeFiles = excludeFiles.stream()
+                    .map(sourceDir::resolve)
+                    .toList();
+            Logging.finest(this.excludeFiles.stream().map(Path::toString).collect(Collectors.joining(", ", "Exclude files: [", "]")));
         }
 
         @Override
-        public @NotNull FileVisitResult preVisitDirectory(Path dir, @NotNull BasicFileAttributes attrs) throws IOException {
+        public @NotNull FileVisitResult preVisitDirectory(@NonNull Path dir, @NotNull BasicFileAttributes attrs) throws IOException {
             Path newDir = targetDir.resolve(sourceDir.relativize(dir));
             if (!Files.isDirectory(newDir)) {
                 Files.createDirectory(newDir);
@@ -228,10 +233,10 @@ public final class FileUtils {
         }
 
         @Override
-        public @NotNull FileVisitResult visitFile(Path file, @NotNull BasicFileAttributes attrs) throws IOException {
+        public @NotNull FileVisitResult visitFile(@NonNull Path file, @NotNull BasicFileAttributes attrs) throws IOException {
             // Pass files that are set to ignore
-            if (excludeFiles.contains(file.getFileName().toString())) {
-                Logging.finest("Ignoring file: " + file.getFileName());
+            if (excludeFiles.contains(file)) {
+                Logging.finest("Ignoring file: " + file);
                 return FileVisitResult.CONTINUE;
             }
             // Copy the files
