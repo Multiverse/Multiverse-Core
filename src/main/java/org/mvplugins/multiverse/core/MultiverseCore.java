@@ -226,11 +226,12 @@ public class MultiverseCore extends MultiverseModule {
      * Logs the enable message.
      */
     private void logEnableMessage() {
-        Logging.config("\u001B[32mVersion %s (API v%s) Enabled - By %s\u001B[39m",
+        Logging.config("\u001B[32mVersion %s (API v%s) Enabled - By %s\u001B[0m",
                 this.getDescription().getVersion(), getVersionAsNumber(), StringFormatter.joinAnd(getDescription().getAuthors()));
 
         if (configProvider.get().isShowingDonateMessage()) {
-            Logging.config("\u001B[32mLoving Multiverse-Core? Please consider supporting the project with a small donation: https://github.com/sponsors/Multiverse\u001B[39m");
+            Logging.config("\u001B[32mLoving Multiverse-Core? Please consider supporting the project with a " +
+                    "small donation: https://github.com/sponsors/Multiverse\u001B[0m");
         }
     }
 
