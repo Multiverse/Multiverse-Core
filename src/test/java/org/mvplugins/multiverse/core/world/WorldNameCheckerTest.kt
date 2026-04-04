@@ -45,6 +45,15 @@ class WorldNameCheckerTest : TestWithMockBukkit() {
     fun `Valid world folder`() {
         File(Bukkit.getWorldContainer(), "test").mkdir()
         File(Bukkit.getWorldContainer(), "test/level.dat").createNewFile()
+        File(Bukkit.getWorldContainer(), "test/data").mkdir()
+        assertEquals(WorldNameChecker.FolderStatus.VALID, worldNameChecker.checkFolder("test"))
+    }
+
+    @Test
+    fun `Valid world folder v26-1 format`() {
+        File(Bukkit.getWorldContainer(), "test").mkdir()
+        File(Bukkit.getWorldContainer(), "test/region").mkdir()
+        File(Bukkit.getWorldContainer(), "test/data").mkdir()
         assertEquals(WorldNameChecker.FolderStatus.VALID, worldNameChecker.checkFolder("test"))
     }
 
