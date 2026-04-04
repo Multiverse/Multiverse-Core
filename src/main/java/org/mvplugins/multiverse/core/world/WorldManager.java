@@ -49,6 +49,7 @@ import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.CaseInsensitiveStringMap;
 import org.mvplugins.multiverse.core.utils.ReflectHelper;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
+import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
@@ -699,6 +700,7 @@ public final class WorldManager {
     private Attempt<File, DeleteFailureReason> validateWorldToDelete(
             @NotNull LoadedMultiverseWorld world) {
         return world.getBukkitWorld().map(World::getWorldFolder)
+                .peek(folder -> Logging.finer("World folder for world %s is at: %s", world.getName(), folder.getPath()))
                 .filter(worldNameChecker::isValidWorldFolder)
                 .map(this::<File, DeleteFailureReason>worldActionResult)
                 .getOrElse(() -> {
@@ -761,7 +763,7 @@ public final class WorldManager {
             options.world().getBukkitWorld().peek(this::saveWorldWithFlush);
         }
         File worldFolder = options.world().getBukkitWorld().map(World::getWorldFolder).get();
-        File newWorldFolder = new File(Bukkit.getWorldContainer(), options.newWorldName());
+        File newWorldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(options.newWorldName()).toFile();
         return fileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
                 exception -> worldActionResult(CloneFailureReason.COPY_FAILED,
                         options.world().getName(), exception),
@@ -947,12 +949,12 @@ public final class WorldManager {
      * @return A list of all potential worlds.
      */
     public List<String> getPotentialWorlds() {
-        File[] files = Bukkit.getWorldContainer().listFiles();
+        File[] files = BukkitCompatibility.getWorldFoldersDirectory().toFile().listFiles();
         if (files == null) {
             return Collections.emptyList();
         }
         return Arrays.stream(files)
-                .filter(file -> !isWorld(file.getName()))
+                .filter(file -> BukkitCompatibility.getWorldByNameOrKey(file.getName()).isEmpty())
                 .filter(worldNameChecker::isValidWorldFolder)
                 .map(File::getName)
                 .toList();

@@ -1,0 +1,64 @@
+package org.mvplugins.multiverse.core.utils.compatibility;
+
+import io.vavr.control.Option;
+import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
+import org.bukkit.World;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.mvplugins.multiverse.core.utils.ReflectHelper;
+
+import java.lang.reflect.Method;
+import java.nio.file.Path;
+
+/**
+ * Compatibility class used to handle API changes in {@link Bukkit} class.
+ */
+@ApiStatus.AvailableSince("5.6")
+public final class BukkitCompatibility {
+
+    private static final Option<Method> getLevelDirectoryMethod;
+    private static final Option<Method> getWorldNamespacedKeyMethod;
+
+    static {
+        getLevelDirectoryMethod = Option.of(ReflectHelper.getMethod(Server.class, "getLevelDirectory"));
+        getWorldNamespacedKeyMethod = Option.of(ReflectHelper.getMethod(Bukkit.class, "getWorld", NamespacedKey.class));
+    }
+
+    /**
+     * Gets the folder where all the worlds will be store. Before 26.1, all worlds are stored in the root directory
+     * of the server, which can be obtained by {@link Server#getWorldContainer()}.
+     * <br />
+     * After 26.1, PaperMC changed all worlds are stored in the "[level]/dimensions/minecraft" folder under the world
+     * level directory, which needs to be manually parsed.
+     *
+     * @return The location where all the worlds folders should be, depending on server's mc version.
+     */
+    @ApiStatus.AvailableSince("5.6")
+    @NotNull
+    public static Path getWorldFoldersDirectory() {
+        Server server = Bukkit.getServer();
+        return getLevelDirectoryMethod.map(method -> ReflectHelper.invokeMethod(server, method))
+                .filter(Path.class::isInstance)
+                .map(Path.class::cast)
+                .map(path -> path.resolve("dimensions/minecraft"))
+                .getOrElse(() -> server.getWorldContainer().toPath());
+    }
+
+    /**
+     * Check if the world with the given name or namespaced key (e.g. minecraft:overworld) exists, and return it if it does.
+     *
+     * @param nameOrKey Either a name or namespaced key string representation.
+     * @return The world if it exists
+     */
+    @ApiStatus.AvailableSince("5.6")
+    @NotNull
+    public static Option<World> getWorldByNameOrKey(@NotNull String nameOrKey) {
+        return Option.of(Bukkit.getWorld(nameOrKey))
+                .orElse(() -> getWorldNamespacedKeyMethod
+                        .map(method -> ReflectHelper.invokeMethod(null, method, NamespacedKey.fromString(nameOrKey)))
+                        .filter(World.class::isInstance)
+                        .map(World.class::cast));
+    }
+}
