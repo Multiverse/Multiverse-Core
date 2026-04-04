@@ -87,7 +87,11 @@ import static org.mvplugins.multiverse.core.world.helpers.DataStore.WorldConfigS
 @Service // SUPPRESS CHECKSTYLE: ClassFanOutComplexity This is the world manager, it's going to be complex.
 public final class WorldManager {
 
-    private static final List<String> CLONE_IGNORE_FILES = Arrays.asList("uid.dat", "session.lock");
+    private static final List<String> CLONE_IGNORE_FILES = List.of(
+            "uid.dat", "session.lock", // All pre 26.1 format
+            "data/paper/metadata.dat"  // New papermc format for 26.1+
+    );
+
     private static final DimensionFormat DEFAULT_NETHER_FORMAT = new DimensionFormat("%overworld%_nether");
     private static final DimensionFormat DEFAULT_END_FORMAT = new DimensionFormat("%overworld%_the_end");
 
