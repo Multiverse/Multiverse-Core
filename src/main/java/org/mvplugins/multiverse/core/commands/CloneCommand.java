@@ -20,7 +20,7 @@ import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 
@@ -48,7 +48,7 @@ class CloneCommand extends CoreCommand {
 
             @Syntax("<world>")
             @Description("{@@mv-core.clone.world.description}")
-            LoadedMultiverseWorld world,
+            MultiverseWorld world,
 
             @Syntax("<new-world-name>")
             @Description("{@@mv-core.clone.newWorld.description}")
@@ -114,7 +114,7 @@ class CloneCommand extends CoreCommand {
 
         @Override
         @CommandAlias("mvcl|mvclone")
-        void onCloneCommand(MVCommandIssuer issuer, LoadedMultiverseWorld world, String newWorldName, String[] flags) {
+        void onCloneCommand(MVCommandIssuer issuer, MultiverseWorld world, String newWorldName, String[] flags) {
             super.onCloneCommand(issuer, world, newWorldName, flags);
         }
     }

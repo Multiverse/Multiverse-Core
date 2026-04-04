@@ -1,7 +1,9 @@
 package org.mvplugins.multiverse.core.world.options;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
+import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 /**
  * Options for customizing the cloning of a world.
@@ -9,17 +11,35 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 public final class CloneWorldOptions implements KeepWorldSettingsOptions {
 
     /**
-     * Creates a new {@link CloneWorldOptions} instance with the given world.
+     * Creates a new {@link CloneWorldOptions} instance with the given loaded world.
      *
-     * @param world         The world to clone.
+     * @param fromWorld     The loaded world to clone.
      * @param newWorldName  The name of the new world.
      * @return A new {@link CloneWorldOptions} instance.
+     *
+     * @deprecated Cloning can be done from unloaded worlds as well. Use {@link #fromTo(MultiverseWorld, String)} instead.
      */
-    public static CloneWorldOptions fromTo(LoadedMultiverseWorld world, String newWorldName) {
-        return new CloneWorldOptions(world, newWorldName);
+    @Deprecated(forRemoval = true, since = "5.6")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
+    public static @NotNull CloneWorldOptions fromTo(@NotNull LoadedMultiverseWorld fromWorld, @NotNull String newWorldName) {
+        return new CloneWorldOptions(fromWorld, newWorldName);
     }
 
-    private final LoadedMultiverseWorld world;
+    /**
+     * Creates a new {@link CloneWorldOptions} instance with the given world.
+     *
+     * @param fromWorld     The world to clone.
+     * @param newWorldName  The name of the new world.
+     * @return A new {@link CloneWorldOptions} instance.
+     *
+     * @since 5.6
+     */
+    @ApiStatus.AvailableSince("5.6")
+    public static @NotNull CloneWorldOptions fromTo(@NotNull MultiverseWorld fromWorld, @NotNull String newWorldName) {
+        return new CloneWorldOptions(fromWorld, newWorldName);
+    }
+
+    private final MultiverseWorld fromWorld;
     private final String newWorldName;
     private boolean keepGameRule = true;
     private boolean keepWorldConfig = true;
@@ -27,18 +47,34 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
 
     private boolean keepWorldBorder = true;
 
-    CloneWorldOptions(LoadedMultiverseWorld world, String newWorldName) {
-        this.world = world;
+    CloneWorldOptions(MultiverseWorld fromWorld, String newWorldName) {
+        this.fromWorld = fromWorld;
         this.newWorldName = newWorldName;
     }
 
     /**
-     * Gets the world to clone.
+     * Gets the loaded world to clone.
      *
      * @return The world to clone.
+     *
+     * @deprecated Cloning can be done from unloaded worlds as well. Use {@link #fromWorld()} instead.
      */
+    @Deprecated(forRemoval = true, since = "5.6")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public LoadedMultiverseWorld world() {
-        return world;
+        return fromWorld.asLoadedWorld().getOrNull();
+    }
+
+    /**
+     * Gets the loaded world to clone.
+     *
+     * @return The world to clone.
+     *
+     * @since 5.6
+     */
+    @ApiStatus.AvailableSince("5.6")
+    public @NotNull MultiverseWorld fromWorld() {
+        return fromWorld;
     }
 
     /**
@@ -46,7 +82,7 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
      *
      * @return The name of the new world.
      */
-    public String newWorldName() {
+    public @NotNull String newWorldName() {
         return newWorldName;
     }
 
