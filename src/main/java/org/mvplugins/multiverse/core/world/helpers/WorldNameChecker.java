@@ -155,7 +155,7 @@ public final class WorldNameChecker {
     }
 
     /**
-     * Helper class to check if a file or folder exist
+     * Helper class to check if a file or folder exist.
      */
     private interface WorldFolderSchema {
 
@@ -169,7 +169,7 @@ public final class WorldNameChecker {
 
         boolean check(File worldFolder);
 
-        class WorldFile implements WorldFolderSchema {
+        final class WorldFile implements WorldFolderSchema {
             private final String path;
 
             private WorldFile(String path) {
@@ -183,7 +183,7 @@ public final class WorldNameChecker {
             }
         }
 
-        class WorldFolder implements WorldFolderSchema {
+        final class WorldFolder implements WorldFolderSchema {
             private final String path;
 
             private WorldFolder(String path) {

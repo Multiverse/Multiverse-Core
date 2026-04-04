@@ -18,12 +18,12 @@ import java.nio.file.Path;
 @ApiStatus.AvailableSince("5.6")
 public final class BukkitCompatibility {
 
-    private static final Option<Method> getLevelDirectoryMethod;
-    private static final Option<Method> getWorldNamespacedKeyMethod;
+    private static final Option<Method> GET_LEVEL_DIRECTORY_METHOD;
+    private static final Option<Method> GET_WORLD_NAMESPACED_KEY_METHOD;
 
     static {
-        getLevelDirectoryMethod = Option.of(ReflectHelper.getMethod(Server.class, "getLevelDirectory"));
-        getWorldNamespacedKeyMethod = Option.of(ReflectHelper.getMethod(Bukkit.class, "getWorld", NamespacedKey.class));
+        GET_LEVEL_DIRECTORY_METHOD = Option.of(ReflectHelper.getMethod(Server.class, "getLevelDirectory"));
+        GET_WORLD_NAMESPACED_KEY_METHOD = Option.of(ReflectHelper.getMethod(Bukkit.class, "getWorld", NamespacedKey.class));
     }
 
     /**
@@ -39,7 +39,7 @@ public final class BukkitCompatibility {
     @NotNull
     public static Path getWorldFoldersDirectory() {
         Server server = Bukkit.getServer();
-        return getLevelDirectoryMethod.map(method -> ReflectHelper.invokeMethod(server, method))
+        return GET_LEVEL_DIRECTORY_METHOD.map(method -> ReflectHelper.invokeMethod(server, method))
                 .filter(Path.class::isInstance)
                 .map(Path.class::cast)
                 .map(path -> path.resolve("dimensions/minecraft"))
@@ -47,7 +47,11 @@ public final class BukkitCompatibility {
     }
 
     /**
-     * Check if the world with the given name or namespaced key (e.g. minecraft:overworld) exists, and return it if it does.
+     * Check if the world with the given name or namespaced key (e.g. minecraft:overworld) exists,
+     * and return it if it does.
+     * <br />
+     * Note that some default world names have different namespaced key matched with them.
+     * E.g.: world -> minecraft:overworld, world_nether -> minecraft:the_nether, world_the_end -> minecraft:the_end.
      *
      * @param nameOrKey Either a name or namespaced key string representation.
      * @return The world if it exists
@@ -56,7 +60,7 @@ public final class BukkitCompatibility {
     @NotNull
     public static Option<World> getWorldByNameOrKey(@NotNull String nameOrKey) {
         return Option.of(Bukkit.getWorld(nameOrKey))
-                .orElse(() -> getWorldNamespacedKeyMethod
+                .orElse(() -> GET_WORLD_NAMESPACED_KEY_METHOD
                         .map(method -> ReflectHelper.invokeMethod(null, method, NamespacedKey.fromString(nameOrKey)))
                         .filter(World.class::isInstance)
                         .map(World.class::cast));
