@@ -39,6 +39,8 @@ public class MVServerMock extends ServerMock {
         world.getWorldFolder().mkdirs();
         createFile(new File(world.getWorldFolder(), "uid.dat"));
         createFile(new File(world.getWorldFolder(), "level.dat"));
+        new File(world.getWorldFolder(), "region").mkdir();
+        new File(world.getWorldFolder(), "data").mkdir();
         addWorld(world);
         return world;
     }

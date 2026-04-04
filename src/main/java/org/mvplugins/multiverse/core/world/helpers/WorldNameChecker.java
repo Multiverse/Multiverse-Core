@@ -1,15 +1,17 @@
 package org.mvplugins.multiverse.core.world.helpers;
 
 import java.io.File;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
 
 /**
  * <p>Utility class in helping to check the status of a world name and it's associated world folder.</p>
@@ -28,6 +30,18 @@ public final class WorldNameChecker {
             "logs",
             "plugins",
             "versions");
+
+    private static final List<WorldFolderSchema> WORLD_FOLDER_SCHEMA = List.of(
+            // OLD
+            WorldFolderSchema.file("level.dat"),
+            WorldFolderSchema.folder("DIM1"),
+            WorldFolderSchema.folder("DIM-1"),
+            // NEW
+            WorldFolderSchema.file("paper-world.yml"),
+            WorldFolderSchema.folder("data"),
+            WorldFolderSchema.folder("entities"),
+            WorldFolderSchema.folder("poi"),
+            WorldFolderSchema.folder("region"));
 
     /**
      * Checks if a world name is valid.
@@ -105,7 +119,8 @@ public final class WorldNameChecker {
         if (worldName == null) {
             return FolderStatus.DOES_NOT_EXIST;
         }
-        File worldFolder = new File(Bukkit.getWorldContainer(), worldName);
+        File worldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(worldName).toFile();
+        Logging.finer("Checking valid folder for world '%s' at: '%s'", worldName, worldFolder.getPath());
         return checkFolder(worldFolder);
     }
 
@@ -120,7 +135,7 @@ public final class WorldNameChecker {
         if (worldFolder == null || !worldFolder.exists() || !worldFolder.isDirectory()) {
             return FolderStatus.DOES_NOT_EXIST;
         }
-        if (!folderHasDat(worldFolder)) {
+        if (!folderWorldSchemaCheck(worldFolder)) {
             return FolderStatus.NOT_A_WORLD;
         }
         return FolderStatus.VALID;
@@ -133,9 +148,54 @@ public final class WorldNameChecker {
      * @param worldFolder   The File that may be a world.
      * @return True if it looks like a world, else false.
      */
-    private boolean folderHasDat(@NotNull File worldFolder) {
-        File[] files = worldFolder.listFiles((file, name) -> name.toLowerCase(Locale.ENGLISH).endsWith(".dat"));
-        return files != null && files.length > 0;
+    private boolean folderWorldSchemaCheck(@NotNull File worldFolder) {
+        return WORLD_FOLDER_SCHEMA.stream()
+                .filter(schema -> schema.check(worldFolder))
+                .count() >= 2;
+    }
+
+    /**
+     * Helper class to check if a file or folder exist.
+     */
+    private interface WorldFolderSchema {
+
+        static WorldFolderSchema file(String path) {
+            return new WorldFile(path);
+        }
+
+        static WorldFolderSchema folder(String path) {
+            return new WorldFolder(path);
+        }
+
+        boolean check(File worldFolder);
+
+        final class WorldFile implements WorldFolderSchema {
+            private final String path;
+
+            private WorldFile(String path) {
+                this.path = path;
+            }
+
+            @Override
+            public boolean check(File worldFolder) {
+                File thisFolder = worldFolder.toPath().resolve(path).toFile();
+                return thisFolder.exists() && thisFolder.isFile();
+            }
+        }
+
+        final class WorldFolder implements WorldFolderSchema {
+            private final String path;
+
+            private WorldFolder(String path) {
+                this.path = path;
+            }
+
+            @Override
+            public boolean check(File worldFolder) {
+                File thisFolder = worldFolder.toPath().resolve(path).toFile();
+                return thisFolder.exists() && thisFolder.isDirectory();
+            }
+        }
     }
 
     /**

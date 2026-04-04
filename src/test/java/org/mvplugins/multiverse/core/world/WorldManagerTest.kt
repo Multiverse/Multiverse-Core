@@ -7,7 +7,15 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventClassMatcher.hasFiredEventInstance
 import org.mockbukkit.mockbukkit.matcher.plugin.PluginManagerFiredEventClassMatcher.hasNotFiredEventInstance
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.event.world.*
+import org.mvplugins.multiverse.core.event.world.MVWorldClonedEvent
+import org.mvplugins.multiverse.core.event.world.MVWorldCreatedEvent
+import org.mvplugins.multiverse.core.event.world.MVWorldDeleteEvent
+import org.mvplugins.multiverse.core.event.world.MVWorldImportedEvent
+import org.mvplugins.multiverse.core.event.world.MVWorldLoadedEvent
+import org.mvplugins.multiverse.core.event.world.MVWorldPropertyChangedEvent
+import org.mvplugins.multiverse.core.event.world.MVWorldRegeneratedEvent
+import org.mvplugins.multiverse.core.event.world.MVWorldRemovedEvent
+import org.mvplugins.multiverse.core.event.world.MVWorldUnloadedEvent
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions
@@ -190,6 +198,8 @@ class WorldManagerTest : TestWithMockBukkit() {
     fun `Load world failed - world folder exists but not imported`() {
         File(Bukkit.getWorldContainer(), "worldfolder").mkdir()
         File(Bukkit.getWorldContainer(), "worldfolder/level.dat").createNewFile()
+        File(Bukkit.getWorldContainer(), "worldfolder/data").mkdir()
+        File(Bukkit.getWorldContainer(), "worldfolder/region").mkdir()
         assertEquals(
             LoadFailureReason.WORLD_EXIST_FOLDER,
             worldManager.loadWorld("worldfolder").failureReason
@@ -270,8 +280,10 @@ class WorldManagerTest : TestWithMockBukkit() {
     fun `Get potential worlds`() {
         File(Bukkit.getWorldContainer(), "newworld1").mkdir()
         File(Bukkit.getWorldContainer(), "newworld1/level.dat").createNewFile()
+        File(Bukkit.getWorldContainer(), "newworld1/data").mkdir()
         File(Bukkit.getWorldContainer(), "newworld2").mkdir()
         File(Bukkit.getWorldContainer(), "newworld2/level.dat").createNewFile()
+        File(Bukkit.getWorldContainer(), "newworld2/data").mkdir()
         assertEquals(setOf("newworld1", "newworld2"), worldManager.getPotentialWorlds().toSet())
     }
 

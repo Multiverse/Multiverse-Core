@@ -220,7 +220,10 @@ final class CoreConfigNodes {
 
     final ConfigNode<PassengerModes> passengerMode = node(ConfigNode.builder("teleport.passenger-mode", PassengerModes.class)
             .comment("")
-            .comment("Configures how passengers and vehicles are handled when an entity is teleported.")
+            .comment("Configures how passengers and vehicles are handled when an entity is teleported. This config is")
+            .comment("only applied to /mvtp, join-destination and first-spawn-override. It will not touch any other")
+            .comment("teleport by other plugins or commands.")
+            .comment("========= Available options: =========")
             .comment("  default: Server will handle passengers and vehicles. On papermc 1.21.10+, all will be retained by default.")
             .comment("                                                       On older versions, all will be dismounted if world changes.")
             .comment("  dismount_passengers: Passengers will be removed from the parent entity before the teleport.")
