@@ -106,17 +106,30 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button><button id="method-summary-table-tab6" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab6', 3)" class="table-tab">Deprecated Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#fromTo(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld,java.lang.String)" class="member-name-link">fromTo</a><wbr>(<a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a>&nbsp;world,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newWorldName)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code>static @NotNull <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#fromTo(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld,java.lang.String)" class="member-name-link">fromTo</a><wbr>(@NotNull <a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a>&nbsp;fromWorld,
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newWorldName)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Cloning can be done from unloaded worlds as well.</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static @NotNull <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#fromTo(org.mvplugins.multiverse.core.world.MultiverseWorld,java.lang.String)" class="member-name-link">fromTo</a><wbr>(@NotNull <a href="../MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a>&nbsp;fromWorld,
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newWorldName)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Creates a new <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CloneWorldOptions</code></a> instance with the given world.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="../MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fromWorld()" class="member-name-link">fromWorld</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the loaded world to clone.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#keepGameRule()" class="member-name-link">keepGameRule</a>()</code></div>
@@ -148,7 +161,7 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets whether to keep the world config of the world during cloning.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newWorldName()" class="member-name-link">newWorldName</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the name of the new world.</div>
@@ -163,10 +176,12 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets whether to save the world to disk before clone copying.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#world()" class="member-name-link">world</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the world to clone.</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#world()" class="member-name-link">world</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Cloning can be done from unloaded worlds as well.</div>
+</div>
 </div>
 </div>
 </div>
@@ -188,12 +203,21 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 <li>
 <section class="detail" id="fromTo(org.mvplugins.multiverse.core.world.LoadedMultiverseWorld,java.lang.String)">
 <h3>fromTo</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></span>&nbsp;<span class="element-name">fromTo</span><wbr><span class="parameters">(<a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a>&nbsp;world,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newWorldName)</span></div>
-<div class="block">Creates a new <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CloneWorldOptions</code></a> instance with the given world.</div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true,
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="5.6")
+@ScheduledForRemoval(inVersion="6.0")
+@NotNull
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NotNull <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></span>&nbsp;<span class="element-name">fromTo</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a>&nbsp;fromWorld,
+ @NotNull
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newWorldName)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Cloning can be done from unloaded worlds as well. Use <a href="#fromTo(org.mvplugins.multiverse.core.world.MultiverseWorld,java.lang.String)"><code>fromTo(MultiverseWorld, String)</code></a> instead.</div>
+</div>
+<div class="block">Creates a new <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CloneWorldOptions</code></a> instance with the given loaded world.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>world</code> - The world to clone.</dd>
+<dd><code>fromWorld</code> - The loaded world to clone.</dd>
 <dd><code>newWorldName</code> - The name of the new world.</dd>
 <dt>Returns:</dt>
 <dd>A new <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CloneWorldOptions</code></a> instance.</dd>
@@ -201,10 +225,37 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 </section>
 </li>
 <li>
+<section class="detail" id="fromTo(org.mvplugins.multiverse.core.world.MultiverseWorld,java.lang.String)">
+<h3>fromTo</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.6")
+@NotNull
+</span><span class="modifiers">public static</span>&nbsp;<span class="return-type">@NotNull <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options">CloneWorldOptions</a></span>&nbsp;<span class="element-name">fromTo</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="../MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a>&nbsp;fromWorld,
+ @NotNull
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newWorldName)</span></div>
+<div class="block">Creates a new <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CloneWorldOptions</code></a> instance with the given world.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>fromWorld</code> - The world to clone.</dd>
+<dd><code>newWorldName</code> - The name of the new world.</dd>
+<dt>Returns:</dt>
+<dd>A new <a href="CloneWorldOptions.html" title="class in org.mvplugins.multiverse.core.world.options"><code>CloneWorldOptions</code></a> instance.</dd>
+<dt>Since:</dt>
+<dd>5.6</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="world()">
 <h3>world</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a></span>&nbsp;<span class="element-name">world</span>()</div>
-<div class="block">Gets the world to clone.</div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true,
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="5.6")
+@ScheduledForRemoval(inVersion="6.0")
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../LoadedMultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">LoadedMultiverseWorld</a></span>&nbsp;<span class="element-name">world</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Cloning can be done from unloaded worlds as well. Use <a href="#fromWorld()"><code>fromWorld()</code></a> instead.</div>
+</div>
+<div class="block">Gets the loaded world to clone.</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>The world to clone.</dd>
@@ -212,9 +263,25 @@ implements <a href="KeepWorldSettingsOptions.html" title="interface in org.mvplu
 </section>
 </li>
 <li>
+<section class="detail" id="fromWorld()">
+<h3>fromWorld</h3>
+<div class="member-signature"><span class="annotations">@AvailableSince("5.6")
+@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="../MultiverseWorld.html" title="class in org.mvplugins.multiverse.core.world">MultiverseWorld</a></span>&nbsp;<span class="element-name">fromWorld</span>()</div>
+<div class="block">Gets the loaded world to clone.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The world to clone.</dd>
+<dt>Since:</dt>
+<dd>5.6</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="newWorldName()">
 <h3>newWorldName</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">newWorldName</span>()</div>
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">@NotNull <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">newWorldName</span>()</div>
 <div class="block">Gets the name of the new world.</div>
 <dl class="notes">
 <dt>Returns:</dt>
