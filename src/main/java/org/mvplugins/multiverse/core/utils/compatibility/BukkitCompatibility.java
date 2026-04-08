@@ -14,6 +14,8 @@ import java.nio.file.Path;
 
 /**
  * Compatibility class used to handle API changes in {@link Bukkit} class.
+ *
+ * @since 5.6
  */
 @ApiStatus.AvailableSince("5.6")
 public final class BukkitCompatibility {
@@ -27,6 +29,23 @@ public final class BukkitCompatibility {
     }
 
     /**
+     * Check whether the server is using the new dimension storage system introduced in PaperMC 26.1.
+     * <br />
+     * This is based of whether getLevelDirectory method exists in the server class,which is the main API change for
+     * the new dimension storage system.
+     *
+     * @return True if the server is using the new dimension storage system, else false.
+     *
+     * @since 5.6
+     */
+    @ApiStatus.AvailableSince("5.6")
+    public static boolean isUsingNewDimensionStorage() {
+        return GET_LEVEL_DIRECTORY_METHOD
+                .flatMap(method -> Option.of(ReflectHelper.invokeMethod(Bukkit.getServer(), method)))
+                .isDefined();
+    }
+
+    /**
      * Gets the folder where all the worlds will be store. Before 26.1, all worlds are stored in the root directory
      * of the server, which can be obtained by {@link Server#getWorldContainer()}.
      * <br />
@@ -34,6 +53,8 @@ public final class BukkitCompatibility {
      * level directory, which needs to be manually parsed.
      *
      * @return The location where all the worlds folders should be, depending on server's mc version.
+     *
+     * @since 5.6
      */
     @ApiStatus.AvailableSince("5.6")
     @NotNull
@@ -55,6 +76,8 @@ public final class BukkitCompatibility {
      *
      * @param nameOrKey Either a name or namespaced key string representation.
      * @return The world if it exists
+     *
+     * @since 5.6
      */
     @ApiStatus.AvailableSince("5.6")
     @NotNull

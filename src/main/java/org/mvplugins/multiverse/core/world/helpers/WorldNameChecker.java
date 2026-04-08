@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
+import org.bukkit.Bukkit;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -95,7 +96,7 @@ public final class WorldNameChecker {
      * @return True if check result is valid, else false.
      */
     public boolean isValidWorldFolder(@Nullable String worldName) {
-        return checkFolder(worldName) == FolderStatus.VALID;
+        return checkFolder(worldName).loadable;
     }
 
     /**
@@ -105,7 +106,7 @@ public final class WorldNameChecker {
      * @return True if check result is valid, else false.
      */
     public boolean isValidWorldFolder(@Nullable File worldFolder) {
-        return checkFolder(worldFolder) == FolderStatus.VALID;
+        return checkFolder(worldFolder).loadable;
     }
 
     /**
@@ -120,7 +121,13 @@ public final class WorldNameChecker {
             return FolderStatus.DOES_NOT_EXIST;
         }
         File worldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(worldName).toFile();
-        Logging.finer("Checking valid folder for world '%s' at: '%s'", worldName, worldFolder.getPath());
+        if (BukkitCompatibility.isUsingNewDimensionStorage()) {
+            File oldWorldFolder = Bukkit.getWorldContainer().toPath().resolve(worldName).toFile();
+            if (checkFolder(oldWorldFolder) == FolderStatus.VALID) {
+                return FolderStatus.REQUIRES_MIGRATION;
+            }
+        }
+
         return checkFolder(worldFolder);
     }
 
@@ -230,16 +237,39 @@ public final class WorldNameChecker {
         /**
          * Folder is valid.
          */
-        VALID,
+        VALID(true),
+
+        /**
+         * This folder will cause PaperMC to migrate to new dimension world folder in 26.1+
+         */
+        REQUIRES_MIGRATION(true),
 
         /**
          * Folder exist, but contents in it doesnt look like a world.
          */
-        NOT_A_WORLD,
+        NOT_A_WORLD(false),
 
         /**
          * Folder does not exist.
          */
-        DOES_NOT_EXIST
+        DOES_NOT_EXIST(false),
+        ;
+
+        private final boolean loadable;
+
+        FolderStatus(boolean loadable) {
+            this.loadable = loadable;
+        }
+
+        /**
+         * Whether this folder status is loadable, meaning it has the basic world data and can be loaded as a world.
+         * Note that this does not guarantee the server will definitely load the world with no errors.
+         *
+         * @return True if folder probably is loadable by the server, else false.
+         */
+        @ApiStatus.AvailableSince("5.6")
+        public boolean isLoadable() {
+            return loadable;
+        }
     }
 }
