@@ -120,14 +120,16 @@ public final class WorldNameChecker {
         if (worldName == null) {
             return FolderStatus.DOES_NOT_EXIST;
         }
-        File worldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(worldName).toFile();
+
         if (BukkitCompatibility.isUsingNewDimensionStorage()) {
             File oldWorldFolder = Bukkit.getWorldContainer().toPath().resolve(worldName).toFile();
             if (checkFolder(oldWorldFolder) == FolderStatus.VALID) {
                 return FolderStatus.REQUIRES_MIGRATION;
             }
+            worldName = worldName.toLowerCase(Locale.ENGLISH); // namespace is case-insensitive and stored as lowercase
         }
 
+        File worldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(worldName).toFile();
         return checkFolder(worldFolder);
     }
 
