@@ -317,8 +317,17 @@ public final class WorldManager {
         String worldName = options.worldName();
         if (!worldNameChecker.isValidWorldName(worldName)) {
             return worldActionResult(ImportFailureReason.INVALID_WORLDNAME, worldName);
-        } else if (options.doFolderCheck() && !worldNameChecker.isValidWorldFolder(worldName)) {
-            return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, worldName);
+        } else if (options.doFolderCheck()) {
+            //todo This is a duplicate of folder check in load world
+            WorldNameChecker.FolderStatus folderStatus = worldNameChecker.checkFolder(options.worldName());
+            if (!folderStatus.isLoadable()) {
+                return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, options.worldName());
+            }
+            if (folderStatus == WorldNameChecker.FolderStatus.REQUIRES_MIGRATION) {
+                Logging.info("World '%s' will be automatically migrated by PaperMC to the new dimension " +
+                                "location. If you face any issue with migration, please contact PaperMC support!",
+                        options.worldName());
+            }
         }
         return worldActionResult(options);
     }
@@ -480,8 +489,16 @@ public final class WorldManager {
             return doLoadBukkitWorld(bukkitWorld, mvWorld);
         }
 
-        if (options.doFolderCheck() && !worldNameChecker.isValidWorldFolder(mvWorld.getName())) {
-            return worldActionResult(LoadFailureReason.WORLD_FOLDER_INVALID, mvWorld.getName());
+        if (options.doFolderCheck()) {
+            WorldNameChecker.FolderStatus folderStatus = worldNameChecker.checkFolder(mvWorld.getName());
+            if (!folderStatus.isLoadable()) {
+                return worldActionResult(LoadFailureReason.WORLD_FOLDER_INVALID, mvWorld.getName());
+            }
+            if (folderStatus == WorldNameChecker.FolderStatus.REQUIRES_MIGRATION) {
+                Logging.info("World '%s' will be automatically migrated by PaperMC to the new dimension " +
+                        "location. If you face any issue with migration, please contact PaperMC support!",
+                        mvWorld.getName());
+            }
         }
 
         WorldCreator worldCreator = WorldCreator.name(mvWorld.getName())
