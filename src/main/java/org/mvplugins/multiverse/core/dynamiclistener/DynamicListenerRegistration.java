@@ -35,7 +35,7 @@ public final class DynamicListenerRegistration {
     private static final boolean hasEventExecutorCreate;
 
     static {
-        hasEventExecutorCreate = ReflectHelper.getMethod(EventExecutor.class, "create", Method.class, Class.class) != null;
+        hasEventExecutorCreate = ReflectHelper.hasMethod(EventExecutor.class, "create", Method.class, Class.class);
     }
 
     private final EventPriorityMapper eventPriorityMapper;
@@ -98,18 +98,22 @@ public final class DynamicListenerRegistration {
         }
 
         method.setAccessible(true);
-        Object methodOutput = ReflectHelper.invokeMethod(listener, method);
-        if (!(methodOutput instanceof EventRunnable eventRunnable)) {
-            Logging.warning("Event method %s in %s did not return a SingleEventListener",
-                    method.getName(), listener.getClass().getName());
-            return;
-        }
-        EventExecutor executor = new EventRunnableExecutor<>(eventClass, eventRunnable);
-        EventPriority priority = getDynamicEventPriority(method);
-        boolean ignoreCancelled = isIgnoreIfCancelled(method);
 
-        Logging.finest("Registering dynamic event for %s with priority %s", eventClass.getName(), priority);
-        Bukkit.getPluginManager().registerEvent(eventClass, listener, priority, executor, plugin, ignoreCancelled);
+        ReflectHelper.tryInvokeMethod(listener, method)
+                .onFailure(e -> Logging.warning("Failed to invoke event method %s in %s: $s",
+                        method.getName(), listener.getClass().getName(), e.getMessage()))
+                .filter(EventRunnable.class::isInstance)
+                .onFailure(e -> Logging.warning("Event method %s in %s did not return an EventRunnable instance!",
+                        method.getName(), listener.getClass().getName()))
+                .map(EventRunnable.class::cast)
+                .map(eventRunnable -> new EventRunnableExecutor<>(eventClass, eventRunnable))
+                .peek(executor -> {
+                    EventPriority priority = getDynamicEventPriority(method);
+                    boolean ignoreCancelled = isIgnoreIfCancelled(method);
+                    Bukkit.getPluginManager().registerEvent(eventClass, listener, priority, executor, plugin, ignoreCancelled);
+                    Logging.finest("Registered dynamic event: %s, priority: %s, ignore if cancelled: %s",
+                            eventClass.getName(), priority, ignoreCancelled);
+                });
     }
 
     private Class<? extends Event> getEventClass(Method method) {
@@ -129,13 +133,12 @@ public final class DynamicListenerRegistration {
     }
 
     private Class<? extends Event> getEventClassFromString(String className) {
-        Class<?> annotatedClass = ReflectHelper.getClass(className);
-        if (annotatedClass == null || !Event.class.isAssignableFrom(annotatedClass)) {
-            // Usually means the server software used did not implement the event
-            Logging.fine("Event class does not exist: %s", className);
-            return null;
-        }
-        return annotatedClass.asSubclass(Event.class);
+        return ReflectHelper.tryGetClass(className)
+                .onFailure(throwable -> Logging.fine("Failed to find event class: %s", className))
+                .filter(Event.class::isAssignableFrom)
+                .onFailure(throwable -> Logging.warning("Class is not an Event: %s", className))
+                .map(clazz -> (Class<? extends Event>) clazz.asSubclass(Event.class))
+                .getOrNull();
     }
 
     private EventPriority getDynamicEventPriority(Method method) {
