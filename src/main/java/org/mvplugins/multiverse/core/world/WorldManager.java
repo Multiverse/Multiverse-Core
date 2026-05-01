@@ -252,16 +252,15 @@ public final class WorldManager {
 
     private Attempt<CreateWorldOptions, CreateFailureReason> validateCreateWorldOptions(
             CreateWorldOptions options) {
-        if (!worldNameChecker.isValidWorldName(options.worldName())) {
-            return worldActionResult(CreateFailureReason.INVALID_WORLDNAME, options.worldName());
-        } else if (getLoadedWorld(options.worldName()).isDefined()) {
-            return worldActionResult(CreateFailureReason.WORLD_EXIST_LOADED, options.worldName());
-        } else if (getWorld(options.worldName()).isDefined()) {
-            return worldActionResult(CreateFailureReason.WORLD_EXIST_UNLOADED, options.worldName());
-        } else if (options.doFolderCheck() && worldNameChecker.hasWorldFolder(options.worldName())) {
-            return worldActionResult(CreateFailureReason.WORLD_EXIST_FOLDER, options.worldName());
-        }
-        return worldActionResult(options);
+        return Attempt.<CreateWorldOptions, CreateFailureReason>success(options)
+                .failIf(opts -> !worldNameChecker.isValidWorldName(opts.worldName()),
+                        opts -> worldActionResult(CreateFailureReason.INVALID_WORLDNAME, opts.worldName()))
+                .failIf(opts -> getLoadedWorld(opts.worldName()).isDefined(),
+                        opts -> worldActionResult(CreateFailureReason.WORLD_EXIST_LOADED, opts.worldName()))
+                .failIf(opts -> getWorld(opts.worldName()).isDefined(),
+                        opts -> worldActionResult(CreateFailureReason.WORLD_EXIST_UNLOADED, opts.worldName()))
+                .failIf(opts -> opts.doFolderCheck() && worldNameChecker.hasWorldFolder(opts.worldName()),
+                        opts -> worldActionResult(CreateFailureReason.WORLD_EXIST_FOLDER, opts.worldName()));
     }
 
     private Attempt<LoadedMultiverseWorld, CreateFailureReason> doCreateWorld(
@@ -762,26 +761,19 @@ public final class WorldManager {
 
     private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldValidateWorld(
             @NotNull CloneWorldOptions options) {
-        String newWorldName = options.newWorldName();
-        if (!worldNameChecker.isValidWorldName(newWorldName)) {
-            Logging.severe("Invalid world name: " + newWorldName);
-            return worldActionResult(CloneFailureReason.INVALID_WORLDNAME, newWorldName);
-        }
-        if (isLoadedWorld(newWorldName)) {
-            Logging.severe("World already loaded when attempting to clone: " + newWorldName);
-            return worldActionResult(CloneFailureReason.WORLD_EXIST_LOADED, newWorldName);
-        }
-        if (isWorld(newWorldName)) {
-            Logging.severe("World already exist unloaded: " + newWorldName);
-            return worldActionResult(CloneFailureReason.WORLD_EXIST_UNLOADED, newWorldName);
-        }
-        if (worldNameChecker.hasWorldFolder(newWorldName)) {
-            return worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, newWorldName);
-        }
-        if (!worldNameChecker.isValidWorldFolder(options.fromWorld().getName())) {
-            return worldActionResult(CloneFailureReason.FROM_WORLD_FOLDER_INVALID, options.fromWorld().getName());
-        }
-        return worldActionResult(options);
+        return Attempt.<String, CloneFailureReason>success(options.newWorldName())
+                .failIf(name -> !worldNameChecker.isValidWorldName(name),
+                        name -> worldActionResult(CloneFailureReason.INVALID_WORLDNAME, name))
+                .failIf(this::isLoadedWorld,
+                        name -> worldActionResult(CloneFailureReason.WORLD_EXIST_LOADED, name))
+                .failIf(this::isWorld,
+                        name -> worldActionResult(CloneFailureReason.WORLD_EXIST_UNLOADED, name))
+                .failIf(worldNameChecker::hasWorldFolder,
+                        name -> worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, name))
+                .failIf(name -> !worldNameChecker.isValidWorldFolder(options.fromWorld().getName()),
+                        name -> worldActionResult(CloneFailureReason.FROM_WORLD_FOLDER_INVALID,
+                                options.fromWorld().getName()))
+                .map(ignored -> options);
     }
 
     private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldCopyFolder(@NotNull CloneWorldOptions options) {
@@ -895,14 +887,14 @@ public final class WorldManager {
         return Attempt.success(value);
     }
 
-    private <T, F extends FailureReason> Attempt<T, F> worldActionResult(
+    private <T, F extends FailureReason> Attempt.Failure<T, F> worldActionResult(
             @NotNull F failureReason, @NotNull String worldName) {
-        return Attempt.failure(failureReason, Replace.WORLD.with(worldName));
+        return Attempt.failureRef(failureReason, Replace.WORLD.with(worldName));
     }
 
-    private <T, F extends FailureReason> Attempt<T, F> worldActionResult(
+    private <T, F extends FailureReason> Attempt.Failure<T, F> worldActionResult(
             @NotNull F failureReason, @NotNull String worldName, @NotNull Throwable error) {
-        return Attempt.failure(failureReason, Replace.WORLD.with(worldName), Replace.ERROR.with(error));
+        return Attempt.failureRef(failureReason, Replace.WORLD.with(worldName), Replace.ERROR.with(error));
     }
 
     private Attempt<WorldCreator, WorldCreatorFailureReason> addBiomeProviderToCreator(
