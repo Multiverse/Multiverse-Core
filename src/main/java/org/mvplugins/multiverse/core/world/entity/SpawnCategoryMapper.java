@@ -4,10 +4,8 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Try;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.SpawnCategory;
-import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.utils.ReflectHelper;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,17 +28,17 @@ final class SpawnCategoryMapper {
     private static void buildSpawnCategoryMap() {
         spawnCategoryMap = new HashMap<>();
 
-        Class<?> entityTypeClass = ReflectHelper.getClass("net.minecraft.world.entity.EntityType");
+        Class<?> entityTypeClass = ReflectHelper.tryGetClass("net.minecraft.world.entity.EntityType").getOrNull();
         if (entityTypeClass == null) {
             Logging.warning("Failed to find EntityType class. SpawnCategoryMapper will not work.");
             return;
         }
-        Method getCategoryMethod = ReflectHelper.getMethod(entityTypeClass, "getCategory");
+        Method getCategoryMethod = ReflectHelper.tryGetMethod(entityTypeClass, "getCategory").getOrNull();
         if (getCategoryMethod == null) {
             Logging.warning("Failed to find getCategory method. SpawnCategoryMapper will not work.");
             return;
         }
-        Class<?> craftSpawnCategoryClass = ReflectHelper.getClass("org.bukkit.craftbukkit.util.CraftSpawnCategory");
+        Class<?> craftSpawnCategoryClass = ReflectHelper.tryGetClass("org.bukkit.craftbukkit.util.CraftSpawnCategory").getOrNull();
         if (craftSpawnCategoryClass == null) {
             Logging.warning("Failed to find CraftSpawnCategory class. SpawnCategoryMapper will not work.");
             return;
@@ -53,25 +51,15 @@ final class SpawnCategoryMapper {
             Logging.warning("Failed to find toBukkit method. SpawnCategoryMapper will not work.");
             return;
         }
-        Field[] entityTypeFields = entityTypeClass.getFields();
-        for (Field entityTypeField : entityTypeFields) {
-            String entityName = entityTypeField.getName();
-            EntityType entityType = Try.of(() -> EntityType.valueOf(entityName)).getOrNull();
-            if (entityType == null) {
-                continue;
-            }
-            Object nmsEntityType = ReflectHelper.getFieldValue(null, entityTypeField, entityTypeClass);
-            Object nsmMobCategory = ReflectHelper.invokeMethod(nmsEntityType, getCategoryMethod);
-            if (nsmMobCategory == null) {
-                continue;
-            }
-            Object bukkitSpawnCategory = ReflectHelper.invokeMethod(null, toBukkitMethod, nsmMobCategory);
-            if (!(bukkitSpawnCategory instanceof SpawnCategory spawnCategory)) {
-                continue;
-            }
-            spawnCategoryMap.computeIfAbsent(spawnCategory, ignore -> new ArrayList<>())
-                    .add(entityType);
-        }
+        Arrays.stream(entityTypeClass.getFields()).forEach(entityTypeField -> Try.of(() -> EntityType.valueOf(entityTypeField.getName()))
+                .peek(entityType -> ReflectHelper.tryGetStaticFieldValue(entityTypeField, entityTypeClass)
+                        .flatMap(nmsEntityType -> ReflectHelper.tryInvokeMethod(nmsEntityType, getCategoryMethod))
+                        .flatMap(nsmMobCategory -> ReflectHelper.tryInvokeStaticMethod(toBukkitMethod, nsmMobCategory))
+                        .filter(bukkitSpawnCategory -> bukkitSpawnCategory instanceof SpawnCategory)
+                        .map(bukkitSpawnCategory -> (SpawnCategory) bukkitSpawnCategory)
+                        .peek(bukkitSpawnCategory -> spawnCategoryMap
+                                .computeIfAbsent(bukkitSpawnCategory, ignore -> new ArrayList<>())
+                                .add(entityType))));
     }
 
     /**

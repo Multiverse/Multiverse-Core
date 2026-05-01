@@ -1,7 +1,6 @@
 package org.mvplugins.multiverse.core.world;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,9 +48,9 @@ import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.CaseInsensitiveStringMap;
-import org.mvplugins.multiverse.core.utils.ReflectHelper;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
+import org.mvplugins.multiverse.core.utils.compatibility.WorldCompatibility;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
@@ -788,7 +787,7 @@ public final class WorldManager {
         if (options.saveBukkitWorld()) {
             options.fromWorld().asLoadedWorld().peek(loadedWorld -> {
                 Logging.finer("Saving world before cloning: " + loadedWorld.getName());
-                loadedWorld.getBukkitWorld().peek(this::saveWorldWithFlush);
+                loadedWorld.getBukkitWorld().peek(bukkitWorld -> WorldCompatibility.saveWithFlush(bukkitWorld, true));
             });
         }
         File worldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(options.fromWorld().getName()).toFile();
@@ -797,17 +796,6 @@ public final class WorldManager {
                 exception -> worldActionResult(CloneFailureReason.COPY_FAILED,
                         options.fromWorld().getName(), exception),
                 success -> worldActionResult(options));
-    }
-
-    // This method is only available since 1.21
-    private final Method saveWithFlush = ReflectHelper.getMethod(World.class, "save", boolean.class);
-    private void saveWorldWithFlush(World world) {
-        if (saveWithFlush != null) {
-            Logging.fine("Using world save method with flush...");
-            ReflectHelper.invokeMethod(world, saveWithFlush, true);
-        } else {
-            world.save();
-        }
     }
 
     private void cloneWorldTransferData(@NotNull CloneWorldOptions options, @NotNull LoadedMultiverseWorld newWorld) {
