@@ -9,7 +9,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
+import org.mvplugins.multiverse.core.utils.ServerProperties;
+import org.mvplugins.multiverse.core.utils.compatibility.UnsafeValuesCompatibility;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
+import org.mvplugins.multiverse.core.world.helpers.DimensionFinder;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -21,6 +24,10 @@ import java.util.Objects;
  */
 @ApiStatus.AvailableSince("5.7")
 public sealed abstract class WorldKeyOrName implements Comparable<WorldKeyOrName> permits WorldKeyOrName.Key, WorldKeyOrName.Name {
+
+    private static final String DEFAULT_OVERWORLD_KEY = "overworld";
+    private static final String DEFAULT_NETHER_KEY = "the_nether";
+    private static final String DEFAULT_END_KEY = "the_end";
 
     /**
      * Parse a string into a {@link WorldKeyOrName} instance.
@@ -57,9 +64,7 @@ public sealed abstract class WorldKeyOrName implements Comparable<WorldKeyOrName
      */
     @ApiStatus.AvailableSince("5.7")
     public static Attempt<WorldKeyOrName, WorldKeyParseFailReason> parseName(@NonNull String name) {
-        final String finalLowerCaseName = name.toLowerCase(Locale.ROOT);
-        //TODO: usable mapping for default level-name
-        return Try.of(() -> NamespacedKey.minecraft(finalLowerCaseName))
+        return Try.of(() -> NamespacedKey.minecraft(mapWorldNameToMinecraftKey(name)))
                 .map(usableKey -> Attempt.<WorldKeyOrName, WorldKeyParseFailReason>success(new Name(name, usableKey)))
                 .recover(throwable -> Attempt.failure(WorldKeyParseFailReason.INVALID_WORLD_NAME,
                         MessageReplacement.Replace.WORLD.with(name)))
@@ -67,10 +72,23 @@ public sealed abstract class WorldKeyOrName implements Comparable<WorldKeyOrName
                         MessageReplacement.Replace.WORLD.with(name)));
     }
 
+    private static String mapWorldNameToMinecraftKey(@NonNull String nameOrKey) {
+        String defaultLevelName = getMostAccurateLevelName();
+        String lowerCaseName = nameOrKey.toLowerCase(Locale.ROOT);
+        if (defaultLevelName.equalsIgnoreCase(lowerCaseName)) {
+            lowerCaseName = DEFAULT_OVERWORLD_KEY;
+        } else if (DimensionFinder.DEFAULT_NETHER_FORMAT.replaceOverworld(defaultLevelName).equalsIgnoreCase(lowerCaseName)) {
+            lowerCaseName = DEFAULT_NETHER_KEY;
+        } else if (DimensionFinder.DEFAULT_END_FORMAT.replaceOverworld(defaultLevelName).equalsIgnoreCase(lowerCaseName)) {
+            lowerCaseName = DEFAULT_END_KEY;
+        }
+        return lowerCaseName;
+    }
+
     /**
      * Parse a namespaced key string into a {@link WorldKeyOrName} instance.
      *
-     * @param nameOrKey The namespaced key string to parse (eg. "minecraft:world")
+     * @param nameOrKey The namespaced key string to parse (e.g. "minecraft:world")
      * @return An {@link Attempt} containing a {@link WorldKeyOrName.Key} on success or a
      * {@link WorldKeyParseFailReason#INVALID_NAMESPACED_KEY} failure on error
      *
@@ -80,7 +98,7 @@ public sealed abstract class WorldKeyOrName implements Comparable<WorldKeyOrName
     public static Attempt<WorldKeyOrName, WorldKeyParseFailReason> parseKey(@NonNull String nameOrKey) {
         return Option.of(NamespacedKey.fromString(nameOrKey))
                 .filter(Objects::nonNull)
-                .map(key -> Attempt.<WorldKeyOrName, WorldKeyParseFailReason>success(new Key(key)))
+                .map(key -> Attempt.<WorldKeyOrName, WorldKeyParseFailReason>success(new Key(key, usableNameFromKey(key))))
                 .getOrElse(() -> Attempt.failure(WorldKeyParseFailReason.INVALID_NAMESPACED_KEY,
                         MessageReplacement.Replace.NAMESPACE.with(nameOrKey)));
     }
@@ -95,7 +113,33 @@ public sealed abstract class WorldKeyOrName implements Comparable<WorldKeyOrName
      */
     @ApiStatus.AvailableSince("5.7")
     public static WorldKeyOrName parseKey(@NonNull NamespacedKey key) {
-        return new Key(key);
+        return new Key(key,  usableNameFromKey(key));
+    }
+
+    private static String usableNameFromKey(@NotNull NamespacedKey key) {
+        return key.getNamespace().equals(NamespacedKey.MINECRAFT)
+                ? mapMinecraftKeyToWorldName(key)
+                : mapCustomKeyToWorldName(key);
+    }
+
+    private static String mapMinecraftKeyToWorldName(@NotNull NamespacedKey key) {
+        String defaultLevelName = getMostAccurateLevelName();
+        return switch (key.getKey()) {
+            case DEFAULT_OVERWORLD_KEY -> defaultLevelName;
+            case DEFAULT_NETHER_KEY -> DimensionFinder.DEFAULT_NETHER_FORMAT.replaceOverworld(defaultLevelName);
+            case DEFAULT_END_KEY -> DimensionFinder.DEFAULT_END_FORMAT.replaceOverworld(defaultLevelName);
+            default -> key.getKey();
+        };
+    }
+
+    private static String mapCustomKeyToWorldName(@NotNull NamespacedKey key) {
+        return key.getNamespace() + "_" + key.getKey();
+    }
+
+    private static String getMostAccurateLevelName() {
+        return UnsafeValuesCompatibility.getMainLevelName()
+                .orElse(ServerProperties::getStaticLevelName)
+                .getOrElse("world"); // Worse case assume its world
     }
 
     /**
@@ -200,9 +244,11 @@ public sealed abstract class WorldKeyOrName implements Comparable<WorldKeyOrName
     public static final class Key extends WorldKeyOrName {
 
         private final NamespacedKey key;
+        private final String usableName;
 
-        private Key(@NotNull NamespacedKey key) {
+        private Key(@NotNull NamespacedKey key, @NotNull String usableName) {
             this.key = key;
+            this.usableName = usableName;
         }
 
         @Override
@@ -237,7 +283,7 @@ public sealed abstract class WorldKeyOrName implements Comparable<WorldKeyOrName
 
         @Override
         public @NotNull String usableName() {
-            return key.getKey();
+            return usableName;
         }
 
         @Override
@@ -261,6 +307,7 @@ public sealed abstract class WorldKeyOrName implements Comparable<WorldKeyOrName
         public String toString() {
             return "Key{" +
                     "key=" + key +
+                    ", usableName='" + usableName + '\'' +
                     '}';
         }
     }

@@ -4,6 +4,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.World.Environment;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
@@ -18,6 +19,24 @@ import java.util.regex.Pattern;
  */
 @Service
 public final class DimensionFinder {
+
+    /**
+     * Default world for nether worlds, The default is "%overworld_nether%", which means that the nether world of
+     * "world" will be named "world_nether".
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public static final DimensionFormat DEFAULT_NETHER_FORMAT = new DimensionFormat("%overworld%_nether");
+
+    /**
+     * Default world name format for end worlds. The default is "%overworld%_the_end", which means that the end world
+     * of "world" will be named "world_the_end".
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public static final DimensionFormat DEFAULT_END_FORMAT = new DimensionFormat("%overworld%_the_end");
 
     private final CoreConfig config;
     private final WorldManager worldManager;

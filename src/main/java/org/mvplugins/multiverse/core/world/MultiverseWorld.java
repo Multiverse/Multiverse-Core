@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.world;
 
+import java.io.File;
 import java.util.List;
 
 import com.google.common.base.Strings;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
+import org.mvplugins.multiverse.core.world.helpers.WorldFolderResolver;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
@@ -43,7 +45,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
 
     /**
      * The key that represents this world. This should now be used as the unique key for the world instead
-     * of the world name. The key cannot be changed.
+     * of the world name. Also note that the key cannot be modified.
      *
      * @return The world key
      */
@@ -54,16 +56,34 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
-     * Gets the name of this world. The name cannot be changed.
+     * Gets the name of this world. Prefer to use {@link #getKey()} as unique id instead of this name.
+     * Also note that the name cannot be modified.
      * <br/>
-     * Note for plugin developers: Usually {@link #getAliasOrName()}
-     * is what you want to use instead of this method.
+     * Note for plugin developers: Usually {@link #getAliasOrName()}is what you want to use instead of this method.
      *
      * @return The name of the world as a String.
      */
     @NotNull
     public String getName() {
         return worldConfig.getLegacyWorldName();
+    }
+
+    /**
+     * Gets the folder where all the world contents are stored in. Generally, the location of the folder is at the server
+     * roots directory for pre-26.1 servers, and at "[level]/dimensions" folder under the world level directory for
+     * 26.1+ PaperMC servers.
+     * <br />
+     * Note this folder location is based on Multiverse's understanding of Paper and Spigot's folder structure. If the
+     * server software does something weird, this folder will not reflect the actual world folder location.
+     * <br />
+     * If the world is loaded, you should use {@link World#getWorldFolder()} instead as it is more accurate.
+     * This method is more of a fallback for when the world is not loaded.
+     *
+     * @return The world folder.
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public File getOfflineWorldFolder() {
+        return WorldFolderResolver.resolve(this);
     }
 
     /**

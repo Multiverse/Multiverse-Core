@@ -40,15 +40,6 @@ public enum WorldKeyParseFailReason implements FailureReason {
      */
     @ApiStatus.AvailableSince("5.7")
     INVALID_NAMESPACED_KEY(MVCorei18n.WORLDKEYPARSE_INVALIDNAMESPACEDKEY),
-
-    /**
-     * The platform/server does not support namespaced keys for worlds. Only PaperMC can create worlds with
-     * namespaced keys. Spigot does not support it.
-     *
-     * @since 5.7
-     */
-    @ApiStatus.AvailableSince("5.7")
-    NAMESPACED_KEY_UNSUPPORTED(MVCorei18n.WORLDKEYPARSE_NAMESPACEDKEYUNSUPPORTED),
     ;
 
     private final MessageKeyProvider message;

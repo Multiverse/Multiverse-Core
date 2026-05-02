@@ -17,6 +17,15 @@ public enum ImportFailureReason implements FailureReason {
     INVALID_WORLDNAME(MVCorei18n.IMPORTWORLD_INVALIDWORLDNAME),
 
     /**
+     * The server software does not support create worlds using namespaced key. Only legacy world name is supported.
+     * Generally this will only be an issue on Spigot servers.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    NAMESPACEDKEY_UNSUPPORTED(MVCorei18n.WORLDKEYPARSE_NAMESPACEDKEYUNSUPPORTED),
+
+    /**
      * The world folder is invalid.
      */
     WORLD_FOLDER_INVALID(MVCorei18n.IMPORTWORLD_WORLDFOLDERINVALID),

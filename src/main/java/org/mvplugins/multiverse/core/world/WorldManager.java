@@ -51,6 +51,7 @@ import org.mvplugins.multiverse.core.utils.CaseInsensitiveStringMap;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCompatibility;
+import org.mvplugins.multiverse.core.utils.compatibility.WorldCreatorCompatibility;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
@@ -60,7 +61,8 @@ import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
-import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
+import org.mvplugins.multiverse.core.world.helpers.DimensionFinder;
+import org.mvplugins.multiverse.core.world.helpers.WorldFolderResolver;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
@@ -93,9 +95,6 @@ public final class WorldManager {
             "uid.dat", "session.lock", // All pre 26.1 format
             "data/paper/metadata.dat"  // New papermc format for 26.1+
     );
-
-    private static final DimensionFormat DEFAULT_NETHER_FORMAT = new DimensionFormat("%overworld%_nether");
-    private static final DimensionFormat DEFAULT_END_FORMAT = new DimensionFormat("%overworld%_the_end");
 
     private final CaseInsensitiveStringMap<MultiverseWorld> worldsMap;
     private final CaseInsensitiveStringMap<LoadedMultiverseWorld> loadedWorldsMap;
@@ -198,9 +197,10 @@ public final class WorldManager {
                 .collect(Collectors.toMap(World::getName, Function.identity()));
 
         serverProperties.getLevelName().peek(overworldName -> {
+            //TODO: check by namespaced key instead
             World overworld = bukkitWorlds.remove(overworldName);
-            World nether = bukkitWorlds.remove(DEFAULT_NETHER_FORMAT.replaceOverworld(overworldName));
-            World end = bukkitWorlds.remove(DEFAULT_END_FORMAT.replaceOverworld(overworldName));
+            World nether = bukkitWorlds.remove(DimensionFinder.DEFAULT_NETHER_FORMAT.replaceOverworld(overworldName));
+            World end = bukkitWorlds.remove(DimensionFinder.DEFAULT_END_FORMAT.replaceOverworld(overworldName));
 
             if (config.getAutoImportDefaultWorlds()) {
                 importExistingBukkitWorld(overworld);
@@ -247,33 +247,40 @@ public final class WorldManager {
      * @return The result of the creation.
      */
     public Attempt<LoadedMultiverseWorld, CreateFailureReason> createWorld(CreateWorldOptions options) {
-        return validateCreateWorldOptions(options).mapAttempt(this::doCreateWorld);
+        return parseCreateWorldOptionsKeyOrName(options).mapAttempt(this::doCreateWorld);
     }
 
-    private Attempt<CreateWorldOptions, CreateFailureReason> validateCreateWorldOptions(
+    private Attempt<KeyOrNameWithOptions<CreateWorldOptions>, CreateFailureReason> parseCreateWorldOptionsKeyOrName(
             CreateWorldOptions options) {
-        return Attempt.<CreateWorldOptions, CreateFailureReason>success(options)
-                .failIf(opts -> !worldNameChecker.isValidWorldName(opts.worldName()),
-                        opts -> worldActionResult(CreateFailureReason.INVALID_WORLDNAME, opts.worldName()))
-                .failIf(opts -> getLoadedWorld(opts.worldName()).isDefined(),
-                        opts -> worldActionResult(CreateFailureReason.WORLD_EXIST_LOADED, opts.worldName()))
-                .failIf(opts -> getWorld(opts.worldName()).isDefined(),
-                        opts -> worldActionResult(CreateFailureReason.WORLD_EXIST_UNLOADED, opts.worldName()))
-                .failIf(opts -> opts.doFolderCheck() && worldNameChecker.hasWorldFolder(opts.worldName()),
-                        opts -> worldActionResult(CreateFailureReason.WORLD_EXIST_FOLDER, opts.worldName()));
+        return options.keyOrName()
+                .fold(WorldKeyOrName::parse, Attempt::success)
+                .transform(CreateFailureReason.INVALID_WORLDNAME)
+                .failIf(keyOrName -> !worldNameChecker.isValidWorldName(keyOrName.usableName()),
+                        keyOrName -> worldActionResult(CreateFailureReason.INVALID_WORLDNAME, keyOrName))
+                .failIf(keyOrName -> keyOrName.isKey() && !WorldCreatorCompatibility.canCreateWorldWithKey(),
+                        keyOrName -> worldActionResult(CreateFailureReason.NAMESPACEDKEY_UNSUPPORTED, keyOrName))
+                .failIf(keyOrName -> getLoadedWorld(keyOrName.usableName()).isDefined(),
+                        keyOrName -> worldActionResult(CreateFailureReason.WORLD_EXIST_LOADED, keyOrName))
+                .failIf(keyOrName -> getWorld(keyOrName.usableName()).isDefined(),
+                        keyOrName -> worldActionResult(CreateFailureReason.WORLD_EXIST_UNLOADED, keyOrName))
+                .failIf(keyOrName -> options.doFolderCheck() && worldNameChecker.hasWorldFolder(keyOrName),
+                        keyOrName -> worldActionResult(CreateFailureReason.WORLD_EXIST_FOLDER, keyOrName))
+                .map(keyOrName -> new KeyOrNameWithOptions<>(keyOrName, options));
     }
 
     private Attempt<LoadedMultiverseWorld, CreateFailureReason> doCreateWorld(
-            CreateWorldOptions options) {
-        String generatorString = generatorProvider.parseGeneratorString(options.worldName(), options.generator());
-        WorldCreator worldCreator = WorldCreator.name(options.worldName())
+            KeyOrNameWithOptions<CreateWorldOptions> keyOrNameWithOptions) {
+        WorldKeyOrName keyOrName = keyOrNameWithOptions.keyOrName();
+        CreateWorldOptions options = keyOrNameWithOptions.options();
+        String generatorString = generatorProvider.parseGeneratorString(keyOrName.usableName(), options.generator());
+        WorldCreator worldCreator = WorldCreatorCompatibility.ofKeyOrName(keyOrName)
                 .environment(options.environment())
                 .generateStructures(options.generateStructures())
                 .generatorSettings(options.generatorSettings())
                 .seed(options.seed())
                 .type(options.worldType());
 
-        return addBiomeProviderToCreator(worldCreator, options.worldName(), options.biome())
+        return addBiomeProviderToCreator(worldCreator, keyOrName.usableName(), options.biome())
                 .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
                 .mapAttempt(this::createBukkitWorld)
                 .transform(CreateFailureReason.WORLD_CREATOR_FAILED)
@@ -301,43 +308,50 @@ public final class WorldManager {
      * @return The result of the import.
      */
     public Attempt<LoadedMultiverseWorld, ImportFailureReason> importWorld(ImportWorldOptions options) {
-        String worldName = options.worldName();
-        if (isLoadedWorld(worldName)) {
-            return worldActionResult(ImportFailureReason.WORLD_EXIST_LOADED, worldName);
-        } else if (isWorld(worldName)) {
-            return worldActionResult(ImportFailureReason.WORLD_EXIST_UNLOADED, worldName);
-        }
-        return Option.of(Bukkit.getWorld(worldName))
-                .map(bukkitWorld -> doImportBukkitWorld(options, bukkitWorld))
-                .getOrElse(() -> validateImportWorldOptions(options).mapAttempt(this::doImportWorld));
+        return options.keyOrName()
+                .fold(WorldKeyOrName::parse, Attempt::success)
+                .transform(ImportFailureReason.INVALID_WORLDNAME)
+                .failIf(keyOrName -> !worldNameChecker.isValidWorldName(keyOrName.usableName()),
+                        keyOrName -> worldActionResult(ImportFailureReason.INVALID_WORLDNAME, keyOrName))
+                .failIf(keyOrName -> keyOrName.isKey() && !WorldCreatorCompatibility.canCreateWorldWithKey(),
+                        keyOrName -> worldActionResult(ImportFailureReason.NAMESPACEDKEY_UNSUPPORTED, keyOrName))
+                .failIf(keyOrName -> getLoadedWorld(keyOrName.usableName()).isDefined(),
+                        keyOrName -> worldActionResult(ImportFailureReason.WORLD_EXIST_LOADED, keyOrName))
+                .failIf(keyOrName -> getWorld(keyOrName.usableName()).isDefined(),
+                        keyOrName -> worldActionResult(ImportFailureReason.WORLD_EXIST_UNLOADED, keyOrName))
+                .map(keyOrName -> new KeyOrNameWithOptions<>(keyOrName, options))
+                .mapAttempt(pair -> Option.of(Bukkit.getWorld(pair.keyOrName().usableName()))
+                        .map(bukkitWorld -> doImportBukkitWorld(pair, bukkitWorld))
+                        .getOrElse(() -> validateImportWorldOptions(pair).mapAttempt(this::doImportWorld)));
     }
 
-    private Attempt<ImportWorldOptions, ImportFailureReason> validateImportWorldOptions(ImportWorldOptions options) {
-        String worldName = options.worldName();
-        if (!worldNameChecker.isValidWorldName(worldName)) {
-            return worldActionResult(ImportFailureReason.INVALID_WORLDNAME, worldName);
-        } else if (options.doFolderCheck()) {
+    private Attempt<KeyOrNameWithOptions<ImportWorldOptions>, ImportFailureReason> validateImportWorldOptions(
+            KeyOrNameWithOptions<ImportWorldOptions> keyOrNameWithOptions) {
+        WorldKeyOrName keyOrName = keyOrNameWithOptions.keyOrName();
+        if (keyOrNameWithOptions.options().doFolderCheck()) {
             //todo This is a duplicate of folder check in load world
-            WorldNameChecker.FolderStatus folderStatus = worldNameChecker.checkFolder(options.worldName());
+            WorldNameChecker.FolderStatus folderStatus = worldNameChecker.checkFolder(keyOrName);
             if (!folderStatus.isLoadable()) {
-                return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, options.worldName());
+                return worldActionResult(ImportFailureReason.WORLD_FOLDER_INVALID, keyOrName);
             }
             if (folderStatus == WorldNameChecker.FolderStatus.REQUIRES_MIGRATION) {
                 Logging.info("World '%s' will be automatically migrated by PaperMC to the new dimension " +
                                 "location. If you face any issue with migration, please contact PaperMC support!",
-                        options.worldName());
+                        keyOrName);
             }
         }
-        return worldActionResult(options);
+        return worldActionResult(keyOrNameWithOptions);
     }
 
     private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportWorld(
-            ImportWorldOptions options) {
-        String generatorString = generatorProvider.parseGeneratorString(options.worldName(), options.generator());
-        WorldCreator worldCreator = WorldCreator.name(options.worldName())
+            KeyOrNameWithOptions<ImportWorldOptions> keyOrNameWithOptions) {
+        WorldKeyOrName keyOrName = keyOrNameWithOptions.keyOrName();
+        ImportWorldOptions options = keyOrNameWithOptions.options();
+        String generatorString = generatorProvider.parseGeneratorString(keyOrName.usableName(), options.generator());
+        WorldCreator worldCreator = WorldCreatorCompatibility.ofKeyOrName(keyOrName)
                 .environment(options.environment());
 
-        return addBiomeProviderToCreator(worldCreator, options.worldName(), options.biome())
+        return addBiomeProviderToCreator(worldCreator, keyOrName.usableName(), options.biome())
                 .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
                 .mapAttempt(this::createBukkitWorld)
                 .transform(ImportFailureReason.WORLD_CREATOR_FAILED)
@@ -349,7 +363,10 @@ public final class WorldManager {
                 .peek(loadedWorld -> pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld)));
     }
 
-    private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportBukkitWorld(ImportWorldOptions options, World bukkitWorld) {
+    private Attempt<LoadedMultiverseWorld, ImportFailureReason> doImportBukkitWorld(
+            KeyOrNameWithOptions<ImportWorldOptions> keyOrNameWithOptions, World bukkitWorld) {
+        WorldKeyOrName keyOrName = keyOrNameWithOptions.keyOrName();
+        ImportWorldOptions options = keyOrNameWithOptions.options();
         if (options.environment() != bukkitWorld.getEnvironment()) {
             return Attempt.failure(ImportFailureReason.BUKKIT_ENVIRONMENT_MISMATCH,
                     Replace.WORLD.with(bukkitWorld.getName()),
@@ -357,9 +374,11 @@ public final class WorldManager {
                     replace("{mvEnvironment}").with(options.environment().name()));
         }
 
+        //todo: check for key mismatch?
+
         LoadedMultiverseWorld loadedWorld = newLoadedMultiverseWorld(
                 bukkitWorld,
-                generatorProvider.parseGeneratorString(options.worldName(), options.generator()),
+                generatorProvider.parseGeneratorString(keyOrName.usableName(), options.generator()),
                 options.biome(),
                 options.useSpawnAdjust());
         pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
@@ -490,7 +509,7 @@ public final class WorldManager {
         }
 
         if (options.doFolderCheck()) {
-            WorldNameChecker.FolderStatus folderStatus = worldNameChecker.checkFolder(mvWorld.getName());
+            WorldNameChecker.FolderStatus folderStatus = worldNameChecker.checkFolder(mvWorld.getOfflineWorldFolder());
             if (!folderStatus.isLoadable()) {
                 return worldActionResult(LoadFailureReason.WORLD_FOLDER_INVALID, mvWorld.getName());
             }
@@ -501,7 +520,7 @@ public final class WorldManager {
             }
         }
 
-        WorldCreator worldCreator = WorldCreator.name(mvWorld.getName())
+        WorldCreator worldCreator = WorldCreatorCompatibility.ofNameAndKey(mvWorld.getKey(), mvWorld.getName())
                 .environment(mvWorld.getEnvironment())
                 .seed(mvWorld.getSeed());
         return addBiomeProviderToCreator(worldCreator, mvWorld.getName(), mvWorld.getBiome())
@@ -755,14 +774,14 @@ public final class WorldManager {
      * @return The result of the clone.
      */
     public Attempt<LoadedMultiverseWorld, CloneFailureReason> cloneWorld(@NotNull CloneWorldOptions options) {
-        return cloneWorldValidateWorld(options)
+        return parseCloneWorldOptionsNewWorld(options)
                 .mapAttempt(this::cloneWorldCopyFolder)
-                .mapAttempt(validatedOptions -> {
+                .mapAttempt(keyOrNameWithOptions -> {
                     ImportWorldOptions importWorldOptions = ImportWorldOptions
-                            .worldName(validatedOptions.newWorldName())
-                            .biome(validatedOptions.fromWorld().getBiome())
-                            .environment(validatedOptions.fromWorld().getEnvironment())
-                            .generator(validatedOptions.fromWorld().getGenerator());
+                            .worldKeyOrName(keyOrNameWithOptions.keyOrName())
+                            .biome(options.fromWorld().getBiome())
+                            .environment(options.fromWorld().getEnvironment())
+                            .generator(options.fromWorld().getGenerator());
                     return importWorld(importWorldOptions).transform(CloneFailureReason.IMPORT_FAILED);
                 })
                 .onSuccess(newWorld -> {
@@ -776,36 +795,43 @@ public final class WorldManager {
                 });
     }
 
-    private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldValidateWorld(
+    private Attempt<KeyOrNameWithOptions<CloneWorldOptions>, CloneFailureReason> parseCloneWorldOptionsNewWorld(
             @NotNull CloneWorldOptions options) {
-        return Attempt.<String, CloneFailureReason>success(options.newWorldName())
-                .failIf(name -> !worldNameChecker.isValidWorldName(name),
-                        name -> worldActionResult(CloneFailureReason.INVALID_WORLDNAME, name))
-                .failIf(this::isLoadedWorld,
-                        name -> worldActionResult(CloneFailureReason.WORLD_EXIST_LOADED, name))
-                .failIf(this::isWorld,
-                        name -> worldActionResult(CloneFailureReason.WORLD_EXIST_UNLOADED, name))
+        return options.newWorldKeyOrName()
+                .fold(WorldKeyOrName::parse, Attempt::success)
+                .transform(CloneFailureReason.INVALID_WORLDNAME)
+                .failIf(keyOrName -> !worldNameChecker.isValidWorldName(keyOrName.usableName()),
+                        keyOrName -> worldActionResult(CloneFailureReason.INVALID_WORLDNAME, keyOrName))
+                .failIf(keyOrName -> keyOrName.isKey() && !WorldCreatorCompatibility.canCreateWorldWithKey(),
+                        keyOrName -> worldActionResult(CloneFailureReason.NAMESPACEDKEY_UNSUPPORTED, keyOrName))
+                .failIf(keyOrName -> isLoadedWorld(keyOrName.usableName()),
+                        keyOrName -> worldActionResult(CloneFailureReason.WORLD_EXIST_LOADED, keyOrName))
+                .failIf(keyOrName -> isWorld(keyOrName.usableName()),
+                        keyOrName -> worldActionResult(CloneFailureReason.WORLD_EXIST_UNLOADED, keyOrName))
                 .failIf(worldNameChecker::hasWorldFolder,
-                        name -> worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, name))
-                .failIf(name -> !worldNameChecker.isValidWorldFolder(options.fromWorld().getName()),
-                        name -> worldActionResult(CloneFailureReason.FROM_WORLD_FOLDER_INVALID,
+                        keyOrName -> worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, keyOrName))
+                .failIf(keyOrName -> !worldNameChecker.isValidWorldFolder(options.fromWorld().getOfflineWorldFolder()),
+                        keyOrName -> worldActionResult(CloneFailureReason.FROM_WORLD_FOLDER_INVALID,
                                 options.fromWorld().getName()))
-                .map(ignored -> options);
+                .map(keyOrName -> new KeyOrNameWithOptions<>(keyOrName, options));
     }
 
-    private Attempt<CloneWorldOptions, CloneFailureReason> cloneWorldCopyFolder(@NotNull CloneWorldOptions options) {
+    private Attempt<KeyOrNameWithOptions<CloneWorldOptions>, CloneFailureReason> cloneWorldCopyFolder(
+            @NotNull KeyOrNameWithOptions<CloneWorldOptions> keyOrNameWithOptions) {
+        WorldKeyOrName newWorldkeyOrName = keyOrNameWithOptions.keyOrName();
+        CloneWorldOptions options = keyOrNameWithOptions.options();
         if (options.saveBukkitWorld()) {
             options.fromWorld().asLoadedWorld().peek(loadedWorld -> {
                 Logging.finer("Saving world before cloning: " + loadedWorld.getName());
                 loadedWorld.getBukkitWorld().peek(bukkitWorld -> WorldCompatibility.saveWithFlush(bukkitWorld, true));
             });
         }
-        File worldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(options.fromWorld().getName()).toFile();
-        File newWorldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(options.newWorldName()).toFile();
+        File worldFolder = WorldFolderResolver.resolve(options.fromWorld());
+        File newWorldFolder = WorldFolderResolver.resolve(newWorldkeyOrName);
         return fileUtils.copyFolder(worldFolder, newWorldFolder, CLONE_IGNORE_FILES).fold(
                 exception -> worldActionResult(CloneFailureReason.COPY_FAILED,
                         options.fromWorld().getName(), exception),
-                success -> worldActionResult(options));
+                success -> worldActionResult(keyOrNameWithOptions));
     }
 
     private void cloneWorldTransferData(@NotNull CloneWorldOptions options, @NotNull LoadedMultiverseWorld newWorld) {
@@ -894,7 +920,7 @@ public final class WorldManager {
     }
 
     private <T, F extends FailureReason> Attempt.Failure<T, F> worldActionResult(
-            @NotNull F failureReason, @NotNull String worldName) {
+            @NotNull F failureReason, @NotNull Object worldName) {
         return Attempt.failureRef(failureReason, Replace.WORLD.with(worldName));
     }
 
@@ -1244,4 +1270,14 @@ public final class WorldManager {
                     failure.printStackTrace();
                 });
     }
+
+    /**
+     * A simple pair wrapper for convenience to pass both the world key or name and the options together between methods
+     * when parsing world options.
+     *
+     * @param keyOrName The world key or name.
+     * @param options   The world options.
+     * @param <T> The world options type.
+     */
+    private record KeyOrNameWithOptions<T>(WorldKeyOrName keyOrName, T options) { }
 }
