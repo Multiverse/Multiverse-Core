@@ -13,7 +13,6 @@ world:
     enabled: false
     amount: 0.0
     currency: '@vault-economy'
-  environment: normal
   gamemode: survival
   biome: ''
   generator: ''
@@ -25,7 +24,6 @@ world:
   pvp: true
   respawn-world: ''
   scale: 1.0
-  seed: -9223372036854775808
   spawn-location:
     ==: MVSpawnLocation
     x: -64.0
@@ -75,7 +73,11 @@ world:
       spawn-limit: '@unset'
       tick-rate: '@unset'
   world-blacklist: []
-  version: 1.2
+  read-only:
+    environment: normal
+    legacy-world-name: world
+    seed: -9223372036854775808
+  version: 1.3
 world_nether:
   adjust-spawn: false
   alias: ''
@@ -91,7 +93,6 @@ world_nether:
     enabled: false
     amount: 0.0
     currency: '@vault-economy'
-  environment: nether
   gamemode: survival
   biome: ''
   generator: ''
@@ -103,7 +104,6 @@ world_nether:
   pvp: true
   respawn-world: ''
   scale: 8.0
-  seed: -9223372036854775808
   spawn-location:
     ==: MVSpawnLocation
     x: -64.0
@@ -153,8 +153,12 @@ world_nether:
       spawn-limit: '@unset'
       tick-rate: '@unset'
   world-blacklist: []
-  version: 1.2
-new[dot]world:
+  read-only:
+    environment: nether
+    legacy-world-name: world_nether
+    seed: -9223372036854775808
+  version: 1.3
+minecraft:new[dot]world:
   adjust-spawn: false
   alias: ''
   allow-advancement-grant: true
@@ -170,7 +174,6 @@ new[dot]world:
     enabled: false
     amount: 0.0
     currency: '@vault-economy'
-  environment: normal
   gamemode: survival
   generator: '@error'
   hidden: false
@@ -181,7 +184,6 @@ new[dot]world:
   pvp: true
   respawn-world: ''
   scale: 1.0
-  seed: -9223372036854775808
   spawn-location:
     ==: MVNullLocation (It's a bug if you see this in your config file)
   spawning:
@@ -226,4 +228,8 @@ new[dot]world:
       spawn-limit: '@unset'
       tick-rate: '@unset'
   world-blacklist: []
-  version: 1.2
+  read-only:
+    environment: normal
+    legacy-world-name: null
+    seed: -9223372036854775808
+  version: 1.3

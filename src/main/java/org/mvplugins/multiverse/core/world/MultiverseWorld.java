@@ -10,6 +10,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -26,11 +27,6 @@ import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
  */
 public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     /**
-     * This world's name.
-     */
-    protected final String worldName;
-
-    /**
      * This world's configuration.
      */
     WorldConfig worldConfig;
@@ -38,12 +34,23 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     protected final CoreConfig config;
     private String colourlessAlias = "";
 
-    MultiverseWorld(String worldName, WorldConfig worldConfig, CoreConfig config) {
-        this.worldName = worldName;
+    MultiverseWorld(WorldConfig worldConfig, CoreConfig config) {
         this.worldConfig = worldConfig;
         this.config = config;
         this.worldConfig.setMVWorld(this);
         updateColourlessAlias();
+    }
+
+    /**
+     * The key that represents this world. This should now be used as the unique key for the world instead
+     * of the world name. The key cannot be changed.
+     *
+     * @return The world key
+     */
+    @ApiStatus.AvailableSince("5.7")
+    @NotNull
+    public NamespacedKey getKey() {
+        return worldConfig.getWorldKeyOrName().usableKey();
     }
 
     /**
@@ -54,8 +61,9 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return The name of the world as a String.
      */
+    @NotNull
     public String getName() {
-        return worldName;
+        return worldConfig.getLegacyWorldName();
     }
 
     /**
@@ -144,7 +152,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      * @return The alias of the world as a String.
      */
     public String getAliasOrName() {
-        return Strings.isNullOrEmpty(worldConfig.getAlias()) ? worldName : worldConfig.getAlias();
+        return Strings.isNullOrEmpty(worldConfig.getAlias()) ? getName() : worldConfig.getAlias();
     }
 
     /**
@@ -689,7 +697,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @return The world config.
      */
-    WorldConfig getWorldConfig() {
+    @NotNull WorldConfig getWorldConfig() {
         return worldConfig;
     }
 
@@ -698,7 +706,7 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      *
      * @param worldConfig   The world config.
      */
-    void setWorldConfig(WorldConfig worldConfig) {
+    void setWorldConfig(@NotNull WorldConfig worldConfig) {
         this.worldConfig = worldConfig;
     }
 
@@ -708,7 +716,8 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     @Override
     public String toString() {
         return "MultiverseWorld{"
-                + "name='" + worldName + "', "
+                + "key='" + getKey() + "', "
+                + "name='" + getName() + "', "
                 + "env='" + getEnvironment() + "', "
                 + "gen='" + getGenerator() + "'"
                 + '}';

@@ -62,6 +62,7 @@ import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 import org.mvplugins.multiverse.core.world.options.CloneWorldOptions;
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions;
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
@@ -173,19 +174,19 @@ public final class WorldManager {
     }
 
     private void loadNewWorldConfigs(Collection<WorldConfig> newWorldConfigs) {
-        newWorldConfigs.forEach(worldConfig -> Option.of(worldsMap.get(worldConfig.getWorldName()))
-                .peek(unloadedWorld ->  unloadedWorld.setWorldConfig(worldConfig))
-                .onEmpty(() -> newMultiverseWorld(worldConfig.getWorldName(), worldConfig)));
+        newWorldConfigs.forEach(worldConfig -> Option.of(worldsMap.get(worldConfig.getWorldKeyOrName().usableName()))
+                .peek(unloadedWorld -> unloadedWorld.setWorldConfig(worldConfig))
+                .onEmpty(() -> newMultiverseWorld(worldConfig)));
     }
 
-    private void removeWorldsNotInConfigs(Collection<String> removedWorlds) {
-        removedWorlds.forEach(worldName -> getWorld(worldName)
+    private void removeWorldsNotInConfigs(Collection<WorldKeyOrName> removedWorlds) {
+        removedWorlds.forEach(keyOrName -> getWorld(keyOrName.usableName())
                 .map(world -> removeWorld(RemoveWorldOptions.world(world)))
-                .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, worldName))
+                .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, keyOrName.toString()))
                 .onFailure(failure ->
-                        Logging.severe("Failed to unload world %s: %s", worldName, failure))
+                        Logging.severe("Failed to unload world %s: %s", keyOrName, failure))
                 .onSuccess(success ->
-                        Logging.fine("Unloaded world %s as it was removed from config", worldName)));
+                        Logging.fine("Unloaded world %s as it was removed from config", keyOrName)));
     }
 
     /**
@@ -365,8 +366,8 @@ public final class WorldManager {
         return Attempt.success(loadedWorld);
     }
 
-    private MultiverseWorld newMultiverseWorld(String worldName, WorldConfig worldConfig) {
-        MultiverseWorld mvWorld = new MultiverseWorld(worldName, worldConfig, config);
+    private MultiverseWorld newMultiverseWorld(WorldConfig worldConfig) {
+        MultiverseWorld mvWorld = new MultiverseWorld(worldConfig, config);
         worldsMap.put(mvWorld.getName(), mvWorld);
         corePermissions.addWorldPermissions(mvWorld);
         return mvWorld;
@@ -381,7 +382,7 @@ public final class WorldManager {
      */
     private LoadedMultiverseWorld newLoadedMultiverseWorld(
             @NotNull World world, @Nullable String generator, @Nullable String biome, boolean adjustSpawn) {
-        WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getName());
+        WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getKey());
 
         // Properties from multiverse input
         worldConfig.setAdjustSpawn(adjustSpawn);
@@ -389,13 +390,14 @@ public final class WorldManager {
         worldConfig.setBiome(biome == null ? "" : biome);
 
         // Properties from the bukkit world
+        worldConfig.setLegacyWorldName(world.getName());
         worldConfig.setDifficulty(world.getDifficulty());
         worldConfig.setKeepSpawnInMemory(world.getKeepSpawnInMemory());
         worldConfig.setScale(getCoordinateScale(world));
 
         worldConfig.save();
 
-        newMultiverseWorld(world.getName(), worldConfig);
+        newMultiverseWorld(worldConfig);
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                 world,
                 worldConfig,
@@ -522,7 +524,23 @@ public final class WorldManager {
     }
 
     private Attempt<LoadedMultiverseWorld, LoadFailureReason> newLoadedMultiverseWorld(MultiverseWorld mvWorld, World bukkitWorld) {
-        WorldConfig worldConfig = worldsConfigManager.getWorldConfig(mvWorld.getName()).get(); //TODO: null check here, but logically it should never be null.
+        WorldConfig worldConfig = mvWorld.getWorldConfig();
+
+        if (worldConfig.getWorldKeyOrName().isName() && mvWorld.getName().equalsIgnoreCase(bukkitWorld.getName())) {
+            // do migration of namespaced key
+            Logging.info("Migrating world config for '%s' to use namespaced key '%s'...",
+                    mvWorld.getName(), bukkitWorld.getKey());
+            worldConfig = worldsConfigManager.migrateWorldConfigKey(worldConfig, bukkitWorld.getKey());
+            mvWorld.setWorldConfig(worldConfig);
+        }
+
+        if (!bukkitWorld.getKey().equals(mvWorld.getKey())) {
+            return Attempt.failure(LoadFailureReason.BUKKIT_NAMESPACED_KEY_MISMATCH,
+                    Replace.WORLD.with(mvWorld.getName()),
+                    replace("{bukkitNamespace}").with(bukkitWorld.getKey()),
+                    replace("{mvNamespace}").with(mvWorld.getKey()));
+        }
+
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                 bukkitWorld,
                 worldConfig,
@@ -662,7 +680,7 @@ public final class WorldManager {
         // Remove world from config
         worldsMap.remove(world.getName());
         world.getWorldConfig().deferenceMVWorld();
-        worldsConfigManager.deleteWorldConfig(world.getName());
+        worldsConfigManager.deleteWorldConfig(world.getKey());
         saveWorldsConfig();
         corePermissions.removeWorldPermissions(world);
         pluginManager.callEvent(new MVWorldRemovedEvent(world));
