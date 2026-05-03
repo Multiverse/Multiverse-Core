@@ -30,7 +30,9 @@ public final class WorldTickDeferrer {
                 .flatMap(getServerMethod -> ReflectHelper.tryInvokeMethod(server, getServerMethod))
                 .onFailure(throwable -> Logging.fine("Unable to find console."))
                 .toOption();
-        this.isIteratingOverLevelsMethod = ReflectHelper.tryGetField(console.getClass(), "isIteratingOverLevels")
+        this.isIteratingOverLevelsMethod = console.toTry()
+                .map(Object::getClass)
+                .flatMap(consoleClazz -> ReflectHelper.tryGetField(consoleClazz, "isIteratingOverLevels"))
                 .onFailure(throwable -> Logging.fine("Unable to find isIteratingOverLevels field."))
                 .toOption();
     }
