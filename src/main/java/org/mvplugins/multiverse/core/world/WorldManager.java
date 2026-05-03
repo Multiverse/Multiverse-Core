@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -17,6 +16,7 @@ import com.google.common.base.Strings;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
@@ -48,7 +48,6 @@ import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
-import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCreatorCompatibility;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
@@ -60,6 +59,7 @@ import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder;
+import org.mvplugins.multiverse.core.world.helpers.PotentialWorldFinder;
 import org.mvplugins.multiverse.core.world.helpers.WorldFolderResolver;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
@@ -109,6 +109,7 @@ public final class WorldManager {
     private final ServerProperties serverProperties;
     private final CoreConfig config;
     private final EntityPurger entityPurger;
+    private final Provider<PotentialWorldFinder> potentialWorldFinder;
 
     @Inject
     WorldManager(
@@ -124,7 +125,8 @@ public final class WorldManager {
             @NotNull CorePermissions corePermissions,
             @NotNull ServerProperties serverProperties,
             @NotNull CoreConfig config,
-            @NotNull EntityPurger entityPurger) {
+            @NotNull EntityPurger entityPurger,
+            @NotNull Provider<PotentialWorldFinder> potentialWorldFinder) {
         this.worldStore = worldStore;
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
@@ -138,6 +140,7 @@ public final class WorldManager {
         this.serverProperties = serverProperties;
         this.config = config;
         this.entityPurger = entityPurger;
+        this.potentialWorldFinder = potentialWorldFinder;
 
         this.unloadTracker = new ArrayList<>();
         this.loadTracker = new ArrayList<>();
@@ -1010,17 +1013,13 @@ public final class WorldManager {
      * Checks based on folder contents and name.
      *
      * @return A list of all potential worlds.
+     *
+     * @deprecated Use {@link PotentialWorldFinder#findPotentialWorlds()} instead.
      */
+    @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public List<String> getPotentialWorlds() {
-        File[] files = BukkitCompatibility.getWorldFoldersDirectory().toFile().listFiles();
-        if (files == null) {
-            return Collections.emptyList();
-        }
-        return Arrays.stream(files)
-                .filter(file -> BukkitCompatibility.getWorldByNameOrKey(file.getName()).isEmpty())
-                .filter(worldNameChecker::isValidWorldFolder)
-                .map(File::getName)
-                .toList();
+        return potentialWorldFinder.get().findPotentialWorlds();
     }
 
     /**
