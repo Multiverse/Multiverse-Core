@@ -39,7 +39,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
             @NotNull LocationManipulation locationManipulation,
             @NotNull EntityPurger entityPurger
     ) {
-        super(world.getName(), worldConfig, config);
+        super(worldConfig, config);
         this.worldUid = world.getUID();
         this.blockSafety = blockSafety;
         this.locationManipulation = locationManipulation;
@@ -173,7 +173,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    void setWorldConfig(WorldConfig worldConfig) {
+    void setWorldConfig(@NotNull WorldConfig worldConfig) {
         super.setWorldConfig(worldConfig);
         setupWorldConfig(getBukkitWorld().get());
     }
@@ -184,7 +184,8 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
     @Override
     public String toString() {
         return "LoadedMultiverseWorld{"
-                + "name='" + worldName + "', "
+                + "key='" + getKey() + "', "
+                + "name='" + getName() + "', "
                 + "env='" + getEnvironment() + "', "
                 + "type='" + getWorldType().getOrNull() + "', "
                 + "gen='" + getGenerator() + "'"

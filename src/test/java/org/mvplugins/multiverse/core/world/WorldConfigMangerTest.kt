@@ -2,11 +2,13 @@ package org.mvplugins.multiverse.core.world
 
 import org.bukkit.GameMode
 import org.bukkit.Material
+import org.bukkit.NamespacedKey
 import org.bukkit.World.Environment
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.SpawnCategory
 import org.mvplugins.multiverse.core.TestWithMockBukkit
 import org.mvplugins.multiverse.core.economy.MVEconomist
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName
 import org.mvplugins.multiverse.core.world.location.SpawnLocation
 import java.io.File
 import java.nio.file.Path
@@ -40,7 +42,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.load().isSuccess)
         assertTrue(worldConfigManager.save().isSuccess)
 
-        val endWorldConfig = worldConfigManager.getWorldConfig("world_the_end").orNull
+        val endWorldConfig = worldConfigManager.getWorldConfig(key("world_the_end")).orNull
         assertNotNull(endWorldConfig)
 
         assertEquals("&aworld the end", endWorldConfig.alias)
@@ -49,7 +51,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertEquals(MVEconomist.VAULT_ECONOMY_MATERIAL, endWorldConfig.entryFeeCurrency)
         assertEquals(0.0, endWorldConfig.entryFeeAmount)
 
-        val worldConfig = worldConfigManager.getWorldConfig("world.a.b").orNull
+        val worldConfig = worldConfigManager.getWorldConfig(key("world.a.b")).orNull
         assertNotNull(worldConfig)
 
         assertEquals(-5176596003035866649, worldConfig.seed)
@@ -58,7 +60,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertEquals(Material.DIRT, worldConfig.entryFeeCurrency)
         assertEquals(5.0, worldConfig.entryFeeAmount)
 
-        val world2Config = worldConfigManager.getWorldConfig("world.a.c").orNull
+        val world2Config = worldConfigManager.getWorldConfig(key("world.a.c")).orNull
         assertNotNull(world2Config)
 
         assertConfigEquals("/worlds/migrated_worlds.yml", "worlds.yml")
@@ -66,21 +68,22 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Add a new world to config`() {
-        val worldConfig = worldConfigManager.addWorldConfig("new.world")
+        val newWorldKey = NamespacedKey.minecraft("new.world")
+        val worldConfig = worldConfigManager.addWorldConfig(newWorldKey)
         assertNotNull(worldConfig)
-        assertEquals("new.world", worldConfig.worldName)
+        assertEquals(WorldKeyOrName.parseKey(newWorldKey), worldConfig.worldKeyOrName)
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/worlds/newworld_worlds.yml", "worlds.yml")
 
         // Make sure the world still can be loaded after save
         assertTrue(worldConfigManager.load().isSuccess)
-        assertEquals("new.world", worldConfigManager.getWorldConfig("new.world").orNull?.worldName)
+        assertEquals(WorldKeyOrName.parseKey(newWorldKey), worldConfigManager.getWorldConfig(key("minecraft:new.world")).orNull?.worldKeyOrName)
         assertConfigEquals("/worlds/newworld_worlds.yml", "worlds.yml")
     }
 
     @Test
     fun `Updating existing world properties`() {
-        val worldConfig = worldConfigManager.getWorldConfig("world").orNull
+        val worldConfig = worldConfigManager.getWorldConfig(key("world")).orNull
         assertNotNull(worldConfig)
 
         assertTrue(worldConfig.stringPropertyHandle.setProperty("adjust-spawn", true).isSuccess)
@@ -101,7 +104,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Delete world section from config`() {
-        worldConfigManager.deleteWorldConfig("world")
+        worldConfigManager.deleteWorldConfig(key("world"))
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/worlds/delete_worlds.yml", "worlds.yml")
     }
@@ -115,7 +118,7 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertTrue(worldConfigManager.load().isSuccess)
         assertTrue(worldConfigManager.save().isSuccess)
 
-        val worldConfig = assertNotNull(worldConfigManager.getWorldConfig("world").orNull)
+        val worldConfig = assertNotNull(worldConfigManager.getWorldConfig(key("world")).orNull)
 
         assertEquals("1234", worldConfig.alias)
         assertTrue(worldConfig.bedRespawn)
@@ -123,5 +126,9 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
         assertEquals(4.0, worldConfig.scale)
         assertEquals(listOf("a", "1", "2"), worldConfig.worldBlacklist)
         assertEquals(listOf(EntityType.COW), worldConfig.entitySpawnConfig.getSpawnCategoryConfig(SpawnCategory.ANIMAL).exceptions)
+    }
+
+    private fun key(worldName: String): WorldKeyOrName {
+        return WorldKeyOrName.parse(worldName).get()
     }
 }

@@ -13,7 +13,6 @@ world_nether:
     enabled: false
     amount: 0.0
     currency: '@vault-economy'
-  environment: nether
   gamemode: survival
   biome: ''
   generator: ''
@@ -25,7 +24,6 @@ world_nether:
   pvp: true
   respawn-world: ''
   scale: 8.0
-  seed: -9223372036854775808
   spawn-location:
     ==: MVSpawnLocation
     x: -64.0
@@ -75,4 +73,8 @@ world_nether:
       spawn-limit: '@unset'
       tick-rate: '@unset'
   world-blacklist: []
-  version: 1.2
+  read-only:
+    environment: nether
+    legacy-world-name: world_nether
+    seed: -9223372036854775808
+  version: 1.3

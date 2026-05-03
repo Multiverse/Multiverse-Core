@@ -50,7 +50,7 @@ public final class BukkitCompatibility {
      * Gets the folder where all the worlds will be store. Before 26.1, all worlds are stored in the root directory
      * of the server, which can be obtained by {@link Server#getWorldContainer()}.
      * <br />
-     * After 26.1, PaperMC changed all worlds are stored in the "[level]/dimensions/minecraft" folder under the world
+     * After 26.1, PaperMC changed all worlds are stored in the "[level]/dimensions" folder under the world
      * level directory, which needs to be manually parsed.
      *
      * @return The location where all the worlds folders should be, depending on server's mc version.
@@ -64,7 +64,7 @@ public final class BukkitCompatibility {
         return GET_LEVEL_DIRECTORY_METHOD.flatMap(method -> ReflectHelper.tryInvokeMethod(server, method))
                 .filter(Path.class::isInstance)
                 .map(Path.class::cast)
-                .map(path -> path.resolve("dimensions/minecraft"))
+                .map(path -> path.resolve("dimensions"))
                 .getOrElse(() -> server.getWorldContainer().toPath());
     }
 

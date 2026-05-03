@@ -13,7 +13,6 @@ world_the_end:
     enabled: false
     amount: 0.0
     currency: '@vault-economy'
-  environment: the_end
   gamemode: survival
   biome: ''
   generator: ''
@@ -25,7 +24,6 @@ world_the_end:
   pvp: true
   respawn-world: ''
   scale: 16.0
-  seed: -5176596003035866649
   spawn-location:
     ==: MVSpawnLocation
     x: 0.0
@@ -75,7 +73,11 @@ world_the_end:
       spawn-limit: '@unset'
       tick-rate: '@unset'
   world-blacklist: []
-  version: 1.2
+  read-only:
+    environment: the_end
+    legacy-world-name: world_the_end
+    seed: -5176596003035866649
+  version: 1.3
 world[dot]a[dot]b:
   adjust-spawn: true
   alias: ''
@@ -91,7 +93,6 @@ world[dot]a[dot]b:
     enabled: true
     amount: 5.0
     currency: DIRT
-  environment: normal
   gamemode: survival
   biome: ''
   generator: ''
@@ -103,7 +104,6 @@ world[dot]a[dot]b:
   pvp: true
   respawn-world: ''
   scale: 1.0
-  seed: -5176596003035866649
   spawn-location:
     ==: MVSpawnLocation
     x: -64.0
@@ -154,7 +154,11 @@ world[dot]a[dot]b:
       tick-rate: '@unset'
   world-blacklist:
   - test
-  version: 1.2
+  read-only:
+    environment: normal
+    legacy-world-name: world.a.b
+    seed: -5176596003035866649
+  version: 1.3
 world[dot]a[dot]c:
   adjust-spawn: true
   alias: ''
@@ -170,7 +174,6 @@ world[dot]a[dot]c:
     enabled: true
     amount: 5.0
     currency: DIRT
-  environment: normal
   gamemode: survival
   biome: ''
   generator: ''
@@ -182,7 +185,6 @@ world[dot]a[dot]c:
   pvp: true
   respawn-world: ''
   scale: 1.0
-  seed: -5176596003035866649
   spawn-location:
     ==: MVSpawnLocation
     x: -64.0
@@ -233,4 +235,8 @@ world[dot]a[dot]c:
       tick-rate: '@unset'
   world-blacklist:
     - test
-  version: 1.2
+  read-only:
+    environment: normal
+    legacy-world-name: world.a.c
+    seed: -5176596003035866649
+  version: 1.3

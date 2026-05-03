@@ -172,11 +172,6 @@ final class WorldConfigNodes {
                 }
             }));
 
-    final ConfigNode<World.Environment> environment = node(ConfigNode
-            .builder("environment", World.Environment.class)
-            .defaultValue(World.Environment.NORMAL)
-            .hidden());
-
     final ConfigNode<GameMode> gamemode = node(ConfigNode.builder("gamemode", GameMode.class)
             .defaultValue(GameMode.SURVIVAL)
             .onLoadAndChange((oldValue, newValue) -> {
@@ -234,10 +229,6 @@ final class WorldConfigNodes {
                 };
             }));
 
-    final ConfigNode<Long> seed = node(ConfigNode.builder("seed", Long.class)
-            .defaultValue(Long.MIN_VALUE)
-            .hidden());
-
     final ConfigNode<SpawnLocation> spawnLocation = node(ConfigNode.builder("spawn-location", SpawnLocation.class)
             .defaultValue(NullSpawnLocation.get())
             .hidden()
@@ -273,6 +264,18 @@ final class WorldConfigNodes {
             }));
 
     final ConfigNode<List<String>> worldBlacklist = node(ListConfigNode.listBuilder("world-blacklist", String.class));
+
+    final ConfigNode<World.Environment> environment = node(ConfigNode
+            .builder("read-only.environment", World.Environment.class)
+            .defaultValue(World.Environment.NORMAL)
+            .hidden());
+
+    final ConfigNode<String> legacyWorldName = node(ConfigNode.builder("read-only.legacy-world-name", String.class)
+            .hidden());
+
+    final ConfigNode<Long> seed = node(ConfigNode.builder("read-only.seed", Long.class)
+            .defaultValue(Long.MIN_VALUE)
+            .hidden());
 
     final ConfigNode<Double> version = node(ConfigNode.builder("version", Double.class)
             .defaultValue(CONFIG_VERSION)
