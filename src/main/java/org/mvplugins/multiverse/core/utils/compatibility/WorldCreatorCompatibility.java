@@ -104,4 +104,8 @@ public final class WorldCreatorCompatibility {
                 || (worldKey.getNamespace().equals(NamespacedKey.MINECRAFT)
                 && worldName.toLowerCase(Locale.ROOT).equals(worldKey.getKey()));
     }
+
+    private WorldCreatorCompatibility() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 }

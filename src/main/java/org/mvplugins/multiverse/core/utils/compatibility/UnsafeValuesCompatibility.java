@@ -38,4 +38,8 @@ public final class UnsafeValuesCompatibility {
                 .map(String.class::cast)
                 .toOption();
     }
+
+    private UnsafeValuesCompatibility() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 }

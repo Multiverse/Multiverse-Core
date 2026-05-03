@@ -98,4 +98,8 @@ public final class WorldFolderResolver {
                 .resolve(worldName)
                 .toFile();
     }
+
+    private WorldFolderResolver() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 }
