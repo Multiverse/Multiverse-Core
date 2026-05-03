@@ -24,6 +24,7 @@ import org.mvplugins.multiverse.core.config.node.ListConfigNode;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.utils.MaterialConverter;
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
@@ -90,6 +91,8 @@ final class WorldConfigNodes {
             .onLoadAndChange((oldValue, newValue) -> {
                 if (world == null) return;
                 world.updateColourlessAlias();
+                worldManager.getWorldStore().changeAlias(
+                        ChatTextFormatter.removeColor(oldValue), ChatTextFormatter.removeColor(newValue), world);
             }));
 
     final ConfigNode<Boolean> allowAdvancementGrant = node(ConfigNode.builder("allow-advancement-grant", Boolean.class)
