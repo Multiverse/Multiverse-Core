@@ -87,6 +87,7 @@ class InfoCommand extends CoreCommand {
     private Map<String, String> getInfo(LoadedMultiverseWorld world) {
         Map<String, String> outMap = new LinkedHashMap<>();
 
+        outMap.put("World Key", world.getKey().toString());
         outMap.put("World Name", world.getName());
         outMap.put("World Alias", world.getAlias());
         outMap.put("World UID", world.getUID().toString());
