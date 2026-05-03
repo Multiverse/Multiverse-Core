@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import com.dumptruckman.minecraft.util.Logging;
 import com.google.common.base.Strings;
-import io.papermc.lib.PaperLib;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
@@ -412,7 +411,7 @@ public final class WorldManager {
         worldConfig.setLegacyWorldName(world.getName());
         worldConfig.setDifficulty(world.getDifficulty());
         worldConfig.setKeepSpawnInMemory(world.getKeepSpawnInMemory());
-        worldConfig.setScale(getCoordinateScale(world));
+        worldConfig.setScale(WorldCompatibility.getCoordinateScale(world));
 
         worldConfig.save();
 
@@ -429,17 +428,6 @@ public final class WorldManager {
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return loadedWorld;
-    }
-
-    private double getCoordinateScale(World world) {
-        if (PaperLib.isPaper()) {
-            return world.getCoordinateScale();
-        }
-        return switch (world.getEnvironment()) {
-            case NORMAL -> 1;
-            case NETHER -> 8;
-            default -> 1;
-        };
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.mvplugins.multiverse.core.utils.compatibility;
 
+import io.papermc.lib.PaperLib;
 import io.vavr.control.Try;
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
@@ -38,6 +39,28 @@ public final class WorldCompatibility {
         SAVE_WITH_FLUSH_METHOD
                 .flatMap(method -> ReflectHelper.tryInvokeMethod(world, method, flush))
                 .orElseRun(ignore -> world.save());
+    }
+
+    /**
+     * Gets the coordinate scale for the world, which is used to convert between overworld and nether coordinates.
+     * On PaperMC, this can be obtained directly from the API. On older versions, it is manually determined based on the
+     * world environment (overworld = 1, nether = 8, end = 1).
+     *
+     * @param world The world to get the coordinate scale for
+     * @return The scale
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public static double getCoordinateScale(World world) {
+        if (PaperLib.isPaper()) {
+            return world.getCoordinateScale();
+        }
+        return switch (world.getEnvironment()) {
+            case NORMAL -> 1;
+            case NETHER -> 8;
+            default -> 1;
+        };
     }
 
     private WorldCompatibility() {
