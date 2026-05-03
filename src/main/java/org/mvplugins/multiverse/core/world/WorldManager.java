@@ -28,6 +28,7 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.config.CoreConfig;
@@ -46,7 +47,6 @@ import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
-import org.mvplugins.multiverse.core.utils.CaseInsensitiveStringMap;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCompatibility;
@@ -54,7 +54,6 @@ import org.mvplugins.multiverse.core.utils.compatibility.WorldCreatorCompatibili
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
-import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
@@ -95,8 +94,7 @@ public final class WorldManager {
             "data/paper/metadata.dat"  // New papermc format for 26.1+
     );
 
-    private final CaseInsensitiveStringMap<MultiverseWorld> worldsMap;
-    private final CaseInsensitiveStringMap<LoadedMultiverseWorld> loadedWorldsMap;
+    private final WorldStore worldStore;
     private final List<String> unloadTracker;
     private final List<String> loadTracker;
     private final WorldsConfigManager worldsConfigManager;
@@ -114,6 +112,7 @@ public final class WorldManager {
 
     @Inject
     WorldManager(
+            @NotNull WorldStore worldStore,
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
             @NotNull BiomeProviderFactory biomeProviderFactory,
@@ -126,6 +125,7 @@ public final class WorldManager {
             @NotNull ServerProperties serverProperties,
             @NotNull CoreConfig config,
             @NotNull EntityPurger entityPurger) {
+        this.worldStore = worldStore;
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.biomeProviderFactory = biomeProviderFactory;
@@ -139,8 +139,6 @@ public final class WorldManager {
         this.config = config;
         this.entityPurger = entityPurger;
 
-        this.worldsMap = new CaseInsensitiveStringMap<>();
-        this.loadedWorldsMap = new CaseInsensitiveStringMap<>();
         this.unloadTracker = new ArrayList<>();
         this.loadTracker = new ArrayList<>();
     }
@@ -172,9 +170,13 @@ public final class WorldManager {
     }
 
     private void loadNewWorldConfigs(Collection<WorldConfig> newWorldConfigs) {
-        newWorldConfigs.forEach(worldConfig -> Option.of(worldsMap.get(worldConfig.getWorldKeyOrName().usableName()))
-                .peek(unloadedWorld -> unloadedWorld.setWorldConfig(worldConfig))
-                .onEmpty(() -> newMultiverseWorld(worldConfig)));
+        newWorldConfigs.forEach(worldConfig -> {
+            worldStore.getUnloadedWorldRef(worldConfig.getWorldKeyOrName().usableName())
+                    .peek(unloadedWorld -> unloadedWorld.setWorldConfig(worldConfig))
+                    .onEmpty(() -> newMultiverseWorld(worldConfig));
+            worldStore.getLoadedWorld(worldConfig.getWorldKeyOrName().usableName())
+                    .peek(loadedWorld -> loadedWorld.setWorldConfig(worldConfig));
+        });
     }
 
     private void removeWorldsNotInConfigs(Collection<WorldKeyOrName> removedWorlds) {
@@ -386,7 +388,7 @@ public final class WorldManager {
 
     private MultiverseWorld newMultiverseWorld(WorldConfig worldConfig) {
         MultiverseWorld mvWorld = new MultiverseWorld(worldConfig, config);
-        worldsMap.put(mvWorld.getName(), mvWorld);
+        worldStore.putUnloadedWorld(mvWorld);
         corePermissions.addWorldPermissions(mvWorld);
         return mvWorld;
     }
@@ -424,7 +426,7 @@ public final class WorldManager {
                 locationManipulation,
                 entityPurger
         );
-        loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
+        worldStore.putLoadedWorld(loadedWorld);
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return loadedWorld;
@@ -556,7 +558,7 @@ public final class WorldManager {
                 locationManipulation,
                 entityPurger
         );
-        loadedWorldsMap.put(loadedWorld.getName(), loadedWorld);
+        worldStore.putLoadedWorld(loadedWorld);
         saveWorldsConfig();
         pluginManager.callEvent(new MVWorldLoadedEvent(loadedWorld));
         return Attempt.success(loadedWorld);
@@ -590,12 +592,10 @@ public final class WorldManager {
                 success -> removeLoadedMultiverseWorld(world));
     }
 
-    private Attempt<MultiverseWorld, UnloadFailureReason> removeLoadedMultiverseWorld(@NotNull LoadedMultiverseWorld world) {
-        MultiverseWorld mvWorld = Objects.requireNonNull(loadedWorldsMap.remove(world.getName()),
-                "For some reason, the loaded world isn't in the map... BUGGG");
-        Logging.fine("Removed MultiverseWorld from map: " + world.getName());
-        var unloadedWorld = Objects.requireNonNull(worldsMap.get(world.getName()),
-                "For some reason, the unloaded world isn't in the map... BUGGG");
+    private Attempt<MultiverseWorld, UnloadFailureReason> removeLoadedMultiverseWorld(@NotNull LoadedMultiverseWorld mvWorld) {
+        MultiverseWorld unloadedWorld = worldStore.getUnloadedWorldRef(mvWorld.getKey().toString()).getOrElseThrow(
+                () -> new IllegalStateException("Unloaded ref of world not found: " + mvWorld));
+        worldStore.removeLoadedWorld(mvWorld);
         mvWorld.getWorldConfig().setMVWorld(unloadedWorld);
         pluginManager.callEvent(new MVWorldUnloadedEvent(mvWorld));
         return worldActionResult(unloadedWorld);
@@ -685,7 +685,7 @@ public final class WorldManager {
      */
     private Attempt<String, RemoveFailureReason> removeWorldFromConfig(@NotNull MultiverseWorld world) {
         // Remove world from config
-        worldsMap.remove(world.getName());
+        worldStore.removeWorld(world);
         world.getWorldConfig().deferenceMVWorld();
         worldsConfigManager.deleteWorldConfig(world.getKey());
         saveWorldsConfig();
@@ -1042,9 +1042,7 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getWorld(@Nullable String worldName) {
-        return getLoadedWorld(worldName)
-                .map(world -> (MultiverseWorld) world)
-                .orElse(() -> getUnloadedWorld(worldName));
+        return worldStore.getWorld(worldName);
     }
 
     /**
@@ -1055,9 +1053,7 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
-        return getLoadedWorldByNameOrAlias(worldNameOrAlias)
-                .map(world -> (MultiverseWorld) world)
-                .orElse(() -> getUnloadedWorldByNameOrAlias(worldNameOrAlias));
+        return getWorld(worldStore.translateAlias(worldNameOrAlias));
     }
 
     /**
@@ -1067,14 +1063,15 @@ public final class WorldManager {
      * <p>If you want only unloaded worlds, use {@link #getUnloadedWorlds()}. If you want only loaded worlds, use
      * {@link #getLoadedWorlds()}.</p>
      *
+     * <p>Note that this is an unmodifiable copy of the current worlds. It will not update as worlds are added/removed.
+     * Call it everytime you need the most updated list of worlds.</p>
+     *
      * @return A list of all worlds that may or may not be loaded.
      */
+    @Unmodifiable
+    @NotNull
     public Collection<MultiverseWorld> getWorlds() {
-        return worldsMap.values().stream()
-                .map(world -> getLoadedWorld(world)
-                        .map(loadedWorld -> (MultiverseWorld) loadedWorld)
-                        .getOrElse(world))
-                .toList();
+        return worldStore.getWorlds();
     }
 
     /**
@@ -1084,7 +1081,7 @@ public final class WorldManager {
      * @return True if the world is a world is known to multiverse, but may or may not be loaded.
      */
     public boolean isWorld(@Nullable String worldName) {
-        return worldName != null && worldsMap.containsKey(worldName);
+        return worldName != null && worldStore.getWorld(worldName).isDefined();
     }
 
     /**
@@ -1094,9 +1091,7 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getUnloadedWorld(@Nullable String worldName) {
-        return isLoadedWorld(worldName)
-                ? Option.none()
-                : Option.of(worldName).flatMap(name -> Option.of(worldsMap.get(name)));
+        return worldStore.getUnloadedWorld(worldName);
     }
 
     /**
@@ -1106,18 +1101,7 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getUnloadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
-        return getUnloadedWorld(worldNameOrAlias).orElse(() -> getUnloadedWorldByAlias(worldNameOrAlias));
-    }
-
-    private Option<MultiverseWorld> getUnloadedWorldByAlias(@Nullable String alias) {
-        if (alias == null || alias.isEmpty()) {
-            return Option.none();
-        }
-        String colourlessAlias = ChatTextFormatter.removeColor(alias);
-        return Option.ofOptional(worldsMap.values().stream()
-                .filter(world -> !world.isLoaded())
-                .filter(world -> world.getColourlessAlias().equalsIgnoreCase(colourlessAlias))
-                .findFirst());
+        return getUnloadedWorld(worldStore.translateAlias(worldNameOrAlias));
     }
 
     /**
@@ -1125,10 +1109,10 @@ public final class WorldManager {
      *
      * @return A list of all worlds that are not loaded.
      */
+    @Unmodifiable
+    @NotNull
     public Collection<MultiverseWorld> getUnloadedWorlds() {
-        return worldsMap.values().stream()
-                .filter(world -> !world.isLoaded())
-                .toList();
+        return worldStore.getUnloadedWorlds();
     }
 
     /**
@@ -1168,8 +1152,7 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable String worldName) {
-        return Option.of(worldName)
-                .flatMap(name -> Option.of(loadedWorldsMap.get(name)));
+        return Option.of(worldName).flatMap(worldStore::getLoadedWorld);
     }
 
     /**
@@ -1179,28 +1162,21 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
-        return getLoadedWorld(worldNameOrAlias)
-                .orElse(() -> getLoadedWorldByAlias(worldNameOrAlias));
-    }
-
-    private Option<LoadedMultiverseWorld> getLoadedWorldByAlias(@Nullable String alias) {
-        if (alias == null || alias.isEmpty()) {
-            return Option.none();
-        }
-        return Option.ofOptional(loadedWorldsMap.values().stream()
-                .filter(world -> world.getColourlessAlias()
-                        .equalsIgnoreCase(ChatTextFormatter.removeColor(alias)))
-                .findFirst());
+        return getLoadedWorld(worldStore.translateAlias(worldNameOrAlias));
     }
 
     /**
      * Get a read-only list of all multiverse worlds that are loaded.
      *
+     * <p>Note that this is an unmodifiable copy of the current worlds. It will not update as worlds are added/removed.
+     * Call it everytime you need the most updated list of worlds.</p>
+     *
      * @return A list of all multiverse worlds that are loaded.
      */
+    @Unmodifiable
+    @NotNull
     public Collection<LoadedMultiverseWorld> getLoadedWorlds() {
-        return loadedWorldsMap.values().stream()
-                .toList();
+        return worldStore.getLoadedWorlds();
     }
 
     /**
@@ -1230,7 +1206,7 @@ public final class WorldManager {
      * @return True if the world is a multiverse world that is loaded.
      */
     public boolean isLoadedWorld(@Nullable String worldName) {
-        return worldName != null && loadedWorldsMap.containsKey(worldName);
+        return worldName != null && worldStore.getLoadedWorld(worldName).isDefined();
     }
 
     /**
@@ -1257,6 +1233,10 @@ public final class WorldManager {
                     Logging.severe("Failed to save worlds config: %s", failure);
                     failure.printStackTrace();
                 });
+    }
+
+    WorldStore getWorldStore() {
+        return worldStore;
     }
 
     /**
