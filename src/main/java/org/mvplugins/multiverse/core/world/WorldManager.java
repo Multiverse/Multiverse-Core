@@ -280,7 +280,8 @@ public final class WorldManager {
                 .generatorSettings(options.generatorSettings())
                 .seed(options.seed())
                 .type(options.worldType());
-
+        WorldCreatorCompatibility.setBonusChest(worldCreator, options.bonusChest());
+        options.forcedSpawnPosition().peek(position -> WorldCreatorCompatibility.setForcedSpawnPosition(worldCreator, position));
         return addBiomeProviderToCreator(worldCreator, keyOrName.usableName(), options.biome())
                 .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
                 .mapAttempt(this::createBukkitWorld)

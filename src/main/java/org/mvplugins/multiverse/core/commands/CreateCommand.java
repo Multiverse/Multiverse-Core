@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -24,9 +25,11 @@ import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
+import org.mvplugins.multiverse.core.exceptions.command.MVInvalidCommandArgument;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
+import org.mvplugins.multiverse.core.utils.position.EntityPosition;
 import org.mvplugins.multiverse.core.utils.result.Attempt.Failure;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -52,8 +55,9 @@ class CreateCommand extends CoreCommand {
     @Subcommand("create")
     @CommandPermission("multiverse.core.create")
     @CommandCompletion("@empty @environments @flags:groupName=" + Flags.NAME)
-    @Syntax("<name> <environment> [--seed <seed> --generator <generator[:id]> --world-type <worldtype> --adjust-spawn "
-            + "--no-structures --biome <biome> --properties <prop1=value1,prop2=value2,...>]")
+    @Syntax("<name> <environment> [--seed <seed> --generator <generator[:id]> --world-type <worldtype> " +
+            "--adjust-spawn --no-structures --generate-bonus-chest --force-spawn-position <x,y,z:pitch:yaw> " +
+            "--biome <biome> --properties <prop1=value1,prop2=value2,...>]")
     @Description("{@@mv-core.create.description}")
     void onCreateCommand(
             MVCommandIssuer issuer,
@@ -67,8 +71,9 @@ class CreateCommand extends CoreCommand {
             World.Environment environment,
 
             @Optional
-            @Syntax("[--seed <seed> --generator <generator[:id]> --world-type <worldtype> --adjust-spawn "
-                    + "--no-structures --biome <biome> --properties <prop1=value1,prop2=value2,...>]")
+            @Syntax("[--seed <seed> --generator <generator[:id]> --world-type <worldtype> --adjust-spawn " +
+                    "--no-structures --generate-bonus-chest --force-spawn-position <x,y,z:pitch:yaw> --biome <biome> " +
+                    "--properties <prop1=value1,prop2=value2,...>]")
             @Description("{@@mv-core.create.flags.description}")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
@@ -79,14 +84,16 @@ class CreateCommand extends CoreCommand {
 
         worldManager.createWorld(CreateWorldOptions.worldName(worldName)
                         .biome(parsedFlags.flagValue(flags.biome, ""))
+                        .bonusChest(parsedFlags.hasFlag(flags.bonusChest))
                         .environment(environment)
-                        .seed(parsedFlags.flagValue(flags.seed))
-                        .worldType(parsedFlags.flagValue(flags.worldType, WorldType.NORMAL))
-                        .useSpawnAdjust(!parsedFlags.hasFlag(flags.noAdjustSpawn))
+                        .forcedSpawnPosition(parsedFlags.flagValue(flags.forceSpawnPosition))
                         .generator(parsedFlags.flagValue(flags.generator, ""))
                         .generatorSettings(parsedFlags.flagValue(flags.generatorSettings, ""))
                         .generateStructures(!parsedFlags.hasFlag(flags.noStructures))
-                        .worldPropertyStrings(StringFormatter.parseCSVMap(parsedFlags.flagValue(flags.properties))))
+                        .seed(parsedFlags.flagValue(flags.seed))
+                        .useSpawnAdjust(!parsedFlags.hasFlag(flags.noAdjustSpawn))
+                        .worldPropertyStrings(StringFormatter.parseCSVMap(parsedFlags.flagValue(flags.properties)))
+                        .worldType(parsedFlags.flagValue(flags.worldType, WorldType.NORMAL)))
                 .onSuccess(newWorld -> messageSuccess(issuer, newWorld))
                 .onFailure(failure -> messageFailure(issuer, failure));
     }
@@ -184,6 +191,15 @@ class CreateCommand extends CoreCommand {
 
         private final CommandValueFlag<String> properties = flag(CommandValueFlag.builder("--properties", String.class)
                 .addAlias("-p")
+                .build());
+
+        private final CommandFlag bonusChest = flag(CommandFlag.builder("--generate-bonus-chest")
+                .addAlias("-c")
+                .build());
+
+        private final CommandValueFlag<EntityPosition> forceSpawnPosition = flag(CommandValueFlag.builder("--force-spawn-position", EntityPosition.class)
+                .addAlias("-f")
+                .context(input -> Try.of(() -> EntityPosition.fromString(input)).getOrElseThrow(MVInvalidCommandArgument::causeBy))
                 .build());
     }
 

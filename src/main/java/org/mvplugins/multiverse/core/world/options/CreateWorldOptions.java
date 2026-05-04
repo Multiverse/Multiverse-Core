@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world.options;
 
 import co.aikar.commands.ACFUtil;
 import io.vavr.control.Either;
+import io.vavr.control.Option;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.WorldType;
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.mvplugins.multiverse.core.utils.position.EntityPosition;
 import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
 import java.util.Collections;
@@ -61,7 +63,9 @@ public final class CreateWorldOptions {
 
     private final Either<String, WorldKeyOrName> keyOrName;
     private String biome = "";
+    private boolean bonusChest = false;
     private World.Environment environment = World.Environment.NORMAL;
+    private EntityPosition forcedSpawnPosition = null;
     private boolean generateStructures = true;
     private String generator = null;
     private String generatorSettings = "";
@@ -126,6 +130,32 @@ public final class CreateWorldOptions {
     }
 
     /**
+     * Sets whether bonus chest should generate at spawn upon world creation.
+     * <br />
+     * This feature only works on PaperMC 1.21.5+
+     *
+     * @param bonusChest Whether bonus chest should generate at spawn upon world creation.
+     * @return This {@link CreateWorldOptions} instance.
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull CreateWorldOptions bonusChest(boolean bonusChest) {
+        this.bonusChest = bonusChest;
+        return this;
+    }
+
+    /**
+     * Gets whether bonus chest should generate at spawn upon world creation.
+     * <br />
+     * This feature only works on PaperMC 1.21.5+
+     *
+     * @return true if bonus chest should generate, else false.
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public boolean bonusChest() {
+        return bonusChest;
+    }
+
+    /**
      * Sets the environment of the world to create.
      *
      * @param environmentInput  The environment of the world to create.
@@ -143,6 +173,37 @@ public final class CreateWorldOptions {
      */
     public @NotNull World.Environment environment() {
         return environment;
+    }
+
+    /**
+     * Sets the forced spawn position of the world to apply. This may be null, in which case the spawn position will
+     * be determined by the default generator. Setting spawn position and {@link #useSpawnAdjust(boolean)} to false
+     * will improve world creation speed on PaperMC as chunks will not be loaded to search for spawn point.
+     * <br />
+     * This feature only works on PaperMC 26.1+
+     *
+     * @param forcedSpawnPosition   The forced spawn position of the world to create.
+     * @return This {@link CreateWorldOptions} instance.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull CreateWorldOptions forcedSpawnPosition(@Nullable EntityPosition forcedSpawnPosition) {
+        this.forcedSpawnPosition = forcedSpawnPosition;
+        return this;
+    }
+
+    /**
+     * Sets the forced spawn position of the world to apply. This may be null, in which case the spawn position will
+     * be determined by the default generator.
+     * <br />
+     * This feature only works on PaperMC 26.1+
+     *
+     * @return The force spawn position to apply if available.
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull Option<EntityPosition> forcedSpawnPosition() {
+        return Option.of(this.forcedSpawnPosition);
     }
 
     /**
