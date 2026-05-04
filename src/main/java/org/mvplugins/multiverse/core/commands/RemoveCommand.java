@@ -14,11 +14,13 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
+import org.mvplugins.multiverse.core.command.flags.RemovePlayerDestinationFlags;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
@@ -26,6 +28,8 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.world.options.RemoveWorldOptions;
+
+import java.util.Objects;
 
 @Service
 class RemoveCommand extends CoreCommand {
@@ -48,7 +52,7 @@ class RemoveCommand extends CoreCommand {
     @Subcommand("remove")
     @CommandPermission("multiverse.core.remove")
     @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + Flags.NAME)
-    @Syntax("<world>")
+    @Syntax("<world> [--remove-players [destination]] [--no-unload-bukkit-world] [--no-save]")
     @Description("{@@mv-core.remove.description}")
     void onRemoveCommand(
             MVCommandIssuer issuer,
@@ -58,13 +62,16 @@ class RemoveCommand extends CoreCommand {
             MultiverseWorld world,
 
             @Optional
-            @Syntax("[--remove-players]")
+            @Syntax("[--remove-players [destination]] [--no-unload-bukkit-world] [--no-save]")
             @Description("")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
-        var future = parsedFlags.hasFlag(flags.removePlayers)
-                ? worldManager.getLoadedWorld(world).map(playerWorldTeleporter::removeFromWorld).getOrElse(AsyncAttemptsAggregate::emptySuccess)
+        DestinationInstance<?, ?> removeToDestination = parsedFlags.flagValue(flags.removePlayers);
+        var future = Objects.nonNull(removeToDestination)
+                ? world.asLoadedWorld()
+                  .map(loadedWorld -> playerWorldTeleporter.transferAllFromWorldToDestination(loadedWorld, removeToDestination))
+                  .getOrElse(AsyncAttemptsAggregate::emptySuccess)
                 : AsyncAttemptsAggregate.emptySuccess();
 
         future.onSuccess(() -> doWorldRemoving(issuer, world, parsedFlags))
@@ -85,13 +92,18 @@ class RemoveCommand extends CoreCommand {
     }
 
     @Service
-    private static final class Flags extends RemovePlayerFlags {
+    private static final class Flags extends RemovePlayerDestinationFlags {
 
         private static final String NAME = "mvremove";
 
         @Inject
-        private Flags(@NotNull CommandFlagsManager flagsManager) {
-            super(NAME, flagsManager);
+        private Flags(
+                @NotNull CommandFlagsManager flagsManager,
+                @NotNull WorldManager worldManager,
+                @NotNull DestinationsProvider destinationsProvider,
+                @NotNull WorldDestination worldDestination
+        ) {
+            super(NAME, flagsManager, worldManager, destinationsProvider, worldDestination);
         }
 
         private final CommandFlag noUnloadBukkitWorld = flag(CommandFlag.builder("--no-unload-bukkit-world")
