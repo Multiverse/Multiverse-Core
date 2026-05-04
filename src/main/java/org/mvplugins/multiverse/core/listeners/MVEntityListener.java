@@ -7,6 +7,7 @@
 
 package org.mvplugins.multiverse.core.listeners;
 
+import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
 import org.bukkit.entity.LivingEntity;
@@ -21,6 +22,8 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.dynamiclistener.EventRunnable;
+import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventClass;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
@@ -75,6 +78,37 @@ final class MVEntityListener implements CoreListener {
                         event.setCancelled(true);
                     }
                 });
+    }
+
+    /**
+     * Fired before other spawn checks is done, helps in performance by cancelling early and preventing unnecessary
+     * checks for spawn reasons that are not allowed in the world.
+     *
+     * @return Event wrapper
+     */
+    @EventClass("com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent")
+    EventRunnable<?> preCreatureSpawn() {
+        return new EventRunnable<PreCreatureSpawnEvent>() {
+            @Override
+            public void onEvent(PreCreatureSpawnEvent event) {
+                // Always allow custom command and plugins to spawn creatures
+                if (event.getReason() == SpawnReason.CUSTOM
+                        || event.getReason() == SpawnReason.COMMAND
+                        || event.getReason() == SpawnReason.BREEDING
+                        || event.getReason() == SpawnReason.SPAWNER_EGG) {
+                    return;
+                }
+
+                worldManager.getLoadedWorld(event.getSpawnLocation().getWorld())
+                        .peek(world -> {
+                            if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getType())) {
+                                Logging.finest("Cancelling Pre Creature Spawn Event for: " + event.getType());
+                                event.setCancelled(true);
+                                event.setShouldAbortSpawn(true);
+                            }
+                        });
+            }
+        };
     }
 
     /**

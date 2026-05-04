@@ -19,15 +19,16 @@ import java.util.Map;
  */
 final class SpawnCategoryMapper {
 
+    private static final Map<EntityType, SpawnCategory> entityTypeToSpawnCategoryMap;
+    private static final Map<SpawnCategory, List<EntityType>> spawnCategoryMap;
+
     static {
+        entityTypeToSpawnCategoryMap = new HashMap<>();
+        spawnCategoryMap = new HashMap<>();
         buildSpawnCategoryMap();
     }
 
-    private static Map<SpawnCategory, List<EntityType>> spawnCategoryMap;
-
     private static void buildSpawnCategoryMap() {
-        spawnCategoryMap = new HashMap<>();
-
         Class<?> entityTypeClass = ReflectHelper.tryGetClass("net.minecraft.world.entity.EntityType").getOrNull();
         if (entityTypeClass == null) {
             Logging.warning("Failed to find EntityType class. SpawnCategoryMapper will not work.");
@@ -57,9 +58,20 @@ final class SpawnCategoryMapper {
                         .flatMap(nsmMobCategory -> ReflectHelper.tryInvokeStaticMethod(toBukkitMethod, nsmMobCategory))
                         .filter(bukkitSpawnCategory -> bukkitSpawnCategory instanceof SpawnCategory)
                         .map(bukkitSpawnCategory -> (SpawnCategory) bukkitSpawnCategory)
+                        .peek(bukkitSpawnCategory -> entityTypeToSpawnCategoryMap.put(entityType, bukkitSpawnCategory))
                         .peek(bukkitSpawnCategory -> spawnCategoryMap
                                 .computeIfAbsent(bukkitSpawnCategory, ignore -> new ArrayList<>())
                                 .add(entityType))));
+    }
+
+    /**
+     * Gets the spawn category that the given entity type is in.
+     *
+     * @param entityType The entity type
+     * @return The spawn category that the given entity type is in, or null if it cannot be determined
+     */
+    static SpawnCategory getSpawnCategory(EntityType entityType) {
+        return entityTypeToSpawnCategoryMap.get(entityType);
     }
 
     /**
