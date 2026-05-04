@@ -27,7 +27,7 @@ repositories {
 configure(apiDependencies) {
     serverApiVersion = '1.21.11-R0.1-SNAPSHOT'
     mockBukkitServerApiVersion = '1.21'
-    mockBukkitVersion = '4.100.0'
+    mockBukkitVersion = '4.109.0'
 }
 
 dependencies {
