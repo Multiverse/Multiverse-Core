@@ -77,7 +77,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
             Logging.fine("Spawn location from world.dat file was unsafe!!");
             Logging.fine("NOT adjusting spawn for '" + this.getAliasOrName() + "' because you told me not to.");
             Logging.fine("To turn on spawn adjustment for this world simply type:");
-            Logging.fine("/mvm set adjustspawn true " + this.getAliasOrName());
+            Logging.fine("/mv modify %s set adjust-spawn true", getName());
             return location;
         }
 
