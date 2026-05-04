@@ -52,6 +52,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
+import org.mvplugins.multiverse.core.world.helpers.PotentialWorldFinder;
 
 import static org.mvplugins.multiverse.core.utils.StringFormatter.addOnToCommaSeparated;
 
@@ -65,6 +66,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private final CorePermissionsChecker corePermissionsChecker;
     private final AnchorManager anchorManager;
     private final GeneratorProvider generatorProvider;
+    private final PotentialWorldFinder potentialWorldFinder;
 
     @Inject
     MVCommandCompletions(
@@ -74,7 +76,8 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             @NotNull CoreConfig config,
             @NotNull CorePermissionsChecker corePermissionsChecker,
             @NotNull AnchorManager anchorManager,
-            @NotNull GeneratorProvider generatorProvider
+            @NotNull GeneratorProvider generatorProvider,
+            @NotNull PotentialWorldFinder potentialWorldFinder
     ) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
@@ -84,6 +87,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.corePermissionsChecker = corePermissionsChecker;
         this.anchorManager = anchorManager;
         this.generatorProvider = generatorProvider;
+        this.potentialWorldFinder = potentialWorldFinder;
 
         registerAsyncCompletion("anchornames", this::suggestAnchorNames);
         registerAsyncCompletion("commands", this::suggestCommands);
@@ -297,7 +301,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                         .toList();
             }
             case "potential" -> {
-                return worldManager.getPotentialWorlds();
+                return potentialWorldFinder.findPotentialWorlds();
             }
         }
         Logging.severe("Invalid MVWorld scope: " + scope);
