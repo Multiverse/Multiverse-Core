@@ -290,10 +290,11 @@ public final class WorldManager {
                 .mapAttempt(this::createBukkitWorld)
                 .transform(CreateFailureReason.WORLD_CREATOR_FAILED)
                 .map(bukkitWorld -> newLoadedMultiverseWorld(
-                            bukkitWorld,
-                            generatorString,
-                            options.biome(),
-                            options.useSpawnAdjust()))
+                        bukkitWorld,
+                        generatorString,
+                        options.biome(),
+                        options.generatorSettings(),
+                        options.useSpawnAdjust()))
                 .peek(loadedWorld -> postCreateWorld(loadedWorld, options));
     }
 
@@ -354,7 +355,8 @@ public final class WorldManager {
         ImportWorldOptions options = keyOrNameWithOptions.options();
         String generatorString = generatorProvider.parseGeneratorString(keyOrName.usableName(), options.generator());
         WorldCreator worldCreator = WorldCreatorCompatibility.ofKeyOrName(keyOrName)
-                .environment(options.environment());
+                .environment(options.environment())
+                .generatorSettings(options.generatorSettings());
 
         return addBiomeProviderToCreator(worldCreator, keyOrName.usableName(), options.biome())
                 .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
@@ -364,6 +366,7 @@ public final class WorldManager {
                         bukkitWorld,
                         generatorString,
                         options.biome(),
+                        options.generatorSettings(),
                         options.useSpawnAdjust()))
                 .peek(loadedWorld -> pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld)));
     }
@@ -385,6 +388,7 @@ public final class WorldManager {
                 bukkitWorld,
                 generatorProvider.parseGeneratorString(keyOrName.usableName(), options.generator()),
                 options.biome(),
+                options.generatorSettings(),
                 options.useSpawnAdjust());
         pluginManager.callEvent(new MVWorldImportedEvent(loadedWorld));
         return Attempt.success(loadedWorld);
@@ -405,13 +409,18 @@ public final class WorldManager {
      * @param adjustSpawn   Whether to adjust spawn.
      */
     private LoadedMultiverseWorld newLoadedMultiverseWorld(
-            @NotNull World world, @Nullable String generator, @Nullable String biome, boolean adjustSpawn) {
+            @NotNull World world,
+            @Nullable String generator,
+            @Nullable String biome,
+            @Nullable String generatorSettings,
+            boolean adjustSpawn) {
         WorldConfig worldConfig = worldsConfigManager.addWorldConfig(world.getKey());
 
         // Properties from multiverse input
         worldConfig.setAdjustSpawn(adjustSpawn);
         worldConfig.setGenerator(generator == null ? "" : generator);
         worldConfig.setBiome(biome == null ? "" : biome);
+        worldConfig.setGeneratorSettings(generatorSettings == null ? "" : generatorSettings);
 
         // Properties from the bukkit world
         worldConfig.setLegacyWorldName(world.getName());
@@ -870,6 +879,7 @@ public final class WorldManager {
                 .environment(world.getEnvironment())
                 .generateStructures(world.canGenerateStructures().getOrElse(true))
                 .generator(world.getGenerator())
+                .generatorSettings(world.getGeneratorSettings())
                 .seed(options.seed())
                 .useSpawnAdjust(!shouldKeepSpawnLocation && world.getAdjustSpawn())
                 .worldType(world.getWorldType().getOrElse(WorldType.NORMAL))
