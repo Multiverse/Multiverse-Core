@@ -15,11 +15,11 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
+import org.mvplugins.multiverse.core.command.flags.RemovePlayerDestinationFlags;
 import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueuePayload;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -31,6 +31,8 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.world.options.DeleteWorldOptions;
 
+import java.util.Objects;
+
 @Service
 class DeleteCommand extends CoreCommand {
 
@@ -38,7 +40,7 @@ class DeleteCommand extends CoreCommand {
     private final WorldManager worldManager;
     private final PlayerWorldTeleporter playerWorldTeleporter;
     private final WorldTickDeferrer worldTickDeferrer;
-    private final RemovePlayerFlags flags;
+    private final RemovePlayerDestinationFlags flags;
 
     @Inject
     DeleteCommand(
@@ -46,7 +48,7 @@ class DeleteCommand extends CoreCommand {
             @NotNull WorldManager worldManager,
             @NotNull PlayerWorldTeleporter playerWorldTeleporter,
             @NotNull WorldTickDeferrer worldTickDeferrer,
-            @NotNull RemovePlayerFlags flags
+            @NotNull RemovePlayerDestinationFlags flags
     ) {
         this.commandQueueManager = commandQueueManager;
         this.worldManager = worldManager;
@@ -57,8 +59,8 @@ class DeleteCommand extends CoreCommand {
 
     @Subcommand("delete")
     @CommandPermission("multiverse.core.delete")
-    @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + RemovePlayerFlags.NAME)
-    @Syntax("<world>")
+    @CommandCompletion("@mvworlds:scope=both @flags:groupName=" + RemovePlayerDestinationFlags.NAME)
+    @Syntax("<world> [--remove-players [destination]]")
     @Description("{@@mv-core.delete.description}")
     void onDeleteCommand(
             MVCommandIssuer issuer,
@@ -69,7 +71,7 @@ class DeleteCommand extends CoreCommand {
             MultiverseWorld world,
 
             @Optional
-            @Syntax("[--remove-players]")
+            @Syntax("[--remove-players [destination]]")
             @Description("")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
@@ -84,10 +86,11 @@ class DeleteCommand extends CoreCommand {
     private void runDeleteCommand(MVCommandIssuer issuer, MultiverseWorld world, ParsedCommandFlags parsedFlags) {
         issuer.sendInfo(MVCorei18n.DELETE_DELETING, Replace.WORLD.with(world.getName()));
 
-        var future = parsedFlags.hasFlag(flags.removePlayers)
+        DestinationInstance<?, ?> removeToDestination = parsedFlags.flagValue(flags.removePlayers);
+        var future = Objects.nonNull(removeToDestination)
                         && world.isLoaded()
                         && world instanceof LoadedMultiverseWorld loadedWorld
-                ? playerWorldTeleporter.removeFromWorld(loadedWorld)
+                ? playerWorldTeleporter.transferAllFromWorldToDestination(loadedWorld, removeToDestination)
                 : AsyncAttemptsAggregate.emptySuccess();
 
         future.onSuccess(() -> worldTickDeferrer.deferWorldTick(() -> doWorldDeleting(issuer, world)))
@@ -113,7 +116,7 @@ class DeleteCommand extends CoreCommand {
                 @NotNull WorldManager worldManager,
                 @NotNull PlayerWorldTeleporter playerWorldTeleporter,
                 @NotNull WorldTickDeferrer worldTickDeferrer,
-                @NotNull RemovePlayerFlags flags) {
+                @NotNull RemovePlayerDestinationFlags flags) {
             super(commandQueueManager, worldManager, playerWorldTeleporter, worldTickDeferrer, flags);
         }
 
