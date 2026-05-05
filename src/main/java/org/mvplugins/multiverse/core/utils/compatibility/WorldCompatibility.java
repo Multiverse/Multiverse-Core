@@ -17,9 +17,11 @@ import java.lang.reflect.Method;
 public final class WorldCompatibility {
 
     private static final Try<Method> SAVE_WITH_FLUSH_METHOD;
+    private static final boolean HAS_GET_COORDINATE_SCALE_METHOD;
 
     static {
         SAVE_WITH_FLUSH_METHOD = ReflectHelper.tryGetMethod(World.class, "save", boolean.class);
+        HAS_GET_COORDINATE_SCALE_METHOD = ReflectHelper.hasMethod(World.class, "getCoordinateScale");
     }
 
     /**
@@ -53,7 +55,7 @@ public final class WorldCompatibility {
      */
     @ApiStatus.AvailableSince("5.7")
     public static double getCoordinateScale(World world) {
-        if (PaperLib.isPaper()) {
+        if (HAS_GET_COORDINATE_SCALE_METHOD) {
             return world.getCoordinateScale();
         }
         return switch (world.getEnvironment()) {
