@@ -113,13 +113,12 @@ class InfoCommand extends CoreCommand {
         outMap.put("World Scale", String.valueOf(world.getScale()));
         outMap.put("Weather Enabled", String.valueOf(world.isAllowWeather()));
         outMap.put("Allow Flight", String.valueOf(world.isAllowFlight()));
+        outMap.put("Grant Advancements", String.valueOf(world.isAllowAdvancementGrant()));
+        outMap.put("Auto Heal", String.valueOf(world.getAutoHeal()));
         outMap.put("Hunger Depletes", String.valueOf(world.isHunger()));
-        outMap.put("Keep Spawn In Memory", String.valueOf(world.isKeepSpawnInMemory()));
         outMap.put("PVP Enabled", String.valueOf(world.getPvp()));
         outMap.put("Portal Form", String.valueOf(world.getPortalForm()));
         outMap.put("Player Limit", String.valueOf(world.getPlayerLimit()));
-//        getAnimalSpawningInfo(outMap, world);
-//        getMonsterSpawningInfo(outMap, world);
         outMap.put("World Blacklist", String.join(", ", world.getWorldBlacklist()));
 
         return outMap;
@@ -135,30 +134,6 @@ class InfoCommand extends CoreCommand {
             outMap.put("Entry Reward", economist.formatPrice(-price, world.getCurrency()));
         }
     }
-
-//    private void getAnimalSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
-//        if (world.isSpawningAnimals()) {
-//            outMap.put("Spawning Animals", "ALL");
-//        } else {
-//            if (!world.getSpawningAnimalsExceptions().isEmpty()) {
-//                outMap.put("Spawning Animals", world.getSpawningAnimalsExceptions().toString());
-//            } else {
-//                outMap.put("Spawning Animals", "NONE");
-//            }
-//        }
-//    }
-//
-//    private void getMonsterSpawningInfo(Map<String, String> outMap, MultiverseWorld world) {
-//        if (world.isSpawningMonsters()) {
-//            outMap.put("Spawning Monsters", "ALL");
-//        } else {
-//            if (!world.getSpawningMonstersExceptions().isEmpty()) {
-//                outMap.put("Spawning Monsters", world.getSpawningMonstersExceptions().toString());
-//            } else {
-//                outMap.put("Spawning Monsters", "NONE");
-//            }
-//        }
-//    }
 
     @Service
     private static final class LegacyAlias extends InfoCommand implements LegacyAliasCommand {
