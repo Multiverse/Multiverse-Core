@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.commands;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.annotation.CommandAlias;
@@ -23,9 +24,12 @@ import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
+import org.mvplugins.multiverse.core.command.flags.RemovePlayerDestinationFlags;
 import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueuePayload;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
@@ -65,7 +69,8 @@ class RegenCommand extends CoreCommand {
     @Subcommand("regen")
     @CommandPermission("multiverse.core.regen")
     @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=" + Flags.NAME)
-    @Syntax("<world> [--seed [seed] --reset-world-config --reset-gamerules --reset-world-border --remove-players]")
+    @Syntax("<world> [--seed [seed]] [--reset-world-config] [--reset-gamerules] [--reset-world-border] " +
+            "[--remove-players [destination]]")
     @Description("{@@mv-core.regen.description}")
     void onRegenCommand(
             MVCommandIssuer issuer,
@@ -75,7 +80,8 @@ class RegenCommand extends CoreCommand {
             LoadedMultiverseWorld world,
 
             @Optional
-            @Syntax("[--seed [seed] --reset-world-config --reset-gamerules --reset-world-border --remove-players]")
+            @Syntax("[--seed [seed]] [--reset-world-config] [--reset-gamerules] [--reset-world-border] " +
+                    "[--remove-players [destination]]")
             @Description("{@@mv-core.regen.other.description}")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
@@ -91,8 +97,9 @@ class RegenCommand extends CoreCommand {
         issuer.sendInfo(MVCorei18n.REGEN_REGENERATING, Replace.WORLD.with(world.getName()));
         List<Player> worldPlayers = world.getPlayers().getOrElse(Collections.emptyList());
 
-        var future = parsedFlags.hasFlag(flags.removePlayers)
-                ? playerWorldTeleporter.removeFromWorld(world)
+        DestinationInstance<?, ?> removeToDestination = parsedFlags.flagValue(flags.removePlayers);
+        var future = Objects.nonNull(removeToDestination)
+                ? playerWorldTeleporter.transferAllFromWorldToDestination(world,  removeToDestination)
                 : AsyncAttemptsAggregate.emptySuccess();
 
         // todo: using future will hide stacktrace
@@ -128,13 +135,18 @@ class RegenCommand extends CoreCommand {
     }
 
     @Service
-    private static final class Flags extends RemovePlayerFlags {
+    private static final class Flags extends RemovePlayerDestinationFlags {
 
         private static final String NAME = "mvregen";
 
         @Inject
-        private Flags(@NotNull CommandFlagsManager flagsManager) {
-            super(NAME, flagsManager);
+        private Flags(
+                @NotNull CommandFlagsManager flagsManager,
+                @NotNull WorldManager worldManager,
+                @NotNull DestinationsProvider destinationsProvider,
+                @NotNull WorldDestination worldDestination
+        ) {
+            super(NAME, flagsManager, worldManager, destinationsProvider, worldDestination);
         }
 
         private final CommandValueFlag<String> seed = flag(CommandValueFlag.builder("--seed", String.class)

@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.utils.compatibility;
 
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
@@ -20,12 +21,12 @@ import java.nio.file.Path;
 @ApiStatus.AvailableSince("5.6")
 public final class BukkitCompatibility {
 
-    private static final Option<Method> GET_LEVEL_DIRECTORY_METHOD;
-    private static final Option<Method> GET_WORLD_NAMESPACED_KEY_METHOD;
+    private static final Try<Method> GET_LEVEL_DIRECTORY_METHOD;
+    private static final Try<Method> GET_WORLD_NAMESPACED_KEY_METHOD;
 
     static {
-        GET_LEVEL_DIRECTORY_METHOD = Option.of(ReflectHelper.getMethod(Server.class, "getLevelDirectory"));
-        GET_WORLD_NAMESPACED_KEY_METHOD = Option.of(ReflectHelper.getMethod(Bukkit.class, "getWorld", NamespacedKey.class));
+        GET_LEVEL_DIRECTORY_METHOD = ReflectHelper.tryGetMethod(Server.class, "getLevelDirectory");
+        GET_WORLD_NAMESPACED_KEY_METHOD = ReflectHelper.tryGetMethod(Bukkit.class, "getWorld", NamespacedKey.class);
     }
 
     /**
@@ -41,15 +42,15 @@ public final class BukkitCompatibility {
     @ApiStatus.AvailableSince("5.6")
     public static boolean isUsingNewDimensionStorage() {
         return GET_LEVEL_DIRECTORY_METHOD
-                .flatMap(method -> Option.of(ReflectHelper.invokeMethod(Bukkit.getServer(), method)))
-                .isDefined();
+                .flatMap(method -> ReflectHelper.tryInvokeMethod(Bukkit.getServer(), method))
+                .isSuccess();
     }
 
     /**
      * Gets the folder where all the worlds will be store. Before 26.1, all worlds are stored in the root directory
      * of the server, which can be obtained by {@link Server#getWorldContainer()}.
      * <br />
-     * After 26.1, PaperMC changed all worlds are stored in the "[level]/dimensions/minecraft" folder under the world
+     * After 26.1, PaperMC changed all worlds are stored in the "[level]/dimensions" folder under the world
      * level directory, which needs to be manually parsed.
      *
      * @return The location where all the worlds folders should be, depending on server's mc version.
@@ -60,10 +61,10 @@ public final class BukkitCompatibility {
     @NotNull
     public static Path getWorldFoldersDirectory() {
         Server server = Bukkit.getServer();
-        return GET_LEVEL_DIRECTORY_METHOD.map(method -> ReflectHelper.invokeMethod(server, method))
+        return GET_LEVEL_DIRECTORY_METHOD.flatMap(method -> ReflectHelper.tryInvokeMethod(server, method))
                 .filter(Path.class::isInstance)
                 .map(Path.class::cast)
-                .map(path -> path.resolve("dimensions/minecraft"))
+                .map(path -> path.resolve("dimensions"))
                 .getOrElse(() -> server.getWorldContainer().toPath());
     }
 
@@ -84,8 +85,13 @@ public final class BukkitCompatibility {
     public static Option<World> getWorldByNameOrKey(@NotNull String nameOrKey) {
         return Option.of(Bukkit.getWorld(nameOrKey))
                 .orElse(() -> GET_WORLD_NAMESPACED_KEY_METHOD
-                        .map(method -> ReflectHelper.invokeMethod(null, method, NamespacedKey.fromString(nameOrKey)))
+                        .flatMap(method -> ReflectHelper.tryInvokeStaticMethod(method, NamespacedKey.fromString(nameOrKey)))
                         .filter(World.class::isInstance)
-                        .map(World.class::cast));
+                        .map(World.class::cast)
+                        .toOption());
+    }
+
+    private BukkitCompatibility() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

@@ -10,6 +10,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import jakarta.inject.Inject;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,6 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.utils.result.Attempt;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
+import org.mvplugins.multiverse.core.world.key.WorldKeyParseFailReason;
 
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -28,7 +32,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 final class WorldsConfigManager {
     private static final String CONFIG_FILENAME = "worlds.yml";
 
-    private final SortedMap<String, WorldConfig> worldConfigMap;
+    private final SortedMap<WorldKeyOrName, WorldConfig> worldConfigMap;
     private final File worldConfigFile;
     private YamlConfiguration worldsConfig;
 
@@ -47,7 +51,7 @@ final class WorldsConfigManager {
      *
      * @return A {@link NewAndRemovedWorlds} record.
      */
-    public Try<NewAndRemovedWorlds> load() {
+    Try<NewAndRemovedWorlds> load() {
         return Try.of(() -> {
             loadWorldYmlFile();
             return parseNewAndRemovedWorlds();
@@ -113,7 +117,7 @@ final class WorldsConfigManager {
                     config.set("worlds", null);
 
                     for (Map.Entry<String, ConfigurationSection> entry : worldConfigMap.entrySet()) {
-                        config.set(encodeWorldName(entry.getKey()), entry.getValue());
+                        config.set(encodeConfigKey(entry.getKey()), entry.getValue());
                     }
                     config.save(worldConfigFile);
                 })
@@ -162,33 +166,39 @@ final class WorldsConfigManager {
      * @return A tuple containing a list of the new WorldConfigs added and a list of the worlds removed from the config.
      */
     private NewAndRemovedWorlds parseNewAndRemovedWorlds() {
-        List<String> allWorldsInConfig = worldsConfig.getKeys(false)
+        List<WorldKeyOrName> allWorldsInConfig = worldsConfig.getKeys(false)
                 .stream()
-                .map(this::decodeWorldName)
+                .map(keyStr -> decodeConfigKey(keyStr)
+                        .onFailure(reason ->
+                                Logging.warning("Failed to parse world key '%s' in config: %s", keyStr, reason))
+                        .getOrNull())
+                .filter(Objects::nonNull)
                 .toList();
 
         List<WorldConfig> newWorldsAdded = new ArrayList<>();
 
-        for (String worldName : allWorldsInConfig) {
-            getWorldConfig(worldName)
-                    .peek(config -> config.load(getWorldConfigSection(worldName)))
+        for (WorldKeyOrName worldKeyStr : allWorldsInConfig) {
+            getWorldConfig(worldKeyStr)
+                    .peek(config -> config.load(getWorldConfigSection(worldKeyStr))
+                            .onFailure(e -> Logging.warning("Failed to load world config for world '%s': %s",
+                                    worldKeyStr, e.getMessage())))
                     .orElse(() -> {
                         WorldConfig newWorldConfig = new WorldConfig(
-                                worldName,
-                                getWorldConfigSection(worldName),
+                                worldKeyStr,
+                                getWorldConfigSection(worldKeyStr),
                                 multiverseCore);
-                        worldConfigMap.put(worldName, newWorldConfig);
+                        worldConfigMap.put(worldKeyStr, newWorldConfig);
                         newWorldsAdded.add(newWorldConfig);
                         return Option.of(newWorldConfig);
                     })
                     .peek(WorldConfig::save);
         }
 
-        List<String> worldsRemoved = worldConfigMap.keySet().stream()
+        List<WorldKeyOrName> worldsRemoved = worldConfigMap.keySet().stream()
                 .filter(worldName -> !allWorldsInConfig.contains(worldName))
                 .toList();
 
-        for (String s : worldsRemoved) {
+        for (WorldKeyOrName s : worldsRemoved) {
             worldConfigMap.remove(s);
         }
 
@@ -200,7 +210,7 @@ final class WorldsConfigManager {
      *
      * @return Whether the worlds.yml file has been loaded.
      */
-    public boolean isLoaded() {
+    boolean isLoaded() {
         return worldsConfig != null;
     }
 
@@ -209,17 +219,17 @@ final class WorldsConfigManager {
      *
      * @return Whether the save was successful or the error that occurred.
      */
-    public Try<Void> save() {
+    Try<Void> save() {
         return Try.run(() -> {
             if (!isLoaded()) {
                 throw new IllegalStateException("WorldsConfigManager is not loaded!");
             }
             worldsConfig = new YamlConfiguration();
-            worldConfigMap.forEach((worldName, worldConfig) -> {
+            worldConfigMap.forEach((keyOrName, worldConfig) -> {
                 worldConfig.save().onFailure(e -> {
-                    throw new RuntimeException("Failed to save world config: " + worldName, e);
+                    throw new RuntimeException("Failed to save world %s in config: " + keyOrName, e);
                 });
-                worldsConfig.set(encodeWorldName(worldName), worldConfig.getConfigurationSection());
+                worldsConfig.set(encodeConfigKey(keyOrName), worldConfig.getConfigurationSection());
             });
             worldsConfig.save(worldConfigFile);
         }).onFailure(e -> {
@@ -228,63 +238,90 @@ final class WorldsConfigManager {
     }
 
     /**
-     * Gets the {@link WorldConfig} instance of all worlds in the worlds.yml file.
+     * Gets the {@link WorldConfig} instance of a world in the worlds.yml file.
      *
-     * @param worldName The name of the world to check.
+     * @param keyOrName The target key to get
      * @return The {@link WorldConfig} instance of the world, or empty option if it doesn't exist.
      */
-    public @NotNull Option<WorldConfig> getWorldConfig(@NotNull String worldName) {
-        return Option.of(worldConfigMap.get(worldName));
+    @NotNull Option<WorldConfig> getWorldConfig(@NotNull WorldKeyOrName keyOrName) {
+        return Option.of(worldConfigMap.get(keyOrName));
+    }
+
+    @NotNull WorldConfig migrateWorldConfigKey(@NotNull WorldConfig worldConfig, @NotNull NamespacedKey toKey) {
+        worldConfig.save();
+        WorldKeyOrName newKeyOrName = WorldKeyOrName.parseKey(toKey);
+        WorldConfig migratedWorldConfig = new WorldConfig(
+                newKeyOrName,
+                worldConfig.getConfigurationSection(),
+                multiverseCore
+        );
+        deleteWorldConfig(worldConfig.getWorldKeyOrName());
+        worldConfigMap.put(newKeyOrName, migratedWorldConfig);
+        return migratedWorldConfig;
     }
 
     /**
      * Add a new world to the worlds.yml file. If a world with the given name already exists, an exception is thrown.
      *
-     * @param worldName The name of the world to add.
+     * @param namespacedKey The target key to add
      * @return The newly created {@link WorldConfig} instance.
      */
-    public @NotNull WorldConfig addWorldConfig(@NotNull String worldName) {
-        if (worldConfigMap.containsKey(worldName)) {
-            throw new IllegalArgumentException("WorldConfig for world " + worldName + " already exists.");
+    @NotNull WorldConfig addWorldConfig(@NotNull NamespacedKey namespacedKey) {
+        WorldKeyOrName keyOrName = WorldKeyOrName.parseKey(namespacedKey);
+        if (worldConfigMap.containsKey(keyOrName)) {
+            throw new IllegalStateException("WorldConfig for world " + namespacedKey + " already exists.");
         }
-        WorldConfig worldConfig = new WorldConfig(worldName, getWorldConfigSection(worldName), multiverseCore);
-        worldConfigMap.put(worldName, worldConfig);
+        WorldConfig worldConfig = new WorldConfig(keyOrName, getWorldConfigSection(keyOrName), multiverseCore);
+        worldConfigMap.put(keyOrName, worldConfig);
         return worldConfig;
     }
 
     /**
      * Deletes the world config for the given world.
      *
-     * @param worldName The name of the world to delete.
+     * @param namespacedKey The target key to delete
      */
-    public void deleteWorldConfig(@NotNull String worldName) {
-        worldConfigMap.remove(worldName);
-        worldsConfig.set(encodeWorldName(worldName), null);
+    void deleteWorldConfig(@NotNull NamespacedKey namespacedKey) {
+        deleteWorldConfig(WorldKeyOrName.parseKey(namespacedKey));
+    }
+
+    /**
+     * Deletes the world config for the given world.
+     *
+     * @param worldKeyOrName The target key to delete
+     */
+    void deleteWorldConfig(@NotNull WorldKeyOrName worldKeyOrName) {
+        worldConfigMap.remove(worldKeyOrName);
+        worldsConfig.set(encodeConfigKey(worldKeyOrName), null);
     }
 
     /**
      * Gets the {@link ConfigurationSection} for the given world in the worlds.yml file. If the section doesn't exist,
      * it is created.
      *
-     * @param worldName The name of the world.
+     * @param keyOrName the config key of the world to get the configuration section for.
      * @return The {@link ConfigurationSection} for the given world.
      */
-    private ConfigurationSection getWorldConfigSection(String worldName) {
-        worldName = encodeWorldName(worldName);
-        return worldsConfig.isConfigurationSection(worldName)
-                ? worldsConfig.getConfigurationSection(worldName)
-                : worldsConfig.createSection(worldName);
+    @NotNull
+    private ConfigurationSection getWorldConfigSection(@NotNull WorldKeyOrName keyOrName) {
+        String encodeWorldKey = encodeConfigKey(keyOrName);
+        ConfigurationSection section = worldsConfig.getConfigurationSection(encodeWorldKey);
+        return section == null ? worldsConfig.createSection(encodeWorldKey) : section;
+    }
+
+    private String encodeConfigKey(@NotNull WorldKeyOrName worldKeyOrName) {
+        return encodeConfigKey(worldKeyOrName.serialise());
     }
 
     /**
-     * Dot is a special character in YAML that causes sub-path issues.
+     * Remove dot . with [dot] as it is a special character in YAML that causes sub-path issues.
      */
-    private String encodeWorldName(String worldName) {
+    private String encodeConfigKey(@NotNull String worldName) {
         return worldName.replace(".", "[dot]");
     }
 
-    private String decodeWorldName(String worldName) {
-        return worldName.replace("[dot]", ".");
+    private Attempt<WorldKeyOrName, WorldKeyParseFailReason> decodeConfigKey(@NotNull String worldKeyStr) {
+        return WorldKeyOrName.parse(worldKeyStr.replace("[dot]", "."));
     }
 
     private static final class ConfigMigratedException extends RuntimeException {

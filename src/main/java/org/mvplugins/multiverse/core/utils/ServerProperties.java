@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.utils;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -14,6 +15,21 @@ import java.util.Map;
 @Service
 public final class ServerProperties {
 
+    private static ServerProperties instance;
+
+    /**
+     * A very bad static way of obtaining the level name from server.properties of older mc versions that
+     * don't have any way of getting main level name.
+     * <br />
+     * For internal use ONLY!
+     *
+     * @return The level name if it can be obtained, else none.
+     */
+    @ApiStatus.Internal
+    public static Option<String> getStaticLevelName() {
+        return Option.of(instance).flatMap(ServerProperties::getLevelName);
+    }
+
     private final Map<String, String> properties;
     private final FileUtils fileUtils;
 
@@ -22,6 +38,8 @@ public final class ServerProperties {
         this.fileUtils = fileUtils;
         properties = new HashMap<>();
         parseServerPropertiesFile();
+
+        instance = this;
     }
 
     private void parseServerPropertiesFile() {

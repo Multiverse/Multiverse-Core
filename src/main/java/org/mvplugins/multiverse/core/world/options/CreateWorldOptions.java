@@ -1,12 +1,17 @@
 package org.mvplugins.multiverse.core.world.options;
 
 import co.aikar.commands.ACFUtil;
+import io.vavr.control.Either;
+import io.vavr.control.Option;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.WorldType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
+import org.mvplugins.multiverse.core.utils.position.EntityPosition;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,12 +29,43 @@ public final class CreateWorldOptions {
      * @return A new {@link CreateWorldOptions} instance.
      */
     public static @NotNull CreateWorldOptions worldName(@NotNull String worldName) {
-        return new CreateWorldOptions(worldName);
+        return new CreateWorldOptions(Either.left(worldName));
     }
 
-    private final String worldName;
+    /**
+     * Creates a new {@link CreateWorldOptions} instance with the given namespaced key. Note that creating world with
+     * namespace requires PaperMC. This will not work on Spigot.
+     *
+     * @param key The namespaced key for the world to create.
+     * @return A new {@link CreateWorldOptions} instance.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public static @NotNull CreateWorldOptions worldKey(@NotNull NamespacedKey key) {
+        return new CreateWorldOptions(Either.right(WorldKeyOrName.parseKey(key)));
+    }
+
+    /**
+     * Creates a new {@link CreateWorldOptions} instance with the given world key or name. Note that creating world with
+     * namespace requires PaperMC. WorldKeyOrName parsed as namespaced key (i.e. {@link WorldKeyOrName#isKey()} is true)
+     * will not work on Spigot.
+     *
+     * @param keyOrName The key or name for the world to create.
+     * @return A new {@link CreateWorldOptions} instance.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public static @NotNull CreateWorldOptions worldKeyOrName(@NotNull WorldKeyOrName keyOrName) {
+        return new CreateWorldOptions(Either.right(keyOrName));
+    }
+
+    private final Either<String, WorldKeyOrName> keyOrName;
     private String biome = "";
+    private boolean bonusChest = false;
     private World.Environment environment = World.Environment.NORMAL;
+    private EntityPosition forcedSpawnPosition = null;
     private boolean generateStructures = true;
     private String generator = null;
     private String generatorSettings = "";
@@ -40,13 +76,25 @@ public final class CreateWorldOptions {
     private final Map<String, String> worldPropertyStrings = new HashMap<>();
 
     /**
-     * Creates a new {@link CreateWorldOptions} instance with the given world name.
+     * Creates a new {@link CreateWorldOptions} instance with either a world name or world key or name.
      *
-     * @param worldName The name of the world to create.
+     * @param keyOrName Either the world name or the world key/name instance.
      */
-    CreateWorldOptions(@NotNull String worldName) {
-        this.worldName = worldName;
+    CreateWorldOptions(@NotNull Either<String, WorldKeyOrName> keyOrName) {
+        this.keyOrName = keyOrName;
         this.seed = ACFUtil.RANDOM.nextLong();
+    }
+
+    /**
+     * Gets the new world key or name, either unparsed as string or the {@link WorldKeyOrName} instance.
+     *
+     * @return The new world key or name.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull Either<String, WorldKeyOrName> keyOrName() {
+        return keyOrName;
     }
 
     /**
@@ -54,8 +102,9 @@ public final class CreateWorldOptions {
      *
      * @return The name of the world to create.
      */
+    @Deprecated(forRemoval = true, since = "5.7")
     public @NotNull String worldName() {
-        return worldName;
+        return keyOrName.fold(name -> name ,WorldKeyOrName::usableName);
     }
 
     /**
@@ -81,6 +130,32 @@ public final class CreateWorldOptions {
     }
 
     /**
+     * Sets whether bonus chest should generate at spawn upon world creation.
+     * <br />
+     * This feature only works on PaperMC 1.21.5+
+     *
+     * @param bonusChest Whether bonus chest should generate at spawn upon world creation.
+     * @return This {@link CreateWorldOptions} instance.
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull CreateWorldOptions bonusChest(boolean bonusChest) {
+        this.bonusChest = bonusChest;
+        return this;
+    }
+
+    /**
+     * Gets whether bonus chest should generate at spawn upon world creation.
+     * <br />
+     * This feature only works on PaperMC 1.21.5+
+     *
+     * @return true if bonus chest should generate, else false.
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public boolean bonusChest() {
+        return bonusChest;
+    }
+
+    /**
      * Sets the environment of the world to create.
      *
      * @param environmentInput  The environment of the world to create.
@@ -98,6 +173,37 @@ public final class CreateWorldOptions {
      */
     public @NotNull World.Environment environment() {
         return environment;
+    }
+
+    /**
+     * Sets the forced spawn position of the world to apply. This may be null, in which case the spawn position will
+     * be determined by the default generator. Setting spawn position and {@link #useSpawnAdjust(boolean)} to false
+     * will improve world creation speed on PaperMC as chunks will not be loaded to search for spawn point.
+     * <br />
+     * This feature only works on PaperMC 26.1+
+     *
+     * @param forcedSpawnPosition   The forced spawn position of the world to create.
+     * @return This {@link CreateWorldOptions} instance.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull CreateWorldOptions forcedSpawnPosition(@Nullable EntityPosition forcedSpawnPosition) {
+        this.forcedSpawnPosition = forcedSpawnPosition;
+        return this;
+    }
+
+    /**
+     * Sets the forced spawn position of the world to apply. This may be null, in which case the spawn position will
+     * be determined by the default generator.
+     * <br />
+     * This feature only works on PaperMC 26.1+
+     *
+     * @return The force spawn position to apply if available.
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull Option<EntityPosition> forcedSpawnPosition() {
+        return Option.of(this.forcedSpawnPosition);
     }
 
     /**

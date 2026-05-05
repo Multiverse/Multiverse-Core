@@ -39,7 +39,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
             @NotNull LocationManipulation locationManipulation,
             @NotNull EntityPurger entityPurger
     ) {
-        super(world.getName(), worldConfig, config);
+        super(worldConfig, config);
         this.worldUid = world.getUID();
         this.blockSafety = blockSafety;
         this.locationManipulation = locationManipulation;
@@ -77,7 +77,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
             Logging.fine("Spawn location from world.dat file was unsafe!!");
             Logging.fine("NOT adjusting spawn for '" + this.getAliasOrName() + "' because you told me not to.");
             Logging.fine("To turn on spawn adjustment for this world simply type:");
-            Logging.fine("/mvm set adjustspawn true " + this.getAliasOrName());
+            Logging.fine("/mv modify %s set adjust-spawn true", getName());
             return location;
         }
 
@@ -173,7 +173,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
      * {@inheritDoc}
      */
     @Override
-    void setWorldConfig(WorldConfig worldConfig) {
+    void setWorldConfig(@NotNull WorldConfig worldConfig) {
         super.setWorldConfig(worldConfig);
         setupWorldConfig(getBukkitWorld().get());
     }
@@ -184,7 +184,8 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
     @Override
     public String toString() {
         return "LoadedMultiverseWorld{"
-                + "name='" + worldName + "', "
+                + "key='" + getKey() + "', "
+                + "name='" + getName() + "', "
                 + "env='" + getEnvironment() + "', "
                 + "type='" + getWorldType().getOrNull() + "', "
                 + "gen='" + getGenerator() + "'"

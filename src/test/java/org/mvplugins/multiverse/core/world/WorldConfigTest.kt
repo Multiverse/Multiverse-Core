@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world
 
 import org.bukkit.Material
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
@@ -23,10 +24,10 @@ class WorldConfigTest : TestWithMockBukkit() {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }
 
         assertTrue(worldConfigManager.load().isSuccess)
-        worldConfig = worldConfigManager.getWorldConfig("world").orNull.takeIf { it != null } ?: run {
+        worldConfig = worldConfigManager.getWorldConfig(key("world")).orNull.takeIf { it != null } ?: run {
             throw IllegalStateException("WorldConfig for world is not available") }
         assertNotNull(worldConfig)
-        worldNetherConfig = worldConfigManager.getWorldConfig("world_nether").orNull.takeIf { it != null } ?: run {
+        worldNetherConfig = worldConfigManager.getWorldConfig(key("world_nether")).orNull.takeIf { it != null } ?: run {
             throw IllegalStateException("WorldConfig for world is not available") }
         assertNotNull(worldNetherConfig);
     }
@@ -93,5 +94,9 @@ class WorldConfigTest : TestWithMockBukkit() {
     fun `Updating a non-existing property with setProperty returns false`() {
         assertTrue(worldConfig.stringPropertyHandle.setProperty("invalid-property", false).isFailure)
         assertTrue(worldConfig.stringPropertyHandle.setProperty("version", 1.1).isFailure)
+    }
+
+    private fun key(worldName: String): WorldKeyOrName {
+        return WorldKeyOrName.parse(worldName).get()
     }
 }

@@ -9,6 +9,7 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
+import org.mvplugins.multiverse.core.utils.compatibility.WorldBorderCompatibility;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
@@ -140,14 +141,16 @@ public interface DataStore<T> {
          */
         @Override
         public WorldBorderStore copyFrom(LoadedMultiverseWorld world) {
-            world.getBukkitWorld().peek(bukkitWorld -> {
-                borderCenterX = bukkitWorld.getWorldBorder().getCenter().getX();
-                borderCenterZ = bukkitWorld.getWorldBorder().getCenter().getZ();
-                borderDamageAmount = bukkitWorld.getWorldBorder().getDamageAmount();
-                borderDamageBuffer = bukkitWorld.getWorldBorder().getDamageBuffer();
-                borderSize = bukkitWorld.getWorldBorder().getSize();
-                borderTimeRemaining = bukkitWorld.getWorldBorder().getWarningTime();
-            });
+            world.getBukkitWorld()
+                    .map(World::getWorldBorder)
+                    .peek(worldBorder -> {
+                        borderCenterX = worldBorder.getCenter().getX();
+                        borderCenterZ = worldBorder.getCenter().getZ();
+                        borderDamageAmount = worldBorder.getDamageAmount();
+                        borderDamageBuffer = worldBorder.getDamageBuffer();
+                        borderSize = worldBorder.getSize();
+                        borderTimeRemaining = WorldBorderCompatibility.getWarningTimeTicks(worldBorder);
+                    });
             return this;
         }
 
@@ -156,13 +159,15 @@ public interface DataStore<T> {
          */
         @Override
         public WorldBorderStore pasteTo(LoadedMultiverseWorld world) {
-            world.getBukkitWorld().peek(bukkitWorld -> {
-                bukkitWorld.getWorldBorder().setCenter(borderCenterX, borderCenterZ);
-                bukkitWorld.getWorldBorder().setDamageAmount(borderDamageAmount);
-                bukkitWorld.getWorldBorder().setDamageBuffer(borderDamageBuffer);
-                bukkitWorld.getWorldBorder().setSize(borderSize);
-                bukkitWorld.getWorldBorder().setWarningTime(borderTimeRemaining);
-            });
+            world.getBukkitWorld()
+                    .map(World::getWorldBorder)
+                    .peek(worldBorder -> {
+                        worldBorder.setCenter(borderCenterX, borderCenterZ);
+                        worldBorder.setDamageAmount(borderDamageAmount);
+                        worldBorder.setDamageBuffer(borderDamageBuffer);
+                        worldBorder.setSize(borderSize);
+                        WorldBorderCompatibility.setWarningTimeTicks(worldBorder, borderTimeRemaining);
+                    });
             return this;
         }
     }

@@ -48,6 +48,12 @@ public enum LoadFailureReason implements FailureReason {
     BUKKIT_ENVIRONMENT_MISMATCH(MVCorei18n.LOADWORLD_BUKKITENVIRONMENTMISMATCH),
 
     /**
+     * The mv world's namespace key does not match the loaded Bukkit world's key.
+     */
+    @ApiStatus.AvailableSince("5.7")
+    BUKKIT_NAMESPACED_KEY_MISMATCH(MVCorei18n.LOADWORLD_BUKKITNAMESPACEDKEYMISMATCH),
+
+    /**
      * Bukkit API failed to create the world.
      */
     WORLD_CREATOR_FAILED(MVCorei18n.GENERIC_FAILURE),

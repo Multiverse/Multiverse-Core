@@ -1,9 +1,12 @@
 package org.mvplugins.multiverse.core.world.options;
 
+import io.vavr.control.Either;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
 /**
  * Options for customizing the import of a new world.
@@ -17,18 +20,64 @@ public final class ImportWorldOptions {
      * @return A new {@link ImportWorldOptions} instance.
      */
     public static @NotNull ImportWorldOptions worldName(@NotNull String worldName) {
-        return new ImportWorldOptions(worldName);
+        return new ImportWorldOptions(Either.left(worldName));
     }
 
-    private final String worldName;
+    /**
+     * Creates a new {@link ImportWorldOptions} instance with the given namespaced key. Note that importing world with
+     * namespace requires PaperMC. This will not work on Spigot.
+     *
+     * @param key The namespaced key for the world to import.
+     * @return A new {@link ImportWorldOptions} instance.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public static @NotNull ImportWorldOptions worldKey(@NotNull NamespacedKey key) {
+        return new ImportWorldOptions(Either.right(WorldKeyOrName.parseKey(key)));
+    }
+
+    /**
+     * Creates a new {@link ImportWorldOptions} instance with the given world key or name. Note that importing world with
+     * namespace requires PaperMC. WorldKeyOrName parsed as namespaced key (i.e. {@link WorldKeyOrName#isKey()} is true)
+     * will not work on Spigot.
+     *
+     * @param keyOrName The key or name for the world to import.
+     * @return A new {@link ImportWorldOptions} instance.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public static @NotNull ImportWorldOptions worldKeyOrName(@NotNull WorldKeyOrName keyOrName) {
+        return new ImportWorldOptions(Either.right(keyOrName));
+    }
+
+    private final Either<String, WorldKeyOrName> keyOrName;
     private String biome = "";
     private World.Environment environment = World.Environment.NORMAL;
     private String generator = null;
     private boolean useSpawnAdjust = true;
     private boolean doFolderCheck = true;
 
-    ImportWorldOptions(String worldName) {
-        this.worldName = worldName;
+    /**
+     * Creates a new {@link ImportWorldOptions} instance with either a world name or world key or name.
+     *
+     * @param keyOrName Either the world name or the world key/name instance.
+     */
+    ImportWorldOptions(Either<String, WorldKeyOrName> keyOrName) {
+        this.keyOrName = keyOrName;
+    }
+
+    /**
+     * Gets the new world key or name, either unparsed as string or the {@link WorldKeyOrName} instance.
+     *
+     * @return The new world key or name.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull Either<String, WorldKeyOrName> keyOrName() {
+        return keyOrName;
     }
 
     /**
@@ -36,8 +85,10 @@ public final class ImportWorldOptions {
      *
      * @return The name of the world to create.
      */
+    @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public @NotNull String worldName() {
-        return worldName;
+        return keyOrName.fold(name -> name ,WorldKeyOrName::usableName);
     }
 
     /**
