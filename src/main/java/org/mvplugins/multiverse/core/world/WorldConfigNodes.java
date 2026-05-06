@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -196,9 +197,15 @@ final class WorldConfigNodes {
     final ConfigNode<Boolean> keepSpawnInMemory = node(ConfigNode
             .builder("keep-spawn-in-memory", Boolean.class)
             .defaultValue(true)
-            .onLoadAndChange((oldValue, newValue) -> {
+            .onLoadAndChange((sender, oldValue, newValue) -> {
                 if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                loadedWorld.getBukkitWorld().peek(bukkitWorld -> bukkitWorld.setKeepSpawnInMemory(newValue));
+                loadedWorld.getBukkitWorld().peek(bukkitWorld -> {
+                    bukkitWorld.setKeepSpawnInMemory(newValue);
+                    if (bukkitWorld.getKeepSpawnInMemory() != newValue) {
+                        sender.sendMessage(ChatColor.RED + "Keep spawn in memory feature has been removed by " +
+                                "Minecraft in 1.21.9+ and will no longer have any effect when set to true.");
+                    }
+                });
             }));
 
     final ConfigNode<Integer> playerLimit = node(ConfigNode.builder("player-limit", Integer.class)
