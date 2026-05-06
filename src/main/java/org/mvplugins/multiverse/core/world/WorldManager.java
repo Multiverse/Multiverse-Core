@@ -880,6 +880,7 @@ public final class WorldManager {
 
         CreateWorldOptions createWorldOptions = CreateWorldOptions.worldName(world.getName())
                 .biome(world.getBiome())
+                .bonusChest(world.getBukkitWorld().map(WorldCompatibility::hasBonusChest).getOrElse(false))
                 .environment(world.getEnvironment())
                 .generateStructures(world.canGenerateStructures().getOrElse(true))
                 .generator(world.getGenerator())
