@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 /**
  * Provides access to the MultiverseCore API.
  */
-public class MultiverseCoreApi {
+public final class MultiverseCoreApi {
 
     private static MultiverseCoreApi instance;
     private static final List<Consumer<MultiverseCoreApi>> whenLoadedCallbacks = new ArrayList<>();
