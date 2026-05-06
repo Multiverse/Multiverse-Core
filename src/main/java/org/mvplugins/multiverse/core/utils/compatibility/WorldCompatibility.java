@@ -18,10 +18,12 @@ public final class WorldCompatibility {
 
     private static final Try<Method> SAVE_WITH_FLUSH_METHOD;
     private static final boolean HAS_GET_COORDINATE_SCALE_METHOD;
+    private static final boolean HAS_HAS_BONUS_CHEST_METHOD;
 
     static {
         SAVE_WITH_FLUSH_METHOD = ReflectHelper.tryGetMethod(World.class, "save", boolean.class);
         HAS_GET_COORDINATE_SCALE_METHOD = ReflectHelper.hasMethod(World.class, "getCoordinateScale");
+        HAS_HAS_BONUS_CHEST_METHOD = ReflectHelper.hasMethod(World.class, "hasBonusChest");
     }
 
     /**
@@ -63,6 +65,25 @@ public final class WorldCompatibility {
             case NETHER -> 8;
             default -> 1;
         };
+    }
+
+    /**
+     * Checks if the world has a bonus chest.
+     * <br />
+     * On PaperMC 1.21.5+, this can be obtained directly from the API. On older versions, it always returns false as
+     * bonus chest is not supported.
+     *
+     * @param world The world to check
+     * @return True if the world has a bonus chest, false otherwise
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public static boolean hasBonusChest(World world) {
+        if (HAS_HAS_BONUS_CHEST_METHOD) {
+            return world.hasBonusChest();
+        }
+        return false;
     }
 
     private WorldCompatibility() {
