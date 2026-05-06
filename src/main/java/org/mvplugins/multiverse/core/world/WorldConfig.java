@@ -375,6 +375,14 @@ final class WorldConfig {
         return configHandle.set(configNodes.environment, environment);
     }
 
+    String getGeneratorSettings() {
+        return configHandle.get(configNodes.generatorSettings);
+    }
+
+    Try<Void> setGeneratorSettings(String generatorSettings) {
+        return configHandle.set(configNodes.generatorSettings, generatorSettings);
+    }
+
     String getLegacyWorldName() {
         return configHandle.get(configNodes.legacyWorldName);
     }

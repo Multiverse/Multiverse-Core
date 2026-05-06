@@ -56,6 +56,7 @@ public final class ImportWorldOptions {
     private String biome = "";
     private World.Environment environment = World.Environment.NORMAL;
     private String generator = null;
+    private String generatorSettings = "";
     private boolean useSpawnAdjust = true;
     private boolean doFolderCheck = true;
 
@@ -151,6 +152,32 @@ public final class ImportWorldOptions {
      */
     public @Nullable String generator() {
         return generator;
+    }
+
+    /**
+     * Sets the custom generator settings string used when creating the world.
+     *
+     * @param generatorSettingsInput The custom generator settings string, or null to use the default settings.
+     * @return This {@link ImportWorldOptions} instance.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull ImportWorldOptions generatorSettings(@NotNull String generatorSettingsInput) {
+        this.generatorSettings = generatorSettingsInput;
+        return this;
+    }
+
+    /**
+     * Gets the custom generator settings string used when creating the world.
+     *
+     * @return The custom generator settings string, or null if none was set.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull String generatorSettings() {
+        return generatorSettings;
     }
 
     /**

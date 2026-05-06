@@ -78,6 +78,7 @@ world:
     - 2
   read-only:
     environment: normal
+    generator-settings: ''
     legacy-world-name: world
     seed: -9223372036854775808
   version: 1.3
@@ -157,6 +158,7 @@ world_nether:
   world-blacklist: []
   read-only:
     environment: nether
+    generator-settings: ''
     legacy-world-name: world_nether
     seed: -9223372036854775808
   version: 1.3

@@ -104,6 +104,7 @@ class InfoCommand extends CoreCommand {
         outMap.put("World Type", world.getWorldType().map(WorldType::getName).getOrNull());
         outMap.put("Biome", world.getBiome());
         outMap.put("Generator", world.getGenerator());
+        outMap.put("Generator Settings",  world.getGeneratorSettings());
         outMap.put("Generate Structures", world.canGenerateStructures().map(String::valueOf).getOrNull());
 
         outMap.put("Auto Load", String.valueOf(world.isAutoLoad()));

@@ -67,7 +67,8 @@ class ImportCommand extends CoreCommand {
         worldManager.importWorld(ImportWorldOptions.worldName(worldName)
                         .biome(parsedFlags.flagValue(flags.biome, ""))
                         .environment(environment)
-                        .generator(parsedFlags.flagValue(flags.generator, String.class))
+                        .generator(parsedFlags.flagValue(flags.generator))
+                        .generatorSettings(parsedFlags.flagValue(flags.generatorSettings, ""))
                         .useSpawnAdjust(!parsedFlags.hasFlag(flags.noAdjustSpawn))
                         .doFolderCheck(!parsedFlags.hasFlag(flags.skipFolderCheck)))
                 .onSuccess(newWorld -> {
@@ -109,6 +110,11 @@ class ImportCommand extends CoreCommand {
 
         private final CommandFlag skipFolderCheck = flag(CommandFlag.builder("--skip-folder-check")
                 .addAlias("-f")
+                .build());
+
+        private final CommandValueFlag<String> generatorSettings = flag(CommandValueFlag
+                .builder("--generator-settings", String.class)
+                .addAlias("-gs")
                 .build());
     }
 

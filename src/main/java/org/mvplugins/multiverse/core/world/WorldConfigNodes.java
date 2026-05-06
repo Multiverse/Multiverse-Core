@@ -273,6 +273,10 @@ final class WorldConfigNodes {
             .defaultValue(World.Environment.NORMAL)
             .hidden());
 
+    final ConfigNode<String> generatorSettings = node(ConfigNode.builder("read-only.generator-settings", String.class)
+            .defaultValue("")
+            .hidden());
+
     final ConfigNode<String> legacyWorldName = node(ConfigNode.builder("read-only.legacy-world-name", String.class)
             .hidden());
 

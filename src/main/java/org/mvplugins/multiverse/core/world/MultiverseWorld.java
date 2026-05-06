@@ -422,6 +422,19 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     }
 
     /**
+     * Gets the generator settings used to create this world. You cannot change this after world creation.
+     * Changing this manually in config on existing world will have no effect on the world generation.
+     *
+     * @return The generator settings string.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public String getGeneratorSettings() {
+        return worldConfig.getGeneratorSettings();
+    }
+
+    /**
      * Gets whether or not this world will display in chat, mvw and mvl regardless if a user has the
      * access permissions to go to this world.
      *
