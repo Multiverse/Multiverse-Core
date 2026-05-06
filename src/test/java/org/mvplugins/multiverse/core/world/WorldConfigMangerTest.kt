@@ -104,7 +104,8 @@ class WorldConfigMangerTest : TestWithMockBukkit() {
 
     @Test
     fun `Delete world section from config`() {
-        worldConfigManager.deleteWorldConfig(key("world"))
+        val worldConfig = assertNotNull(worldConfigManager.getWorldConfig(key("world")).orNull)
+        worldConfigManager.deleteWorldConfig(worldConfig)
         assertTrue(worldConfigManager.save().isSuccess)
         assertConfigEquals("/worlds/delete_worlds.yml", "worlds.yml")
     }

@@ -690,10 +690,14 @@ public final class WorldManager {
     private Attempt<String, RemoveFailureReason> removeWorldFromConfig(@NotNull MultiverseWorld world) {
         // Remove world from config
         worldStore.removeWorld(world);
-        world.getWorldConfig().deferenceMVWorld();
-        worldsConfigManager.deleteWorldConfig(world.getKey());
+
+        WorldConfig worldConfig = world.getWorldConfig();
+        worldConfig.deferenceMVWorld();
+        worldsConfigManager.deleteWorldConfig(worldConfig);
         saveWorldsConfig();
+
         corePermissions.removeWorldPermissions(world);
+
         pluginManager.callEvent(new MVWorldRemovedEvent(world));
         return worldActionResult(world.getName());
     }

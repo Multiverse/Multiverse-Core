@@ -255,7 +255,7 @@ final class WorldsConfigManager {
                 worldConfig.getConfigurationSection(),
                 multiverseCore
         );
-        deleteWorldConfig(worldConfig.getWorldKeyOrName());
+        deleteWorldConfig(worldConfig);
         worldConfigMap.put(newKeyOrName, migratedWorldConfig);
         return migratedWorldConfig;
     }
@@ -279,20 +279,11 @@ final class WorldsConfigManager {
     /**
      * Deletes the world config for the given world.
      *
-     * @param namespacedKey The target key to delete
+     * @param worldConfig The target world config to delete
      */
-    void deleteWorldConfig(@NotNull NamespacedKey namespacedKey) {
-        deleteWorldConfig(WorldKeyOrName.parseKey(namespacedKey));
-    }
-
-    /**
-     * Deletes the world config for the given world.
-     *
-     * @param worldKeyOrName The target key to delete
-     */
-    void deleteWorldConfig(@NotNull WorldKeyOrName worldKeyOrName) {
-        worldConfigMap.remove(worldKeyOrName);
-        worldsConfig.set(encodeConfigKey(worldKeyOrName), null);
+    void deleteWorldConfig(@NotNull WorldConfig worldConfig) {
+        worldConfigMap.remove(worldConfig.getWorldKeyOrName());
+        worldsConfig.set(encodeConfigKey(worldConfig.getWorldKeyOrName()), null);
     }
 
     /**
