@@ -103,6 +103,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames());
         registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
         registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
+        registerAsyncCompletion("mvworldmetakey", this::suggestMVWorldMetaKey);
         registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName);
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
         registerCompletion("playersarray", this::suggestPlayersArray); // getting online players cannot be async
@@ -306,6 +307,13 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         }
         Logging.severe("Invalid MVWorld scope: " + scope);
         return Collections.emptyList();
+    }
+
+    private Collection<String> suggestMVWorldMetaKey(BukkitCommandCompletionContext context) {
+        return Try.of(() -> context.getContextValue(MultiverseWorld.class))
+                .map(MultiverseWorld::getAllMeta)
+                .map(Map::keySet)
+                .getOrElse(Collections.emptySet());
     }
 
     private Collection<String> suggestMVWorldPropsName(BukkitCommandCompletionContext context) {

@@ -1,7 +1,9 @@
 package org.mvplugins.multiverse.core.world;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Strings;
 import io.vavr.control.Option;
@@ -17,6 +19,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import org.jetbrains.annotations.UnmodifiableView;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
@@ -493,6 +496,59 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
      */
     public Try<Void> setKeepSpawnInMemory(boolean keepSpawnInMemory) {
         return worldConfig.setKeepSpawnInMemory(keepSpawnInMemory);
+    }
+
+    /**
+     * Get all meta key-value pairs for this world. This is an unmodifiable view of the internal map, so changes to
+     * the world meta will be reflected in this map, but attempts to modify this map will throw an exception.
+     *
+     * @return An unmodifiable view of all meta key-value pairs for this world.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @UnmodifiableView Map<String, String> getAllMeta() {
+        return Collections.unmodifiableMap(worldConfig.getMeta());
+    }
+
+    /**
+     * Gets the meta value for the given key if it exists.
+     *
+     * @param key The meta key to look up, may be {@code null} in which case an empty result is returned.
+     * @return An {@link Option} containing the meta value if present, otherwise an empty {@link Option}.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull Option<String> getMeta(@Nullable String key) {
+        return Option.of(worldConfig.getMeta().get(key));
+    }
+
+    /**
+     * Sets a meta key-value pair for this world. Existing value for the key will be replaced.
+     *
+     * @param key The meta key to set, must not be {@code null}.
+     * @param value The meta value to set.
+     * @return Result of setting the property.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull Try<Void> setMeta(@NotNull String key, @Nullable String value) {
+        return worldConfig.setMeta(key, value);
+    }
+
+    /**
+     * Removes the meta entry associated with the given key.
+     *
+     * @param key The meta key to remove.
+     * @return Result of removing the property.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull Try<Void> removeMeta(@NotNull String key) {
+        return worldConfig.removeMeta(key);
     }
 
     /**

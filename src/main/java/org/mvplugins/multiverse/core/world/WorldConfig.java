@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -301,6 +302,18 @@ final class WorldConfig {
 
     Try<Void> setKeepSpawnInMemory(boolean keepSpawnInMemory) {
         return configHandle.set(configNodes.keepSpawnInMemory, keepSpawnInMemory);
+    }
+
+    Map<String, String> getMeta() {
+        return configHandle.get(configNodes.meta);
+    }
+
+    Try<Void> setMeta(String key, String value) {
+        return configHandle.set(configNodes.meta, key, value);
+    }
+
+    Try<Void> removeMeta(String key) {
+        return configHandle.remove(configNodes.meta, key);
     }
 
     int getPlayerLimit() {

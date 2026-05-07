@@ -3,11 +3,9 @@ package org.mvplugins.multiverse.core.config.handle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import com.dumptruckman.minecraft.util.Logging;
-import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -19,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.config.migration.ConfigMigrator;
 import org.mvplugins.multiverse.core.config.node.ListValueNode;
+import org.mvplugins.multiverse.core.config.node.MapValueNode;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.config.node.ValueNode;
 
@@ -93,17 +92,13 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
     }
 
     protected <T> T deserializeNodeFromConfig(ValueNode<T> node) {
-        if (node.getSerializer() == null) {
-            return Option.of(config.getObject(node.getPath(), node.getType())).getOrElse(node::getDefaultValue);
-        }
         return Try.of(() -> {
                     var value = config.get(node.getPath());
-                    if (value == null) {
-                        return node.getDefaultValue();
-                    }
-                    return node.getSerializer().deserialize(value, node.getType());
-                }).flatMap(value -> node.validate(value).map(ignore -> value))
-                .onFailure(e -> Logging.warning("Failed to deserialize node %s: %s", node.getPath(), e.getMessage()))
+                    return value == null ? node.getDefaultValue() : node.deserialize(value);
+                })
+                .flatMap(value -> node.validate(value).map(ignore -> value))
+                .onFailure(e -> Logging.warning("Failed to deserialize node %s: %s",
+                        node.getPath(), e.getMessage()))
                 .getOrElse(node::getDefaultValue);
     }
 
@@ -124,12 +119,7 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
         if (value == null) {
             value = node.getDefaultValue();
         }
-        if (node.getSerializer() != null) {
-            var serialized = node.getSerializer().serialize(value, node.getType());
-            config.set(node.getPath(), serialized);
-        } else {
-            config.set(node.getPath(), value);
-        }
+        config.set(node.getPath(), node.serialize(value));
     }
 
     /**
@@ -161,6 +151,15 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
      */
     public <T> Try<Void> set(@NotNull ValueNode<T> node, T value) {
         return set(Bukkit.getConsoleSender(), node, value);
+    }
+
+    public <K, V> Try<Void> set(@NotNull MapValueNode<K, V> node, K key, V value) {
+        return node.validateEntry(key, value).map(ignore -> {
+            Map<K,V> map = get(node);
+            map.put(key, value);
+            // node.onSetEntryValue(null, key, null, value);
+            return null;
+        });
     }
 
     /**
@@ -217,6 +216,18 @@ public abstract class BaseConfigurationHandle<C extends ConfigurationSection> {
                 throw new IllegalArgumentException("Cannot remove item as it is already not in the list!");
             }
             node.onSetItemValue(itemValue, null);
+            return null;
+        });
+    }
+
+    public <K, V> Try<Void> remove(@NotNull MapValueNode<K, V> node, K key) {
+        return node.validateKey(key).map(ignore -> {
+            Map<K,V> map = get(node);
+            V value = map.remove(key);
+            if (value == null) {
+                throw new IllegalArgumentException("Cannot remove entry as it is already not in the map!");
+            }
+            // node.onSetEntryValue(key, value, null);
             return null;
         });
     }

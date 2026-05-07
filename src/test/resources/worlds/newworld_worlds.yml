@@ -19,6 +19,7 @@ world:
   hidden: false
   hunger: true
   keep-spawn-in-memory: true
+  meta: {}
   player-limit: -1
   portal-form: all
   pvp: true
@@ -100,6 +101,7 @@ world_nether:
   hidden: false
   hunger: true
   keep-spawn-in-memory: true
+  meta: {}
   player-limit: -1
   portal-form: all
   pvp: true
@@ -181,6 +183,7 @@ minecraft:new[dot]world:
   hidden: false
   hunger: true
   keep-spawn-in-memory: true
+  meta: {}
   player-limit: -1
   portal-form: all
   pvp: true

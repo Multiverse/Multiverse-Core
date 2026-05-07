@@ -184,6 +184,24 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
      * {@inheritDoc}
      */
     @Override
+    public T deserialize(@Nullable Object object) {
+        return serializer == null
+                ? (type.isInstance(object)) ? type.cast(object) : getDefaultValue()
+                : serializer.deserialize(object, type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object serialize(T value) {
+        return serializer ==  null ? value : serializer.serialize(value, type);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Try<Void> validate(@Nullable T value) {
         if (validator != null) {
             return validator.apply(value);

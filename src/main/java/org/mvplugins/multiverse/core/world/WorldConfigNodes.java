@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.config.node.MapConfigNode;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.event.world.MVWorldPropertyChangedEvent;
 import org.mvplugins.multiverse.core.config.node.ConfigNode;
@@ -207,6 +208,10 @@ final class WorldConfigNodes {
                     }
                 });
             }));
+
+    final MapConfigNode<String, String> meta = (MapConfigNode<String, String>) node(MapConfigNode
+            .mapBuilder("meta", String.class, String.class)
+            .hidden());
 
     final ConfigNode<Integer> playerLimit = node(ConfigNode.builder("player-limit", Integer.class)
             .defaultValue(-1));

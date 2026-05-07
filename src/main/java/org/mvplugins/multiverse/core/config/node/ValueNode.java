@@ -34,7 +34,7 @@ public interface ValueNode<T> extends Node {
      * Gets the aliases of this node. Serves as shorter or legacy alternatives the {@link #getName()} and must be
      * unique within a node group.
      *
-     * @return The aliases of this node.
+     * @return The aliases of this node, or an empty array if the node has no aliases.
      *
      * @since 5.1
      */
@@ -44,27 +44,36 @@ public interface ValueNode<T> extends Node {
     }
 
     /**
-     * Gets the default value with type {@link T} of the node.
+     * Gets the default value for this node.
      *
-     * @return The default value of the node.
+     * <p>The returned value is used when no explicit value is present or when deserialization falls back to the
+     * node's default. Implementations may return {@code null} to indicate that no default value is available.
+     *
+     * @return The default value of the node, or {@code null} if none is configured.
      */
     @Nullable T getDefaultValue();
 
     /**
-     * Suggests possible string values for this node. Generated based on the current user input.
+     * Suggests possible string values for this node.
      *
-     * @param input The current partial user input
+     * <p>The returned values are based on the current partial user input and should be suitable for command-line
+     * tab completion or other interactive hints.
+     *
+     * @param input The current partial user input, or {@code null} if no input has been typed yet.
      * @return A collection of possible string values.
      */
     @NotNull Collection<String> suggest(@Nullable String input);
 
     /**
-     * Suggests possible string values for this node. Use contextural information from the sender such as
-     * sender name, permissions, or player location for better suggestions.
+     * Suggests possible string values for this node using sender context.
      *
-     * @param sender    The sender context.
-     * @param input     The input string.
-     * @return A collection of possible string values
+     * <p>Implementations may use the sender's name, permissions, or player location to tailor the returned
+     * suggestions. If no sender-specific logic is available, implementations should fall back to
+     * {@link #suggest(String)}.
+     *
+     * @param sender The sender context.
+     * @param input The current partial user input, or {@code null} if no input has been typed yet.
+     * @return A collection of possible string values.
      *
      * @since 5.1
      */
@@ -72,20 +81,25 @@ public interface ValueNode<T> extends Node {
     @NotNull Collection<String> suggest(@NotNull CommandSender sender, @Nullable String input);
 
     /**
-     * Parses the given string into a value of type {@link T}. Used for property set by user input.
+     * Parses the given string into a value of type {@link T}.
      *
-     * @param input The string to parse.
-     * @return The parsed value, or given exception if parsing failed.
+     * <p>This is typically used for values entered by a user or read from configuration text.
+     *
+     * @param input The string to parse, or {@code null} if the source value is absent.
+     * @return The parsed value, or a failed {@link Try} containing the parsing error.
      */
     @NotNull Try<T> parseFromString(@Nullable String input);
 
     /**
      * Parses the given string into a value of type {@link T} with context from the sender.
-     * Used for property set by user input.
      *
-     * @param sender    The sender context.
-     * @param input     The string to parse.
-     * @return The parsed value, or given exception if parsing failed.
+     * <p>Sender-aware implementations may use permissions or other sender-specific information when converting the
+     * input. If no sender-aware parser is available, implementations should fall back to
+     * {@link #parseFromString(String)}.
+     *
+     * @param sender The sender context.
+     * @param input The string to parse, or {@code null} if the source value is absent.
+     * @return The parsed value, or a failed {@link Try} containing the parsing error.
      *
      * @since 5.1
      */
@@ -97,23 +111,59 @@ public interface ValueNode<T> extends Node {
     /**
      * Gets the serializer for this node.
      *
-     * @return  The serializer for this node.
+     * <p>This method exists for backward compatibility while the preferred API is
+     * {@link #serialize(Object)} and {@link #deserialize(Object)}.
+     *
+     * @return The serializer for this node, or {@code null} if none is configured.
+     *
+     * @deprecated Use {@link #serialize(Object)} and {@link #deserialize(Object)} instead.
      */
+    @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable NodeSerializer<T> getSerializer();
+
+    /**
+     * Deserializes a raw configuration object into a value of type {@link T}.
+     *
+     * <p>The input is typically a value read from YAML or another configuration source. Implementations should
+     * return a sensible fallback, such as {@link #getDefaultValue()}, when the object cannot be converted.
+     *
+     * @param object The raw object to deserialize.
+     * @return The deserialized value, or {@code null} if the object cannot be converted and no fallback exists.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    @Nullable T deserialize(@Nullable Object object);
+
+    /**
+     * Serializes a value of type {@link T} into a configuration-friendly object.
+     *
+     * <p>The returned object should be suitable for persistence in a configuration file.
+     *
+     * @param value The value to serialize.
+     * @return The serialized representation, or {@code null} if the value cannot be serialized.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    @Nullable Object serialize(@Nullable T value);
 
     /**
      * Validates the value of this node.
      *
      * @param value The value to validate.
-     * @return An empty {@link Try} if the value is valid, or a {@link Try} containing an exception if the value is
-     *         invalid.
+     * @return A successful {@link Try} if the value is valid, or a failed {@link Try} containing the validation
+     *         exception if the value is invalid.
      */
     Try<Void> validate(@Nullable T value);
 
     /**
      * Called when the value of this node is loaded by {@link BaseConfigurationHandle#load()}.
      *
-     * @param value The loaded value.
+     * <p>This callback is invoked after the value has been deserialized and validated during a configuration load.
+     *
+     * @param value The loaded value, or {@code null} if the configured value could not be resolved.
      *
      * @since 5.4
      */
@@ -123,9 +173,12 @@ public interface ValueNode<T> extends Node {
     /**
      * Called when the value of this node is loaded or changed.
      *
-     * @param sender   The sender who triggered the change. If triggered by loading or no target sender is specified,
-     *                 it will be the console sender.
-     * @param oldValue The old value, will always be null on load.
+     * <p>This callback is shared by both initial load and subsequent updates. When invoked during a load, the
+     * {@code oldValue} parameter will be {@code null} and the sender will be the console sender.
+     *
+     * @param sender The sender who triggered the change. If triggered by loading or no target sender is specified,
+     *               it will be the console sender.
+     * @param oldValue The previous value, or {@code null} when called during load.
      * @param newValue The new value.
      *
      * @since 5.4
@@ -136,9 +189,11 @@ public interface ValueNode<T> extends Node {
     /**
      * Called when the value of this node is changed by {@link BaseConfigurationHandle#set(ValueNode, Object)}.
      *
-     * @param sender    The sender who changed the value, or console sender if no target sender specified.
-     * @param oldValue  The old value.
-     * @param newValue  The new value.
+     * <p>This callback is only invoked for explicit updates after the value already exists.
+     *
+     * @param sender The sender who changed the value, or the console sender if no target sender was specified.
+     * @param oldValue The old value.
+     * @param newValue The new value.
      *
      * @since 5.4
      */
@@ -148,12 +203,15 @@ public interface ValueNode<T> extends Node {
     /**
      * Called when the value of this node is set.
      *
+     * <p>This is the legacy, senderless form of {@link #onLoadAndChange(CommandSender, Object, Object)}.
+     *
      * @param oldValue The old value.
      * @param newValue The new value.
      *
      * @deprecated Use {@link #onLoadAndChange(CommandSender, Object, Object)} instead.
      */
     @Deprecated(since = "5.4", forRemoval = true)
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     default void onSetValue(@Nullable T oldValue, @Nullable T newValue) {
         onLoadAndChange(Bukkit.getConsoleSender(), oldValue, newValue);
     }
