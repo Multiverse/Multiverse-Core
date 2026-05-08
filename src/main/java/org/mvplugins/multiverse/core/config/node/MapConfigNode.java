@@ -17,6 +17,7 @@ import org.mvplugins.multiverse.core.config.node.functions.SenderNodeStringParse
 import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
+import org.mvplugins.multiverse.core.exceptions.MultiverseException;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 
 import java.util.Collection;
@@ -115,10 +116,22 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
         this.valueSerializer = valueSerializer != null
                 ? valueSerializer
                 : DefaultSerializerProvider.getDefaultSerializer(valueType);
-        this.keyValidator = keyValidator;
+        this.keyValidator = keyValidator != null
+                ? keyValidator
+                : defaultYamlKeyValidator();
         this.valueValidator = valueValidator;
 
         setDefaults();
+    }
+
+    private Function<K, Try<Void>> defaultYamlKeyValidator() {
+        return key -> Try.of(() -> {
+            if (!REPatterns.YAML_KEY.matcher(String.valueOf(serializeKey(key))).matches()) {
+                throw new MultiverseException("Invalid yaml key: '" + key + "'. Keys can only " +
+                        "contain alphanumeric characters, underscores and hyphens.");
+            }
+            return null;
+        });
     }
 
     private void setDefaults() {
@@ -222,7 +235,6 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
     private void setDefaultSerializer() {
         this.serializer = new NodeSerializer<>() {
             @Override
-            @SuppressWarnings("unchecked")
             public Map<K, V> deserialize(Object object, Class<Map<K, V>> type) {
                 if (object == null) {
                     return new LinkedHashMap<>();
@@ -231,13 +243,8 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
                 if (object instanceof Map<?, ?> rawMap) {
                     Map<K, V> result = new LinkedHashMap<>();
                     rawMap.forEach((key, value) -> {
-                        K deserializedKey = keySerializer != null
-                                ? keySerializer.deserialize(key, keyType)
-                                : (K) key;
-                        V deserializedValue = valueSerializer != null
-                                ? valueSerializer.deserialize(value, valueType)
-                                : (V) value;
-                        result.put(deserializedKey, deserializedValue);
+                        Map.Entry<K, V> entry = deserializeEntry(key, value);
+                        result.put(entry.getKey(), entry.getValue());
                     });
                     return result;
                 }
@@ -246,13 +253,8 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
                     Map<K, V> result = new LinkedHashMap<>();
                     for (String key : section.getKeys(false)) {
                         Object rawValue = section.get(key);
-                        K deserializedKey = keySerializer != null
-                                ? keySerializer.deserialize(key, keyType)
-                                : (K) key;
-                        V deserializedValue = valueSerializer != null
-                                ? valueSerializer.deserialize(rawValue, valueType)
-                                : (V) rawValue;
-                        result.put(deserializedKey, deserializedValue);
+                        Map.Entry<K, V> entry = deserializeEntry(key, rawValue);
+                        result.put(entry.getKey(), entry.getValue());
                     }
                     return result;
                 }
@@ -267,13 +269,8 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
                     return serialized;
                 }
                 object.forEach((key, value) -> {
-                    Object serializedKey = keySerializer != null
-                            ? keySerializer.serialize(key, keyType)
-                            : key;
-                    Object serializedValue = valueSerializer != null
-                            ? valueSerializer.serialize(value, valueType)
-                            : value;
-                    serialized.put(serializedKey, serializedValue);
+                    Map.Entry<Object, Object> entry = serializeEntry(key, value);
+                    serialized.put(entry.getKey(), entry.getValue());
                 });
                 return serialized;
             }
@@ -323,9 +320,15 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
      */
     @Override
     public @NotNull Map.Entry<Object, Object> serializeEntry(@Nullable K key, @Nullable V value) {
-        Object serializedKey = keySerializer == null ? key : keySerializer.serialize(key, keyType);
-        Object serializedValue = valueSerializer == null ? value : valueSerializer.serialize(value, valueType);
-        return new SimpleEntry<>(serializedKey, serializedValue);
+        return new SimpleEntry<>(serializeKey(key), serializeValue(value));
+    }
+
+    private @Nullable Object serializeKey(@Nullable K key) {
+        return keySerializer == null ? key : keySerializer.serialize(key, keyType);
+    }
+
+    private @Nullable Object serializeValue(@Nullable V value) {
+        return valueSerializer == null ? value : valueSerializer.serialize(value, valueType);
     }
 
     private record SimpleEntry<K, V>(K key, V value) implements Map.Entry<K, V> {
@@ -358,6 +361,7 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
      *
      * @since 5.7
      */
+    @ApiStatus.AvailableSince("5.7")
     public static class Builder<K, V> extends ConfigNode.Builder<Map<K, V>, Builder<K, V>> {
 
         protected final @NotNull Class<K> keyType;
@@ -377,7 +381,10 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
          * @param path The configuration path for the node.
          * @param keyType The runtime type of the map keys.
          * @param valueType The runtime type of the map values.
+         *
+         * @since 5.7
          */
+        @ApiStatus.AvailableSince("5.7")
         protected Builder(@NotNull String path, @NotNull Class<K> keyType, @NotNull Class<V> valueType) {
             //noinspection unchecked
             super(path, (Class<Map<K, V>>) (Object) Map.class);
