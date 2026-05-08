@@ -92,7 +92,6 @@ public final class BukkitCompatibility {
                         .toOption());
     }
 
-
     /**
      * Check if the world represented by the given {@link WorldKeyOrName} exists and return it if present.
      *
