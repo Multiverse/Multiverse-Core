@@ -48,6 +48,7 @@ import org.mvplugins.multiverse.core.permissions.CorePermissions;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
+import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCreatorCompatibility;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
@@ -263,9 +264,9 @@ public final class WorldManager {
                         keyOrName -> worldActionResult(CreateFailureReason.INVALID_WORLDNAME, keyOrName))
                 .failIf(keyOrName -> keyOrName.isKey() && !WorldCreatorCompatibility.canCreateWorldWithKey(),
                         keyOrName -> worldActionResult(CreateFailureReason.NAMESPACEDKEY_UNSUPPORTED, keyOrName))
-                .failIf(keyOrName -> getLoadedWorld(keyOrName.usableName()).isDefined(),
+                .failIf(worldStore::isLoadedWorld,
                         keyOrName -> worldActionResult(CreateFailureReason.WORLD_EXIST_LOADED, keyOrName))
-                .failIf(keyOrName -> getWorld(keyOrName.usableName()).isDefined(),
+                .failIf(worldStore::isUnloadedWorld,
                         keyOrName -> worldActionResult(CreateFailureReason.WORLD_EXIST_UNLOADED, keyOrName))
                 .failIf(keyOrName -> options.doFolderCheck() && worldNameChecker.hasWorldFolder(keyOrName),
                         keyOrName -> worldActionResult(CreateFailureReason.WORLD_EXIST_FOLDER, keyOrName))
@@ -321,12 +322,12 @@ public final class WorldManager {
                         keyOrName -> worldActionResult(ImportFailureReason.INVALID_WORLDNAME, keyOrName))
                 .failIf(keyOrName -> keyOrName.isKey() && !WorldCreatorCompatibility.canCreateWorldWithKey(),
                         keyOrName -> worldActionResult(ImportFailureReason.NAMESPACEDKEY_UNSUPPORTED, keyOrName))
-                .failIf(keyOrName -> getLoadedWorld(keyOrName.usableName()).isDefined(),
+                .failIf(worldStore::isLoadedWorld,
                         keyOrName -> worldActionResult(ImportFailureReason.WORLD_EXIST_LOADED, keyOrName))
-                .failIf(keyOrName -> getWorld(keyOrName.usableName()).isDefined(),
+                .failIf(worldStore::isUnloadedWorld,
                         keyOrName -> worldActionResult(ImportFailureReason.WORLD_EXIST_UNLOADED, keyOrName))
                 .map(keyOrName -> new KeyOrNameWithOptions<>(keyOrName, options))
-                .mapAttempt(pair -> Option.of(Bukkit.getWorld(pair.keyOrName().usableName()))
+                .mapAttempt(pair -> BukkitCompatibility.getWorldByNameOrKey(pair.keyOrName())
                         .map(bukkitWorld -> doImportBukkitWorld(pair, bukkitWorld))
                         .getOrElse(() -> validateImportWorldOptions(pair).mapAttempt(this::doImportWorld)));
     }
@@ -809,9 +810,9 @@ public final class WorldManager {
                         keyOrName -> worldActionResult(CloneFailureReason.INVALID_WORLDNAME, keyOrName))
                 .failIf(keyOrName -> keyOrName.isKey() && !WorldCreatorCompatibility.canCreateWorldWithKey(),
                         keyOrName -> worldActionResult(CloneFailureReason.NAMESPACEDKEY_UNSUPPORTED, keyOrName))
-                .failIf(keyOrName -> isLoadedWorld(keyOrName.usableName()),
+                .failIf(worldStore::isLoadedWorld,
                         keyOrName -> worldActionResult(CloneFailureReason.WORLD_EXIST_LOADED, keyOrName))
-                .failIf(keyOrName -> isWorld(keyOrName.usableName()),
+                .failIf(worldStore::isWorld,
                         keyOrName -> worldActionResult(CloneFailureReason.WORLD_EXIST_UNLOADED, keyOrName))
                 .failIf(worldNameChecker::hasWorldFolder,
                         keyOrName -> worldActionResult(CloneFailureReason.WORLD_EXIST_FOLDER, keyOrName))

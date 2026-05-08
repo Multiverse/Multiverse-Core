@@ -5,11 +5,13 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
+import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.utils.CaseInsensitiveStringMap;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,9 +151,45 @@ final class WorldStore {
     }
 
     @NotNull
+    Option<MultiverseWorld> getWorld(@Nullable WorldKeyOrName keyOrName) {
+        return keyOrName == null
+                ? Option.none()
+                : getWorld(keyOrName.usableKey()).orElse(() -> getWorld(keyOrName.usableName()));
+    }
+
+    @NotNull
+    Option<MultiverseWorld> getWorld(@Nullable NamespacedKey worldKey) {
+        return Option.of(worldKey).map(NamespacedKey::toString).flatMap(this::getWorld);
+    }
+
+    @NotNull
     Option<MultiverseWorld> getWorld(@Nullable String worldKeyString) {
         return Option.of((MultiverseWorld) loadedMap.get(worldKeyString))
                 .orElse(() -> Option.of(unloadedMap.get(worldKeyString)));
+    }
+
+    boolean isWorld(@Nullable WorldKeyOrName keyOrName) {
+        return keyOrName != null && (isWorld(keyOrName.usableKey()) || isWorld(keyOrName.usableName()));
+    }
+
+    boolean isWorld(@Nullable NamespacedKey worldKey) {
+        return getWorld(worldKey).isDefined();
+    }
+
+    boolean isWorld(@Nullable String worldKeyString) {
+        return getWorld(worldKeyString).isDefined();
+    }
+
+    @NotNull
+    Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable WorldKeyOrName keyOrName) {
+        return keyOrName == null
+                ? Option.none()
+                : getLoadedWorld(keyOrName.usableKey()).orElse(() -> getLoadedWorld(keyOrName.usableName()));
+    }
+
+    @NotNull
+    Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable NamespacedKey worldKey) {
+        return Option.of(worldKey).map(NamespacedKey::toString).flatMap(this::getLoadedWorld);
     }
 
     @NotNull
@@ -160,10 +198,58 @@ final class WorldStore {
                 .filter(MultiverseWorld::isLoaded);
     }
 
+    boolean isLoadedWorld(@Nullable WorldKeyOrName keyOrName) {
+        return keyOrName != null && (isLoadedWorld(keyOrName.usableKey()) || isLoadedWorld(keyOrName.usableName()));
+    }
+
+    boolean isLoadedWorld(@Nullable NamespacedKey worldKey) {
+        return getLoadedWorld(worldKey).isDefined();
+    }
+
+    boolean isLoadedWorld(@Nullable String worldKeyString) {
+        return getLoadedWorld(worldKeyString).isDefined();
+    }
+
+    @NotNull
+    Option<MultiverseWorld> getUnloadedWorld(@Nullable WorldKeyOrName keyOrName) {
+        return keyOrName == null
+                ? Option.none()
+                : getUnloadedWorld(keyOrName.usableKey()).orElse(() -> getUnloadedWorld(keyOrName.usableName()));
+    }
+
+    @NotNull
+    Option<MultiverseWorld> getUnloadedWorld(@Nullable NamespacedKey worldKey) {
+        return Option.of(worldKey).map(NamespacedKey::toString).flatMap(this::getUnloadedWorld);
+    }
+
     @NotNull
     Option<MultiverseWorld> getUnloadedWorld(@Nullable String worldKeyString) {
         return Option.of(unloadedMap.get(worldKeyString))
                 .filter(world -> !world.isLoaded());
+    }
+
+    boolean isUnloadedWorld(@Nullable WorldKeyOrName keyOrName) {
+        return keyOrName != null && (isUnloadedWorld(keyOrName.usableKey()) || isUnloadedWorld(keyOrName.usableName()));
+    }
+
+    boolean isUnloadedWorld(@Nullable NamespacedKey worldKey) {
+        return getUnloadedWorld(worldKey).isDefined();
+    }
+
+    boolean isUnloadedWorld(@Nullable String worldKeyString) {
+        return getUnloadedWorld(worldKeyString).isDefined();
+    }
+
+    @NotNull
+    Option<MultiverseWorld> getUnloadedWorldRef(@Nullable WorldKeyOrName keyOrName) {
+        return keyOrName == null
+                ? Option.none()
+                : getUnloadedWorldRef(keyOrName.usableKey()).orElse(() -> getUnloadedWorldRef(keyOrName.usableName()));
+    }
+
+    @NotNull
+    Option<MultiverseWorld> getUnloadedWorldRef(@Nullable NamespacedKey worldKey) {
+        return Option.of(worldKey).map(NamespacedKey::toString).flatMap(this::getUnloadedWorldRef);
     }
 
     @NotNull

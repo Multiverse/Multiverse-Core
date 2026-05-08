@@ -9,6 +9,7 @@ import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.utils.ReflectHelper;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
 import java.lang.reflect.Method;
 import java.nio.file.Path;
@@ -86,6 +87,31 @@ public final class BukkitCompatibility {
         return Option.of(Bukkit.getWorld(nameOrKey))
                 .orElse(() -> GET_WORLD_NAMESPACED_KEY_METHOD
                         .flatMap(method -> ReflectHelper.tryInvokeStaticMethod(method, NamespacedKey.fromString(nameOrKey)))
+                        .filter(World.class::isInstance)
+                        .map(World.class::cast)
+                        .toOption());
+    }
+
+
+    /**
+     * Check if the world represented by the given {@link WorldKeyOrName} exists and return it if present.
+     *
+     * <p>This first attempts to resolve the world by name using {@link WorldKeyOrName#usableName()} (which
+     * delegates to the traditional Bukkit world name lookup). If that fails it will attempt to resolve a
+     * {@link NamespacedKey} using {@link WorldKeyOrName#usableKey()} (which mirrors the newer Bukkit API
+     * that accepts namespaced keys, e.g. "minecraft:overworld").
+     *
+     * @param keyOrName The key-or-name wrapper providing either a world name or a {@link NamespacedKey}.
+     * @return The world if it exists.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    @NotNull
+    public static Option<World> getWorldByNameOrKey(@NotNull WorldKeyOrName keyOrName) {
+        return Option.of(Bukkit.getWorld(keyOrName.usableName()))
+                .orElse(() -> GET_WORLD_NAMESPACED_KEY_METHOD
+                        .flatMap(method -> ReflectHelper.tryInvokeStaticMethod(method, keyOrName.usableKey()))
                         .filter(World.class::isInstance)
                         .map(World.class::cast)
                         .toOption());
