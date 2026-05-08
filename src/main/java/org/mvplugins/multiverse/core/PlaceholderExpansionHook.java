@@ -151,6 +151,19 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
             case "generator" -> world.getGenerator();
             case "hunger" -> String.valueOf(world.isHunger());
             case "isloaded" -> String.valueOf(world.isLoaded());
+            case "key" -> String.valueOf(world.getKey());
+            case "meta" -> {
+                if (placeholderParams.isEmpty()) {
+                    warning("No meta key specified.");
+                    yield null;
+                }
+                String metaKey = String.join("_", placeholderParams);
+                yield world.getMeta(metaKey)
+                        .getOrElse(() -> {
+                            warning("Meta key '" + metaKey + "' not found for world '" + world.getName() + "'.");
+                            return null;
+                        });
+            }
             case "monstersspawn" -> String.valueOf(world.getEntitySpawnConfig()
                     .getSpawnCategoryConfig(SpawnCategory.MONSTER)
                     .isSpawn());

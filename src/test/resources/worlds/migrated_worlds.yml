@@ -19,6 +19,7 @@ world_the_end:
   hidden: false
   hunger: true
   keep-spawn-in-memory: true
+  meta: {}
   player-limit: -1
   portal-form: all
   pvp: true
@@ -100,6 +101,7 @@ world[dot]a[dot]b:
   hidden: false
   hunger: true
   keep-spawn-in-memory: true
+  meta: {}
   player-limit: -1
   portal-form: all
   pvp: true
@@ -182,6 +184,7 @@ world[dot]a[dot]c:
   hidden: false
   hunger: true
   keep-spawn-in-memory: true
+  meta: {}
   player-limit: -1
   portal-form: all
   pvp: true
