@@ -1,8 +1,8 @@
 package org.mvplugins.multiverse.core.utils;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ public class CaseInsensitiveStringMap<T> implements Map<String, T> {
     }
 
     @Override
-    public void putAll(@NonNull Map<? extends String, ? extends T> m) {
+    public void putAll(@NotNull Map<? extends String, ? extends T> m) {
         m.forEach((key, value) -> map.put(normalizeKey(key), value));
     }
 
@@ -72,17 +72,17 @@ public class CaseInsensitiveStringMap<T> implements Map<String, T> {
     }
 
     @Override
-    public @NonNull Set<String> keySet() {
+    public @NotNull Set<String> keySet() {
         return map.keySet();
     }
 
     @Override
-    public @NonNull Collection<T> values() {
+    public @NotNull Collection<T> values() {
         return map.values();
     }
 
     @Override
-    public @NonNull Set<Entry<String, T>> entrySet() {
+    public @NotNull Set<Entry<String, T>> entrySet() {
         return map.entrySet();
     }
 
