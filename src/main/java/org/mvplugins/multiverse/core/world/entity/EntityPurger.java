@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.world.entity;
 
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.SpawnCategory;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -40,25 +41,24 @@ public final class EntityPurger {
     public int purgeEntities(LoadedMultiverseWorld world, SpawnCategory... spawnCategories) {
         Set<SpawnCategory> spawnCategoriesSet = Set.of(spawnCategories);
         AtomicInteger purgeCount = new AtomicInteger(0);
-        world.getBukkitWorld().peek(bukkitWorld -> {
-            for (Entity entity : bukkitWorld.getEntities()) {
-                if (spawnCategoriesSet.contains(entity.getSpawnCategory())) {
+        world.getBukkitWorld().peek(bukkitWorld -> bukkitWorld.getEntities().stream()
+                .filter(entity -> !(entity instanceof Player))
+                .filter(entity -> spawnCategoriesSet.contains(entity.getSpawnCategory()))
+                .forEach(entity -> {
                     entity.remove();
                     purgeCount.incrementAndGet();
-                }
-            }
-        });
+                }));
         return purgeCount.get();
     }
 
     public int purgeAllEntities(LoadedMultiverseWorld world) {
         AtomicInteger purgeCount = new AtomicInteger(0);
-        world.getBukkitWorld().peek(bukkitWorld -> {
-            for (Entity entity : bukkitWorld.getEntities()) {
-                entity.remove();
-                purgeCount.incrementAndGet();
-            }
-        });
+        world.getBukkitWorld().peek(bukkitWorld -> bukkitWorld.getEntities().stream()
+                .filter(entity -> !(entity instanceof Player))
+                .forEach(entity -> {
+                    entity.remove();
+                    purgeCount.incrementAndGet();
+                }));
         return purgeCount.get();
     }
 }
