@@ -91,6 +91,7 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // /mv dumps
     DUMPS_DESCRIPTION,
+    DUMPS_STARTING,
     DUMPS_URL_LIST,
 
     // /mv gamerule set
