@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
+import co.aikar.commands.CommandCompletionFilter;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
@@ -89,27 +90,27 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.generatorProvider = generatorProvider;
         this.potentialWorldFinder = potentialWorldFinder;
 
-        registerAsyncCompletion("anchornames", this::suggestAnchorNames);
+        registerAsyncCompletion("anchornames", this::suggestAnchorNames, CommandCompletionFilter.contains());
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerStaticCompletion("difficulties", suggestEnums(Difficulty.class));
         registerStaticCompletion("environments", List.of("normal", "nether", "the_end")); // Don't tab complete the "custom" environment
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
-        registerStaticCompletion("gamerules", this::suggestGamerules);
+        registerStaticCompletion("gamerules", this::suggestGamerules, MVCommandCompletionFilters.namespacedKey());
         registerAsyncCompletion("gamerulesvalues", this::suggestGamerulesValues);
-        registerAsyncCompletion("generatorplugins", this::suggestGeneratorPlugins);
-        registerStaticCompletion("materials", suggestEnums(Material.class));
-        registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames());
+        registerAsyncCompletion("generatorplugins", this::suggestGeneratorPlugins, CommandCompletionFilter.contains());
+        registerStaticCompletion("materials", suggestEnums(Material.class), CommandCompletionFilter.contains());
+        registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames(), CommandCompletionFilter.contains());
         registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
-        registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
-        registerAsyncCompletion("mvworldmetakey", this::suggestMVWorldMetaKey);
-        registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName);
+        registerAsyncCompletion("mvworlds", this::suggestMVWorlds, MVCommandCompletionFilters.namespacedKey());
+        registerAsyncCompletion("mvworldmetakey", this::suggestMVWorldMetaKey, CommandCompletionFilter.contains());
+        registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName, CommandCompletionFilter.contains());
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
-        registerCompletion("playersarray", this::suggestPlayersArray); // getting online players cannot be async
+        registerCompletion("playersarray", this::suggestPlayersArray, CommandCompletionFilter.contains()); // getting online players cannot be async
         registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
         registerStaticCompletion("spawncategories", suggestEnums(SpawnCategory.class));
-        registerAsyncCompletion("spawncategorypropsname", this::suggestSpawnCategoryPropsName);
+        registerAsyncCompletion("spawncategorypropsname", this::suggestSpawnCategoryPropsName, CommandCompletionFilter.contains());
         registerAsyncCompletion("spawncategorypropsvalue", this::suggestSpawnCategoryPropsValue);
 
         setDefaultCompletion("destinations", DestinationInstance.class);
