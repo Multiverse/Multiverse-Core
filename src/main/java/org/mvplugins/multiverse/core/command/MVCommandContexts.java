@@ -42,6 +42,7 @@ import org.mvplugins.multiverse.core.exceptions.command.MVInvalidCommandArgument
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 import org.mvplugins.multiverse.core.utils.REPatterns;
+import org.mvplugins.multiverse.core.utils.tick.TickDuration;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -93,6 +94,7 @@ public class MVCommandContexts extends PaperCommandContexts {
         registerIssuerAwareContext(PlayerArrayValue.class, playerArrayContextBuilder().generateContext(PlayerArrayValue::new));
         registerIssuerAwareContext(PlayerLocation.class, this::parsePlayerLocation);
         registerContext(SpawnCategory[].class, this::parseSpawnCategories);
+        registerContext(TickDuration.class, this::parseTickDuration);
     }
 
     private MVCommandIssuer parseMVCommandIssuer(BukkitCommandExecutionContext context) {
@@ -392,5 +394,14 @@ public class MVCommandContexts extends PaperCommandContexts {
             }
         }
         return categories.toArray(new SpawnCategory[0]);
+    }
+
+    private TickDuration parseTickDuration(BukkitCommandExecutionContext context) {
+        String arg = context.popFirstArg();
+        return TickDuration.parseString(arg)
+                .getOrElseThrow(failure ->
+                        new InvalidCommandArgument("Invalid time duration format: \"" +arg + "\". Use a number " +
+                                "followed by an optional suffix (s for seconds, d for game days) or just a number " +
+                                "for ticks. Examples: 100, 5s, 2d"));
     }
 }

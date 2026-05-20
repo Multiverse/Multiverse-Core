@@ -7,9 +7,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.TeleportFailureReason;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
@@ -81,6 +83,24 @@ public final class PlayerWorldTeleporter {
             @NotNull Location location) {
         return world.getPlayers()
                 .map(players -> safetyTeleporter.to(location).teleport(players))
+                .getOrElse(AsyncAttemptsAggregate::emptySuccess);
+    }
+
+    /**
+     * Transfers all players from the given world to the given destination.
+     *
+     * @param world                 The world to transfer players from.
+     * @param destinationInstance   The destination instance to transfer players to.
+     * @return A list of async futures that represent the teleportation result of each player.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public AsyncAttemptsAggregate<Void, TeleportFailureReason> transferAllFromWorldToDestination(
+            @NotNull LoadedMultiverseWorld world,
+            @NotNull DestinationInstance<?, ?> destinationInstance) {
+        return world.getPlayers()
+                .map(players -> safetyTeleporter.to(destinationInstance).teleport(players))
                 .getOrElse(AsyncAttemptsAggregate::emptySuccess);
     }
 

@@ -14,11 +14,13 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.LegacyAliasCommand;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
-import org.mvplugins.multiverse.core.command.flags.RemovePlayerFlags;
+import org.mvplugins.multiverse.core.command.flags.RemovePlayerDestinationFlags;
+import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.destination.DestinationsProvider;
+import org.mvplugins.multiverse.core.destination.core.WorldDestination;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
@@ -26,6 +28,8 @@ import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.PlayerWorldTeleporter;
 import org.mvplugins.multiverse.core.world.options.UnloadWorldOptions;
+
+import java.util.Objects;
 
 @Service
 class UnloadCommand extends CoreCommand {
@@ -48,7 +52,7 @@ class UnloadCommand extends CoreCommand {
     @Subcommand("unload")
     @CommandPermission("multiverse.core.unload")
     @CommandCompletion("@mvworlds @flags:groupName=" + Flags.NAME)
-    @Syntax("<world>")
+    @Syntax("<world> [--remove-players [destination]] [--no-save]")
     @Description("{@@mv-core.unload.description}")
     void onUnloadCommand(
             MVCommandIssuer issuer,
@@ -58,15 +62,16 @@ class UnloadCommand extends CoreCommand {
             LoadedMultiverseWorld world,
 
             @Optional
-            @Syntax("[--remove-players] [--no-save]")
+            @Syntax("[--remove-players [destination]] [--no-save]")
             @Description("{@@mv-core.gamerules.description.page}")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
 
         issuer.sendInfo(MVCorei18n.UNLOAD_UNLOADING, Replace.WORLD.with(world.getAliasOrName()));
 
-        var future = parsedFlags.hasFlag(flags.removePlayers)
-                ? playerWorldTeleporter.removeFromWorld(world)
+        DestinationInstance<?, ?> removeToDestination = parsedFlags.flagValue(flags.removePlayers);
+        var future = Objects.nonNull(removeToDestination)
+                ? playerWorldTeleporter.transferAllFromWorldToDestination(world, removeToDestination)
                 : AsyncAttemptsAggregate.emptySuccess();
 
         future.onSuccess(() -> doWorldUnloading(issuer, world, parsedFlags))
@@ -88,13 +93,18 @@ class UnloadCommand extends CoreCommand {
     }
 
     @Service
-    private static final class Flags extends RemovePlayerFlags {
+    private static final class Flags extends RemovePlayerDestinationFlags {
 
         private static final String NAME = "mvunload";
 
         @Inject
-        private Flags(@NotNull CommandFlagsManager flagsManager) {
-            super(NAME, flagsManager);
+        private Flags(
+                @NotNull CommandFlagsManager flagsManager,
+                @NotNull WorldManager worldManager,
+                @NotNull DestinationsProvider destinationsProvider,
+                @NotNull WorldDestination worldDestination
+        ) {
+            super(NAME, flagsManager, worldManager, destinationsProvider, worldDestination);
         }
 
         private final CommandFlag noUnloadBukkitWorld = flag(CommandFlag.builder("--no-unload-bukkit-world")

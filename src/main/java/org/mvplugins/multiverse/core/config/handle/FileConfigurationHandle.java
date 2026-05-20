@@ -112,10 +112,5 @@ public abstract class FileConfigurationHandle<C extends FileConfiguration> exten
          * @return The configuration handle.
          */
         public abstract @NotNull FileConfigurationHandle<C> build();
-
-        @SuppressWarnings("unchecked")
-        protected B self() {
-            return (B) this;
-        }
     }
 }

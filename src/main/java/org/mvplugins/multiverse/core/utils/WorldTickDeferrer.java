@@ -1,7 +1,7 @@
 package org.mvplugins.multiverse.core.utils;
 
 import com.dumptruckman.minecraft.util.Logging;
-import io.vavr.control.Try;
+import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Server;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -10,8 +10,6 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Objects;
 
 /**
  * Defers action that cannot be done during world tick.
@@ -21,26 +19,22 @@ public final class WorldTickDeferrer {
 
     private final MultiverseCore plugin;
 
-    private Object console = null;
-    private Field isIteratingOverLevelsMethod = null;
+    private final Option<Object> console;
+    private final Option<Field> isIteratingOverLevelsMethod;
 
     @Inject
     WorldTickDeferrer(@NotNull MultiverseCore plugin, @NotNull Server server) {
         this.plugin = plugin;
-        Method getServerMethod = ReflectHelper.getMethod(server.getClass(), "getServer");
-        if (getServerMethod == null) {
-            Logging.fine("Unable to find getServer method.");
-            return;
-        }
-        this.console = ReflectHelper.invokeMethod(server, getServerMethod);
-        if (console == null) {
-            Logging.fine("Unable to find console.");
-            return;
-        }
-        this.isIteratingOverLevelsMethod = Try.of(() -> console.getClass().getField("isIteratingOverLevels")).getOrNull();
-        if (isIteratingOverLevelsMethod == null) {
-            Logging.fine("Unable to find isIteratingOverLevels field.");
-        }
+        this.console = ReflectHelper.tryGetMethod(server.getClass(), "getServer")
+                .onFailure(throwable -> Logging.fine("Unable to find getServer method."))
+                .flatMap(getServerMethod -> ReflectHelper.tryInvokeMethod(server, getServerMethod))
+                .onFailure(throwable -> Logging.fine("Unable to find console."))
+                .toOption();
+        this.isIteratingOverLevelsMethod = console.toTry()
+                .map(Object::getClass)
+                .flatMap(consoleClazz -> ReflectHelper.tryGetField(consoleClazz, "isIteratingOverLevels"))
+                .onFailure(throwable -> Logging.fine("Unable to find isIteratingOverLevels field."))
+                .toOption();
     }
 
     /**
@@ -63,16 +57,14 @@ public final class WorldTickDeferrer {
     }
 
     /**
-     * Check if the the server is currently doing a world tick.
+     * Check if the server is currently doing a world tick.
      *
      * @return True if the server is currently doing a world tick
      */
     private boolean isIteratingOverLevels() {
-        if (console == null || isIteratingOverLevelsMethod == null) {
-            return false;
-        }
-        return Objects.requireNonNullElse(
-                ReflectHelper.getFieldValue(console, isIteratingOverLevelsMethod, Boolean.class),
-                false);
+        return isIteratingOverLevelsMethod
+                .flatMap(field -> console
+                        .flatMap(c -> ReflectHelper.tryGetFieldValue(c, field, Boolean.class).toOption()))
+                .getOrElse(false);
     }
 }

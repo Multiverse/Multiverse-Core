@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -24,7 +25,7 @@ public final class MVDumpsDebugInfoEvent extends Event {
 
     public MVDumpsDebugInfoEvent() {
         debugInfoBuilder = new StringBuilder();
-        detailedDebugInfo = new HashMap<>();
+        detailedDebugInfo = new LinkedHashMap<>();
     }
 
     private static final HandlerList HANDLERS = new HandlerList();

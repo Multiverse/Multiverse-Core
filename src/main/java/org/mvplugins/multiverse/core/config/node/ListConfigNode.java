@@ -283,7 +283,7 @@ public class ListConfigNode<I> extends ConfigNode<List<I>> implements ListValueN
             //noinspection unchecked
             super(path, (Class<List<I>>) (Object) List.class);
             this.itemType = itemType;
-            this.defaultValue = () -> (List<I>) new ArrayList<>();
+            this.defaultValue = ArrayList::new;
         }
 
         /**

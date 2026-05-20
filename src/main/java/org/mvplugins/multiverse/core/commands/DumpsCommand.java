@@ -12,13 +12,10 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.flag.FlagBuilder;
-import org.mvplugins.multiverse.core.commands.DumpsLogPoster.LogsType;
+import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
-import org.mvplugins.multiverse.core.command.flag.CommandFlag;
 import org.mvplugins.multiverse.core.command.flag.CommandValueFlag;
-import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 
 @Service
 final class DumpsCommand extends CoreCommand {
@@ -35,22 +32,17 @@ final class DumpsCommand extends CoreCommand {
     @Subcommand("dumps")
     @CommandPermission("multiverse.core.dumps")
     @CommandCompletion("@flags:groupName=" + Flags.NAME)
-    @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
+    @Syntax("[--upload <pastesdev|mclogs>]")
     @Description("{@@mv-core.dumps.description}")
     void onDumpsCommand(
             MVCommandIssuer issuer,
 
             @Optional
-            @Syntax("[--logs <mclogs | append>] [--upload <pastesdev | pastegg>] [--paranoid]")
+            @Syntax("[--upload <pastesdev|mclogs>]")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
-
-        // Grab all our flags
-        boolean paranoid = parsedFlags.hasFlag(flags.paranoid);
-        LogsType logsType = parsedFlags.flagValue(flags.logs, LogsType.MCLOGS);
         UploadType servicesType = parsedFlags.flagValue(flags.upload, UploadType.PASTESDEV);
-
-        dumpsService.postLogs(issuer, logsType, servicesType, paranoid);
+        dumpsService.postLogs(issuer, servicesType);
     }
 
     @Service
@@ -63,19 +55,9 @@ final class DumpsCommand extends CoreCommand {
             super(NAME, flagsManager);
         }
 
-        private final CommandValueFlag<LogsType> logs = flag(CommandValueFlag
-                .enumBuilder("--logs", LogsType.class)
-                .addAlias("-l")
-                .build());
-
         private final CommandValueFlag<UploadType> upload = flag(CommandValueFlag
                 .enumBuilder("--upload", UploadType.class)
                 .addAlias("-u")
-                .build());
-
-        // Does not upload logs or plugin list (except if --logs mclogs is there)
-        private final CommandFlag paranoid = flag(CommandFlag.builder("--paranoid")
-                .addAlias("-p")
                 .build());
     }
 }

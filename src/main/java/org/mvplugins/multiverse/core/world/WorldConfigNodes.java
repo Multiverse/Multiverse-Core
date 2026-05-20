@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.config.node.MapConfigNode;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.event.world.MVWorldPropertyChangedEvent;
 import org.mvplugins.multiverse.core.config.node.ConfigNode;
@@ -24,6 +26,7 @@ import org.mvplugins.multiverse.core.config.node.ListConfigNode;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.utils.MaterialConverter;
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
@@ -90,6 +93,8 @@ final class WorldConfigNodes {
             .onLoadAndChange((oldValue, newValue) -> {
                 if (world == null) return;
                 world.updateColourlessAlias();
+                worldManager.getWorldStore().changeAlias(
+                        ChatTextFormatter.removeColor(oldValue), ChatTextFormatter.removeColor(newValue), world);
             }));
 
     final ConfigNode<Boolean> allowAdvancementGrant = node(ConfigNode.builder("allow-advancement-grant", Boolean.class)
@@ -172,11 +177,6 @@ final class WorldConfigNodes {
                 }
             }));
 
-    final ConfigNode<World.Environment> environment = node(ConfigNode
-            .builder("environment", World.Environment.class)
-            .defaultValue(World.Environment.NORMAL)
-            .hidden());
-
     final ConfigNode<GameMode> gamemode = node(ConfigNode.builder("gamemode", GameMode.class)
             .defaultValue(GameMode.SURVIVAL)
             .onLoadAndChange((oldValue, newValue) -> {
@@ -198,10 +198,20 @@ final class WorldConfigNodes {
     final ConfigNode<Boolean> keepSpawnInMemory = node(ConfigNode
             .builder("keep-spawn-in-memory", Boolean.class)
             .defaultValue(true)
-            .onLoadAndChange((oldValue, newValue) -> {
+            .onLoadAndChange((sender, oldValue, newValue) -> {
                 if (!(world instanceof LoadedMultiverseWorld loadedWorld)) return;
-                loadedWorld.getBukkitWorld().peek(bukkitWorld -> bukkitWorld.setKeepSpawnInMemory(newValue));
+                loadedWorld.getBukkitWorld().peek(bukkitWorld -> {
+                    bukkitWorld.setKeepSpawnInMemory(newValue);
+                    if (bukkitWorld.getKeepSpawnInMemory() != newValue) {
+                        sender.sendMessage(ChatColor.RED + "Keep spawn in memory feature has been removed by " +
+                                "Minecraft in 1.21.9+ and will no longer have any effect when set to true.");
+                    }
+                });
             }));
+
+    final MapConfigNode<String, String> meta = (MapConfigNode<String, String>) node(MapConfigNode
+            .mapBuilder("meta", String.class, String.class)
+            .hidden());
 
     final ConfigNode<Integer> playerLimit = node(ConfigNode.builder("player-limit", Integer.class)
             .defaultValue(-1));
@@ -233,10 +243,6 @@ final class WorldConfigNodes {
                     default -> 1.0;
                 };
             }));
-
-    final ConfigNode<Long> seed = node(ConfigNode.builder("seed", Long.class)
-            .defaultValue(Long.MIN_VALUE)
-            .hidden());
 
     final ConfigNode<SpawnLocation> spawnLocation = node(ConfigNode.builder("spawn-location", SpawnLocation.class)
             .defaultValue(NullSpawnLocation.get())
@@ -273,6 +279,22 @@ final class WorldConfigNodes {
             }));
 
     final ConfigNode<List<String>> worldBlacklist = node(ListConfigNode.listBuilder("world-blacklist", String.class));
+
+    final ConfigNode<World.Environment> environment = node(ConfigNode
+            .builder("read-only.environment", World.Environment.class)
+            .defaultValue(World.Environment.NORMAL)
+            .hidden());
+
+    final ConfigNode<String> generatorSettings = node(ConfigNode.builder("read-only.generator-settings", String.class)
+            .defaultValue("")
+            .hidden());
+
+    final ConfigNode<String> legacyWorldName = node(ConfigNode.builder("read-only.legacy-world-name", String.class)
+            .hidden());
+
+    final ConfigNode<Long> seed = node(ConfigNode.builder("read-only.seed", Long.class)
+            .defaultValue(Long.MIN_VALUE)
+            .hidden());
 
     final ConfigNode<Double> version = node(ConfigNode.builder("version", Double.class)
             .defaultValue(CONFIG_VERSION)

@@ -4,6 +4,7 @@ import com.dumptruckman.minecraft.util.Logging;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.config.CoreConfig;
@@ -31,6 +32,11 @@ public final class EntitySpawnConfig {
                         computeSpawnCategory,
                         new MemoryConfiguration()
                 ));
+    }
+
+    @ApiStatus.AvailableSince("5.7")
+    public boolean shouldAllowSpawn(EntityType entityType) {
+        return getSpawnCategoryConfig(SpawnCategoryMapper.getSpawnCategory(entityType)).shouldAllowSpawn(entityType);
     }
 
     public boolean shouldAllowSpawn(Entity entity) {

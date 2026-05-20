@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.dumptruckman.minecraft.util.Logging;
@@ -29,6 +30,7 @@ import org.mvplugins.multiverse.core.config.migration.action.MoveMigratorAction;
 import org.mvplugins.multiverse.core.config.migration.action.NullStringMigratorAction;
 import org.mvplugins.multiverse.core.config.migration.VersionMigrator;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
@@ -37,16 +39,16 @@ import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
  */
 final class WorldConfig {
 
-    private final String worldName;
+    private final WorldKeyOrName keyOrName;
     private final WorldConfigNodes configNodes;
     private final MemoryConfigurationHandle configHandle;
     private final StringPropertyHandle stringPropertyHandle;
 
     WorldConfig(
-            @NotNull String worldName,
+            @NotNull WorldKeyOrName keyOrName,
             @NotNull ConfigurationSection configSection,
             @NotNull MultiverseCore multiverseCore) {
-        this.worldName = worldName;
+        this.keyOrName = keyOrName;
         this.configNodes = new WorldConfigNodes(multiverseCore);
         this.configHandle = MemoryConfigurationHandle.builder(configSection, configNodes.getNodes())
                 .logger(Logging.getLogger())
@@ -118,6 +120,11 @@ final class WorldConfig {
                         .addAction(MoveMigratorAction.of("spawning.animals", "spawning.animal"))
                         .addAction(MoveMigratorAction.of("spawning.monsters", "spawning.monster"))
                         .build())
+                .addVersionMigrator(VersionMigrator.builder(1.3)
+                        .addAction(config -> config.set("read-only.legacy-world-name", keyOrName.usableName()))
+                        .addAction(MoveMigratorAction.of("environment", "read-only.environment"))
+                        .addAction(MoveMigratorAction.of("seed", "read-only.seed"))
+                        .build())
                 .build();
     }
 
@@ -132,7 +139,7 @@ final class WorldConfig {
     Try<Void> save() {
         return configHandle.save().onFailure(ex ->
                 Logging.warning("Failed to save world config for world '%s'. %s",
-                        worldName, ex.getLocalizedMessage()));
+                        keyOrName, ex.getLocalizedMessage()));
     }
 
     ConfigurationSection getConfigurationSection() {
@@ -143,8 +150,8 @@ final class WorldConfig {
         return stringPropertyHandle;
     }
 
-    String getWorldName() {
-        return worldName;
+    WorldKeyOrName getWorldKeyOrName() {
+        return keyOrName;
     }
 
     boolean getAdjustSpawn() {
@@ -258,14 +265,6 @@ final class WorldConfig {
         return configHandle.set(configNodes.entryFeeCurrency, entryFeeCurrency);
     }
 
-    World.Environment getEnvironment() {
-        return configHandle.get(configNodes.environment);
-    }
-
-    Try<Void> setEnvironment(World.Environment environment) {
-        return configHandle.set(configNodes.environment, environment);
-    }
-
     GameMode getGameMode() {
         return configHandle.get(configNodes.gamemode);
     }
@@ -303,6 +302,18 @@ final class WorldConfig {
 
     Try<Void> setKeepSpawnInMemory(boolean keepSpawnInMemory) {
         return configHandle.set(configNodes.keepSpawnInMemory, keepSpawnInMemory);
+    }
+
+    Map<String, String> getMeta() {
+        return configHandle.get(configNodes.meta);
+    }
+
+    Try<Void> setMeta(String key, String value) {
+        return configHandle.set(configNodes.meta, key, value);
+    }
+
+    Try<Void> removeMeta(String key) {
+        return configHandle.remove(configNodes.meta, key);
     }
 
     int getPlayerLimit() {
@@ -345,14 +356,6 @@ final class WorldConfig {
         return configHandle.set(configNodes.scale, scale);
     }
 
-    long getSeed() {
-        return configHandle.get(configNodes.seed);
-    }
-
-    Try<Void> setSeed(long seed) {
-        return configHandle.set(configNodes.seed, seed);
-    }
-
     SpawnLocation getSpawnLocation() {
         return configHandle.get(configNodes.spawnLocation);
     }
@@ -375,6 +378,38 @@ final class WorldConfig {
 
     Try<Void> setWorldBlacklist(List<String> worldBlacklist) {
         return configHandle.set(configNodes.worldBlacklist, worldBlacklist);
+    }
+
+    World.Environment getEnvironment() {
+        return configHandle.get(configNodes.environment);
+    }
+
+    Try<Void> setEnvironment(World.Environment environment) {
+        return configHandle.set(configNodes.environment, environment);
+    }
+
+    String getGeneratorSettings() {
+        return configHandle.get(configNodes.generatorSettings);
+    }
+
+    Try<Void> setGeneratorSettings(String generatorSettings) {
+        return configHandle.set(configNodes.generatorSettings, generatorSettings);
+    }
+
+    String getLegacyWorldName() {
+        return configHandle.get(configNodes.legacyWorldName);
+    }
+
+    Try<Void> setLegacyWorldName(String legacyWorldName) {
+        return configHandle.set(configNodes.legacyWorldName, legacyWorldName);
+    }
+
+    long getSeed() {
+        return configHandle.get(configNodes.seed);
+    }
+
+    Try<Void> setSeed(long seed) {
+        return configHandle.set(configNodes.seed, seed);
     }
 
     void setMVWorld(@NotNull MultiverseWorld world) {

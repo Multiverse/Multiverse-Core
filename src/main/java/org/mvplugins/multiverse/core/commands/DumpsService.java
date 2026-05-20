@@ -5,17 +5,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.module.MultiverseModulesRegistry;
-import org.mvplugins.multiverse.core.commands.DumpsLogPoster.LogsType;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.event.MVDumpsDebugInfoEvent;
@@ -39,16 +37,12 @@ final class DumpsService {
         this.fileUtils = fileUtils;
     }
 
-    void postLogs(MVCommandIssuer issuer, LogsType logsType, UploadType servicesType, boolean paranoid) {
+    void postLogs(MVCommandIssuer issuer, UploadType servicesType) {
+        issuer.sendInfo(MVCorei18n.DUMPS_STARTING);
+
         // Initialise and add info to the debug event
         MVDumpsDebugInfoEvent versionEvent = createAndCallDebugInfoEvent();
-
-        // Add plugin list if user isn't paranoid
-        if (!paranoid) {
-            versionEvent.putDetailedDebugInfo("plugins.md", "# Plugins\n\n" + getPluginList());
-        }
-
-        new DumpsLogPoster(issuer, logsType, servicesType, paranoid, getLogs(), versionEvent)
+        new DumpsLogPoster(plugin, issuer, servicesType, getLogs(), versionEvent)
                 .runTaskAsynchronously(plugin);
     }
 
@@ -73,32 +67,23 @@ final class DumpsService {
     private @NotNull String readLogsFromFile(Path logsPath) {
         String logs = "Could not read log";
 
-        // Try reading as ANSI encoded
+        // Try reading as UTF-8 first
         try {
             logs = Files.readString(logsPath, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            Logging.severe("Could not read logs/latest.log. See below for stack trace");
+            Logging.severe("Could not read logs/latest.log as UTF-8. Trying ISO-8859-1. See below for stack trace");
             e.printStackTrace();
 
             try {
-                logs = Files.readString(logsPath, StandardCharsets.UTF_8);
+                logs = Files.readString(logsPath, StandardCharsets.ISO_8859_1);
             } catch (IOException ex) {
                 // It is some other strange encoding
-                Logging.severe("Could not read ./logs/latest.log. See below for stack trace");
+                Logging.severe("Could not read ./logs/latest.log as ISO-8859-1. See below for stack trace");
                 ex.printStackTrace();
             }
         }
 
         return logs;
-    }
-
-    private String getDebugInfoString() {
-        return "# Multiverse-Core Version info" + "\n\n"
-                + " - Multiverse-Core Version: " + this.plugin.getDescription().getVersion() + '\n'
-                + " - Bukkit Version: " + this.plugin.getServer().getVersion() + '\n'
-                + " - Loaded Worlds: " + worldManager.getLoadedWorlds() + '\n'
-                + " - Multiverse Plugins Loaded: " + StringFormatter.joinAnd(MultiverseModulesRegistry.get().getRegisteredPlugins()) + '\n'
-                + " - Multiverse Plugins Count: " + MultiverseModulesRegistry.get().getPluginCount() + '\n';
     }
 
     private MVDumpsDebugInfoEvent createAndCallDebugInfoEvent() {
@@ -112,34 +97,63 @@ final class DumpsService {
         // Add the legacy file, but as markdown, so it's readable
         event.putDetailedDebugInfo("version.md", this.getDebugInfoString());
 
-        // add config.yml
-        File configFile = new File(plugin.getDataFolder(), "config.yml");
-        event.putDetailedDebugInfo("Multiverse-Core/config.yml", configFile);
-
-        // add worlds.yml
-        File worldsFile = new File(plugin.getDataFolder(), "worlds.yml");
-        event.putDetailedDebugInfo("Multiverse-Core/worlds.yml", worldsFile);
-
-        // Add bukkit.yml if we found it
-        if (fileUtils.getBukkitConfig() != null) {
-            event.putDetailedDebugInfo(fileUtils.getBukkitConfig().getPath(), fileUtils.getBukkitConfig());
-        } else {
-            Logging.warning("/mv dumps could not find bukkit.yml. Not including file");
-        }
-
         // Add server.properties if we found it
         if (fileUtils.getServerProperties() != null) {
-            event.putDetailedDebugInfo(fileUtils.getServerProperties().getPath(), fileUtils.getServerProperties());
+            event.putDetailedDebugInfo(fileUtils.getServerProperties().getName(), fileUtils.getServerProperties());
         } else {
             Logging.warning("/mv dumps could not find server.properties. Not including file");
         }
 
+        // Add bukkit.yml if we found it
+        if (fileUtils.getBukkitConfig() != null) {
+            event.putDetailedDebugInfo(fileUtils.getBukkitConfig().getName(), fileUtils.getBukkitConfig());
+        } else {
+            Logging.warning("/mv dumps could not find bukkit.yml. Not including file");
+        }
+
+        // Add spigot.yml
+        File spigotYml = fileUtils.getServerFolder().toPath().resolve("spigot.yml").toFile();
+        if (spigotYml.isFile()) {
+            event.putDetailedDebugInfo(spigotYml.getName(), spigotYml);
+        } else {
+            Logging.warning("/mv dumps could not find spigot.yml. Not including file");
+        }
+
+        // Add paper-global.yml
+        File paperGlobalYml = fileUtils.getServerFolder().toPath().resolve("config/paper-global.yml").toFile();
+        if (paperGlobalYml.isFile()) {
+            event.putDetailedDebugInfo(paperGlobalYml.getName(), paperGlobalYml);
+        } else {
+            Logging.warning("/mv dumps could not find paper-global.yml. Not including file");
+        }
+
+        // add paper-world-defaults.yml
+        File paperWorldDefaultsYml = fileUtils.getServerFolder().toPath().resolve("config/paper-world-defaults.yml").toFile();
+        if (paperWorldDefaultsYml.isFile()) {
+            event.putDetailedDebugInfo(paperWorldDefaultsYml.getName(), paperWorldDefaultsYml);
+        } else {
+            Logging.warning("/mv dumps could not find paper-global.yml. Not including file");
+        }
+
+        // add multiverse-core config.yml
+        File configFile = new File(plugin.getDataFolder(), "config.yml");
+        event.putDetailedDebugInfo("multiverse-core/config.yml", configFile);
+
+        // add multiverse-core worlds.yml
+        File worldsFile = new File(plugin.getDataFolder(), "worlds.yml");
+        event.putDetailedDebugInfo("multiverse-core/worlds.yml", worldsFile);
+
+        // add multiverse-core anchors.yml
+        File anchorsFile = new File(plugin.getDataFolder(), "anchors.yml");
+        event.putDetailedDebugInfo("multiverse-core/anchors.yml", anchorsFile);
     }
 
-    private String getPluginList() {
-        return " - " + StringUtils.join(Arrays.stream(plugin.getServer().getPluginManager().getPlugins())
-                .map(Object::toString)
-                .sorted()
-                .toList(), "\n - ");
+    private String getDebugInfoString() {
+        return "# Multiverse-Core Version info" + "\n\n"
+                + " - Multiverse-Core Version: " + this.plugin.getDescription().getVersion() + '\n'
+                + " - Bukkit Version: " + this.plugin.getServer().getVersion() + '\n'
+                + " - Loaded Worlds: " + worldManager.getLoadedWorlds() + '\n'
+                + " - Multiverse Plugins Loaded: " + StringFormatter.joinAnd(MultiverseModulesRegistry.get().getRegisteredPlugins()) + '\n'
+                + " - Multiverse Plugins Count: " + MultiverseModulesRegistry.get().getPluginCount() + '\n';
     }
 }

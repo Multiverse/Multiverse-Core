@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.world.reasons;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 
@@ -14,6 +15,15 @@ public enum CreateFailureReason implements FailureReason {
      * The world name is invalid.
      */
     INVALID_WORLDNAME(MVCorei18n.CREATEWORLD_INVALIDWORLDNAME),
+
+    /**
+     * The server software does not support create worlds using namespaced key. Only legacy world name is supported.
+     * Generally this will only be an issue on Spigot servers.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    NAMESPACEDKEY_UNSUPPORTED(MVCorei18n.WORLDKEYPARSE_NAMESPACEDKEYUNSUPPORTED),
 
     /**
      * The target new world folder already exists.

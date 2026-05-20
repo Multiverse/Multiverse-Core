@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.utils.result;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import io.vavr.control.Either;
@@ -26,9 +27,41 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @param <T>   The type of the value.
      * @param <F>   The type of failure reason.
      * @return The new success attempt.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    static <T, F extends FailureReason> Attempt.Success<T, F> successRef(T value) {
+        return new Success<>(value);
+    }
+
+    /**
+     * Creates a new failure attempt.
+     *
+     * @param failureReason         The reason for failure.
+     * @param messageReplacements   The replacements for the failure message.
+     * @param <T>                   The type of the value.
+     * @param <F>                   The type of failure reason.
+     * @return The new failure attempt.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    static <T, F extends FailureReason> Attempt.Failure<T, F> failureRef(
+            F failureReason, MessageReplacement... messageReplacements) {
+        return new Failure<>(failureReason, Message.of(failureReason, "Failed!", messageReplacements));
+    }
+
+    /**
+     * Creates a new success attempt.
+     *
+     * @param value The value.
+     * @param <T>   The type of the value.
+     * @param <F>   The type of failure reason.
+     * @return The new success attempt.
      */
     static <T, F extends FailureReason> Attempt<T, F> success(T value) {
-        return new Success<>(value);
+        return successRef(value);
     }
 
     /**
@@ -42,7 +75,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      */
     static <T, F extends FailureReason> Attempt<T, F> failure(
             F failureReason, MessageReplacement... messageReplacements) {
-        return new Failure<>(failureReason, Message.of(failureReason, "Failed!", messageReplacements));
+        return failureRef(failureReason, messageReplacements);
     }
 
     /**
@@ -202,6 +235,33 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
      * @return The new attempt.
      */
     <U> Attempt<U, F> mapAttempt(Supplier<Attempt<U, F>> mapper);
+
+    /**
+     * Fails this attempt with the given failure attempt if the value matches the given predicate.This will do nothing
+     * if this is already a failure attempt.
+     *
+     * @param predicate         The predicate to test the value.
+     * @param failureAttempt    The failure attempt to return if the predicate matches.
+     * @return The new attempt
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    Attempt<T, F> failIf(Predicate<? super T> predicate, Supplier<Attempt.Failure<T, F>> failureAttempt);
+
+    /**
+     * Fails this attempt with the given failure attempt if the value matches the given predicate.This will do nothing
+     * if this is already a failure attempt.
+     *
+     * @param predicate         The predicate to test the value.
+     * @param failureAttempt    The failure attempt to return if the predicate matches, which can be generated based
+     *                          on the value.
+     * @return The new attempt
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    Attempt<T, F> failIf(Predicate<? super T> predicate, Function<? super T, Attempt.Failure<T, F>> failureAttempt);
 
     /**
      * Maps to another attempt with a different fail reason.
@@ -371,6 +431,16 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         }
 
         @Override
+        public Attempt<T, F> failIf(Predicate<? super T> predicate, Supplier<Attempt.Failure<T, F>> failureAttempt) {
+            return predicate.test(value) ? failureAttempt.get() : this;
+        }
+
+        @Override
+        public Attempt<T, F> failIf(Predicate<? super T> predicate, Function<? super T, Failure<T, F>> failureAttempt) {
+            return predicate.test(value) ? failureAttempt.apply(value) : this;
+        }
+
+        @Override
         public <UF extends FailureReason> Attempt<T, UF> transform(UF failureReason) {
             return changeFailureType();
         }
@@ -530,6 +600,16 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
         @Override
         public <U> Attempt<U, F> mapAttempt(Supplier<Attempt<U, F>> mapper) {
             return changeValueType();
+        }
+
+        @Override
+        public Attempt<T, F> failIf(Predicate<? super T> predicate, Supplier<Attempt.Failure<T, F>> failureAttempt) {
+            return this;
+        }
+
+        @Override
+        public Attempt<T, F> failIf(Predicate<? super T> predicate, Function<? super T, Failure<T, F>> failureAttempt) {
+            return this;
         }
 
         @Override

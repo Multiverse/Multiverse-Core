@@ -1,5 +1,7 @@
 package org.mvplugins.multiverse.core.world;
 
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
+
 import java.util.List;
 
 /**
@@ -8,5 +10,5 @@ import java.util.List;
  * @param newWorlds     List of the new WorldConfigs added
  * @param removedWorlds List of the worlds removed from the config
  */
-record NewAndRemovedWorlds(List<WorldConfig> newWorlds, List<String> removedWorlds) {
+record NewAndRemovedWorlds(List<WorldConfig> newWorlds, List<WorldKeyOrName> removedWorlds) {
 }

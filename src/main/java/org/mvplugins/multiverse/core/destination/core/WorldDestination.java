@@ -6,6 +6,7 @@ import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
 import jakarta.inject.Inject;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
@@ -14,13 +15,11 @@ import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.Destination;
 import org.mvplugins.multiverse.core.destination.DestinationSuggestionPacket;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
-import org.mvplugins.multiverse.core.locale.message.MessageReplacement;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
-import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.entrycheck.WorldEntryCheckerProvider;
@@ -54,6 +53,19 @@ public final class WorldDestination implements Destination<WorldDestination, Wor
     @Override
     public @NotNull String getIdentifier() {
         return "w";
+    }
+
+    /**
+     * Directly create a world destination instance for a Multiverse World without any string parsing validation needed.
+     *
+     * @param multiverseWorld   The destination's target world.
+     * @return The destination instance with the target world.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public @NotNull WorldDestinationInstance fromWorld(MultiverseWorld multiverseWorld) {
+        return new WorldDestinationInstance(this, multiverseWorld, null, -1.0f);
     }
 
     /**

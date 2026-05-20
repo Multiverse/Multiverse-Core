@@ -2,6 +2,7 @@ package org.mvplugins.multiverse.core.world
 
 import org.bukkit.Material
 import org.mvplugins.multiverse.core.TestWithMockBukkit
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName
 import java.io.File
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
@@ -23,12 +24,12 @@ class WorldConfigTest : TestWithMockBukkit() {
             throw IllegalStateException("WorldsConfigManager is not available as a service") }
 
         assertTrue(worldConfigManager.load().isSuccess)
-        worldConfig = worldConfigManager.getWorldConfig("world").orNull.takeIf { it != null } ?: run {
+        worldConfig = worldConfigManager.getWorldConfig(key("world")).orNull.takeIf { it != null } ?: run {
             throw IllegalStateException("WorldConfig for world is not available") }
         assertNotNull(worldConfig)
-        worldNetherConfig = worldConfigManager.getWorldConfig("world_nether").orNull.takeIf { it != null } ?: run {
+        worldNetherConfig = worldConfigManager.getWorldConfig(key("world_nether")).orNull.takeIf { it != null } ?: run {
             throw IllegalStateException("WorldConfig for world is not available") }
-        assertNotNull(worldNetherConfig);
+        assertNotNull(worldNetherConfig)
     }
 
     @Test
@@ -90,8 +91,80 @@ class WorldConfigTest : TestWithMockBukkit() {
     }
 
     @Test
+    fun `Getting meta returns empty map initially`() {
+        assertEquals(emptyMap<String, String>(), worldConfig.meta)
+    }
+
+    @Test
+    fun `Setting meta with setMeta adds individual key-value pairs`() {
+        assertTrue(worldConfig.setMeta("custom-key", "custom-value").isSuccess)
+        val meta = worldConfig.meta
+        assertEquals("custom-value", meta["custom-key"])
+    }
+
+    @Test
+    fun `Setting multiple meta values accumulates in the map`() {
+        assertTrue(worldConfig.setMeta("key1", "value1").isSuccess)
+        assertTrue(worldConfig.setMeta("key2", "value2").isSuccess)
+        assertTrue(worldConfig.setMeta("key3", "value3").isSuccess)
+
+        val meta = worldConfig.meta
+        assertEquals("value1", meta["key1"])
+        assertEquals("value2", meta["key2"])
+        assertEquals("value3", meta["key3"])
+        assertEquals(3, meta.size)
+    }
+
+    @Test
+    fun `Updating existing meta key overwrites the value`() {
+        assertTrue(worldConfig.setMeta("key1", "original-value").isSuccess)
+        assertTrue(worldConfig.setMeta("key1", "updated-value").isSuccess)
+
+        val meta = worldConfig.meta
+        assertEquals("updated-value", meta["key1"])
+        assertEquals(1, meta.size)
+    }
+
+    @Test
+    fun `Removing meta key with removeMeta deletes the key from map`() {
+        assertTrue(worldConfig.setMeta("key1", "value1").isSuccess)
+        assertTrue(worldConfig.setMeta("key2", "value2").isSuccess)
+
+        assertTrue(worldConfig.removeMeta("key1").isSuccess)
+
+        val meta = worldConfig.meta
+        assertNull(meta["key1"])
+        assertEquals("value2", meta["key2"])
+        assertEquals(1, meta.size)
+    }
+
+    @Test
+    fun `Removing non-existing meta key returns failure`() {
+        assertTrue(worldConfig.removeMeta("non-existent-key").isFailure)
+        assertEquals(emptyMap<String, String>(), worldConfig.meta)
+    }
+
+    @Test
+    fun `Meta is independent across different world configs`() {
+        assertTrue(worldConfig.setMeta("world-key", "world-value").isSuccess)
+        assertTrue(worldNetherConfig.setMeta("nether-key", "nether-value").isSuccess)
+
+        val worldMeta = worldConfig.meta
+        val netherMeta = worldNetherConfig.meta
+
+        assertEquals("world-value", worldMeta["world-key"])
+        assertNull(worldMeta["nether-key"])
+        assertEquals("nether-value", netherMeta["nether-key"])
+        assertNull(netherMeta["world-key"])
+    }
+
+    @Test
     fun `Updating a non-existing property with setProperty returns false`() {
         assertTrue(worldConfig.stringPropertyHandle.setProperty("invalid-property", false).isFailure)
         assertTrue(worldConfig.stringPropertyHandle.setProperty("version", 1.1).isFailure)
+    }
+
+    private fun key(worldName: String): WorldKeyOrName {
+        return WorldKeyOrName.parse(worldName).get()
     }
 }

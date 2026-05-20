@@ -6,13 +6,13 @@ import java.util.Locale;
 import java.util.Set;
 
 import io.vavr.control.Option;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
 /**
  * <p>Utility class in helping to check the status of a world name and it's associated world folder.</p>
@@ -68,7 +68,7 @@ public final class WorldNameChecker {
                     if (name.isEmpty()) {
                         return NameStatus.EMPTY;
                     }
-                    if (BLACKLIST_NAMES.contains(name)) {
+                    if (!BukkitCompatibility.isUsingNewDimensionStorage() && BLACKLIST_NAMES.contains(name)) {
                         return NameStatus.BLACKLISTED;
                     }
                     if (!REPatterns.NAMESPACE_KEY.matcher(name).matches()) {
@@ -84,9 +84,26 @@ public final class WorldNameChecker {
      *
      * @param worldName The world name to check on.
      * @return True if the folder exists, else false.
+     *
+     * @deprecated Use {@link #hasWorldFolder(WorldKeyOrName)} instead, which is more robust and supports namespaced keys.
      */
+    @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public boolean hasWorldFolder(@Nullable String worldName) {
         return checkFolder(worldName) != FolderStatus.DOES_NOT_EXIST;
+    }
+
+    /**
+     * Check if a world name has a world folder directory. It may not contain valid world data.
+     *
+     * @param worldKey The world key to check on.
+     * @return True if the folder exists, else false.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public boolean hasWorldFolder(@Nullable WorldKeyOrName worldKey) {
+        return checkFolder(worldKey) != FolderStatus.DOES_NOT_EXIST;
     }
 
     /**
@@ -94,9 +111,27 @@ public final class WorldNameChecker {
      *
      * @param worldName The world name to check on.
      * @return True if check result is valid, else false.
+     *
+     * @deprecated Use {@link #isValidWorldFolder(WorldKeyOrName)} instead, which is more robust and supports
+     * namespaced keys.
      */
+    @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public boolean isValidWorldFolder(@Nullable String worldName) {
         return checkFolder(worldName).loadable;
+    }
+
+    /**
+     * Checks if a world name has a valid world folder with basic world data.
+     *
+     * @param nameOrKey The world key to check on.
+     * @return True if check result is valid, else false.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    public boolean isValidWorldFolder(@Nullable WorldKeyOrName nameOrKey) {
+        return checkFolder(nameOrKey).loadable;
     }
 
     /**
@@ -114,23 +149,45 @@ public final class WorldNameChecker {
      *
      * @param worldName The world name to check on.
      * @return The resulting folder status.
+     *
+     * @deprecated Use {@link #checkFolder(WorldKeyOrName)} instead, which is more robust and supports namespaced keys.
      */
+    @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @NotNull
     public FolderStatus checkFolder(@Nullable String worldName) {
         if (worldName == null) {
             return FolderStatus.DOES_NOT_EXIST;
         }
 
+        return WorldKeyOrName.parse(worldName)
+                .map(this::checkFolder)
+                .getOrElse(FolderStatus.NOT_A_WORLD);
+    }
+
+    /**
+     * Checks the current folder status for a world key or name.
+     *
+     * @param keyOrName The world key or name to check on.
+     * @return The resulting folder status.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    @NotNull
+    public FolderStatus checkFolder(@Nullable WorldKeyOrName keyOrName) {
+        if (keyOrName == null) {
+            return FolderStatus.DOES_NOT_EXIST;
+        }
+
         if (BukkitCompatibility.isUsingNewDimensionStorage()) {
-            File oldWorldFolder = Bukkit.getWorldContainer().toPath().resolve(worldName).toFile();
+            File oldWorldFolder = WorldFolderResolver.resolveAsLegacyWorldName(keyOrName.usableName());
             if (checkFolder(oldWorldFolder) == FolderStatus.VALID) {
                 return FolderStatus.REQUIRES_MIGRATION;
             }
-            worldName = worldName.toLowerCase(Locale.ENGLISH); // namespace is case-insensitive and stored as lowercase
         }
 
-        File worldFolder = BukkitCompatibility.getWorldFoldersDirectory().resolve(worldName).toFile();
-        return checkFolder(worldFolder);
+        return checkFolder(WorldFolderResolver.resolve(keyOrName));
     }
 
     /**

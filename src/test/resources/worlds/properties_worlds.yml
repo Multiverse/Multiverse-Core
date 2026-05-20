@@ -13,19 +13,18 @@ world:
     enabled: false
     amount: 0.0
     currency: @vault-economy
-  environment: NORMAL
   gamemode: SURVIVAL
   biome: ''
   generator: ''
   hidden: false
   hunger: true
   keep-spawn-in-memory: true
+  meta: {}
   player-limit: -1
   portal-form: ALL
   pvp: true
   respawn-world: ''
   scale: 1.0
-  seed: -9223372036854775808
   spawn-location:
     ==: MVSpawnLocation
     x: -64.0
@@ -75,7 +74,12 @@ world:
       spawn-limit: '@unset'
       tick-rate: '@unset'
   world-blacklist: []
-  version: 1.2
+  read-only:
+    environment: NORMAL
+    generator-settings: ''
+    legacy-world-name: world
+    seed: -9223372036854775808
+  version: 1.3
 world_nether:
   adjust-spawn: false
   alias: ''
@@ -91,19 +95,18 @@ world_nether:
     enabled: false
     amount: 0.0
     currency: @vault-economy
-  environment: NETHER
   gamemode: SURVIVAL
   biome: ''
   generator: ''
   hidden: false
   hunger: true
   keep-spawn-in-memory: true
+  meta: {}
   player-limit: -1
   portal-form: ALL
   pvp: true
   respawn-world: ''
   scale: 1.0
-  seed: -9223372036854775808
   spawn-location:
     ==: MVNullLocation (It's a bug if you see this in your config file)
   spawning:
@@ -148,4 +151,9 @@ world_nether:
       spawn-limit: '@unset'
       tick-rate: '@unset'
   world-blacklist: []
-  version: 1.2
+  read-only:
+    environment: NETHER
+    generator-settings: ''
+    legacy-world-name: world_nether
+    seed: -9223372036854775808
+  version: 1.3

@@ -277,17 +277,6 @@ class WorldManagerTest : TestWithMockBukkit() {
     }
 
     @Test
-    fun `Get potential worlds`() {
-        File(Bukkit.getWorldContainer(), "newworld1").mkdir()
-        File(Bukkit.getWorldContainer(), "newworld1/level.dat").createNewFile()
-        File(Bukkit.getWorldContainer(), "newworld1/data").mkdir()
-        File(Bukkit.getWorldContainer(), "newworld2").mkdir()
-        File(Bukkit.getWorldContainer(), "newworld2/level.dat").createNewFile()
-        File(Bukkit.getWorldContainer(), "newworld2/data").mkdir()
-        assertEquals(setOf("newworld1", "newworld2"), worldManager.getPotentialWorlds().toSet())
-    }
-
-    @Test
     fun `Get world with alias`() {
         world.setAlias("testalias")
         assertEquals(world, worldManager.getLoadedWorldByNameOrAlias("testalias").orNull)

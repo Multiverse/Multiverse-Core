@@ -1,6 +1,7 @@
 package org.mvplugins.multiverse.core.locale.message;
 
 import io.vavr.control.Either;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -107,6 +108,7 @@ public final class MessageReplacement {
         GAMERULE(replace("{gamerule}")),
         LOCATION(replace("{location}")),
         NAME(replace("{name}")),
+        NAMESPACE(replace("{namespace}")),
         PLAYER(replace("{player}")),
         REASON(replace("{reason}")),
         VALUE(replace("{value}")),

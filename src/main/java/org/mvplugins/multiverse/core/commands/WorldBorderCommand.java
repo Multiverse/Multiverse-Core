@@ -12,8 +12,11 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
+import org.mvplugins.multiverse.core.utils.compatibility.WorldBorderCompatibility;
+import org.mvplugins.multiverse.core.utils.tick.TickDuration;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
+import java.time.temporal.ChronoUnit;
 import java.util.function.Consumer;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
@@ -33,15 +36,14 @@ final class WorldBorderCommand extends CoreCommand {
             @Optional
             @Default("0")
             @Syntax("[time]")
-            int time,
+            TickDuration duration,
 
             @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
-        worldBorderAction(issuer, world, worldBorder -> {
-            onWorldBorderSet(issuer, worldBorder.getSize() + size, time, world);
-        });
+        worldBorderAction(issuer, world, worldBorder ->
+                onWorldBorderSet(issuer, worldBorder.getSize() + size, duration, world));
     }
 
     @Subcommand("center")
@@ -145,7 +147,7 @@ final class WorldBorderCommand extends CoreCommand {
             @Optional
             @Default("0")
             @Syntax("[time]")
-            int time,
+            TickDuration duration,
 
             @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
@@ -158,15 +160,18 @@ final class WorldBorderCommand extends CoreCommand {
                         Replace.WORLD.with(world.getAliasOrName()));
                 return;
             }
-            worldBorder.setSize(size, time);
-            if (time <= 0) {
+            if (!WorldBorderCompatibility.supportsChangeSizeInTicks() && !duration.isExactTo(ChronoUnit.SECONDS)) {
+                setRoundOffError(issuer, duration);
+            }
+            WorldBorderCompatibility.changeSizeDuration(worldBorder, size, duration);
+            if (duration.toTicks() <= 0) {
                 issuer.sendMessage(MVCorei18n.WORLDBORDER_SET_IMMEDIATE,
                         replace("{size}").with(worldBorder.getSize()),
                         Replace.WORLD.with(world.getAliasOrName()));
             } else {
                 issuer.sendMessage(previousSize > size ? MVCorei18n.WORLDBORDER_SET_GROWING : MVCorei18n.WORLDBORDER_SET_SHRINKING,
                         replace("{size}").with(size),
-                        replace("{time}").with(time),
+                        replace("{time}").with(String.format("%.2f", duration.toSeconds())),
                         Replace.WORLD.with(world.getAliasOrName()));
             }
         });
@@ -201,23 +206,32 @@ final class WorldBorderCommand extends CoreCommand {
             MVCommandIssuer issuer,
 
             @Syntax("<time>")
-            int time,
+            TickDuration duration,
 
             @Flags("resolve=issuerAware,maxArgForAware=0")
             @Syntax("[world]")
             LoadedMultiverseWorld world
     ) {
         worldBorderAction(issuer, world, worldBorder -> {
-            if (worldBorder.getWarningTime() == time) {
+            if (WorldBorderCompatibility.getWarningTimeTicks(worldBorder) == duration.toTicks()) {
                 issuer.sendMessage(MVCorei18n.WORLDBORDER_WARNINGTIME_NOTHINGCHANGED,
                         Replace.WORLD.with(world.getAliasOrName()));
                 return;
             }
-            worldBorder.setWarningTime(time);
+            if (!WorldBorderCompatibility.supportsSetWarningTimeInTicks() && !duration.isExactTo(ChronoUnit.SECONDS)) {
+                setRoundOffError(issuer, duration);
+            }
+            WorldBorderCompatibility.setWarningTimeDuration(worldBorder, duration);
             issuer.sendMessage(MVCorei18n.WORLDBORDER_WARNINGTIME_SUCCESS,
-                    replace("{time}").with(worldBorder.getWarningTime()),
+                    replace("{time}").with(String.format("%.2f", WorldBorderCompatibility.getWarningTime(worldBorder))),
                     Replace.WORLD.with(world.getAliasOrName()));
         });
+    }
+
+    private void setRoundOffError(MVCommandIssuer issuer, TickDuration duration) {
+        issuer.sendError(MVCorei18n.WORLDBORDER_ROUNDOFF_WARNING,
+                replace("{fromTime}").with(String.format("%.2f", duration.toSeconds())),
+                replace("{toTime}").with(Math.round(duration.toSeconds())));
     }
 
     private void worldBorderAction(MVCommandIssuer issuer, LoadedMultiverseWorld world, Consumer<WorldBorder> worldBorderAction) {

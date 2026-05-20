@@ -26,7 +26,6 @@ import io.vavr.control.Try;
 import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 
@@ -224,16 +223,16 @@ public final class FileUtils {
         }
 
         @Override
-        public @NotNull FileVisitResult preVisitDirectory(@NonNull Path dir, @NotNull BasicFileAttributes attrs) throws IOException {
+        public @NotNull FileVisitResult preVisitDirectory(@NotNull Path dir, @NotNull BasicFileAttributes attrs) throws IOException {
             Path newDir = targetDir.resolve(sourceDir.relativize(dir));
             if (!Files.isDirectory(newDir)) {
-                Files.createDirectory(newDir);
+                Files.createDirectories(newDir);
             }
             return FileVisitResult.CONTINUE;
         }
 
         @Override
-        public @NotNull FileVisitResult visitFile(@NonNull Path file, @NotNull BasicFileAttributes attrs) throws IOException {
+        public @NotNull FileVisitResult visitFile(@NotNull Path file, @NotNull BasicFileAttributes attrs) throws IOException {
             // Pass files that are set to ignore
             if (excludeFiles.contains(file)) {
                 Logging.finest("Ignoring file: " + file);

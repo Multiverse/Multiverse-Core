@@ -5,8 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import co.aikar.commands.InvalidCommandArgument;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,34 +42,34 @@ public class CommandValueFlag<T> extends CommandFlag {
 
     private final Class<T> type;
     private final boolean optional;
-    private final T defaultValue;
+    private final Supplier<? extends T> defaultValueSupplier;
     private final Function<String, T> context;
     private final Function<String, Collection<String>>  completion;
 
     /**
      * Creates a new flag.
      *
-     * @param key               The key for the new flag.
-     * @param aliases           The aliases that also refer to this flag.
-     * @param type              The type of the value.
-     * @param optional          Allow for flag without value.
-     * @param defaultValue      The default value if optional is true and user does not specify a value.
-     * @param context           Function to parse string into value type.
-     * @param completion        Function to get completion for this flag.
+     * @param key                   The key for the new flag.
+     * @param aliases               The aliases that also refer to this flag.
+     * @param type                  The type of the value.
+     * @param optional              Allow for flag without value.
+     * @param defaultValueSupplier  The default value if optional is true and user does not specify a value.
+     * @param context               Function to parse string into value type.
+     * @param completion            Function to get completion for this flag.
      */
     protected CommandValueFlag(
             @NotNull String key,
             @NotNull List<String> aliases,
             @NotNull Class<T> type,
             boolean optional,
-            @Nullable T defaultValue,
+            @Nullable Supplier<? extends T> defaultValueSupplier,
             @Nullable Function<String, T> context,
             @Nullable Function<String, Collection<String>>  completion
     ) {
         super(key, aliases);
         this.type = type;
         this.optional = optional;
-        this.defaultValue = defaultValue;
+        this.defaultValueSupplier = defaultValueSupplier;
         this.context = context;
         this.completion = completion;
     }
@@ -96,7 +98,7 @@ public class CommandValueFlag<T> extends CommandFlag {
      * @return The default value.
      */
     public @Nullable T getDefaultValue() {
-        return defaultValue;
+        return defaultValueSupplier == null ? null : defaultValueSupplier.get();
     }
 
     /**
@@ -126,7 +128,7 @@ public class CommandValueFlag<T> extends CommandFlag {
     public static class Builder<T, S extends Builder<T, S>> extends CommandFlag.Builder<S> {
         protected final Class<T> type;
         protected boolean optional = false;
-        protected T defaultValue = null;
+        protected Supplier<? extends T> defaultValueSupplier = null;
         protected Function<String, T> context = null;
         protected Function<String, Collection<String>> completion = null;
 
@@ -158,7 +160,21 @@ public class CommandValueFlag<T> extends CommandFlag {
          * @return The builder.
          */
         public @NotNull S defaultValue(@NotNull T defaultValue) {
-            this.defaultValue = defaultValue;
+            return defaultValue(() -> defaultValue);
+        }
+
+        /**
+         * Set the default value supplier. Used if optional is true and user does not specify a value.
+         * Supplier is only called when command is executed with the flag is present in input.
+         *
+         * @param defaultValueSupplier The default value supplier
+         * @return The builder
+         *
+         * @since 5.7
+         */
+        @ApiStatus.AvailableSince("5.7")
+        public @NotNull S defaultValue(@NotNull Supplier<? extends T> defaultValueSupplier) {
+            this.defaultValueSupplier = defaultValueSupplier;
             return (S) this;
         }
 
@@ -194,7 +210,7 @@ public class CommandValueFlag<T> extends CommandFlag {
             if (context == null && !String.class.equals(type)) {
                 throw new IllegalStateException("Context is required for non-string value flags");
             }
-            return new CommandValueFlag<>(key, aliases, type, optional, defaultValue, context, completion);
+            return new CommandValueFlag<>(key, aliases, type, optional, defaultValueSupplier, context, completion);
         }
     }
 
@@ -207,7 +223,7 @@ public class CommandValueFlag<T> extends CommandFlag {
     public static class EnumBuilder<T extends Enum<T>, S extends EnumBuilder<T, S>> extends CommandFlag.Builder<S> {
         protected final Class<T> type;
         protected boolean optional = false;
-        protected T defaultValue = null;
+        protected Supplier<? extends T> defaultValueSupplier = null;
         protected Function<String, T> context = null;
         protected Function<String, Collection<String>>  completion = null;
 
@@ -253,7 +269,21 @@ public class CommandValueFlag<T> extends CommandFlag {
          * @return The builder.
          */
         public @NotNull S defaultValue(@NotNull T defaultValue) {
-            this.defaultValue = defaultValue;
+            return defaultValue(() -> defaultValue);
+        }
+
+        /**
+         * Set the default value to supply. Used if optional is true and user does not specify a value.
+         * Supplier is only called when command is executed with the flag is present in input.
+         *
+         * @param defaultValueSupplier The default value supplier.
+         * @return The builder.
+         *
+         * @since 5.7
+         */
+        @ApiStatus.AvailableSince("5.7")
+        public @NotNull S defaultValue(@NotNull Supplier<? extends T> defaultValueSupplier) {
+            this.defaultValueSupplier = defaultValueSupplier;
             return (S) this;
         }
 
@@ -264,7 +294,7 @@ public class CommandValueFlag<T> extends CommandFlag {
          */
         @Override
         public @NotNull CommandValueFlag<T> build() {
-            return new CommandValueFlag<>(key, aliases, type, optional, defaultValue, context, completion);
+            return new CommandValueFlag<>(key, aliases, type, optional, defaultValueSupplier, context, completion);
         }
     }
 }

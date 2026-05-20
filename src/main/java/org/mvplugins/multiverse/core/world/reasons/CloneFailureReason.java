@@ -17,6 +17,15 @@ public enum CloneFailureReason implements FailureReason {
     INVALID_WORLDNAME(MVCorei18n.CLONEWORLD_INVALIDWORLDNAME),
 
     /**
+     * The server software does not support create worlds using namespaced key. Only legacy world name is supported.
+     * Generally this will only be an issue on Spigot servers.
+     *
+     * @since 5.7
+     */
+    @ApiStatus.AvailableSince("5.7")
+    NAMESPACEDKEY_UNSUPPORTED(MVCorei18n.WORLDKEYPARSE_NAMESPACEDKEYUNSUPPORTED),
+
+    /**
      * The target new world folder already exists.
      */
     WORLD_EXIST_FOLDER(MVCorei18n.CLONEWORLD_WORLDEXISTFOLDER),

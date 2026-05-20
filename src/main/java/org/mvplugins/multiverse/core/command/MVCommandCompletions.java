@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import co.aikar.commands.BukkitCommandCompletionContext;
+import co.aikar.commands.CommandCompletionFilter;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.PaperCommandCompletions;
 import co.aikar.commands.RegisteredCommand;
@@ -52,6 +53,7 @@ import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
+import org.mvplugins.multiverse.core.world.helpers.PotentialWorldFinder;
 
 import static org.mvplugins.multiverse.core.utils.StringFormatter.addOnToCommaSeparated;
 
@@ -65,6 +67,7 @@ public class MVCommandCompletions extends PaperCommandCompletions {
     private final CorePermissionsChecker corePermissionsChecker;
     private final AnchorManager anchorManager;
     private final GeneratorProvider generatorProvider;
+    private final PotentialWorldFinder potentialWorldFinder;
 
     @Inject
     MVCommandCompletions(
@@ -74,7 +77,8 @@ public class MVCommandCompletions extends PaperCommandCompletions {
             @NotNull CoreConfig config,
             @NotNull CorePermissionsChecker corePermissionsChecker,
             @NotNull AnchorManager anchorManager,
-            @NotNull GeneratorProvider generatorProvider
+            @NotNull GeneratorProvider generatorProvider,
+            @NotNull PotentialWorldFinder potentialWorldFinder
     ) {
         super(mvCommandManager);
         this.commandManager = mvCommandManager;
@@ -84,27 +88,29 @@ public class MVCommandCompletions extends PaperCommandCompletions {
         this.corePermissionsChecker = corePermissionsChecker;
         this.anchorManager = anchorManager;
         this.generatorProvider = generatorProvider;
+        this.potentialWorldFinder = potentialWorldFinder;
 
-        registerAsyncCompletion("anchornames", this::suggestAnchorNames);
+        registerAsyncCompletion("anchornames", this::suggestAnchorNames, CommandCompletionFilter.contains());
         registerAsyncCompletion("commands", this::suggestCommands);
         registerAsyncCompletion("destinations", this::suggestDestinations);
         registerStaticCompletion("difficulties", suggestEnums(Difficulty.class));
         registerStaticCompletion("environments", List.of("normal", "nether", "the_end")); // Don't tab complete the "custom" environment
         registerAsyncCompletion("flags", this::suggestFlags);
         registerStaticCompletion("gamemodes", suggestEnums(GameMode.class));
-        registerStaticCompletion("gamerules", this::suggestGamerules);
+        registerStaticCompletion("gamerules", this::suggestGamerules, MVCommandCompletionFilters.namespacedKey());
         registerAsyncCompletion("gamerulesvalues", this::suggestGamerulesValues);
-        registerAsyncCompletion("generatorplugins", this::suggestGeneratorPlugins);
-        registerStaticCompletion("materials", suggestEnums(Material.class));
-        registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames());
+        registerAsyncCompletion("generatorplugins", this::suggestGeneratorPlugins, CommandCompletionFilter.contains());
+        registerStaticCompletion("materials", suggestEnums(Material.class), CommandCompletionFilter.contains());
+        registerStaticCompletion("mvconfigs", config.getStringPropertyHandle().getAllPropertyNames(), CommandCompletionFilter.contains());
         registerAsyncCompletion("mvconfigvalues", this::suggestMVConfigValues);
-        registerAsyncCompletion("mvworlds", this::suggestMVWorlds);
-        registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName);
+        registerAsyncCompletion("mvworlds", this::suggestMVWorlds, MVCommandCompletionFilters.namespacedKey());
+        registerAsyncCompletion("mvworldmetakey", this::suggestMVWorldMetaKey, CommandCompletionFilter.contains());
+        registerAsyncCompletion("mvworldpropsname", this::suggestMVWorldPropsName, CommandCompletionFilter.contains());
         registerAsyncCompletion("mvworldpropsvalue", this::suggestMVWorldPropsValue);
-        registerCompletion("playersarray", this::suggestPlayersArray); // getting online players cannot be async
+        registerCompletion("playersarray", this::suggestPlayersArray, CommandCompletionFilter.contains()); // getting online players cannot be async
         registerStaticCompletion("propsmodifyaction", suggestEnums(PropertyModifyAction.class));
         registerStaticCompletion("spawncategories", suggestEnums(SpawnCategory.class));
-        registerAsyncCompletion("spawncategorypropsname", this::suggestSpawnCategoryPropsName);
+        registerAsyncCompletion("spawncategorypropsname", this::suggestSpawnCategoryPropsName, CommandCompletionFilter.contains());
         registerAsyncCompletion("spawncategorypropsvalue", this::suggestSpawnCategoryPropsValue);
 
         setDefaultCompletion("destinations", DestinationInstance.class);
@@ -297,11 +303,18 @@ public class MVCommandCompletions extends PaperCommandCompletions {
                         .toList();
             }
             case "potential" -> {
-                return worldManager.getPotentialWorlds();
+                return potentialWorldFinder.findPotentialWorlds();
             }
         }
         Logging.severe("Invalid MVWorld scope: " + scope);
         return Collections.emptyList();
+    }
+
+    private Collection<String> suggestMVWorldMetaKey(BukkitCommandCompletionContext context) {
+        return Try.of(() -> context.getContextValue(MultiverseWorld.class))
+                .map(MultiverseWorld::getAllMeta)
+                .map(Map::keySet)
+                .getOrElse(Collections.emptySet());
     }
 
     private Collection<String> suggestMVWorldPropsName(BukkitCommandCompletionContext context) {
