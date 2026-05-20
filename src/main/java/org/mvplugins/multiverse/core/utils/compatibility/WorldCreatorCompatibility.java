@@ -65,12 +65,7 @@ public final class WorldCreatorCompatibility {
      */
     @ApiStatus.AvailableSince("5.7")
     public static WorldCreator ofKeyOrName(@NotNull WorldKeyOrName keyOrName) {
-        if (OF_KEY_METHOD.isSuccess() && keyOrName.isKey()) {
-            // Use namespace key
-            return WorldCreator.ofKey(keyOrName.usableKey());
-        }
-        // Creating worlds with namespace key not allowed
-        return WorldCreator.name(keyOrName.usableName());
+        return ofNameAndKey(keyOrName.usableKey(), keyOrName.usableName());
     }
 
     /**
@@ -89,7 +84,7 @@ public final class WorldCreatorCompatibility {
      */
     @ApiStatus.AvailableSince("5.7")
     public static WorldCreator ofNameAndKey(@NotNull NamespacedKey worldKey, String worldName) {
-        if (OF_NAME_AND_KEY_METHOD.isSuccess() && canPassIntoNameAndKey(worldKey, worldName)) {
+        if (OF_NAME_AND_KEY_METHOD.isSuccess() && canPassIntoNameAndKey(worldKey)) {
             return WorldCreator.ofNameAndKey(worldName, worldKey);
         }
         if  (OF_KEY_METHOD.isSuccess()) {
@@ -105,13 +100,11 @@ public final class WorldCreatorCompatibility {
      * or if the namespace is the Minecraft namespace and the world name (lowercased) matches the key.
      *
      * @param worldKey The namespaced key for the world.
-     * @param worldName The display name for the world.
      * @return True if the parameters can be safely passed to {@code ofNameAndKey()}, else false.
      */
-    private static boolean canPassIntoNameAndKey(@NotNull NamespacedKey worldKey, @NotNull String worldName) {
+    private static boolean canPassIntoNameAndKey(@NotNull NamespacedKey worldKey) {
         return !BukkitCompatibility.isUsingNewDimensionStorage()
-                || (worldKey.getNamespace().equals(NamespacedKey.MINECRAFT)
-                && worldName.toLowerCase(Locale.ROOT).equals(worldKey.getKey()));
+                || worldKey.getNamespace().equals(NamespacedKey.MINECRAFT);
     }
 
     /**
