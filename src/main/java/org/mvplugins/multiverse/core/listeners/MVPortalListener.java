@@ -18,9 +18,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.IgnoreIfCancelled;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 import static org.bukkit.PortalType.CUSTOM;
@@ -33,11 +35,15 @@ final class MVPortalListener implements CoreListener {
 
     private final CoreConfig config;
     private final WorldManager worldManager;
+    private final MVCommandManager commandManager;
 
     @Inject
-    MVPortalListener(@NotNull CoreConfig config, @NotNull WorldManager worldManager) {
+    MVPortalListener(@NotNull CoreConfig config,
+                     @NotNull WorldManager worldManager,
+                     @NotNull MVCommandManager commandManager) {
         this.config = config;
         this.worldManager = worldManager;
+        this.commandManager = commandManager;
     }
 
     /**
@@ -59,6 +65,7 @@ final class MVPortalListener implements CoreListener {
             if (!world.getPortalForm().isPortalAllowed(targetType)) {
                 Logging.fine("Cancelling creation of %s portal because portalForm disallows.", targetType);
                 event.setCancelled(true);
+                commandManager.getCommandIssuer(event.getEntity()).sendError(MVCorei18n.PORTALFORM_DISABLED_NETHER);
             }
         }).onEmpty(() ->
                 Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PortalCreateEvent.",
@@ -101,6 +108,7 @@ final class MVPortalListener implements CoreListener {
             if (!world.getPortalForm().isPortalAllowed(PortalType.ENDER)) {
                 Logging.fine("Cancelling creation of ENDER portal because portalForm disallows.");
                 event.setCancelled(true);
+                commandManager.getCommandIssuer(event.getPlayer()).sendError(MVCorei18n.PORTALFORM_DISABLED_END);
             }
         }).onEmpty(() ->
                 Logging.fine("World '%s' is not managed by Multiverse! Ignoring at PlayerInteractEvent.",
