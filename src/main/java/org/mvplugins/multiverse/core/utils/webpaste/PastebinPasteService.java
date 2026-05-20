@@ -26,7 +26,7 @@ final class PastebinPasteService extends PasteService {
                 "&" + URLEncoder.encode("api_option", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("paste", StandardCharsets.UTF_8) +
                 "&" + URLEncoder.encode("api_paste_code", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(data, StandardCharsets.UTF_8) +
                 "&" + URLEncoder.encode("api_paste_private", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(this.isPrivate ? "1" : "0", StandardCharsets.UTF_8) +
-                "&" + URLEncoder.encode("api_paste_format", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("yaml", StandardCharsets.UTF_8) +
+                "&" + URLEncoder.encode("api_paste_format", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("json", StandardCharsets.UTF_8) +
                 "&" + URLEncoder.encode("api_paste_name", StandardCharsets.UTF_8) + "=" + URLEncoder.encode("Multiverse-Core Debug Info", StandardCharsets.UTF_8);
     }
 

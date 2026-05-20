@@ -16,6 +16,9 @@ import javax.net.ssl.HttpsURLConnection;
  * HTTP API-client.
  */
 abstract sealed class HttpAPIClient permits PasteService, URLShortener {
+
+    static final String DUMPS_VIEWER_URL = "https://mvdumps.c0ding.party/";
+
     /**
      * The URL for this API-request, and if necessary, the access token.
      * If an access token is not necessary, it should be set to null.
