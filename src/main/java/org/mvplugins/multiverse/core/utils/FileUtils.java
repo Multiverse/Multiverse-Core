@@ -226,7 +226,7 @@ public final class FileUtils {
         public @NotNull FileVisitResult preVisitDirectory(@NotNull Path dir, @NotNull BasicFileAttributes attrs) throws IOException {
             Path newDir = targetDir.resolve(sourceDir.relativize(dir));
             if (!Files.isDirectory(newDir)) {
-                Files.createDirectory(newDir);
+                Files.createDirectories(newDir);
             }
             return FileVisitResult.CONTINUE;
         }

@@ -878,8 +878,7 @@ public final class WorldManager {
         DataTransfer<LoadedMultiverseWorld> dataTransfer = regenWorldTransferData(options, world);
         boolean shouldKeepSpawnLocation = options.keepWorldConfig() && options.seed() == world.getSeed();
         Location spawnLocation = world.getSpawnLocation();
-
-        CreateWorldOptions createWorldOptions = CreateWorldOptions.worldName(world.getName())
+        CreateWorldOptions createWorldOptions = CreateWorldOptions.worldKeyOrName(world.worldConfig.getWorldKeyOrName())
                 .biome(world.getBiome())
                 .bonusChest(world.getBukkitWorld().map(WorldCompatibility::hasBonusChest).getOrElse(false))
                 .environment(world.getEnvironment())
