@@ -55,9 +55,12 @@ public final class WorldFolderResolver {
     @ApiStatus.AvailableSince("5.7")
     @NotNull
     public static File resolve(@NotNull MultiverseWorld multiverseWorld) {
-        return BukkitCompatibility.isUsingNewDimensionStorage()
-                ? resolveAsDimensionKey(multiverseWorld.getKey())
-                : resolveAsLegacyWorldName(multiverseWorld.getName());
+        File dimensionKey = resolveAsDimensionKey(multiverseWorld.getKey());
+        File legacy = resolveAsLegacyWorldName(multiverseWorld.getName());
+        if (BukkitCompatibility.isUsingNewDimensionStorage()) {
+            return !dimensionKey.isDirectory() && legacy.isDirectory() ? legacy : dimensionKey;
+        }
+        return legacy;
     }
 
     /**
