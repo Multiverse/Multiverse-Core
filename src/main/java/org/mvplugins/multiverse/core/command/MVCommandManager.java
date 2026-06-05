@@ -62,7 +62,6 @@ public class MVCommandManager extends PaperCommandManager {
         this.config = config;
         this.pluginLocales = new PluginLocales(this);
         this.locales = this.pluginLocales;
-        this.pluginLocales.loadLanguages();
 
         MVCommandConditions.load(this, worldManager, worldNameChecker);
         this.enableUnstableAPI("help");
