@@ -147,9 +147,10 @@ public abstract class MultiverseModule extends JavaPlugin {
         Try.of(() -> commandManagerProvider.get())
                 .mapTry(MVCommandManager::getLocales)
                 .andThen(pluginLocales -> {
-                    pluginLocales.addFileResClassLoader(this);
                     pluginLocales.addBundleClassLoader(this.getClassLoader());
+                    pluginLocales.addFileResClassLoader(this);
                     pluginLocales.addMessageBundles(this.getName().toLowerCase(Locale.ENGLISH));
+                    pluginLocales.loadLanguages();
                 })
                 .onFailure(e -> {
                     Logging.severe("Failed to register locales");
