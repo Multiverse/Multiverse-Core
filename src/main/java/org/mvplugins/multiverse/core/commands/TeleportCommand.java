@@ -95,7 +95,7 @@ final class TeleportCommand extends CoreCommand {
                                       ParsedCommandFlags parsedFlags) {
         if (!permissionsChecker.checkTeleportPermission(issuer.getIssuer(), player, destination)) {
             // TODO localize
-            issuer.sendMessage(player == issuer.getPlayer()
+            issuer.sendError(player == issuer.getPlayer()
                     ? "You do not have permission to teleport yourself!"
                     : "You do not have permission to teleport other players!");
             return;
@@ -135,7 +135,7 @@ final class TeleportCommand extends CoreCommand {
                                          ParsedCommandFlags parsedFlags) {
         if (!permissionsChecker.checkTeleportPermission(issuer.getIssuer(), Arrays.asList(players), destination)) {
             // TODO localize
-            issuer.sendMessage("You do not have permission to teleport all these players!");
+            issuer.sendError("You do not have permission to teleport all these players!");
             return;
         }
 
