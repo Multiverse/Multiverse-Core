@@ -87,9 +87,6 @@ public class MultiverseCore extends MultiverseModule {
         super.onEnable();
         initializeDependencyInjection(new MultiverseCorePluginBinder(this));
 
-        // Build it here so our logger can work, and failure messages will be logged
-        SpawnCategoryMapper.buildSpawnCategoryMap();
-
         // Load our configs first as we need them for everything else.
         var config = configProvider.get();
         var loadSuccess = config.load().andThenTry(config::save).isSuccess();
@@ -100,6 +97,9 @@ public class MultiverseCore extends MultiverseModule {
             return;
         }
         Logging.setShowingConfig(shouldShowConfig());
+
+        // Build it here so our logger can work, and failure messages will be logged
+        SpawnCategoryMapper.buildSpawnCategoryMap();
 
         // Initialize the worlds
         worldManagerProvider.get().initAllWorlds().andThenTry(() -> {

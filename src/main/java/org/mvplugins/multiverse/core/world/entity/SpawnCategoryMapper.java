@@ -78,7 +78,7 @@ public final class SpawnCategoryMapper {
                                 .add(entityType))
                         .onFailure(throwable -> Logging.warning("Failed to map entity type "
                                 + entityTypeField.getName() + " to its spawn category. " + throwable.getLocalizedMessage())))
-                .onFailure(throwable -> Logging.warning("Failed to map entity type "
+                .onFailure(throwable -> Logging.fine("Failed to map entity type "
                         + entityTypeField.getName() + " to its spawn category. " + throwable.getLocalizedMessage())));
 
         if (entityTypeToSpawnCategoryMap.isEmpty()) {
