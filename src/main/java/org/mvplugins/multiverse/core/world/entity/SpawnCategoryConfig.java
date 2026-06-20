@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.SpawnCategory;
+import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.MemoryConfigurationHandle;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
@@ -32,7 +33,11 @@ public final class SpawnCategoryConfig {
 
     private MultiverseWorld world;
 
-    SpawnCategoryConfig(CoreConfig config, SpawnCategory spawnCategory, ConfigurationSection section) {
+    SpawnCategoryConfig(
+            @NotNull CoreConfig config,
+            @NotNull SpawnCategory spawnCategory,
+            @NotNull ConfigurationSection section
+    ) {
         this.config = config;
         this.spawnCategory = spawnCategory;
         this.nodes = new Nodes();
@@ -67,7 +72,7 @@ public final class SpawnCategoryConfig {
         });
     }
 
-    private void applyTickPerSpawns(World bukkitWorld) {
+    private void applyTickPerSpawns(@NotNull World bukkitWorld) {
         if (!config.getApplyEntitySpawnLimit()) {
             Logging.finer("World %s %s skipping setTicksPerSpawns due to core config", world.getName(), spawnCategory);
             return;
@@ -85,7 +90,7 @@ public final class SpawnCategoryConfig {
         bukkitWorld.setTicksPerSpawns(spawnCategory, getTickRate());
     }
 
-    private void applySpawnLimit(World bukkitWorld) {
+    private void applySpawnLimit(@NotNull World bukkitWorld) {
         if (!config.getApplyEntitySpawnLimit()) {
             Logging.finer("Skipping World %s %s setSpawnLimit due to core config", world.getName(), spawnCategory);
             return;
@@ -98,11 +103,11 @@ public final class SpawnCategoryConfig {
         bukkitWorld.setSpawnLimit(spawnCategory, getSpawnLimit());
     }
 
-    public StringPropertyHandle getStringPropertyHandle() {
+    public @NotNull StringPropertyHandle getStringPropertyHandle() {
         return stringPropertyHandle;
     }
 
-    public SpawnCategory getSpawnCategory() {
+    public @NotNull SpawnCategory getSpawnCategory() {
         return spawnCategory;
     }
 
@@ -110,7 +115,7 @@ public final class SpawnCategoryConfig {
         return handle.get(nodes.spawn);
     }
 
-    public Try<Void> setSpawn(boolean spawn) {
+    public @NotNull Try<Void> setSpawn(boolean spawn) {
         return handle.set(nodes.spawn, spawn);
     }
 
@@ -118,7 +123,7 @@ public final class SpawnCategoryConfig {
         return handle.get(nodes.tickRate);
     }
 
-    public Try<Void> setTickRate(int tickRate) {
+    public @NotNull Try<Void> setTickRate(int tickRate) {
         return handle.set(nodes.tickRate, tickRate);
     }
 
@@ -126,23 +131,23 @@ public final class SpawnCategoryConfig {
         return handle.get(nodes.spawnLimit);
     }
 
-    public Try<Void> setSpawnLimit(int spawnLimit) {
+    public @NotNull Try<Void> setSpawnLimit(int spawnLimit) {
         return handle.set(nodes.spawnLimit, spawnLimit);
     }
 
-    public List<EntityType> getExceptions() {
+    public @NotNull List<EntityType> getExceptions() {
         return handle.get(nodes.exceptions);
     }
 
-    public Try<Void> setExceptions(List<EntityType> exceptions) {
+    public @NotNull Try<Void> setExceptions(@NotNull List<EntityType> exceptions) {
         return handle.set(nodes.exceptions, exceptions);
     }
 
-    public boolean shouldAllowSpawn(Entity entity) {
+    public boolean shouldAllowSpawn(@NotNull Entity entity) {
         return shouldAllowSpawn(entity.getType());
     }
 
-    public boolean shouldAllowSpawn(EntityType entityType) {
+    public boolean shouldAllowSpawn(@NotNull EntityType entityType) {
         return isSpawn() != getExceptions().contains(entityType);
     }
 
