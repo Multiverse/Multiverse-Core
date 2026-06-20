@@ -227,7 +227,7 @@ final class WorldsConfigManager {
             worldsConfig = new YamlConfiguration();
             worldConfigMap.forEach((keyOrName, worldConfig) -> {
                 worldConfig.save().onFailure(e -> {
-                    throw new RuntimeException("Failed to save world %s in config: " + keyOrName, e);
+                    throw new RuntimeException("Failed to save world " + keyOrName + " in config: " + e.getMessage(), e);
                 });
                 worldsConfig.set(encodeConfigKey(keyOrName), worldConfig.getConfigurationSection());
             });
