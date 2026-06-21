@@ -15,14 +15,17 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
-import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.command.flag.ParsedCommandFlags;
 import org.mvplugins.multiverse.core.command.flags.PageFilterFlags;
 import org.mvplugins.multiverse.core.display.ContentDisplay;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 final class AnchorListCommand extends CoreCommand {
@@ -58,18 +61,19 @@ final class AnchorListCommand extends CoreCommand {
         ContentDisplay.create()
                 .addContent(ListContentProvider.forContent(getAnchors(issuer.getPlayer())))
                 .withSendHandler(PagedSendHandler.create()
-                        .withHeader("&3==== [ Multiverse Anchors ] ====")
+                        .withHeader(Message.of(MVCorei18n.ANCHOR_LIST_HEADER))
                         .doPagination(true)
                         .withTargetPage(parsedFlags.flagValue(flags.page, 1))
                         .withFilter(parsedFlags.flagValue(flags.filter, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
-    private List<String> getAnchors(Player player) {
+    private List<? extends Message> getAnchors(Player player) {
         return anchorManager.getAnchors(player).stream()
                 .map(anchor ->
-                        "&a%s&7 - &f%s".formatted(
-                                anchor.getName(), locationManipulation.locationToString(anchor.getLocation())))
+                        Message.of(MVCorei18n.ANCHOR_LIST_ENTRY,
+                                replace("{anchor}").with(anchor.getName()),
+                                replace("{location}").with(locationManipulation.locationToString(anchor.getLocation()))))
                 .toList();
     }
 }

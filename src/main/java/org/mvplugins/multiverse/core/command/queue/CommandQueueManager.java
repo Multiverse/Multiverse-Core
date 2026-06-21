@@ -15,7 +15,6 @@ import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.block.data.type.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
@@ -28,6 +27,7 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
@@ -79,8 +79,9 @@ public class CommandQueueManager {
         if (config.getUseConfirmOtp()) {
             confirmCommand += " " + payload.otp();
         }
-        payload.issuer().sendMessage(String.format("Run %s%s %sto continue. This will expire in %s seconds.",
-                ChatColor.GREEN, confirmCommand, ChatColor.WHITE, config.getConfirmTimeout()));
+        payload.issuer().sendMessage(MVCorei18n.QUEUECOMMAND_PROMPT,
+                replace("{command}").with(confirmCommand),
+                replace("{timeout}").with(config.getConfirmTimeout()));
     }
 
     /**
@@ -127,7 +128,7 @@ public class CommandQueueManager {
                 // Payload already removed
                 return;
             }
-            payload.issuer().sendMessage("Your queued command has expired.");
+            payload.issuer().sendMessage(MVCorei18n.QUEUECOMMAND_EXPIRED);
         };
     }
 

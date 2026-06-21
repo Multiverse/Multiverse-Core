@@ -21,7 +21,9 @@ import org.mvplugins.multiverse.core.display.ContentDisplay;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
@@ -30,6 +32,8 @@ import org.mvplugins.multiverse.core.world.entity.SpawnCategoryConfig;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 @Subcommand("entity-spawn-config")
@@ -64,21 +68,26 @@ final class EntitySpawnConfigCommand extends CoreCommand {
         ContentDisplay.create()
                 .addContent(ListContentProvider.forContent(getEntitySpawnConfigList(world)))
                 .withSendHandler(PagedSendHandler.create()
-                        .withHeader(Message.of("==== [ Entity Spawn Config '" + world.getName() + "' ] ===="))
+                        .withHeader(Message.of(MVCorei18n.ENTITYSPAWNCONFIG_INFO_HEADER,
+                                Replace.WORLD.with(world.getName())))
                         .withLinesPerPage(8)
                         .withTargetPage(parsedFlags.flagValue(flags.page, 1))
                         .withFilter(parsedFlags.flagValue(flags.filter, DefaultContentFilter.get())))
                 .send(issuer);
     }
 
-    private List<String> getEntitySpawnConfigList(MultiverseWorld world) {
-        List<String> list = new ArrayList<>();
+    private List<Message> getEntitySpawnConfigList(MultiverseWorld world) {
+        List<Message> list = new ArrayList<>();
         Arrays.stream(SpawnCategory.values()).forEach(spawnCategory -> {
-            list.add(spawnCategory.name() + ": ");
+            list.add(Message.of(MVCorei18n.ENTITYSPAWNCONFIG_INFO_CATEGORY,
+                    replace("{category}").with(spawnCategory.name())));
             SpawnCategoryConfig spawnCategoryConfig = world.getEntitySpawnConfig().getSpawnCategoryConfig(spawnCategory);
-            list.add("  spawn: " + spawnCategoryConfig.isSpawn());
-            list.add("  tick-rate: " + spawnCategoryConfig.getTickRate());
-            list.add("  exceptions: " + StringFormatter.join(spawnCategoryConfig.getExceptions(), ", "));
+            list.add(Message.of(MVCorei18n.ENTITYSPAWNCONFIG_INFO_SPAWN,
+                    replace("{spawn}").with(spawnCategoryConfig.isSpawn())));
+            list.add(Message.of(MVCorei18n.ENTITYSPAWNCONFIG_INFO_TICKRATE,
+                    replace("{tickRate}").with(spawnCategoryConfig.getTickRate())));
+            list.add(Message.of(MVCorei18n.ENTITYSPAWNCONFIG_INFO_EXCEPTIONS,
+                    replace("{exceptions}").with(StringFormatter.join(spawnCategoryConfig.getExceptions(), ", "))));
         });
         return list;
     }
@@ -114,9 +123,16 @@ final class EntitySpawnConfigCommand extends CoreCommand {
                 .getStringPropertyHandle()
                 .modifyPropertyString(property, value, action)
                 .andThenTry(worldManager::saveWorldsConfig)
-                .onSuccess(ignore -> issuer.sendInfo("Successfully set " + property + " to " + value
-                        + " for " + spawnCategory.name() + " in " + world.getName()))
-                .onFailure(e -> issuer.sendError("Unable to set " + property + " to " + value
-                        + " for " + spawnCategory.name() + " in " + world.getName() + ": " + e.getMessage()));
+                .onSuccess(ignore -> issuer.sendInfo(MVCorei18n.ENTITYSPAWNCONFIG_MODIFY_SUCCESS,
+                        replace("{property}").with(property),
+                        Replace.VALUE.with(value),
+                        replace("{category}").with(spawnCategory.name()),
+                        Replace.WORLD.with(world.getName())))
+                .onFailure(e -> issuer.sendError(MVCorei18n.ENTITYSPAWNCONFIG_MODIFY_FAILURE,
+                        replace("{property}").with(property),
+                        Replace.VALUE.with(value),
+                        replace("{category}").with(spawnCategory.name()),
+                        Replace.WORLD.with(world.getName()),
+                        Replace.ERROR.with(e)));
     }
 }

@@ -236,6 +236,6 @@ final class WorldBorderCommand extends CoreCommand {
 
     private void worldBorderAction(MVCommandIssuer issuer, LoadedMultiverseWorld world, Consumer<WorldBorder> worldBorderAction) {
         Try.run(() -> world.getWorldBorder().peek(worldBorderAction))
-                .onFailure(error -> issuer.sendError(error.getLocalizedMessage()));
+                .onFailure(error -> issuer.sendError(MVCorei18n.GENERIC_ERROR_DETAILS, Replace.ERROR.with(error)));
     }
 }

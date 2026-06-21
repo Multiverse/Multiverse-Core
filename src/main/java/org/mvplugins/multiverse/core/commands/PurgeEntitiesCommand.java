@@ -8,6 +8,8 @@ import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 
@@ -33,6 +35,8 @@ final class PurgeEntitiesCommand extends CoreCommand {
             LoadedMultiverseWorld world
     ) {
         int purgeCount = entityPurger.purgeEntities(world);
-        issuer.sendMessage("Successfully purged " + purgeCount + " entities in world " + world.getName() + ".");
+        issuer.sendMessage(MVCorei18n.PURGEENTITIES_SUCCESS,
+                Replace.COUNT.with(purgeCount),
+                Replace.WORLD.with(world.getName()));
     }
 }

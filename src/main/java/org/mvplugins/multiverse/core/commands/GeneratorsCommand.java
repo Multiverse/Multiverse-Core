@@ -10,7 +10,6 @@ import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import jakarta.inject.Inject;
-import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -23,9 +22,12 @@ import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.handlers.PagedSendHandler;
 import org.mvplugins.multiverse.core.display.parsers.ListContentProvider;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.generators.GeneratorPlugin;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * List all gamerules in your current or specified world.
@@ -68,7 +70,7 @@ class GeneratorsCommand extends CoreCommand {
         ContentDisplay.create()
                 .addContent(ListContentProvider.forContent(generators))
                 .withSendHandler(PagedSendHandler.create()
-                        .withHeader("%s====[ Multiverse Generator List ]====", ChatColor.AQUA)
+                        .withHeader(Message.of(MVCorei18n.GENERATORS_HEADER))
                         .doPagination(true)
                         .withTargetPage(parsedFlags.flagValue(flags.page, 1))
                         .withFilter(parsedFlags.flagValue(flags.filter, DefaultContentFilter.get())))
@@ -85,10 +87,13 @@ class GeneratorsCommand extends CoreCommand {
             @Syntax("<generator>")
             GeneratorPlugin generatorPlugin
     ) {
-        issuer.sendMessage(ChatColor.RESET + "Generator Plugin: " + generatorPlugin.getPluginName());
-        issuer.sendMessage(ChatColor.RESET + "Example usages: ");
-        issuer.sendMessage(ChatColor.RESET + StringFormatter.join(generatorPlugin.getExampleUsages(), "\n"));
-        issuer.sendMessage(ChatColor.RESET + "Link to more info: " + generatorPlugin.getInfoLink());
+        issuer.sendMessage(MVCorei18n.GENERATORS_INFO_PLUGIN,
+                replace("{plugin}").with(generatorPlugin.getPluginName()));
+        issuer.sendMessage(MVCorei18n.GENERATORS_INFO_EXAMPLEUSAGES);
+        issuer.sendMessage(MVCorei18n.GENERATORS_INFO_USAGES,
+                replace("{usages}").with(StringFormatter.join(generatorPlugin.getExampleUsages(), "\n")));
+        issuer.sendMessage(MVCorei18n.GENERATORS_INFO_INFOLINK,
+                replace("{link}").with(generatorPlugin.getInfoLink()));
     }
 
     @Service

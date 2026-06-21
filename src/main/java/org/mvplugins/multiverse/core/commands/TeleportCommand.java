@@ -94,10 +94,9 @@ final class TeleportCommand extends CoreCommand {
                                       DestinationInstance<?, ?> destination,
                                       ParsedCommandFlags parsedFlags) {
         if (!permissionsChecker.checkTeleportPermission(issuer.getIssuer(), player, destination)) {
-            // TODO localize
             issuer.sendError(player == issuer.getPlayer()
-                    ? "You do not have permission to teleport yourself!"
-                    : "You do not have permission to teleport other players!");
+                    ? MVCorei18n.TELEPORT_NOPERMISSION_SELF
+                    : MVCorei18n.TELEPORT_NOPERMISSION_OTHER);
             return;
         }
 
@@ -134,8 +133,7 @@ final class TeleportCommand extends CoreCommand {
                                          DestinationInstance<?, ?> destination,
                                          ParsedCommandFlags parsedFlags) {
         if (!permissionsChecker.checkTeleportPermission(issuer.getIssuer(), Arrays.asList(players), destination)) {
-            // TODO localize
-            issuer.sendError("You do not have permission to teleport all these players!");
+            issuer.sendError(MVCorei18n.TELEPORT_NOPERMISSION_ALL);
             return;
         }
 
@@ -149,7 +147,8 @@ final class TeleportCommand extends CoreCommand {
                         return;
                     }
                     issuer.sendInfo(MVCorei18n.TELEPORT_SUCCESS,
-                            Replace.PLAYER.with(successCount + " players"),
+                            Replace.PLAYER.with(Message.of(MVCorei18n.GENERIC_PLAYERCOUNT,
+                                    Replace.COUNT.with(successCount))),
                             Replace.DESTINATION.with(destination.getDisplayMessage()));
                 })
                 .onFailureCount(reasonsCountMap -> {
@@ -157,7 +156,8 @@ final class TeleportCommand extends CoreCommand {
                         Logging.finer("Failed to teleport %s players to %s: %s",
                                 entry.getValue(), destination, entry.getKey());
                         issuer.sendError(MVCorei18n.TELEPORT_FAILED,
-                                Replace.PLAYER.with(entry.getValue() + " players"),
+                                Replace.PLAYER.with(Message.of(MVCorei18n.GENERIC_PLAYERCOUNT,
+                                        Replace.COUNT.with(entry.getValue()))),
                                 Replace.DESTINATION.with(destination.getDisplayMessage()),
                                 Replace.REASON.with(Message.of(entry.getKey())));
                     }

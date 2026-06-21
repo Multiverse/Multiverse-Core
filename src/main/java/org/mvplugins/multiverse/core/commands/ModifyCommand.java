@@ -107,14 +107,14 @@ class ModifyCommand extends CoreCommand {
                                 replace("{action}").with(action.name().toLowerCase()),
                                 replace("{property}").with(propertyName),
                                 Replace.WORLD.with(world.getName()),
-                                Replace.ERROR.with(exception.getMessage()));
+                                Replace.ERROR.with(exception));
                     } else {
                         issuer.sendMessage(MVCorei18n.MODIFY_FAILURE,
                                 replace("{action}").with(action.name().toLowerCase()),
                                 replace("{property}").with(propertyName),
                                 Replace.VALUE.with(propertyValue),
                                 Replace.WORLD.with(world.getName()),
-                                Replace.ERROR.with(exception.getMessage()));
+                                Replace.ERROR.with(exception));
                     }
         });
     }

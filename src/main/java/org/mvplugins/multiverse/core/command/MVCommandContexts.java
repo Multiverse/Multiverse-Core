@@ -39,7 +39,9 @@ import org.mvplugins.multiverse.core.display.filters.ContentFilter;
 import org.mvplugins.multiverse.core.display.filters.DefaultContentFilter;
 import org.mvplugins.multiverse.core.display.filters.RegexContentFilter;
 import org.mvplugins.multiverse.core.exceptions.command.MVInvalidCommandArgument;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.PlayerFinder;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 import org.mvplugins.multiverse.core.utils.tick.TickDuration;
@@ -168,15 +170,67 @@ public class MVCommandContexts extends PaperCommandContexts {
         return generatorPlugin;
     }
 
+    private Message loadedMultiverseWorldPlayerOnlyMessage() {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_LOADEDMULTIVERSEWORLD_PLAYERSONLY);
+    }
+
+    private Message loadedMultiverseWorldIssuerMessage() {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_LOADEDMULTIVERSEWORLD_ISSUER);
+    }
+
+    private Message loadedMultiverseWorldInputConsoleMessage(String worldName) {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_LOADEDMULTIVERSEWORLD_INPUTCONSOLE,
+                Replace.WORLD.with(worldName));
+    }
+
+    private Message loadedMultiverseWorldInputMessage(String worldName) {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_LOADEDMULTIVERSEWORLD_INPUT, Replace.WORLD.with(worldName));
+    }
+
+    private Message multiverseWorldPlayerOnlyMessage() {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_MULTIVERSEWORLD_PLAYERSONLY);
+    }
+
+    private Message multiverseWorldIssuerMessage() {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_MULTIVERSEWORLD_ISSUER);
+    }
+
+    private Message multiverseWorldInputConsoleMessage(String worldName) {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_MULTIVERSEWORLD_INPUTCONSOLE, Replace.WORLD.with(worldName));
+    }
+
+    private Message multiverseWorldInputMessage(String worldName) {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_MULTIVERSEWORLD_INPUT, Replace.WORLD.with(worldName));
+    }
+
+    private Message playerOnlyMessage() {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_PLAYERSONLY);
+    }
+
+    private Message playerInputIssuerMessage(String playerName) {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_PLAYER_ISSUERINPUT, Replace.PLAYER.with(playerName));
+    }
+
+    private Message playerInputMessage(String playerName) {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_PLAYER_INPUT, Replace.PLAYER.with(playerName));
+    }
+
+    private Message playerSelectorMessage(String selector) {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_PLAYER_SELECTOR, Replace.PLAYER.with(selector));
+    }
+
+    private Message playersInputMessage(String playerName) {
+        return Message.of(MVCorei18n.COMMANDS_ERROR_PLAYERS_INPUT, Replace.PLAYER.with(playerName));
+    }
 
     private IssuerAwareContextBuilder<LoadedMultiverseWorld> loadedMultiverseWorldContextBuilder() {
         return new IssuerAwareContextBuilder<LoadedMultiverseWorld>()
                 .fromPlayer((context, player) -> worldManager.getLoadedWorld(player.getWorld()).getOrNull())
                 .fromInput((context, input) -> getLoadedMultiverseWorld(input))
-                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player in a loaded Multiverse World."))
-                .issuerAwarePlayerFailMessage((context, player) -> Message.of("You are not in a loaded multiverse world. Either specify a multiverse world name or use this command in a loaded multiverse world."))
-                .issuerAwareInputFailMessage((context, input) -> Message.of("World '" + input + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console."))
-                .inputOnlyFailMessage((context, input) -> Message.of("World " + input + " is not a loaded multiverse world."));
+                .issuerOnlyFailMessage((context) -> loadedMultiverseWorldPlayerOnlyMessage())
+                .issuerAwarePlayerFailMessage((context, player) -> loadedMultiverseWorldIssuerMessage())
+                .issuerAwareInputFailMessage((context, input) -> loadedMultiverseWorldInputConsoleMessage(input))
+                .inputOnlyFailMessage((context, input) -> loadedMultiverseWorldInputMessage(input));
     }
 
     private IssuerAwareContextBuilder<LoadedMultiverseWorld[]> loadedMultiverseWorldArrayContextBuilder() {
@@ -194,16 +248,17 @@ public class MVCommandContexts extends PaperCommandContexts {
                         }
                         LoadedMultiverseWorld world = getLoadedMultiverseWorld(worldName);
                         if (world == null) {
-                            throw new InvalidCommandArgument("World " + worldName + " is not a loaded multiverse world.");
+                            throw new InvalidCommandArgument(
+                                    loadedMultiverseWorldInputMessage(worldName).formatted(context.getIssuer()));
                         }
                         worlds.add(world);
                     }
                     return worlds.isEmpty() ? null : worlds.toArray(new LoadedMultiverseWorld[0]);
                 })
-                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player in a loaded Multiverse World."))
-                .issuerAwarePlayerFailMessage((context, player) -> Message.of("You are not in a loaded multiverse world. Either specify a multiverse world name or use this command in a loaded multiverse world."))
-                .issuerAwareInputFailMessage((context, input) -> Message.of("World '" + input + "' is not a loaded multiverse world. Remember to specify the world name when using this command in console."))
-                .inputOnlyFailMessage((context, input) -> Message.of("World " + input + " is not a loaded multiverse world."));
+                .issuerOnlyFailMessage((context) -> loadedMultiverseWorldPlayerOnlyMessage())
+                .issuerAwarePlayerFailMessage((context, player) -> loadedMultiverseWorldIssuerMessage())
+                .issuerAwareInputFailMessage((context, input) -> loadedMultiverseWorldInputConsoleMessage(input))
+                .inputOnlyFailMessage((context, input) -> loadedMultiverseWorldInputMessage(input));
     }
 
     @Nullable
@@ -217,10 +272,10 @@ public class MVCommandContexts extends PaperCommandContexts {
         return new IssuerAwareContextBuilder<MultiverseWorld>()
                 .fromPlayer((context, player) -> worldManager.getWorld(player.getWorld()).getOrNull())
                 .fromInput((context, input) -> getMultiverseWorld(input))
-                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player in a Multiverse World."))
-                .issuerAwarePlayerFailMessage((context, player) -> Message.of("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."))
-                .issuerAwareInputFailMessage((context, input) -> Message.of("World '" + input + "' is not a multiverse world. Remember to specify the world name when using this command in console."))
-                .inputOnlyFailMessage((context, input) -> Message.of("World " + input + " is not a multiverse world."));
+                .issuerOnlyFailMessage((context) -> multiverseWorldPlayerOnlyMessage())
+                .issuerAwarePlayerFailMessage((context, player) -> multiverseWorldIssuerMessage())
+                .issuerAwareInputFailMessage((context, input) -> multiverseWorldInputConsoleMessage(input))
+                .inputOnlyFailMessage((context, input) -> multiverseWorldInputMessage(input));
     }
 
     private IssuerAwareContextBuilder<MultiverseWorld[]> multiverseWorldArrayContextBuilder() {
@@ -238,16 +293,17 @@ public class MVCommandContexts extends PaperCommandContexts {
                         }
                         MultiverseWorld world = getMultiverseWorld(worldName);
                         if (world == null) {
-                            throw new InvalidCommandArgument("World " + worldName + " is not a multiverse world.");
+                            throw new InvalidCommandArgument(
+                                    multiverseWorldInputMessage(worldName).formatted(context.getIssuer()));
                         }
                         worlds.add(world);
                     }
                     return worlds.isEmpty() ? null : worlds.toArray(new MultiverseWorld[0]);
                 })
-                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player in a Multiverse World."))
-                .issuerAwarePlayerFailMessage((context, player) -> Message.of("You are not in a multiverse world. Either specify a multiverse world name or use this command in a multiverse world."))
-                .issuerAwareInputFailMessage((context, input) -> Message.of("World '" + input + "' is not a multiverse world. Remember to specify the world name when using this command in console."))
-                .inputOnlyFailMessage((context, input) -> Message.of("World " + input + " is not a multiverse world."));
+                .issuerOnlyFailMessage((context) -> multiverseWorldPlayerOnlyMessage())
+                .issuerAwarePlayerFailMessage((context, player) -> multiverseWorldIssuerMessage())
+                .issuerAwareInputFailMessage((context, input) -> multiverseWorldInputConsoleMessage(input))
+                .inputOnlyFailMessage((context, input) -> multiverseWorldInputMessage(input));
     }
 
     @Nullable
@@ -267,9 +323,9 @@ public class MVCommandContexts extends PaperCommandContexts {
         return new IssuerAwareContextBuilder<Player>()
                 .fromPlayer((context, player) -> player)
                 .fromInput((context, input) -> PlayerFinder.get(input, context.getSender()))
-                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player."))
-                .issuerAwareInputFailMessage((context, input) -> Message.of("Invalid player: " + input + ". Either specify an online player or use this command as a player."))
-                .inputOnlyFailMessage((context, input) -> Message.of("Player " + input + " not found."));
+                .issuerOnlyFailMessage((context) -> playerOnlyMessage())
+                .issuerAwareInputFailMessage((context, input) -> playerInputIssuerMessage(input))
+                .inputOnlyFailMessage((context, input) -> playerInputMessage(input));
     }
 
     private IssuerAwareContextBuilder<Player[]> playerArrayContextBuilder() {
@@ -286,13 +342,13 @@ public class MVCommandContexts extends PaperCommandContexts {
                             throw new InvalidCommandArgument(failure.getLocalizedMessage() + " "
                                     + Option.of(failure.getCause()).map(Throwable::getLocalizedMessage).getOrElse(""));
                         }))
-                .issuerOnlyFailMessage((context) -> Message.of("This command can only be used by a player."))
-                .issuerAwareInputFailMessage((context, input) -> Message.of("Invalid player: " + input + ". Either specify an online player or use this command as a player."))
+                .issuerOnlyFailMessage((context) -> playerOnlyMessage())
+                .issuerAwareInputFailMessage((context, input) -> playerInputIssuerMessage(input))
                 .inputOnlyFailMessage((context, input) -> {
                     if (PlayerFinder.isSelector(input)) {
-                        return Message.of("No player(s) matched selector: " + input + ".");
+                        return playerSelectorMessage(input);
                     }
-                    return Message.of("Player(s) " + input + " not found.");
+                    return playersInputMessage(input);
                 });
     }
 

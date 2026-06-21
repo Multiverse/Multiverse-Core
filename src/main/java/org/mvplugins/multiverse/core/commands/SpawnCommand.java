@@ -88,11 +88,11 @@ final class SpawnCommand extends CoreCommand {
                                         List<Entity> entities, boolean checkSafety) {
         LoadedMultiverseWorld mvWorld = worldManager.getLoadedWorld(world).getOrNull();
         if (mvWorld == null) {
-            issuer.sendMessage("The world '" + world.getName() + "' is not a multiverse world!");
+            issuer.sendMessage(MVCorei18n.SPAWN_NOTMVWORLD, Replace.WORLD.with(world.getName()));
             return;
         }
         if (!permissionsChecker.checkSpawnPermission(issuer.getIssuer(), entities, mvWorld)) {
-            issuer.sendMessage("You do not have permission to use this command in this world!");
+            issuer.sendMessage(MVCorei18n.SPAWN_NOPERMISSION);
             return;
         }
 
@@ -129,16 +129,18 @@ final class SpawnCommand extends CoreCommand {
                 .checkSafety(checkSafety)
                 .teleport(entities)
                 .onSuccessCount(successCount ->  issuer.sendMessage(MVCorei18n.SPAWN_SUCCESS,
-                        Replace.PLAYER.with(successCount + " players"), //todo: replace this with localised "{count} players"
+                        Replace.PLAYER.with(Message.of(MVCorei18n.GENERIC_PLAYERCOUNT,
+                                Replace.COUNT.with(successCount))),
                         Replace.WORLD.with(mvWorld.getName())))
                 .onFailureCount(reasonsCountMap -> {
                     for (var entry : reasonsCountMap.entrySet()) {
                         Logging.finer("Failed to teleport %s players to %s: %s",
                                 entry.getValue(), mvWorld.getName(), entry.getKey());
                         issuer.sendError(MVCorei18n.SPAWN_FAILED,
-                                Replace.PLAYER.with(entry.getValue() + " players"),
+                                Replace.PLAYER.with(Message.of(MVCorei18n.GENERIC_PLAYERCOUNT,
+                                        Replace.COUNT.with(entry.getValue()))),
                                 Replace.WORLD.with(mvWorld.getName()),
-                                Replace.REASON.with(entry.getKey().getMessageKey()));
+                                Replace.REASON.with(Message.of(entry.getKey())));
                     }
                 });
     }
