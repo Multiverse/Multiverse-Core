@@ -2,8 +2,6 @@ package org.mvplugins.multiverse.core.display.handlers;
 
 import java.util.List;
 
-import co.aikar.commands.BukkitCommandIssuer;
-import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
@@ -69,12 +67,12 @@ public class PagedSendHandler extends BaseSendHandler<PagedSendHandler> {
     private void sendPaged(@NotNull MVCommandIssuer issuer, @NotNull List<String> content) {
         int totalPages = (content.size() + linesPerPage - 1) / linesPerPage; // Basically just divide round up
         if (targetPage < 1 || targetPage > totalPages) {
-            issuer.sendMessage(String.format("%sInvalid page number. Please enter a page number between 1 and %s", ChatColor.RED, totalPages));
+            issuer.sendMessage(MVCorei18n.CONTENTDISPLAY_INVALIDPAGE, replace("{total}").with(totalPages));
             return;
         }
 
         if (filter.needToFilter()) {
-            issuer.sendMessage("{page} {filter}",
+            issuer.sendMessage(MVCorei18n.CONTENTDISPLAY_PAGEFILTER,
                     replace("{page}").with(Message.of(MVCorei18n.CONTENTDISPLAY_PAGE,
                             replace("{current}").with(targetPage),
                             replace("{total}").with(totalPages))),

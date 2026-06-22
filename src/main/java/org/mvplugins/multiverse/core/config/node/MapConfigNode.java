@@ -18,6 +18,8 @@ import org.mvplugins.multiverse.core.config.node.functions.SenderNodeSuggester;
 import org.mvplugins.multiverse.core.config.node.serializer.DefaultSerializerProvider;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.utils.REPatterns;
 
 import java.util.Collection;
@@ -27,6 +29,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * A config node that contains key-value mappings.
@@ -127,8 +131,8 @@ public class MapConfigNode<K, V> extends ConfigNode<Map<K, V>> implements MapVal
     private Function<K, Try<Void>> defaultYamlKeyValidator() {
         return key -> Try.of(() -> {
             if (!REPatterns.YAML_KEY.matcher(String.valueOf(serializeKey(key))).matches()) {
-                throw new MultiverseException("Invalid yaml key: '" + key + "'. Keys can only " +
-                        "contain alphanumeric characters, underscores and hyphens.");
+                throw new MultiverseException(Message.of(MVCorei18n.CONFIG_NODE_INVALIDYAMLKEY,
+                        replace("{key}").with(key)));
             }
             return null;
         });

@@ -6,11 +6,15 @@ import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.contexts.IssuerAwareContextResolver;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Reusable logic of issuer only and issuer aware context resolvers
@@ -22,10 +26,17 @@ public final class IssuerAwareContextBuilder<T> {
 
     private BiFunction<BukkitCommandExecutionContext, Player, T> fromPlayer;
     private BiFunction<BukkitCommandExecutionContext, String, T> fromInput;
-    private Function<BukkitCommandExecutionContext, Message> issuerOnlyFailMessage = context -> Message.of("This command can only be used by a player.");
-    private BiFunction<BukkitCommandExecutionContext, Player, Message> issuerAwarePlayerFailMessage = (context, player) -> Message.of("Unable to resolve context for player '" + player.getName() + "'.");
-    private BiFunction<BukkitCommandExecutionContext, String, Message> issuerAwareInputFailMessage = (context, input) -> Message.of("Unable to resolve context for input '" + input + "'.");
-    private BiFunction<BukkitCommandExecutionContext, String, Message> inputOnlyFailMessage = (context, input) -> Message.of("Unable to resolve context for input '" + input + "'.");
+    private Function<BukkitCommandExecutionContext, Message> issuerOnlyFailMessage =
+            context -> Message.of(MVCorei18n.COMMANDS_ERROR_PLAYERSONLY);
+    private BiFunction<BukkitCommandExecutionContext, Player, Message> issuerAwarePlayerFailMessage =
+            (context, player) -> Message.of(MVCorei18n.COMMANDS_ERROR_RESOLVE_PLAYER,
+                    Replace.PLAYER.with(player.getName()));
+    private BiFunction<BukkitCommandExecutionContext, String, Message> issuerAwareInputFailMessage =
+            (context, input) -> Message.of(MVCorei18n.COMMANDS_ERROR_RESOLVE_INPUT,
+                    replace("{input}").with(input));
+    private BiFunction<BukkitCommandExecutionContext, String, Message> inputOnlyFailMessage =
+            (context, input) -> Message.of(MVCorei18n.COMMANDS_ERROR_RESOLVE_INPUT,
+                    replace("{input}").with(input));
 
     public IssuerAwareContextBuilder() {
     }

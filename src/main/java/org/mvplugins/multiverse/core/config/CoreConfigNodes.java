@@ -25,6 +25,8 @@ import org.mvplugins.multiverse.core.destination.DestinationsProvider;
 import org.mvplugins.multiverse.core.dynamiclistener.EventPriorityMapper;
 import org.mvplugins.multiverse.core.event.MVDebugModeEvent;
 import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.permissions.PermissionUtils;
 import org.mvplugins.multiverse.core.teleportation.PassengerModes;
 import org.mvplugins.multiverse.core.world.helpers.DimensionFinder.DimensionFormat;
@@ -371,7 +373,8 @@ final class CoreConfigNodes {
             .defaultValue(128)
             .name("custom-portal-search-radius")
             .validator(value -> value < 0
-                    ? Try.failure(new MultiverseException("The value must be greater than or equal to 0.", null))
+                    ? Try.failure(new MultiverseException(
+                            Message.of(MVCorei18n.CORE_CONFIG_CUSTOMPORTALSEARCHRADIUS_NONNEGATIVE), null))
                     : Try.success(null))
             .build());
 
@@ -487,7 +490,8 @@ final class CoreConfigNodes {
             .defaultValue(30)
             .name("confirm-timeout")
             .validator(value -> (value <= 0)
-                    ? Try.failure(new MultiverseException("Confirm timeout must be a positive number!"))
+                    ? Try.failure(new MultiverseException(
+                            Message.of(MVCorei18n.CORE_CONFIG_CONFIRMTIMEOUT_POSITIVE)))
                     : Try.success(null))
             .build());
 
@@ -618,7 +622,8 @@ final class CoreConfigNodes {
             .name("global-debug")
             .suggester(input -> List.of("0", "1", "2", "3"))
             .validator(value -> (value < 0 || value > 3)
-                    ? Try.failure(new MultiverseException("Debug level must be between 0 and 3."))
+                    ? Try.failure(new MultiverseException(
+                            Message.of(MVCorei18n.CORE_CONFIG_DEBUGLEVEL_RANGE)))
                     : Try.success(null))
             .onLoadAndChange((oldValue, newValue) -> {
                 if (newValue != Logging.getDebugLevel()) {

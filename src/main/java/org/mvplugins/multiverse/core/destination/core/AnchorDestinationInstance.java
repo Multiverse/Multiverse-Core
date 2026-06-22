@@ -7,7 +7,10 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Destination instance implementation for the {@link AnchorDestination}.
@@ -69,8 +72,7 @@ public final class AnchorDestinationInstance extends DestinationInstance<AnchorD
      */
     @Override
     public @NotNull Message getDisplayMessage() {
-        //TODO Localize
-        return Message.of("anchor '" + anchorName + "'");
+        return Message.of(MVCorei18n.DESTINATION_ANCHOR_DISPLAY, replace("{anchor}").with(anchorName));
     }
 
     /**

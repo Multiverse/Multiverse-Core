@@ -15,7 +15,10 @@ import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 final class AnchorSetCommand extends CoreCommand {
@@ -80,10 +83,12 @@ final class AnchorSetCommand extends CoreCommand {
     }
 
     private void sendAnchorSetSuccessMessage(MVCommandIssuer issuer, String anchorName, String locationString) {
-        issuer.sendMessage("&aAnchor &f" + anchorName + "&a set to &f" + locationString);
+        issuer.sendMessage(MVCorei18n.ANCHOR_SET_SUCCESS,
+                replace("{anchor}").with(anchorName),
+                replace("{location}").with(locationString));
     }
 
     private void sendAnchorSetFailedMessage(MVCommandIssuer issuer, String anchorName) {
-        issuer.sendMessage("&cFailed to set anchor &f" + anchorName + ".");
+        issuer.sendMessage(MVCorei18n.ANCHOR_SET_FAILURE, replace("{anchor}").with(anchorName));
     }
 }

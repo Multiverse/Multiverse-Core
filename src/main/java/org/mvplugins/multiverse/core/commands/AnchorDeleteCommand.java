@@ -12,6 +12,9 @@ import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.anchor.MultiverseAnchor;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 final class AnchorDeleteCommand extends CoreCommand {
@@ -35,9 +38,9 @@ final class AnchorDeleteCommand extends CoreCommand {
             @Description("")
             MultiverseAnchor anchor) {
         if (anchorManager.deleteAnchor(anchor).isSuccess()) {
-            issuer.sendMessage("&aAnchor &f" + anchor.getName() + "&a deleted.");
+            issuer.sendMessage(MVCorei18n.ANCHOR_DELETE_SUCCESS, replace("{anchor}").with(anchor.getName()));
         } else {
-            issuer.sendMessage("&cFailed to delete anchor.");
+            issuer.sendError(MVCorei18n.ANCHOR_DELETE_FAILURE);
         }
     }
 }

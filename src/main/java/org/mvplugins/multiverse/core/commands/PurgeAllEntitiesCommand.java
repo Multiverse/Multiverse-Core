@@ -10,11 +10,15 @@ import jakarta.inject.Inject;
 import org.bukkit.entity.SpawnCategory;
 import org.jvnet.hk2.annotations.Service;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.utils.StringFormatter;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 
 import java.util.List;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 @Service
 final class PurgeAllEntitiesCommand extends CoreCommand {
@@ -43,12 +47,16 @@ final class PurgeAllEntitiesCommand extends CoreCommand {
     ) {
         if (spawnCategories == null || spawnCategories.length == 0) {
             int purgeCount = entityPurger.purgeAllEntities(world);
-            issuer.sendMessage("Successfully purged " + purgeCount + " entities in world " + world.getName() + ".");
+            issuer.sendMessage(MVCorei18n.PURGEALLENTITIES_SUCCESS,
+                    Replace.COUNT.with(purgeCount),
+                    Replace.WORLD.with(world.getName()));
             return;
         }
 
         int purgeCount = entityPurger.purgeEntities(world, spawnCategories);
-        issuer.sendMessage("Successfully purged " + purgeCount + " entities in world " + world.getName() +
-                " for spawn categories " + StringFormatter.join(List.of(spawnCategories), ", ") + ".");
+        issuer.sendMessage(MVCorei18n.PURGEALLENTITIES_SUCCESS_CATEGORIES,
+                Replace.COUNT.with(purgeCount),
+                Replace.WORLD.with(world.getName()),
+                replace("{categories}").with(StringFormatter.join(List.of(spawnCategories), ", ")));
     }
 }

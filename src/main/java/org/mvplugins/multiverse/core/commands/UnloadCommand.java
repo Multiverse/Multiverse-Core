@@ -75,7 +75,7 @@ class UnloadCommand extends CoreCommand {
                 : AsyncAttemptsAggregate.emptySuccess();
 
         future.onSuccess(() -> doWorldUnloading(issuer, world, parsedFlags))
-                .onFailure(() -> issuer.sendError("Failed to teleport one or more players out of the world!"));
+                .onFailure(() -> issuer.sendError(MVCorei18n.GENERIC_TELEPORTPLAYERS_FAILED));
     }
 
     private void doWorldUnloading(MVCommandIssuer issuer, LoadedMultiverseWorld world, ParsedCommandFlags parsedFlags) {

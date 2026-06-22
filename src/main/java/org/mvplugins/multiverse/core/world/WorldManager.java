@@ -186,7 +186,7 @@ public final class WorldManager {
     private void removeWorldsNotInConfigs(Collection<WorldKeyOrName> removedWorlds) {
         removedWorlds.forEach(keyOrName -> getWorld(keyOrName.usableName())
                 .map(world -> removeWorld(RemoveWorldOptions.world(world)))
-                .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, keyOrName.toString()))
+                .getOrElse(() -> worldActionResult(RemoveFailureReason.WORLD_NON_EXISTENT, keyOrName))
                 .onFailure(failure ->
                         Logging.severe("Failed to unload world %s: %s", keyOrName, failure))
                 .onSuccess(success ->

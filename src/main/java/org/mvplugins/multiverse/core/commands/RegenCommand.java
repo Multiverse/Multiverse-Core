@@ -105,7 +105,7 @@ class RegenCommand extends CoreCommand {
         // todo: using future will hide stacktrace
         future.onSuccess(() -> worldTickDeferrer
                         .deferWorldTick(() -> doWorldRegening(issuer, world, parsedFlags, worldPlayers)))
-                .onFailure(() -> issuer.sendError("Failed to teleport one or more players out of the world!"));
+                .onFailure(() -> issuer.sendError(MVCorei18n.GENERIC_TELEPORTPLAYERS_FAILED));
     }
 
     private void doWorldRegening(

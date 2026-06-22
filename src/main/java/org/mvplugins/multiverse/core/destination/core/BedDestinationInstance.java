@@ -9,7 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
+import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 
 /**
  * Destination instance implementation for the {@link BedDestination}.
@@ -70,8 +72,9 @@ public final class BedDestinationInstance extends DestinationInstance<BedDestina
      */
     @Override
     public @NotNull Message getDisplayMessage() {
-        //TODO Localize
-        return Message.of(player == null ? "your bed/respawn point" : player.getName() + "'s bed/respawn point");
+        return player == null
+                ? Message.of(MVCorei18n.DESTINATION_BED_DISPLAY_OWN)
+                : Message.of(MVCorei18n.DESTINATION_BED_DISPLAY_OTHER, Replace.PLAYER.with(player.getName()));
     }
 
     /**

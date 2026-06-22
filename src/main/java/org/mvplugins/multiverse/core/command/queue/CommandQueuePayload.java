@@ -5,6 +5,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 
 /**
@@ -23,12 +24,10 @@ public class CommandQueuePayload {
         return new CommandQueuePayload(issuer);
     }
 
-    private static final String DEFAULT_PROMPT_MESSAGE = "The command you are trying to run is deemed dangerous."; // todo: localize
-
     private final MVCommandIssuer issuer;
     private String otp;
     private Runnable action = () -> {};
-    private Message prompt = Message.of(DEFAULT_PROMPT_MESSAGE);
+    private Message prompt = Message.of(MVCorei18n.QUEUECOMMAND_DEFAULTPROMPT);
     private BukkitTask expireTask;
 
     protected CommandQueuePayload(@NotNull MVCommandIssuer issuer) {
