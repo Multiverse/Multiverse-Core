@@ -1068,7 +1068,8 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
-        return getWorld(worldStore.translateAlias(worldNameOrAlias));
+        return getWorld(worldNameOrAlias)
+                .orElse(() -> getWorld(worldStore.translateAlias(worldNameOrAlias)));
     }
 
     /**
@@ -1116,7 +1117,8 @@ public final class WorldManager {
      * @return The world if it exists.
      */
     public Option<MultiverseWorld> getUnloadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
-        return getUnloadedWorld(worldStore.translateAlias(worldNameOrAlias));
+        return getUnloadedWorld(worldNameOrAlias)
+                .orElse(() -> getUnloadedWorld(worldStore.translateAlias(worldNameOrAlias)));
     }
 
     /**
@@ -1177,7 +1179,8 @@ public final class WorldManager {
      * @return The multiverse world if it exists.
      */
     public Option<LoadedMultiverseWorld> getLoadedWorldByNameOrAlias(@Nullable String worldNameOrAlias) {
-        return getLoadedWorld(worldStore.translateAlias(worldNameOrAlias));
+        return getLoadedWorld(worldNameOrAlias)
+                .orElse(() -> getLoadedWorld(worldStore.translateAlias(worldNameOrAlias)));
     }
 
     /**
