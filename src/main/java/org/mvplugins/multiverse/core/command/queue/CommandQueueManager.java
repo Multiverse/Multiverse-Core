@@ -28,6 +28,7 @@ import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.FoliaUtil;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 
 import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.*;
@@ -108,6 +109,13 @@ public class CommandQueueManager {
      */
     @NotNull
     private BukkitTask runExpireLater(@NotNull String senderName, int validDuration) {
+        if (FoliaUtil.isFolia()) {
+            return new FoliaUtil.TaskAdapter(
+                Bukkit.getServer().getGlobalRegionScheduler().runDelayed(
+                    this.plugin,
+                    t -> expireRunnable(senderName).run(),
+                    validDuration * TICKS_PER_SECOND));
+        }
         return Bukkit.getScheduler().runTaskLater(
                 this.plugin,
                 expireRunnable(senderName),

@@ -5,4 +5,5 @@ website: 'https://modrinth.com/plugin/multiverse-core'
 description: 'The original Bukkit Multi-World Plugin!'
 softdepend: ['Vault', 'PlaceholderAPI']
 api-version: 1.13
+folia-supported: true
 version: ${version}

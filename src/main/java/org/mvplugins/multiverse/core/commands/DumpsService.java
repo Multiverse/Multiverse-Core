@@ -11,8 +11,10 @@ import jakarta.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
+import org.bukkit.Bukkit;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.utils.FoliaUtil;
 import org.mvplugins.multiverse.core.module.MultiverseModulesRegistry;
 import org.mvplugins.multiverse.core.commands.DumpsLogPoster.UploadType;
 import org.mvplugins.multiverse.core.command.MVCommandIssuer;
@@ -42,8 +44,12 @@ final class DumpsService {
 
         // Initialise and add info to the debug event
         MVDumpsDebugInfoEvent versionEvent = createAndCallDebugInfoEvent();
-        new DumpsLogPoster(plugin, issuer, servicesType, getLogs(), versionEvent)
-                .runTaskAsynchronously(plugin);
+        DumpsLogPoster poster = new DumpsLogPoster(plugin, issuer, servicesType, getLogs(), versionEvent);
+        if (FoliaUtil.isFolia()) {
+            Bukkit.getServer().getAsyncScheduler().runNow(plugin, t -> poster.run());
+        } else {
+            poster.runTaskAsynchronously(plugin);
+        }
     }
 
     /**

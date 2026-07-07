@@ -3,6 +3,7 @@ package org.mvplugins.multiverse.core.utils;
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
 import jakarta.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -48,12 +49,16 @@ public final class WorldTickDeferrer {
             return;
         }
         Logging.fine("Deferring world tick...");
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                action.run();
-            }
-        }.runTaskLater(this.plugin, 1L);
+        if (FoliaUtil.isFolia()) {
+            Bukkit.getServer().getGlobalRegionScheduler().runDelayed(this.plugin, t -> action.run(), 1L);
+        } else {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    action.run();
+                }
+            }.runTaskLater(this.plugin, 1L);
+        }
     }
 
     /**

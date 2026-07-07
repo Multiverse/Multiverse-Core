@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.destination.DestinationInstance;
 import org.mvplugins.multiverse.core.event.MVTeleportDestinationEvent;
+import org.mvplugins.multiverse.core.utils.FoliaUtil;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttempt;
 import org.mvplugins.multiverse.core.utils.result.AsyncAttemptsAggregate;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
@@ -244,10 +245,19 @@ public final class AsyncSafetyTeleporterAction {
         return AsyncAttemptsAggregate.allOfAggregate(toTeleport.stream()
                         .map(passenger -> doAsyncTeleport(passenger, location))
                         .toList())
-                .onSuccess(() -> Bukkit.getScheduler().runTask(multiverseCore, () -> {
-                    passengers.forEach(teleportee::addPassenger);
-                    Logging.finer("Mounted %d passengers to %s", passengers.size(), teleportee.getName());
-                }));
+                .onSuccess(() -> {
+                    if (FoliaUtil.isFolia()) {
+                        Bukkit.getServer().getGlobalRegionScheduler().run(multiverseCore, t -> {
+                            passengers.forEach(teleportee::addPassenger);
+                            Logging.finer("Mounted %d passengers to %s", passengers.size(), teleportee.getName());
+                        });
+                    } else {
+                        Bukkit.getScheduler().runTask(multiverseCore, () -> {
+                            passengers.forEach(teleportee::addPassenger);
+                            Logging.finer("Mounted %d passengers to %s", passengers.size(), teleportee.getName());
+                        });
+                    }
+                });
     }
 
     private AsyncAttempt<Void, TeleportFailureReason> doSingleTeleport(
@@ -271,7 +281,14 @@ public final class AsyncSafetyTeleporterAction {
 
     private void applyPostTeleportVelocity(@NotNull Entity teleportee) {
         locationOrDestination.peek(destination ->
-                destination.getVelocity(teleportee).peek(velocity ->
-                        Bukkit.getScheduler().runTaskLater(multiverseCore, () -> teleportee.setVelocity(velocity), 1L)));
+                destination.getVelocity(teleportee).peek(velocity -> {
+                    if (FoliaUtil.isFolia()) {
+                        teleportee.getScheduler().runDelayed(multiverseCore,
+                                t -> teleportee.setVelocity(velocity), null, 1L);
+                    } else {
+                        Bukkit.getScheduler().runTaskLater(multiverseCore,
+                                () -> teleportee.setVelocity(velocity), 1L);
+                    }
+                }));
     }
 }

@@ -25,8 +25,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.utils.FoliaUtil;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.command.MVCommandManager;
@@ -432,11 +434,17 @@ final class MVPlayerListener implements CoreListener {
             doGameModeAndFlightEnforcement(player, world);
             return;
         }
-        server.getScheduler().runTaskLater(
-                this.plugin,
-                () -> doGameModeAndFlightEnforcement(player, world),
-                config.getGamemodeAndFlightEnforceDelay()
-        );
+        if (FoliaUtil.isFolia()) {
+            player.getScheduler().runDelayed(this.plugin,
+                    t -> doGameModeAndFlightEnforcement(player, world),
+                    null,
+                    config.getGamemodeAndFlightEnforceDelay());
+        } else {
+            server.getScheduler().runTaskLater(
+                    this.plugin,
+                    () -> doGameModeAndFlightEnforcement(player, world),
+                    config.getGamemodeAndFlightEnforceDelay());
+        }
     }
 
     private void doGameModeAndFlightEnforcement(Player player, World world) {
