@@ -200,6 +200,15 @@ final class CoreConfigNodes {
             .stringParser(DimensionFormatNodeStringParser.INSTANCE)
             .build());
 
+    final ConfigNode<Boolean> warnAliasConflicts = node(ConfigNode.builder("world.warn-alias-conflicts", Boolean.class)
+            .comment("")
+            .comment("Sets whether Multiverse will warn about alias duplicates when adding worlds or modifying aliases.")
+            .comment("Although not enforced, it is highly recommended to not have multiple worlds with the same alias or")
+            .comment("alias matching another world's name as it can cause confusion during world listing and selection in commands.")
+            .defaultValue(true)
+            .name("warn-alias-conflicts")
+            .build());
+
     private final ConfigHeaderNode teleportHeader = node(ConfigHeaderNode.builder("teleport")
             .comment("")
             .comment("")
