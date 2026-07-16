@@ -246,6 +246,16 @@ public final class CoreConfig {
         return configHandle.get(configNodes.endWorldNameFormat);
     }
 
+    @ApiStatus.AvailableSince("5.8")
+    public Try<Void> setWarnAliasConflicts(boolean warnAliasConflicts) {
+        return configHandle.set(configNodes.warnAliasConflicts, warnAliasConflicts);
+    }
+
+    @ApiStatus.AvailableSince("5.8")
+    public boolean getWarnAliasConflicts() {
+        return configHandle.get(configNodes.warnAliasConflicts);
+    }
+
     /**
      * {@inheritDoc}
      */

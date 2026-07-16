@@ -17,6 +17,7 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.node.MapConfigNode;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
@@ -27,6 +28,7 @@ import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.utils.MaterialConverter;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
+import org.mvplugins.multiverse.core.world.helpers.AliasNameConflictChecker;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
 import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
@@ -42,12 +44,16 @@ final class WorldConfigNodes {
     private WorldManager worldManager;
     private EnforcementHandler enforcementHandler;
     private CoreConfig config;
+    private AliasNameConflictChecker aliasNameConflictChecker;
+    private MVCommandManager commandManager;
     private MultiverseWorld world = null;
 
     WorldConfigNodes(@NotNull MultiverseCore multiverseCore) {
         this.worldManager = multiverseCore.getServiceLocator().getService(WorldManager.class);
         this.enforcementHandler = multiverseCore.getServiceLocator().getService(EnforcementHandler.class);
         this.config = multiverseCore.getServiceLocator().getService(CoreConfig.class);
+        this.aliasNameConflictChecker = multiverseCore.getServiceLocator().getService(AliasNameConflictChecker.class);
+        this.commandManager  = multiverseCore.getServiceLocator().getService(MVCommandManager.class);
     }
 
     MultiverseWorld getWorld() {
@@ -90,11 +96,16 @@ final class WorldConfigNodes {
 
     final ConfigNode<String> alias = node(ConfigNode.builder("alias", String.class)
             .defaultValue("")
-            .onLoadAndChange((oldValue, newValue) -> {
+            .onLoadAndChange((sender, oldValue, newValue) -> {
                 if (world == null) return;
                 world.updateColourlessAlias();
                 worldManager.getWorldStore().changeAlias(
                         ChatTextFormatter.removeColor(oldValue), ChatTextFormatter.removeColor(newValue), world);
+
+                if (config.getWarnAliasConflicts()) {
+                    aliasNameConflictChecker.checkDuplicateFor(world)
+                            .sendConflictMessage(commandManager.getCommandIssuer(sender));
+                }
             }));
 
     final ConfigNode<Boolean> allowAdvancementGrant = node(ConfigNode.builder("allow-advancement-grant", Boolean.class)
