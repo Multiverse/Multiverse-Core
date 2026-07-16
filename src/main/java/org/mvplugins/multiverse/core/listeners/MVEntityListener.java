@@ -10,6 +10,7 @@ package org.mvplugins.multiverse.core.listeners;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -19,6 +20,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
@@ -26,6 +28,8 @@ import org.mvplugins.multiverse.core.dynamiclistener.EventRunnable;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventClass;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.world.WorldManager;
+
+import java.util.Arrays;
 
 /**
  * Multiverse's Entity {@link Listener}.
@@ -132,7 +136,7 @@ final class MVEntityListener implements CoreListener {
 
         worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek(world -> {
-                    if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getEntity())) {
+                    if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getEntityType())) {
                         Logging.finest("Cancelling Creature Spawn Event for: " + event.getEntity());
                         event.setCancelled(true);
                     }
@@ -151,9 +155,25 @@ final class MVEntityListener implements CoreListener {
 
         worldManager.getLoadedWorld(event.getEntity().getWorld())
                 .peek(world -> {
-                    if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getEntity())) {
+                    if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getEntityType())) {
                         Logging.finest("Cancelling Entity Spawn Event for: " + event.getEntity());
                         event.setCancelled(true);
+                    }
+                });
+    }
+
+    @EventMethod
+    void chunkLoad(ChunkLoadEvent event) {
+        worldManager.getLoadedWorld(event.getWorld())
+                .peek(world -> {
+                    long count = Arrays.stream(event.getChunk().getEntities())
+                            .filter(entity -> !(entity instanceof Player))
+                            .filter(entity -> !world.getEntitySpawnConfig().shouldAllowSpawn(entity))
+                            .peek(Entity::remove)
+                            .count();
+                    if (count > 0) {
+                        Logging.finest("Removed %d entities from chunk %d, %d in world %s due to spawn category settings.",
+                                count, event.getChunk().getX(), event.getChunk().getZ(), event.getWorld().getName());
                     }
                 });
     }
