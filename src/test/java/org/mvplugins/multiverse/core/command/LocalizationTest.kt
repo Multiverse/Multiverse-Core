@@ -45,7 +45,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
         @Test
         fun `The formatted message should be the same as the original`() {
-            assertEquals(messageString, message.formatted())
+            assertEquals(messageString, message.rawFormatted())
         }
 
         @Test
@@ -97,7 +97,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
         @Test
         fun `The formatted message should be the replaced message string`() {
-            assertEquals(replacedMessageString, message.formatted())
+            assertEquals(replacedMessageString, message.rawFormatted())
         }
 
         @Test
@@ -156,7 +156,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
         @Test
         fun `The formatted message should be the replaced message string`() {
-            assertEquals(replacedMessageString, message.formatted())
+            assertEquals(replacedMessageString, message.rawFormatted())
         }
 
         @Test
@@ -209,8 +209,13 @@ class LocalizationTest : TestWithMockBukkit() {
         }
 
         @Test
-        fun `The formatted message should be the replaced original string`() {
-            assertEquals(replacedMessageString, message.formatted())
+        fun `The raw formatted message should be the replaced original string`() {
+            assertEquals(replacedMessageString, message.rawFormatted())
+        }
+
+        @Test
+        fun `The formatted message should be different from the replaced original string`() {
+            assertNotEquals(replacedMessageString, message.formatted())
         }
 
         @Test
@@ -271,7 +276,7 @@ class LocalizationTest : TestWithMockBukkit() {
 
         @Test
         fun `The formatted message should be the replaced original string`() {
-            assertEquals(replacedMessageString, message.formatted())
+            assertEquals(replacedMessageString, message.rawFormatted())
         }
 
         @Test

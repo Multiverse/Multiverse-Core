@@ -61,7 +61,7 @@ class CheckCommand extends CoreCommand {
                 replace("{location}").with(destination.getLocation(player)
                         .map(locationManipulation::locationToString)
                         .map(Message::of)
-                        .getOrElse(() -> Message.of(MVCorei18n.GENERIC_NULL, "Null!"))));
+                        .getOrElse(() -> Message.of(MVCorei18n.GENERIC_NULL))));
 
         // TODO: Show permission required for this particular destination
     }

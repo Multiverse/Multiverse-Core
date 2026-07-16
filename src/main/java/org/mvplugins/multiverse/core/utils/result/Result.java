@@ -220,7 +220,7 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
         Success(S successReason, MessageReplacement[] replacements) {
             this.successReason = successReason;
-            this.message = Message.of(successReason, "Success!", replacements);
+            this.message = Message.of(successReason, replacements);
         }
 
         @Override
@@ -273,7 +273,7 @@ public sealed interface Result<S extends SuccessReason, F extends FailureReason>
 
         Failure(F failureReason, MessageReplacement[] replacements) {
             this.failureReason = failureReason;
-            this.message = Message.of(failureReason, "Failed!", replacements);
+            this.message = Message.of(failureReason, replacements);
         }
 
         @Override
