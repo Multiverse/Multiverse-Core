@@ -12,6 +12,8 @@ import co.aikar.commands.LogLevel;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.RootCommand;
 import com.dumptruckman.minecraft.util.Logging;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Provider;
 import org.bukkit.Bukkit;
@@ -24,6 +26,7 @@ import org.mvplugins.multiverse.core.command.flag.CommandFlagsManager;
 import org.mvplugins.multiverse.core.command.queue.CommandQueueManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.locale.PluginLocales;
+import org.mvplugins.multiverse.core.locale.message.LocalizedMessage;
 import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.helpers.WorldNameChecker;
 
@@ -66,6 +69,16 @@ public class MVCommandManager extends PaperCommandManager {
         MVCommandConditions.load(this, worldManager, worldNameChecker);
         this.enableUnstableAPI("help");
         this.setDefaultExceptionHandler(new MVDefaultExceptionHandler());
+    }
+
+    @PostConstruct
+    private void postConstruct() {
+        LocalizedMessage.setDefaultLocalesManager(getLocales());
+    }
+
+    @PreDestroy
+    private void preDestroy() {
+        LocalizedMessage.setDefaultLocalesManager(null);
     }
 
     /**

@@ -1,16 +1,22 @@
 package org.mvplugins.multiverse.core.locale.message;
 
-import java.util.Objects;
-
 import co.aikar.commands.ACFUtil;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.Locales;
 import co.aikar.locales.MessageKey;
 import co.aikar.locales.MessageKeyProvider;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class LocalizedMessage extends Message implements MessageKeyProvider {
+
+    private static @Nullable Locales locales;
+
+    @ApiStatus.Internal
+    public static void setDefaultLocalesManager(@Nullable Locales locales) {
+        LocalizedMessage.locales = locales;
+    }
 
     private final @NotNull MessageKeyProvider messageKeyProvider;
 
@@ -22,11 +28,33 @@ public final class LocalizedMessage extends Message implements MessageKeyProvide
         this.messageKeyProvider = messageKeyProvider;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MessageKey getMessageKey() {
         return messageKeyProvider.getMessageKey();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull String[] getReplacements() {
+        return locales == null ? super.getReplacements() : getReplacements(locales, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull String formatted() {
+        return locales == null ? super.formatted() : formatted(locales, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public @NotNull String formatted(@NotNull Locales locales, @Nullable CommandIssuer commandIssuer) {
         String[] parsedReplacements = getReplacements(locales, commandIssuer);

@@ -1,6 +1,5 @@
 package org.mvplugins.multiverse.core.exceptions;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.mvplugins.multiverse.core.locale.message.LocalizableMessage;
