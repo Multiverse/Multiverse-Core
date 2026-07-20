@@ -49,7 +49,7 @@ final class WorldConfig {
             @NotNull ConfigurationSection configSection,
             @NotNull MultiverseCore multiverseCore) {
         this.keyOrName = keyOrName;
-        this.configNodes = new WorldConfigNodes(multiverseCore);
+        this.configNodes = new WorldConfigNodes(multiverseCore, keyOrName);
         this.configHandle = MemoryConfigurationHandle.builder(configSection, configNodes.getNodes())
                 .logger(Logging.getLogger())
                 .migrator(migrator())
