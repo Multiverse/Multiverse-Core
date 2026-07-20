@@ -27,6 +27,9 @@ import java.util.stream.Stream;
 @Service
 public final class PotentialWorldFinder {
 
+    private static final int MAX_RECURSION_DEPTH = 3;
+    private static final int MAX_FOLDER_TRAVERSAL_LIMIT = 100;
+
     private final WorldManager worldManager;
     private final WorldNameChecker worldNameChecker;
 
@@ -56,6 +59,7 @@ public final class PotentialWorldFinder {
     private Stream<String> findFromRootFolder() {
         Path worldContainer = Bukkit.getWorldContainer().toPath();
         return Arrays.stream(listFolders(worldContainer))
+                .limit(MAX_FOLDER_TRAVERSAL_LIMIT)
                 .filter(worldNameChecker::isValidWorldFolder)
                 .map(File::getName)
                 .filter(worldNameChecker::isValidWorldName)
@@ -65,13 +69,27 @@ public final class PotentialWorldFinder {
     private Stream<String> findFromDimensionsFolder() {
         Path worldContainer = BukkitCompatibility.getWorldFoldersDirectory();
         return Arrays.stream(listFolders(worldContainer))
-                .map(File::getName)
-                .flatMap(namespace -> Arrays.stream(listFolders(worldContainer.resolve(namespace)))
-                        .filter(worldNameChecker::isValidWorldFolder)
-                        .map(File::getName)
-                        .map(key -> namespace + ":" + key))
+                .limit(MAX_FOLDER_TRAVERSAL_LIMIT)
+                .flatMap(namespaceFile -> recursiveFindFromNamespaceFolder("", namespaceFile.toPath(), 0)
+                        .map(worldKey -> namespaceFile.getName() + ":" + worldKey))
                 .filter(namespacedKey -> NamespacedKey.fromString(namespacedKey) != null)
                 .filter(namespacedKey -> !worldManager.isWorld(namespacedKey));
+    }
+
+    private Stream<String> recursiveFindFromNamespaceFolder(String prefix, Path subWorldContainer, int depth) {
+        if (depth >= MAX_RECURSION_DEPTH) {
+            return Stream.empty();
+        }
+        return Arrays.stream(listFolders(subWorldContainer))
+                .limit(MAX_FOLDER_TRAVERSAL_LIMIT)
+                .flatMap(folder -> worldNameChecker.isValidWorldFolder(folder)
+                        ? Stream.of(concatPath(prefix, folder.getName()))
+                        : recursiveFindFromNamespaceFolder(
+                                concatPath(prefix, folder.getName()), folder.toPath(), depth + 1));
+    }
+
+    private String concatPath(String prefix, String folderName) {
+        return prefix.isEmpty() ? folderName : prefix + "/" + folderName;
     }
 
     private @NotNull File[] listFolders(Path folder) {
