@@ -28,6 +28,7 @@ import org.mvplugins.multiverse.core.economy.MVEconomist;
 import org.mvplugins.multiverse.core.utils.MaterialConverter;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.helpers.EnforcementHandler;
+import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
@@ -42,12 +43,14 @@ final class WorldConfigNodes {
     private WorldManager worldManager;
     private EnforcementHandler enforcementHandler;
     private CoreConfig config;
+    private WorldKeyOrName keyOrName;
     private MultiverseWorld world = null;
 
-    WorldConfigNodes(@NotNull MultiverseCore multiverseCore) {
+    WorldConfigNodes(@NotNull MultiverseCore multiverseCore, @NotNull WorldKeyOrName keyOrName) {
         this.worldManager = multiverseCore.getServiceLocator().getService(WorldManager.class);
         this.enforcementHandler = multiverseCore.getServiceLocator().getService(EnforcementHandler.class);
         this.config = multiverseCore.getServiceLocator().getService(CoreConfig.class);
+        this.keyOrName = keyOrName;
     }
 
     MultiverseWorld getWorld() {
@@ -91,10 +94,13 @@ final class WorldConfigNodes {
     final ConfigNode<String> alias = node(ConfigNode.builder("alias", String.class)
             .defaultValue("")
             .onLoadAndChange((oldValue, newValue) -> {
+                worldManager.getWorldStore().changeAlias(
+                        ChatTextFormatter.removeColor(oldValue),
+                        ChatTextFormatter.removeColor(newValue),
+                        keyOrName.usableKey()
+                );
                 if (world == null) return;
                 world.updateColourlessAlias();
-                worldManager.getWorldStore().changeAlias(
-                        ChatTextFormatter.removeColor(oldValue), ChatTextFormatter.removeColor(newValue), world);
             }));
 
     final ConfigNode<Boolean> allowAdvancementGrant = node(ConfigNode.builder("allow-advancement-grant", Boolean.class)
