@@ -1,9 +1,17 @@
 package org.mvplugins.multiverse.core;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
+
+import com.dumptruckman.minecraft.util.Logging;
+import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.ServicePriority;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+
 import org.mvplugins.multiverse.core.anchor.AnchorManager;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.destination.DestinationsProvider;
@@ -16,18 +24,13 @@ import org.mvplugins.multiverse.core.world.WorldManager;
 import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
-
 /**
  * Provides access to the MultiverseCore API.
  */
 public final class MultiverseCoreApi {
 
     private static MultiverseCoreApi instance;
-    private static final List<Consumer<MultiverseCoreApi>> whenLoadedCallbacks = new ArrayList<>();
+    private static final List<Consumer<MultiverseCoreApi>> WHEN_LOADED_CALLBACKS = new ArrayList<>();
 
     static void init(@NotNull MultiverseCore multiverseCore) {
         if (instance != null) {
@@ -36,11 +39,24 @@ public final class MultiverseCoreApi {
         instance = new MultiverseCoreApi(multiverseCore.getServiceLocator());
         Bukkit.getServicesManager().register(MultiverseCoreApi.class, instance, multiverseCore, ServicePriority.Normal);
 
-        whenLoadedCallbacks.forEach(c -> c.accept(instance));
-        whenLoadedCallbacks.clear();
+        List<Consumer<MultiverseCoreApi>> callbacks = List.copyOf(WHEN_LOADED_CALLBACKS);
+        WHEN_LOADED_CALLBACKS.clear();
+        MultiverseCoreApi loadedApi = instance;
+        callbacks.forEach(callback -> runLoadCallback(callback, loadedApi));
+    }
+
+    private static void runLoadCallback(
+            @NotNull Consumer<MultiverseCoreApi> callback,
+            @NotNull MultiverseCoreApi loadedApi) {
+        Try.run(() -> callback.accept(loadedApi))
+                .onFailure(exception -> Logging.warning(
+                        "A Multiverse-Core API load callback failed: %s", exception.getMessage()));
     }
 
     static void shutdown() {
+        if (instance == null) {
+            return;
+        }
         Bukkit.getServicesManager().unregister(instance);
         instance = null;
     }
@@ -62,7 +78,7 @@ public final class MultiverseCoreApi {
         if (instance != null) {
             consumer.accept(instance);
         } else {
-            whenLoadedCallbacks.add(consumer);
+            WHEN_LOADED_CALLBACKS.add(consumer);
         }
     }
 
