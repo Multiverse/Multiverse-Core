@@ -15,6 +15,7 @@ import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -119,16 +120,16 @@ final class WorldStore {
         unloadedList.add(unloadedMap.get(world.getKey().toString()));
     }
 
-    void changeAlias(@Nullable String oldAlias, @Nullable String newAlias, @NotNull MultiverseWorld world) {
+    void changeAlias(@Nullable String oldAlias, @Nullable String newAlias, @NotNull NamespacedKey worldKey) {
         if (Objects.equals(oldAlias, newAlias)) {
             // nothing changed, ignore
             return;
         }
         if (!Strings.isNullOrEmpty(oldAlias)) {
-            aliasMap.remove(oldAlias, world.getKey().toString());
+            aliasMap.remove(oldAlias.toLowerCase(Locale.ROOT), worldKey.toString());
         }
         if (!Strings.isNullOrEmpty(newAlias)) {
-            aliasMap.put(newAlias, world.getKey().toString());
+            aliasMap.put(newAlias.toLowerCase(Locale.ROOT), worldKey.toString());
         }
     }
 
@@ -263,7 +264,7 @@ final class WorldStore {
             return null;
         }
         //TODO: Not sure if we should fail if there is multiple alias of the same name, but for now just return the first one
-        return aliasMap.get(worldNameOrAlias).stream()
+        return aliasMap.get(worldNameOrAlias.toLowerCase(Locale.ROOT)).stream()
                 .findFirst()
                 .orElse(worldNameOrAlias);
     }

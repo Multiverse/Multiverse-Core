@@ -9,13 +9,13 @@ description = 'Multiverse-Core'
 
 repositories {
     maven {
-        name = 'aikar repo'
-        url = uri('https://repo.aikar.co/content/groups/aikar/')
+        name = 'jitpack repo'
+        url = uri('https://jitpack.io')
     }
 
     maven {
-        name = 'glaremasters repo'
-        url = 'https://repo.glaremasters.me/repository/towny/'
+        name = 'aikar repo'
+        url = uri('https://repo.aikar.co/content/groups/aikar/')
     }
 
     maven {
@@ -43,7 +43,7 @@ dependencies {
     shadowed 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
 
     // Config
-    shadowed('io.github.townyadvanced.commentedconfiguration:CommentedConfiguration:1.0.1') {
+    shadowed('com.github.TownyAdvanced:CommentedConfiguration:1.0.3') {
         exclude group: 'org.spigotmc', module: 'spigot-api'
     }
 

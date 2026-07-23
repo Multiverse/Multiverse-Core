@@ -96,12 +96,14 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
             return Attempt.failure(InstanceFailureReason.INVALID_FORMAT);
         }
 
-        String worldName = items[0];
+        String worldNameOrAlias = items[0];
         String positionStr = items[1];
 
-        World world = getLoadedMultiverseWorld(worldName).flatMap(LoadedMultiverseWorld::getBukkitWorld).getOrNull();
+        World world = getLoadedMultiverseWorld(worldNameOrAlias)
+                .flatMap(LoadedMultiverseWorld::getBukkitWorld)
+                .getOrNull();
         if (world == null) {
-            return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldName));
+            return Attempt.failure(InstanceFailureReason.WORLD_NOT_FOUND, Replace.WORLD.with(worldNameOrAlias));
         }
 
         EntityPosition position;
@@ -111,7 +113,7 @@ public final class ExactDestination implements Destination<ExactDestination, Exa
             return Attempt.failure(InstanceFailureReason.INVALID_NUMBER_FORMAT, Replace.ERROR.with(e));
         }
 
-        return Attempt.success(new ExactDestinationInstance(this, worldManager, worldName, position));
+        return Attempt.success(new ExactDestinationInstance(this, worldManager, world.getName(), position));
     }
 
     //TODO: Extract to a world finder class
