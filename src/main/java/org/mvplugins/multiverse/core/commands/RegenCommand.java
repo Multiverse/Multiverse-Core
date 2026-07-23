@@ -89,7 +89,7 @@ class RegenCommand extends CoreCommand {
         commandQueueManager.addToQueue(CommandQueuePayload
                 .issuer(issuer)
                 .action(() -> runRegenCommand(issuer, world, parsedFlags))
-                .prompt(Message.of(MVCorei18n.REGEN_PROMPT, "",
+                .prompt(Message.of(MVCorei18n.REGEN_PROMPT,
                         Replace.WORLD.with(world.getName()))));
     }
 
