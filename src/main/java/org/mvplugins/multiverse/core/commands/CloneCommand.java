@@ -51,7 +51,7 @@ class CloneCommand extends CoreCommand {
             MultiverseWorld world,
 
             @Syntax("<new-world-name>")
-            @Description("{@@mv-core.clone.newWorld.description}")
+            @Description("{@@mv-core.clone.newworld.description}")
             String newWorldName,
 
             @Optional
