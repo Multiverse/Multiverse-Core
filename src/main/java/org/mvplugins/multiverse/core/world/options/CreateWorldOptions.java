@@ -103,6 +103,7 @@ public final class CreateWorldOptions {
      * @return The name of the world to create.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public @NotNull String worldName() {
         return keyOrName.fold(name -> name ,WorldKeyOrName::usableName);
     }

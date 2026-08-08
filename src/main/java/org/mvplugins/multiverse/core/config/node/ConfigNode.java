@@ -492,6 +492,7 @@ public class ConfigNode<T> extends ConfigHeaderNode implements ValueNode<T> {
          * @deprecated Use {@link #onLoadAndChange(NodeChangeCallback)} instead.
          */
         @Deprecated(since = "5.4", forRemoval = true)
+        @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
         public @NotNull B onSetValue(@NotNull BiConsumer<T, T> onSetValue) {
             return onLoadAndChange(onSetValue::accept);
         }
