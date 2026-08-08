@@ -87,7 +87,8 @@ final class PlaceholderExpansionHook extends PlaceholderExpansion {
     @Override
     public @Nullable String onRequest(OfflinePlayer offlinePlayer, @NotNull String params) {
         // Split string in to an Array with underscores
-        List<String> paramsArray = Lists.newArrayList(REPatterns.UNDERSCORE.split(params));
+        List<String> paramsArray = Lists.newArrayList(
+                StringFormatter.parseQuotesInArgs(REPatterns.UNDERSCORE.split(params), "_"));
 
         // No placeholder defined
         if (paramsArray.isEmpty()) {

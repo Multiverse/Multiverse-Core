@@ -118,6 +118,20 @@ public final class StringFormatter {
      * @return The parsed args
      */
     public static @NotNull Collection<String> parseQuotesInArgs(@NotNull String[] args) {
+        return parseQuotesInArgs(args, " ");
+    }
+
+    /**
+     * Parse quotes in args into a single string. E.g. ["\"my", "string\""] -> ["my string"]
+     *
+     * @param args      The args to parse
+     * @param separator The separator to use between args when joining them
+     * @return The parsed args
+     *
+     * @since 5.8
+     */
+    @ApiStatus.AvailableSince("5.8")
+    public static @NotNull Collection<String> parseQuotesInArgs(@NotNull String[] args, @NotNull String separator) {
         List<String> result = new ArrayList<>(args.length);
         StringBuilder current = new StringBuilder();
         boolean inQuotes = false;
@@ -131,13 +145,13 @@ public final class StringFormatter {
                 quoteStartIndex = i;
                 current.append(arg.substring(1));
             } else if (inQuotes && arg.endsWith("\"")) {
-                current.append(" ").append(arg, 0, arg.length() - 1);
+                current.append(separator).append(arg, 0, arg.length() - 1);
                 result.add(current.toString());
                 current.setLength(0);
                 inQuotes = false;
                 quoteStartIndex = -1;
             } else if (inQuotes) {
-                current.append(" ").append(arg);
+                current.append(separator).append(arg);
             } else if (arg.startsWith("\"") && arg.endsWith("\"") && arg.length() > 1) {
                 // Fully quoted in one token
                 result.add(arg.substring(1, arg.length() - 1));
