@@ -35,7 +35,7 @@ public class AliasNameConflictChecker {
 
     /**
      * Checks whether the target world's alias conflicts with another world's alias or name.
-     * Color formatting is ignored when aliases are compared.
+     * Color formatting and letter case are ignored when aliases are compared.
      *
      * @param targetWorld The world whose alias should be checked.
      * @return The detected alias conflicts.
@@ -54,10 +54,10 @@ public class AliasNameConflictChecker {
             if (otherWorld.getKey().equals(targetWorld.getKey())) {
                 continue;
             }
-            if (targetWorldAlias.equals(ChatTextFormatter.removeColor(otherWorld.getAlias()))) {
+            if (targetWorldAlias.equalsIgnoreCase(ChatTextFormatter.removeColor(otherWorld.getAlias()))) {
                 aliasNameConflictResult.getDuplicateAliases().add(otherWorld);
             }
-            if (targetWorldAlias.equals(otherWorld.getName())) {
+            if (targetWorldAlias.equalsIgnoreCase(otherWorld.getName())) {
                 aliasNameConflictResult.getDuplicateWorldNames().add(otherWorld);
             }
         }
