@@ -189,6 +189,7 @@ public final class ReflectHelper {
      * the failure case more explicitly.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable
     public static Class<?> getClass(String classPath) {
         try {
@@ -211,6 +212,7 @@ public final class ReflectHelper {
      * used to handle the failure case more explicitly.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable
     public static <C> Method getMethod(Class<C> clazz, String methodName, Class<?>... parameterTypes) {
         try {
@@ -235,6 +237,7 @@ public final class ReflectHelper {
      * used to handle the failure case more explicitly.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable
     public static <C> Method getMethod(C classInstance, String methodName, Class<?>... parameterTypes) {
         return getMethod(classInstance.getClass(), methodName, parameterTypes);
@@ -254,6 +257,7 @@ public final class ReflectHelper {
      * be used to handle the failure case more explicitly.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable
     @SuppressWarnings("unchecked")
     public static <C, R> R invokeMethod(C classInstance, Method method, Object...parameters) {
@@ -276,6 +280,7 @@ public final class ReflectHelper {
      * handle the failure case more explicitly.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable
     public static <C> Field getField(Class<C> clazz, String fieldName) {
         try {
@@ -299,6 +304,7 @@ public final class ReflectHelper {
      * handle the failure case more explicitly.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable
     public static <C> Field getField(C classInstance, String fieldName) {
         return getField(classInstance.getClass(), fieldName);
@@ -318,6 +324,7 @@ public final class ReflectHelper {
      * used to handle the failure case more explicitly.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable
     public static <C, V> V getFieldValue(C classInstance, @Nullable Field field, @NotNull Class<V> fieldType) {
         try {
@@ -345,6 +352,7 @@ public final class ReflectHelper {
      * which returns a {@link Try} that can be used to handle the failure case more explicitly.
      */
     @Deprecated(forRemoval = true, since = "5.7")
+    @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     @Nullable
     public static <C, V> V getFieldValue(C classInstance, @Nullable String fieldName, @NotNull Class<V> fieldType) {
         return getFieldValue(classInstance, getField(classInstance, fieldName), fieldType);
