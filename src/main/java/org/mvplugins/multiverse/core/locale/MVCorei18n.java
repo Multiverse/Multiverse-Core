@@ -182,7 +182,7 @@ public enum MVCorei18n implements MessageKeyProvider {
 
     // /mv meta info
     META_INFO_DESCRIPTION,
-    META_INFO_WORLD,
+    META_INFO_WORLD_DESCRIPTION,
     META_INFO_HEADER,
     META_INFO_NOCONTENT,
 

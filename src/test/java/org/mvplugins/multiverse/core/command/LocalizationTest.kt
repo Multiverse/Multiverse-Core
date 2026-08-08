@@ -18,6 +18,7 @@ import org.mvplugins.multiverse.core.locale.PluginLocales
 import org.mvplugins.multiverse.core.locale.message.Message
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace
 import java.util.Locale
+import java.util.Properties
 import kotlin.test.*
 
 class LocalizationTest : TestWithMockBukkit() {
@@ -29,6 +30,18 @@ class LocalizationTest : TestWithMockBukkit() {
     fun setUpLocale() {
         commandManager = assertNotNull(serviceLocator.getActiveService(MVCommandManager::class.java))
         locales = commandManager.locales
+    }
+
+    @Test
+    fun `Default locale bundle contains every message key`() {
+        val properties = Properties()
+        assertNotNull(javaClass.getResourceAsStream("/multiverse-core_en.properties")).use {
+            properties.load(it)
+        }
+
+        MVCorei18n.entries.forEach { message ->
+            assertTrue(properties.containsKey(message.messageKey.key), "Missing locale key: ${message.messageKey.key}")
+        }
     }
 
     @Nested
