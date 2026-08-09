@@ -85,11 +85,13 @@ public final class ImportWorldOptions {
      * Gets the name of the world to create.
      *
      * @return The name of the world to create.
+     *
+     * @deprecated Use {@link #keyOrName()} instead.
      */
     @Deprecated(forRemoval = true, since = "5.7")
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")
     public @NotNull String worldName() {
-        return keyOrName.fold(name -> name ,WorldKeyOrName::usableName);
+        return keyOrName.fold(name -> name, WorldKeyOrName::usableName);
     }
 
     /**

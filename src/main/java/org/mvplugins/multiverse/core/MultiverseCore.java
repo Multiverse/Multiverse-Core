@@ -102,11 +102,12 @@ public class MultiverseCore extends MultiverseModule {
         SpawnCategoryMapper.buildSpawnCategoryMap();
 
         // Initialize the worlds
-        worldManagerProvider.get().initAllWorlds().andThenTry(() -> {
+        Try.run(() -> {
+            setUpLocales();
+            worldManagerProvider.get().initAllWorlds();
             loadEconomist(); // Setup economy here so vault is loaded
             loadAnchors();
             registerDynamicListeners(CoreListener.class);
-            setUpLocales();
             registerCommands(CoreCommand.class);
             registerDestinations();
             setupMetrics();

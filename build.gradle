@@ -37,7 +37,7 @@ dependencies {
     }
 
     // PlaceholderAPI
-    externalPlugin 'me.clip:placeholderapi:2.11.6'
+    externalPlugin 'me.clip:placeholderapi:2.12.3'
 
     // Command Framework
     shadowed 'co.aikar:acf-paper:0.5.1-SNAPSHOT'
@@ -48,7 +48,7 @@ dependencies {
     }
 
     // Utils
-    shadowed 'io.vavr:vavr:0.10.7'
+    shadowed 'io.vavr:vavr:1.0.1'
     shadowed 'org.glassfish.hk2:hk2-locator:3.1.1'
     shadowed('org.glassfish.hk2:hk2-inhabitant-generator:3.1.1') {
         exclude group: 'org.apache.maven', module: 'maven-core'
@@ -57,11 +57,11 @@ dependencies {
         exclude group: 'junit', module: 'junit'
     }
     shadowed 'de.themoep.idconverter:mappings:1.2-SNAPSHOT'
-    shadowed('org.bstats:bstats-bukkit:3.1.0') {
+    shadowed('org.bstats:bstats-bukkit:3.2.1') {
         exclude group: 'org.bukkit', module: 'bukkit'
     }
-    shadowed 'net.minidev:json-smart:2.5.2'
-    shadowed 'org.jetbrains:annotations:26.0.2'
+    shadowed 'net.minidev:json-smart:2.6.0'
+    shadowed 'org.jetbrains:annotations:26.1.0'
     shadowed 'io.papermc:paperlib:1.0.8'
 
     // Tests

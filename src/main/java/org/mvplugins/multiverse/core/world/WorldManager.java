@@ -154,10 +154,14 @@ public final class WorldManager {
      */
     @ApiStatus.Internal
     public Try<Void> initAllWorlds() {
-        return updateWorldsFromConfig().andThenTry(() -> {
-            importExistingWorlds();
-            autoLoadWorlds();
-        }).flatMap(ignore -> saveWorldsConfig());
+        return updateWorldsFromConfig()
+                .andThenTry(this::importExistingWorlds)
+                .andThenTry(this::autoLoadWorlds)
+                .flatMap(ignore -> saveWorldsConfig())
+                .onFailure(ex -> {
+                    Logging.severe("Failed to load worlds from config: %s", ex.getMessage());
+                    ex.printStackTrace();
+                });
     }
 
     /**

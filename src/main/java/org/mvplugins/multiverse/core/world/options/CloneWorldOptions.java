@@ -126,6 +126,8 @@ public final class CloneWorldOptions implements KeepWorldSettingsOptions {
      * Gets the name of the new world.
      *
      * @return The name of the new world.
+     *
+     * @deprecated Use {@link #newWorldKeyOrName()} instead.
      */
     @Deprecated(forRemoval = true, since = "5.7")
     @ApiStatus.ScheduledForRemoval(inVersion = "6.0")

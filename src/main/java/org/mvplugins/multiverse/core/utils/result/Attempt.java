@@ -49,7 +49,7 @@ public sealed interface Attempt<T, F extends FailureReason> permits Attempt.Succ
     @ApiStatus.AvailableSince("5.7")
     static <T, F extends FailureReason> Attempt.Failure<T, F> failureRef(
             F failureReason, MessageReplacement... messageReplacements) {
-        return new Failure<>(failureReason, Message.of(failureReason, "Failed!", messageReplacements));
+        return new Failure<>(failureReason, Message.of(failureReason, messageReplacements));
     }
 
     /**

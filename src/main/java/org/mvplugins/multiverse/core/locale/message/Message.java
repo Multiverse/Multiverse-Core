@@ -6,9 +6,11 @@ import co.aikar.commands.ACFUtil;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.Locales;
 import co.aikar.locales.MessageKeyProvider;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.mvplugins.multiverse.core.command.MVCommandManager;
 
 /**
  * A message that can be formatted with replacements and localized.
@@ -81,15 +83,45 @@ public sealed class Message permits LocalizedMessage {
     }
 
     /**
-     * Gets the replacements for this message.
+     * Gets the replacements for this message. This is the raw, non-localized parsing of replacements.
      * <br/>
      * This array is guaranteed to be of even length and suitable for use with
      * {@link ACFUtil#replaceStrings(String, String...)}.
      *
      * @return The replacements
+     *
+     * @since 5.8
+     */
+    @ApiStatus.AvailableSince("5.8")
+    public @NotNull String[] getRawReplacements() {
+        return toReplacementsArray(replacements);
+    }
+
+    /**
+     * Gets the replacements for this message with localization support when the plugin has loaded and injected its
+     * default {@link MVCommandManager#getLocales()} instance.
+     * Otherwise, it will fall back to use {@link getRawReplacements()}.
+     *
+     * @return The replacements
      */
     public @NotNull String[] getReplacements() {
-        return toReplacementsArray(replacements);
+        return getRawReplacements();
+    }
+
+    /**
+     * Gets the replacements for this message with localization support based on the command issuer's locale config.
+     * <br/>
+     * This array is guaranteed to be of even length and suitable for use with
+     * {@link ACFUtil#replaceStrings(String, String...)}.
+     *
+     * @param issuer The command issuer the message is for
+     * @return The replacements
+     *
+     * @since 5.8
+     */
+    @ApiStatus.AvailableSince("5.8")
+    public @NotNull String[] getReplacements(@NotNull CommandIssuer issuer) {
+        return getReplacements(issuer.getManager().getLocales(), issuer);
     }
 
     /**
@@ -116,18 +148,34 @@ public sealed class Message permits LocalizedMessage {
     }
 
     /**
-     * Gets the formatted message.
+     * Gets the raw formatted message.
      * <br/>
      * This is the raw, non-localized message with replacements applied.
+     * This method will never use the locale message key.
      *
      * @return The formatted message
+     *
+     * @since 5.8
      */
-    public @NotNull String formatted() {
-        String[] parsedReplacements = getReplacements();
+    @ApiStatus.AvailableSince("5.8")
+    public @NotNull String rawFormatted() {
+        String[] parsedReplacements = getRawReplacements();
         if (parsedReplacements.length == 0) {
             return raw();
         }
         return ACFUtil.replaceStrings(message, parsedReplacements);
+    }
+
+    /**
+     * Gets the formatted message.
+     * <br/>
+     * This is the localized message with replacements applied when the plugin has loaded and injected its default
+     * {@link MVCommandManager#getLocales()} instance. Otherwise, it will fall back to use {@link rawFormatted()}.
+     *
+     * @return The formatted message
+     */
+    public @NotNull String formatted() {
+        return rawFormatted();
     }
 
     /**
@@ -146,9 +194,9 @@ public sealed class Message permits LocalizedMessage {
      * Gets the formatted message from localization data.
      * <br/>
      * This is the localized message with replacements applied. The message is localized using the locale of the given
-     * command issuer, if not null.
+     * command issuer.
      *
-     * @param commandIssuer The command issuer the message is for, or null for the console (default locale)
+     * @param commandIssuer The command issuer the message is for.
      * @return The formatted, localized message
      */
     public @NotNull String formatted(@NotNull CommandIssuer commandIssuer) {
@@ -178,7 +226,7 @@ public sealed class Message permits LocalizedMessage {
         int i = 0;
         for (MessageReplacement replacement : replacements) {
             replacementsArray[i++] = replacement.getKey();
-            replacementsArray[i++] = replacement.getReplacement().fold(s -> s, Message::formatted);
+            replacementsArray[i++] = replacement.getReplacement().fold(s -> s, Message::rawFormatted);
         }
         return replacementsArray;
     }

@@ -11,6 +11,7 @@ world:
   world-name-format:
     nether: '%overworld%_nether'
     end: '%overworld%_the_end'
+  warn-alias-conflicts: true
 
 teleport:
   use-finer-teleport-permissions: true

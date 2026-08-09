@@ -79,7 +79,7 @@ class DeleteCommand extends CoreCommand {
         commandQueueManager.addToQueue(CommandQueuePayload
                 .issuer(issuer)
                 .action(() -> runDeleteCommand(issuer, world, parsedFlags))
-                .prompt(Message.of(MVCorei18n.DELETE_PROMPT, "",
+                .prompt(Message.of(MVCorei18n.DELETE_PROMPT,
                         Replace.WORLD.with(world.getName()))));
     }
 
