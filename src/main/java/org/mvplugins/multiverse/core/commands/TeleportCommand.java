@@ -59,7 +59,7 @@ final class TeleportCommand extends CoreCommand {
     @CommandCompletion("@playersarray:checkPermissions=@mvteleportother|@destinations:byIssuerForArg=arg1 "
             + "@destinations:notByIssuerForArg=arg1|@flags:byIssuerForArg=arg1,groupName=" + Flags.NAME + " "
             + "@flags:notByIssuerForArg=arg1,groupName=" + Flags.NAME)
-    @Syntax("[player] <destination> [--unsafe]")
+    @Syntax("[player] <destination> [--unsafe --silent]")
     @Description("{@@mv-core.teleport.description}")
     void onTeleportCommand(
             MVCommandIssuer issuer,
@@ -74,7 +74,7 @@ final class TeleportCommand extends CoreCommand {
             DestinationInstance<?, ?> destination,
 
             @Optional
-            @Syntax("[--unsafe]")
+            @Syntax("[--unsafe --silent]")
             @Description("")
             String[] flagArray) {
         Player[] players = playersValue.value();

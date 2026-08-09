@@ -39,7 +39,7 @@ class LoadCommand extends CoreCommand {
     @Subcommand("load")
     @CommandPermission("multiverse.core.load")
     @CommandCompletion("@mvworlds:scope=unloaded @flags:groupName=" + Flags.NAME)
-    @Syntax("<world>")
+    @Syntax("<world> [--skip-folder-check]")
     @Description("{@@mv-core.load.description}")
     void onLoadCommand(
             MVCommandIssuer issuer,

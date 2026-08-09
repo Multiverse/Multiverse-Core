@@ -70,7 +70,7 @@ class RegenCommand extends CoreCommand {
     @CommandPermission("multiverse.core.regen")
     @CommandCompletion("@mvworlds:scope=loaded @flags:groupName=" + Flags.NAME)
     @Syntax("<world> [--seed [seed]] [--reset-world-config] [--reset-gamerules] [--reset-world-border] " +
-            "[--remove-players [destination]]")
+            "[--keep-files <files>] [--remove-players [destination]]")
     @Description("{@@mv-core.regen.description}")
     void onRegenCommand(
             MVCommandIssuer issuer,
@@ -81,7 +81,7 @@ class RegenCommand extends CoreCommand {
 
             @Optional
             @Syntax("[--seed [seed]] [--reset-world-config] [--reset-gamerules] [--reset-world-border] " +
-                    "[--remove-players [destination]]")
+                    "[--keep-files <files>] [--remove-players [destination]]")
             @Description("{@@mv-core.regen.other.description}")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);

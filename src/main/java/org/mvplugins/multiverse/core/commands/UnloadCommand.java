@@ -52,7 +52,7 @@ class UnloadCommand extends CoreCommand {
     @Subcommand("unload")
     @CommandPermission("multiverse.core.unload")
     @CommandCompletion("@mvworlds @flags:groupName=" + Flags.NAME)
-    @Syntax("<world> [--remove-players [destination]] [--no-save]")
+    @Syntax("<world> [--remove-players [destination]] [--no-unload-bukkit-world] [--no-save]")
     @Description("{@@mv-core.unload.description}")
     void onUnloadCommand(
             MVCommandIssuer issuer,
@@ -62,7 +62,7 @@ class UnloadCommand extends CoreCommand {
             LoadedMultiverseWorld world,
 
             @Optional
-            @Syntax("[--remove-players [destination]] [--no-save]")
+            @Syntax("[--remove-players [destination]] [--no-unload-bukkit-world] [--no-save]")
             @Description("{@@mv-core.gamerules.description.page}")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);

@@ -40,12 +40,12 @@ class SetSpawnCommand extends CoreCommand {
     @Subcommand("setspawn")
     @CommandPermission("multiverse.core.spawn.set")
     @CommandCompletion("@flags:groupName=" + UnsafeFlags.NAME + " @flags:resolveUntil=arg1,groupName=" + UnsafeFlags.NAME)
-    @Syntax("[worldname:x,y,z[,pitch,yaw]] [--unsafe]")
+    @Syntax("[worldname:x,y,z[,yaw,pitch]] [--unsafe]")
     @Description("{@@mv-core.setspawn.description}")
     void onSetSpawnCommand(
             MVCommandIssuer issuer,
 
-            @Syntax("[worldname:x,y,z[,pitch,yaw]]")
+            @Syntax("[worldname:x,y,z[,yaw,pitch]]")
             @Description("{@@mv-core.setspawn.location.description}")
             PlayerLocation playerLocation,
 

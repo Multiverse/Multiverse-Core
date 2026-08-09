@@ -56,7 +56,7 @@ class CreateCommand extends CoreCommand {
     @CommandPermission("multiverse.core.create")
     @CommandCompletion("@empty @environments @flags:groupName=" + Flags.NAME)
     @Syntax("<name> <environment> [--seed <seed> --generator <generator[:id]> --world-type <worldtype> " +
-            "--adjust-spawn --no-structures --generate-bonus-chest --force-spawn-position <x,y,z:pitch:yaw> " +
+            "--no-adjust-spawn --no-structures --generate-bonus-chest --force-spawn-position <x,y,z:pitch:yaw> " +
             "--biome <biome> --generator-settings <json-settings> --properties <prop1=value1,prop2=value2,...>]")
     @Description("{@@mv-core.create.description}")
     void onCreateCommand(
@@ -71,7 +71,7 @@ class CreateCommand extends CoreCommand {
             World.Environment environment,
 
             @Optional
-            @Syntax("[--seed <seed> --generator <generator[:id]> --world-type <worldtype> --adjust-spawn " +
+            @Syntax("[--seed <seed> --generator <generator[:id]> --world-type <worldtype> --no-adjust-spawn " +
                     "--no-structures --generate-bonus-chest --force-spawn-position <x,y,z:pitch:yaw> --biome <biome> " +
                     "--generator-settings <json-settings> --properties <prop1=value1,prop2=value2,...>]")
             @Description("{@@mv-core.create.flags.description}")

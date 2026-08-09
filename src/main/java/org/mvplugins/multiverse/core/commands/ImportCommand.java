@@ -43,7 +43,8 @@ class ImportCommand extends CoreCommand {
     @Subcommand("import")
     @CommandPermission("multiverse.core.import")
     @CommandCompletion("@mvworlds:scope=potential @environments @flags:groupName=" + Flags.NAME)
-    @Syntax("<name> <environment> [--generator <generator[:id]> --adjust-spawn --biome <biome>]")
+    @Syntax("<name> <environment> [--generator <generator[:id]> --no-adjust-spawn --biome <biome> " +
+            "--skip-folder-check --generator-settings <json-settings>]")
     @Description("{@@mv-core.import.description}")
     void onImportCommand(
             MVCommandIssuer issuer,
@@ -53,12 +54,13 @@ class ImportCommand extends CoreCommand {
             @Description("{@@mv-core.import.name.description}")
             String worldName,
 
-            @Syntax("<env>")
+            @Syntax("<environment>")
             @Description("{@@mv-core.import.env.description}")
             World.Environment environment,
 
             @Optional
-            @Syntax("[--generator <generator[:id]> --adjust-spawn --biome <biome>]")
+            @Syntax("[--generator <generator[:id]> --no-adjust-spawn --biome <biome> " +
+                    "--skip-folder-check --generator-settings <json-settings>]")
             @Description("{@@mv-core.import.other.description}")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);
