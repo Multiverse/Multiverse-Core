@@ -50,10 +50,10 @@ final class WorldBorderCommand extends CoreCommand {
     void onWorldBorderCenter(
             MVCommandIssuer issuer,
 
-            @Syntax("[x]")
+            @Syntax("<x>")
             double x,
 
-            @Syntax("[z]")
+            @Syntax("<z>")
             double z,
 
             @Flags("resolve=issuerAware,maxArgForAware=0")

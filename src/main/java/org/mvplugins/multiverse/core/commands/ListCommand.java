@@ -54,12 +54,12 @@ class ListCommand extends CoreCommand {
     @Subcommand("list")
     @CommandPermission("multiverse.core.list.worlds")
     @CommandCompletion("@flags:groupName=" + Flags.NAME)
-    @Syntax("--filter [filter] --page [page] --raw")
+    @Syntax("[--filter <filter>] [--page <page>] [--raw]")
     @Description("{{@mv-core.list.description}}")
     public void onListCommand(
             MVCommandIssuer issuer,
 
-            @Syntax("[--filter <filter>] [--page <page>]")
+            @Syntax("[--filter <filter>] [--page <page>] [--raw]")
             @Description("Filters the list of worlds by the given regex and displays the given page.")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);

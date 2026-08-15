@@ -41,7 +41,7 @@ class CloneCommand extends CoreCommand {
     @Subcommand("clone")
     @CommandPermission("multiverse.core.clone")
     @CommandCompletion("@mvworlds:scope=loaded @empty @flags:groupName=" + Flags.NAME)
-    @Syntax("<world> <new-world-name> [--reset-world-config --reset-gamerules --reset-world-border]")
+    @Syntax("<world> <new-world-name> [--reset-world-config --reset-gamerules --reset-world-border --no-save]")
     @Description("{@@mv-core.clone.description}")
     void onCloneCommand(
             MVCommandIssuer issuer,
@@ -55,7 +55,7 @@ class CloneCommand extends CoreCommand {
             String newWorldName,
 
             @Optional
-            @Syntax("[--reset-world-config --reset-gamerules --reset-world-border]")
+            @Syntax("[--reset-world-config --reset-gamerules --reset-world-border --no-save]")
             @Description("{@@mv-core.regen.other.description}")
             String[] flagArray) {
         ParsedCommandFlags parsedFlags = flags.parse(flagArray);

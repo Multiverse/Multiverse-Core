@@ -54,21 +54,21 @@ class GameruleCommand extends CoreCommand {
     @Subcommand("gamerule|rule set")
     @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules @gamerulesvalues @mvworlds:multiple|*")
-    @Syntax("<Gamerule> <Gamerule value> [World or *]")
+    @Syntax("<gamerule> <value> [worlds|*]")
     @Description("{@@mv-core.gamerule.set.description}")
     void onGameruleSetCommand(
             MVCommandIssuer issuer,
 
-            @Syntax("<Gamerule>")
+            @Syntax("<gamerule>")
             @Description("{@@mv-core.gamerule.set.gamerule.description}")
             GameRule gamerule,
 
-            @Syntax("<Value>")
+            @Syntax("<value>")
             @Description("{@@mv-core.gamerule.set.value.description}")
             GameRuleValue gameRuleValue,
 
             @Flags("resolve=issuerAware,maxArgForAware=2")
-            @Syntax("[World or *]")
+            @Syntax("[worlds|*]")
             @Description("{@@mv-core.gamerule.set.world.description}")
             LoadedMultiverseWorld[] worlds) {
         Object value = gameRuleValue.value();
@@ -105,17 +105,17 @@ class GameruleCommand extends CoreCommand {
     @Subcommand("gamerule|rule reset")
     @CommandPermission("multiverse.core.gamerule.set")
     @CommandCompletion("@gamerules @mvworlds:multiple|*")
-    @Syntax("<Gamerule> [World or *]")
+    @Syntax("<gamerule> [worlds|*]")
     @Description("{@@mv-core.gamerule.reset.description}")
     void onGameruleResetCommand(
             MVCommandIssuer issuer,
 
-            @Syntax("<Gamerule>")
+            @Syntax("<gamerule>")
             @Description("{@@mv-core.gamerule.reset.gamerule.description}")
             GameRule gamerule,
 
             @Flags("resolve=issuerAware,maxArgForAware=1")
-            @Syntax("[World or *]")
+            @Syntax("[worlds|*]")
             @Description("{@@mv-core.gamerule.reset.world.description}")
             LoadedMultiverseWorld[] worlds) {
         AtomicBoolean success = new AtomicBoolean(true);
@@ -153,7 +153,7 @@ class GameruleCommand extends CoreCommand {
             MVCommandIssuer issuer,
 
             @Flags("resolve=issuerAware,maxArgForAware=0")
-            @Syntax("<world>")
+            @Syntax("[world]")
             @Description("{@@mv-core.gamerule.list.description.world}")
             LoadedMultiverseWorld world,
 
