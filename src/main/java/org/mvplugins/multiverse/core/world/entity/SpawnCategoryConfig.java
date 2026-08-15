@@ -73,7 +73,7 @@ public final class SpawnCategoryConfig {
     }
 
     private void applyTickPerSpawns(@NotNull World bukkitWorld) {
-        if (!config.getApplyEntitySpawnLimit()) {
+        if (!config.getApplyEntitySpawnRate()) {
             Logging.finer("World %s %s skipping setTicksPerSpawns due to core config", world.getName(), spawnCategory);
             return;
         }
