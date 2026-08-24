@@ -22,11 +22,13 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.dynamiclistener.EventRunnable;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventClass;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
+import org.mvplugins.multiverse.core.utils.compatibility.EntityCompatibility;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 import java.util.Arrays;
@@ -96,10 +98,7 @@ final class MVEntityListener implements CoreListener {
             @Override
             public void onEvent(PreCreatureSpawnEvent event) {
                 // Always allow custom command and plugins to spawn creatures
-                if (event.getReason() == SpawnReason.CUSTOM
-                        || event.getReason() == SpawnReason.COMMAND
-                        || event.getReason() == SpawnReason.BREEDING
-                        || event.getReason() == SpawnReason.SPAWNER_EGG) {
+                if (isAlwaysAllowedSpawnReason(event.getReason())) {
                     return;
                 }
 
@@ -127,10 +126,7 @@ final class MVEntityListener implements CoreListener {
         }
 
         // Always allow custom command and plugins to spawn creatures
-        if (event.getSpawnReason() == SpawnReason.CUSTOM
-                || event.getSpawnReason() == SpawnReason.COMMAND
-                || event.getSpawnReason() == SpawnReason.BREEDING
-                || event.getSpawnReason() == SpawnReason.SPAWNER_EGG) {
+        if (isAlwaysAllowedSpawnReason(event.getSpawnReason())) {
             return;
         }
 
@@ -168,6 +164,7 @@ final class MVEntityListener implements CoreListener {
                 .peek(world -> {
                     long count = Arrays.stream(event.getChunk().getEntities())
                             .filter(entity -> !(entity instanceof Player))
+                            .filter(entity -> !isAlwaysAllowedSpawnReason(EntityCompatibility.getEntitySpawnReason(entity)))
                             .filter(entity -> !world.getEntitySpawnConfig().shouldAllowSpawn(entity))
                             .peek(Entity::remove)
                             .count();
@@ -176,5 +173,12 @@ final class MVEntityListener implements CoreListener {
                                 count, event.getChunk().getX(), event.getChunk().getZ(), event.getWorld().getName());
                     }
                 });
+    }
+
+    private boolean isAlwaysAllowedSpawnReason(@Nullable SpawnReason reason) {
+        return reason == SpawnReason.CUSTOM
+                || reason == SpawnReason.COMMAND
+                || reason == SpawnReason.BREEDING
+                || reason == SpawnReason.SPAWNER_EGG;
     }
 }
