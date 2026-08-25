@@ -54,6 +54,7 @@ import org.mvplugins.multiverse.core.utils.compatibility.WorldCreatorCompatibili
 import org.mvplugins.multiverse.core.utils.result.Attempt;
 import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
+import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
 import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
@@ -244,7 +245,10 @@ public final class WorldManager {
                 .filter(world -> !isLoadedWorld(world) && world.isAutoLoad())
                 .forEach(world -> loadWorld(LoadWorldOptions.world(world))
                         .onFailure(failure ->
-                                Logging.severe("Failed to autoload world %s: %s", world.getName(), failure))
+                                Logging.severe("Failed to autoload world '%s': %s: %s",
+                                        world.getName(),
+                                        failure,
+                                        ChatTextFormatter.removeColor(failure.getFailureMessage().formatted())))
                         .onSuccess(newMVWorld ->
                                 Logging.fine("Autoloaded world %s", newMVWorld.getName())));
     }
@@ -282,15 +286,24 @@ public final class WorldManager {
         WorldKeyOrName keyOrName = keyOrNameWithOptions.keyOrName();
         CreateWorldOptions options = keyOrNameWithOptions.options();
         String generatorString = generatorProvider.parseGeneratorString(keyOrName.usableName(), options.generator());
-        WorldCreator worldCreator = WorldCreatorCompatibility.ofKeyOrName(keyOrName)
-                .environment(options.environment())
-                .generateStructures(options.generateStructures())
-                .generatorSettings(options.generatorSettings())
-                .seed(options.seed())
-                .type(options.worldType());
-        WorldCreatorCompatibility.setBonusChest(worldCreator, options.bonusChest());
-        options.forcedSpawnPosition().peek(position -> WorldCreatorCompatibility.setForcedSpawnPosition(worldCreator, position));
-        return addBiomeProviderToCreator(worldCreator, keyOrName.usableName(), options.biome())
+
+        return Try.of(() -> {
+                    WorldCreator creator = WorldCreatorCompatibility.ofKeyOrName(keyOrName)
+                            .environment(options.environment())
+                            .generateStructures(options.generateStructures())
+                            .generatorSettings(options.generatorSettings())
+                            .seed(options.seed())
+                            .type(options.worldType());
+                    WorldCreatorCompatibility.setBonusChest(creator, options.bonusChest());
+                    options.forcedSpawnPosition()
+                            .peek(position -> WorldCreatorCompatibility.setForcedSpawnPosition(creator, position));
+                    return creator;
+                })
+                .fold(throwable -> Attempt.<WorldCreator, WorldCreatorFailureReason>failure(WorldCreatorFailureReason.BUKKIT_CREATION_FAILED,
+                                Replace.WORLD.with(keyOrName.usableName()),
+                                Replace.ERROR.with(throwable)),
+                        Attempt::<WorldCreator, WorldCreatorFailureReason>success)
+                .mapAttempt(creator -> addBiomeProviderToCreator(creator, keyOrName.usableName(), options.biome()))
                 .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
                 .mapAttempt(this::createBukkitWorld)
                 .transform(CreateFailureReason.WORLD_CREATOR_FAILED)
@@ -359,11 +372,15 @@ public final class WorldManager {
         WorldKeyOrName keyOrName = keyOrNameWithOptions.keyOrName();
         ImportWorldOptions options = keyOrNameWithOptions.options();
         String generatorString = generatorProvider.parseGeneratorString(keyOrName.usableName(), options.generator());
-        WorldCreator worldCreator = WorldCreatorCompatibility.ofKeyOrName(keyOrName)
-                .environment(options.environment())
-                .generatorSettings(options.generatorSettings());
 
-        return addBiomeProviderToCreator(worldCreator, keyOrName.usableName(), options.biome())
+        return Try.of(() -> WorldCreatorCompatibility.ofKeyOrName(keyOrName)
+                        .environment(options.environment())
+                        .generatorSettings(options.generatorSettings()))
+                .fold(throwable -> Attempt.<WorldCreator, WorldCreatorFailureReason>failure(WorldCreatorFailureReason.BUKKIT_CREATION_FAILED,
+                                Replace.WORLD.with(keyOrName.usableName()),
+                                Replace.ERROR.with(throwable)),
+                        Attempt::<WorldCreator, WorldCreatorFailureReason>success)
+                .mapAttempt(creator -> addBiomeProviderToCreator(creator, keyOrName.usableName(), options.biome()))
                 .mapAttempt(creator -> addGeneratorToCreator(creator, generatorString))
                 .mapAttempt(this::createBukkitWorld)
                 .transform(ImportFailureReason.WORLD_CREATOR_FAILED)
@@ -528,10 +545,14 @@ public final class WorldManager {
             }
         }
 
-        WorldCreator worldCreator = WorldCreatorCompatibility.ofNameAndKey(mvWorld.getKey(), mvWorld.getName())
-                .environment(mvWorld.getEnvironment())
-                .seed(mvWorld.getSeed());
-        return addBiomeProviderToCreator(worldCreator, mvWorld.getName(), mvWorld.getBiome())
+        return Try.of(() -> WorldCreatorCompatibility.ofNameAndKey(mvWorld.getKey(), mvWorld.getName())
+                        .environment(mvWorld.getEnvironment())
+                        .seed(mvWorld.getSeed()))
+                .fold(throwable -> Attempt.<WorldCreator, WorldCreatorFailureReason>failure(WorldCreatorFailureReason.BUKKIT_CREATION_FAILED,
+                                Replace.WORLD.with(mvWorld.getName()),
+                                Replace.ERROR.with(throwable)),
+                        Attempt::<WorldCreator, WorldCreatorFailureReason>success)
+                .mapAttempt(creator -> addBiomeProviderToCreator(creator, mvWorld.getName(), mvWorld.getBiome()))
                 .mapAttempt(creator -> addGeneratorToCreator(creator, mvWorld.getGenerator()))
                 .mapAttempt(this::createBukkitWorld)
                 .transform(LoadFailureReason.WORLD_CREATOR_FAILED)
