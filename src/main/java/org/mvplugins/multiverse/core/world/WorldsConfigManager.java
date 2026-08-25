@@ -237,17 +237,20 @@ final class WorldsConfigManager {
     }
 
     private boolean migrateLevelNameChange(WorldKeyOrName keyOrName, String newWorldName) {
-        if (getWorldConfig(WorldKeyOrName.parseKey(NamespacedKey.minecraft(newWorldName))).isDefined()) {
-            Logging.severe("Unable to migrate default world's name caused by level-name change.");
-            Logging.severe("We have detected a clash between the default name '%s' and an existing non-default world in your worlds.yml file.", newWorldName);
-            Logging.severe("Please change the level-name in server.properties to something else and restart the server.");
-            return false;
-        }
-
         return getWorldConfig(keyOrName).map(worldConfig -> {
             if (newWorldName.equals(worldConfig.getLegacyWorldName())) {
                 return false;
             }
+
+            boolean hasConflictKey = WorldKeyOrName.parseKey(newWorldName).map(this::getWorldConfig)
+                    .fold(failure -> false, Option::isDefined);
+            if (hasConflictKey) {
+                Logging.severe("Unable to migrate default world's name caused by level-name change.");
+                Logging.severe("We have detected a clash between the default name '%s' and an existing non-default world in your worlds.yml file.", newWorldName);
+                Logging.severe("Please change the level-name in server.properties to something else and restart the server.");
+                return false;
+            }
+
             Logging.info("Updating legacy world name for %s from %s to %s due to level-name change.",
                     keyOrName, worldConfig.getLegacyWorldName(), newWorldName);
             worldConfig.setLegacyWorldName(newWorldName);
