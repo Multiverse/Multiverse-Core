@@ -18,7 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jvnet.hk2.annotations.Service;
 
 import org.mvplugins.multiverse.core.MultiverseCore;
+import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.result.Attempt;
+import org.mvplugins.multiverse.core.world.helpers.DimensionFinder;
 import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 import org.mvplugins.multiverse.core.world.key.WorldKeyParseFailReason;
 
@@ -34,16 +36,18 @@ final class WorldsConfigManager {
 
     private final SortedMap<WorldKeyOrName, WorldConfig> worldConfigMap;
     private final File worldConfigFile;
+    private final ServerProperties serverProperties;
     private YamlConfiguration worldsConfig;
 
     private final MultiverseCore multiverseCore;
 
     @Inject
-    WorldsConfigManager(@NotNull MultiverseCore core, @NotNull MultiverseCore multiverseCore) {
+    WorldsConfigManager(@NotNull MultiverseCore multiverseCore, @NotNull ServerProperties serverProperties) {
         worldConfigMap = new TreeMap<>();
-        worldConfigFile = core.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
+        worldConfigFile = multiverseCore.getDataFolder().toPath().resolve(CONFIG_FILENAME).toFile();
 
         this.multiverseCore = multiverseCore;
+        this.serverProperties = serverProperties;
     }
 
     /**
@@ -202,7 +206,54 @@ final class WorldsConfigManager {
             worldConfigMap.remove(s);
         }
 
+        migrateLevelNameChange();
+
         return new NewAndRemovedWorlds(newWorldsAdded, worldsRemoved);
+    }
+
+    private void migrateLevelNameChange() {
+        serverProperties.getLevelName()
+                .peek(levelName -> {
+                    boolean didMigrate = migrateLevelNameChange(
+                            WorldKeyOrName.parseKey(NamespacedKey.minecraft("overworld")),
+                            levelName
+                    );
+                    didMigrate =  migrateLevelNameChange(
+                            WorldKeyOrName.parseKey(NamespacedKey.minecraft("the_nether")),
+                            DimensionFinder.DEFAULT_NETHER_FORMAT.replaceOverworld(levelName)
+                    ) || didMigrate;
+                    didMigrate =  migrateLevelNameChange(
+                            WorldKeyOrName.parseKey(NamespacedKey.minecraft("the_end")),
+                            DimensionFinder.DEFAULT_END_FORMAT.replaceOverworld(levelName)
+                    ) || didMigrate;
+
+                    if  (didMigrate) {
+                        Logging.warning("We have detected and migrated your default world's name due to a level-name change.");
+                        Logging.warning("Please check your worlds.yml file and world list to ensure everything is correct.");
+                        Logging.warning("Additionally, all references to the old world name will no longer work. " +
+                                "Please update all references within your configuration files/plugins.");
+                    }
+                });
+    }
+
+    private boolean migrateLevelNameChange(WorldKeyOrName keyOrName, String newWorldName) {
+        if (getWorldConfig(WorldKeyOrName.parseKey(NamespacedKey.minecraft(newWorldName))).isDefined()) {
+            Logging.severe("Unable to migrate default world's name caused by level-name change.");
+            Logging.severe("We have detected a clash between the default name '%s' and an existing non-default world in your worlds.yml file.", newWorldName);
+            Logging.severe("Please change the level-name in server.properties to something else and restart the server.");
+            return false;
+        }
+
+        return getWorldConfig(keyOrName).map(worldConfig -> {
+            if (newWorldName.equals(worldConfig.getLegacyWorldName())) {
+                return false;
+            }
+            Logging.info("Updating legacy world name for %s from %s to %s due to level-name change.",
+                    keyOrName, worldConfig.getLegacyWorldName(), newWorldName);
+            worldConfig.setLegacyWorldName(newWorldName);
+            worldConfig.save();
+            return true;
+        }).getOrElse(false);
     }
 
     /**
