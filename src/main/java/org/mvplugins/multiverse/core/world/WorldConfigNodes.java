@@ -43,6 +43,7 @@ final class WorldConfigNodes {
 
     private final NodeGroup nodes = new NodeGroup();
     private WorldManager worldManager;
+    private WorldStore worldStore;
     private EnforcementHandler enforcementHandler;
     private CoreConfig config;
     private AliasNameConflictChecker aliasNameConflictChecker;
@@ -52,6 +53,7 @@ final class WorldConfigNodes {
 
     WorldConfigNodes(@NotNull MultiverseCore multiverseCore, @NotNull WorldKeyOrName keyOrName) {
         this.worldManager = multiverseCore.getServiceLocator().getService(WorldManager.class);
+        this.worldStore = multiverseCore.getServiceLocator().getService(WorldStore.class);
         this.enforcementHandler = multiverseCore.getServiceLocator().getService(EnforcementHandler.class);
         this.config = multiverseCore.getServiceLocator().getService(CoreConfig.class);
         this.aliasNameConflictChecker = multiverseCore.getServiceLocator().getService(AliasNameConflictChecker.class);
@@ -100,7 +102,7 @@ final class WorldConfigNodes {
     final ConfigNode<String> alias = node(ConfigNode.builder("alias", String.class)
             .defaultValue("")
             .onLoadAndChange((sender, oldValue, newValue) -> {
-                worldManager.getWorldStore().changeAlias(
+                worldStore.changeAlias(
                         ChatTextFormatter.removeColor(oldValue),
                         ChatTextFormatter.removeColor(newValue),
                         keyOrName.usableKey()
