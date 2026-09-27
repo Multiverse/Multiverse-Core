@@ -71,14 +71,7 @@ jobs:
           message: |
             ### ✅ `${{ inputs.plugin_name }}` test build ready
 
-            The build and tests passed. This PR build is ready to try.
+            Last updated for: [${{ github.event.workflow_run.head_sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.workflow_run.head_sha }})
+            **Download:** [${{ inputs.plugin_name }}-pr${{ steps.artifact.outputs.number }}.zip](${{ steps.artifact.outputs.url }})
 
-            **[⬇️ Download test build](${{ steps.artifact.outputs.url }})**
-            Extract the downloaded ZIP to get the plugin JAR.
-
-            | Build details | |
-            | --- | --- |
-            | Commit | `${{ github.event.workflow_run.head_sha }}` |
-            | Workflow | [Run #${{ github.event.workflow_run.run_number }}](${{ github.event.workflow_run.html_url }}) |
-
-            <sub>Sign in to GitHub to download. Artifacts expire after the repository's retention period. This comment updates after successful builds.</sub>
+            View [CI build and checks](${{ github.event.workflow_run.html_url }}) for more details.
