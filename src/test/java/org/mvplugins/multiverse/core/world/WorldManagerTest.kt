@@ -50,6 +50,48 @@ class WorldManagerTest : TestWithMockBukkit() {
     }
 
     @Test
+    fun `World reference follows unload and reload`() {
+        val ref = world2.asRef()
+        assertSame(world2, ref.get().get())
+        assertSame(world2, ref.getLoaded().get())
+
+        assertTrue(worldManager.unloadWorld(UnloadWorldOptions.world(world2)).isSuccess)
+        assertTrue(ref.getLoaded().isEmpty)
+        val unloaded = ref.get().get()
+        assertFalse(unloaded.isLoaded)
+        assertSame(worldManager.getWorld(world2.name).get(), unloaded)
+
+        val unloadedRef = unloaded.asRef()
+        assertTrue(worldManager.loadWorld(LoadWorldOptions.world(unloaded)).isSuccess)
+        val reloaded = worldManager.getLoadedWorld(world2.name).get()
+        assertNotSame(world2, reloaded)
+        assertSame(reloaded, ref.get().get())
+        assertSame(reloaded, ref.getLoaded().get())
+        assertSame(reloaded, unloadedRef.getLoaded().get())
+    }
+
+    @Test
+    fun `World reference follows regeneration`() {
+        val ref = world2.asRef()
+        assertTrue(worldManager.regenWorld(RegenWorldOptions.world(world2).seed(4321L)).isSuccess)
+
+        val regenerated = ref.getLoaded().get()
+        assertNotSame(world2, regenerated)
+        assertSame(worldManager.getLoadedWorld(world2.name).get(), regenerated)
+        assertSame(regenerated, ref.get().get())
+        assertEquals(4321L, regenerated.seed)
+    }
+
+    @Test
+    fun `World reference is empty after removal`() {
+        val ref = world2.asRef()
+        assertTrue(worldManager.removeWorld(RemoveWorldOptions.world(world2)).isSuccess)
+
+        assertTrue(ref.get().isEmpty)
+        assertTrue(ref.getLoaded().isEmpty)
+    }
+
+    @Test
     fun `Create world with custom options`() {
         assertTrue(worldManager.createWorld(
             CreateWorldOptions.worldName("Section/my-nether_world")

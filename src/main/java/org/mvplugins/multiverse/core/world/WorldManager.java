@@ -31,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jvnet.hk2.annotations.Service;
 
+import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.event.world.MVWorldClonedEvent;
 import org.mvplugins.multiverse.core.event.world.MVWorldCreatedEvent;
@@ -45,8 +46,6 @@ import org.mvplugins.multiverse.core.locale.MVCorei18n;
 import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.locale.message.MessageReplacement.Replace;
 import org.mvplugins.multiverse.core.permissions.CorePermissions;
-import org.mvplugins.multiverse.core.teleportation.BlockSafety;
-import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.utils.ServerProperties;
 import org.mvplugins.multiverse.core.utils.compatibility.BukkitCompatibility;
 import org.mvplugins.multiverse.core.utils.compatibility.WorldCompatibility;
@@ -56,7 +55,6 @@ import org.mvplugins.multiverse.core.utils.result.FailureReason;
 import org.mvplugins.multiverse.core.utils.FileUtils;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.biomeprovider.BiomeProviderFactory;
-import org.mvplugins.multiverse.core.world.entity.EntityPurger;
 import org.mvplugins.multiverse.core.world.generators.GeneratorProvider;
 import org.mvplugins.multiverse.core.world.helpers.DataStore.GameRulesStore;
 import org.mvplugins.multiverse.core.world.helpers.DataTransfer;
@@ -96,6 +94,7 @@ public final class WorldManager {
             "data/paper/metadata.dat"  // New papermc format for 26.1+
     );
 
+    private final MultiverseCore multiverseCore;
     private final WorldStore worldStore;
     private final List<String> unloadTracker;
     private final List<String> loadTracker;
@@ -104,44 +103,37 @@ public final class WorldManager {
     private final BiomeProviderFactory biomeProviderFactory;
     private final GeneratorProvider generatorProvider;
     private final FileUtils fileUtils;
-    private final BlockSafety blockSafety;
-    private final LocationManipulation locationManipulation;
     private final PluginManager pluginManager;
     private final CorePermissions corePermissions;
     private final ServerProperties serverProperties;
     private final CoreConfig config;
-    private final EntityPurger entityPurger;
     private final Provider<PotentialWorldFinder> potentialWorldFinder;
 
     @Inject
     WorldManager(
+            @NotNull MultiverseCore multiverseCore,
             @NotNull WorldStore worldStore,
             @NotNull WorldsConfigManager worldsConfigManager,
             @NotNull WorldNameChecker worldNameChecker,
             @NotNull BiomeProviderFactory biomeProviderFactory,
             @NotNull GeneratorProvider generatorProvider,
             @NotNull FileUtils fileUtils,
-            @NotNull BlockSafety blockSafety,
-            @NotNull LocationManipulation locationManipulation,
             @NotNull PluginManager pluginManager,
             @NotNull CorePermissions corePermissions,
             @NotNull ServerProperties serverProperties,
             @NotNull CoreConfig config,
-            @NotNull EntityPurger entityPurger,
             @NotNull Provider<PotentialWorldFinder> potentialWorldFinder) {
+        this.multiverseCore = multiverseCore;
         this.worldStore = worldStore;
         this.worldsConfigManager = worldsConfigManager;
         this.worldNameChecker = worldNameChecker;
         this.biomeProviderFactory = biomeProviderFactory;
         this.generatorProvider = generatorProvider;
         this.fileUtils = fileUtils;
-        this.blockSafety = blockSafety;
-        this.locationManipulation = locationManipulation;
         this.pluginManager = pluginManager;
         this.corePermissions = corePermissions;
         this.serverProperties = serverProperties;
         this.config = config;
-        this.entityPurger = entityPurger;
         this.potentialWorldFinder = potentialWorldFinder;
 
         this.unloadTracker = new ArrayList<>();
@@ -417,7 +409,7 @@ public final class WorldManager {
     }
 
     private MultiverseWorld newMultiverseWorld(WorldConfig worldConfig) {
-        MultiverseWorld mvWorld = new MultiverseWorld(worldConfig, config);
+        MultiverseWorld mvWorld = new MultiverseWorld(worldConfig, multiverseCore);
         worldStore.putUnloadedWorld(mvWorld);
         corePermissions.addWorldPermissions(mvWorld);
         return mvWorld;
@@ -456,10 +448,7 @@ public final class WorldManager {
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                 world,
                 worldConfig,
-                config,
-                blockSafety,
-                locationManipulation,
-                entityPurger
+                multiverseCore
         );
         worldStore.putLoadedWorld(loadedWorld);
         saveWorldsConfig();
@@ -592,10 +581,7 @@ public final class WorldManager {
         LoadedMultiverseWorld loadedWorld = new LoadedMultiverseWorld(
                 bukkitWorld,
                 worldConfig,
-                config,
-                blockSafety,
-                locationManipulation,
-                entityPurger
+                multiverseCore
         );
         worldStore.putLoadedWorld(loadedWorld);
         saveWorldsConfig();
@@ -1276,10 +1262,6 @@ public final class WorldManager {
                     Logging.severe("Failed to save worlds config: %s", failure);
                     failure.printStackTrace();
                 });
-    }
-
-    WorldStore getWorldStore() {
-        return worldStore;
     }
 
     /**

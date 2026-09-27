@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import org.jetbrains.annotations.UnmodifiableView;
+import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
@@ -29,6 +30,11 @@ import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
 
 /**
  * Represents a world handled by Multiverse which has all the custom properties provided by Multiverse.
+ * <p>
+ * Do not store instances of this class for future use during runtime. Worlds can be unloaded, removed, reloaded,
+ * or regenerated, making stored instances stale. Instead, store a {@link MultiverseWorldRef} obtained from
+ * {@link #asRef()} and retrieve the current world instance when needed. The reference returns an empty Option
+ * when the world is no longer available.
  */
 public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     /**
@@ -37,11 +43,13 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
     WorldConfig worldConfig;
 
     protected final CoreConfig config;
+    private final WorldStore worldStore;
     private String colourlessAlias = "";
 
-    MultiverseWorld(WorldConfig worldConfig, CoreConfig config) {
+    MultiverseWorld(@NotNull WorldConfig worldConfig, @NotNull MultiverseCore multiverseCore) {
         this.worldConfig = worldConfig;
-        this.config = config;
+        this.config = multiverseCore.getServiceLocator().getService(CoreConfig.class);
+        this.worldStore = multiverseCore.getServiceLocator().getService(WorldStore.class);
         this.worldConfig.setMVWorld(this);
         updateColourlessAlias();
     }
@@ -123,6 +131,22 @@ public sealed class MultiverseWorld permits LoadedMultiverseWorld {
         return Option.of(worldConfig.getMVWorld())
                 .filter(world -> world instanceof LoadedMultiverseWorld)
                 .map(world -> (LoadedMultiverseWorld) world);
+    }
+
+    /**
+     * Creates a reference to this world's key for storing and retrieving the current world instance at runtime.
+     * <p>
+     * Store this reference when retaining a world across reloads or regeneration, which make stored
+     * {@link MultiverseWorld} and {@link LoadedMultiverseWorld} instances stale. Use {@link MultiverseWorldRef#get()}
+     * or {@link MultiverseWorldRef#getLoaded()} to retrieve the current instance when needed.
+     *
+     * @return A reference that looks up the current world instance using this world's key.
+     *
+     * @since 5.9
+     */
+    @ApiStatus.AvailableSince("5.9")
+    public MultiverseWorldRef asRef() {
+        return new MultiverseWorldRef(getKey(), worldStore);
     }
 
     /**

@@ -13,7 +13,7 @@ import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import org.mvplugins.multiverse.core.config.CoreConfig;
+import org.mvplugins.multiverse.core.MultiverseCore;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
 import org.mvplugins.multiverse.core.teleportation.LocationManipulation;
 import org.mvplugins.multiverse.core.world.entity.EntityPurger;
@@ -22,6 +22,11 @@ import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 
 /**
  * Extension of {@link MultiverseWorld} that represents a world that is currently loaded with bukkit world object.
+ * <p>
+ * Do not store instances of this class for future use during runtime. Worlds can be unloaded, removed, reloaded,
+ * or regenerated, making stored instances stale. Instead, store a {@link MultiverseWorldRef} obtained from
+ * {@link #asRef()} and call {@link MultiverseWorldRef#getLoaded()} when a loaded world is needed. The reference
+ * returns an empty Option when the world is unloaded or no longer managed by Multiverse.
  */
 public final class LoadedMultiverseWorld extends MultiverseWorld {
 
@@ -34,16 +39,13 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
     LoadedMultiverseWorld(
             @NotNull World world,
             @NotNull WorldConfig worldConfig,
-            @NotNull CoreConfig config,
-            @NotNull BlockSafety blockSafety,
-            @NotNull LocationManipulation locationManipulation,
-            @NotNull EntityPurger entityPurger
-    ) {
-        super(worldConfig, config);
+            @NotNull MultiverseCore multiverseCore
+            ) {
+        super(worldConfig, multiverseCore);
         this.worldUid = world.getUID();
-        this.blockSafety = blockSafety;
-        this.locationManipulation = locationManipulation;
-        this.entityPurger = entityPurger;
+        this.blockSafety = multiverseCore.getServiceLocator().getService(BlockSafety.class);
+        this.locationManipulation = multiverseCore.getServiceLocator().getService(LocationManipulation.class);
+        this.entityPurger = multiverseCore.getServiceLocator().getService(EntityPurger.class);
 
         setupWorldConfig(world);
         setupSpawnLocation(world);
