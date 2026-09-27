@@ -1,0 +1,84 @@
+name: 'Generic: Artifact Comment'
+
+on:
+  workflow_call:
+    inputs:
+      plugin_name:
+        description: 'Plugin name used by Generic: Test'
+        required: true
+        type: string
+
+jobs:
+  comment-artifact:
+    if: >-
+      github.event_name == 'workflow_run' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      pull-requests: write
+    steps:
+      # Run separately so fork builds can post comments without a write token.
+      # Do not check out or execute code from the pull request in this workflow.
+      - name: Find pull request and artifact
+        id: artifact
+        uses: actions/github-script@v7
+        env:
+          PLUGIN_NAME: ${{ inputs.plugin_name }}
+        with:
+          script: |
+            const run = context.payload.workflow_run;
+            // Fork runs can have an empty pull_requests array in the event.
+            const pulls = await github.paginate(github.rest.pulls.list, {
+              ...context.repo,
+              state: 'open',
+              head: `${run.head_repository.owner.login}:${run.head_branch}`,
+              per_page: 100,
+            });
+            const pull = pulls.find(pr =>
+              pr.head.repo?.id === run.head_repository.id &&
+              pr.head.ref === run.head_branch &&
+              pr.head.sha === run.head_sha
+            );
+            if (!pull) {
+              core.info('No open pull request matches this build; skipping comment.');
+              return;
+            }
+
+            const artifacts = await github.paginate(github.rest.actions.listWorkflowRunArtifacts, {
+              ...context.repo,
+              run_id: run.id,
+              per_page: 100,
+            });
+            const artifact = artifacts.find(item =>
+              item.name === `${process.env.PLUGIN_NAME}-pr${pull.number}` && !item.expired
+            );
+            if (!artifact) {
+              core.info('No build artifact is available; skipping comment.');
+              return;
+            }
+
+            core.setOutput('number', pull.number);
+            core.setOutput('url', `${run.html_url}/artifacts/${artifact.id}`);
+
+      - name: Comment artifact
+        if: steps.artifact.outputs.number != ''
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          number: ${{ steps.artifact.outputs.number }}
+          header: build-artifact-${{ inputs.plugin_name }}
+          message: |
+            ### ✅ `${{ inputs.plugin_name }}` test build ready
+
+            The build and tests passed. This PR build is ready to try.
+
+            **[⬇️ Download test build](${{ steps.artifact.outputs.url }})**
+            Extract the downloaded ZIP to get the plugin JAR.
+
+            | Build details | |
+            | --- | --- |
+            | Commit | `${{ github.event.workflow_run.head_sha }}` |
+            | Workflow | [Run #${{ github.event.workflow_run.run_number }}](${{ github.event.workflow_run.html_url }}) |
+
+            <sub>Sign in to GitHub to download. Artifacts expire after the repository's retention period. This comment updates after successful builds.</sub>

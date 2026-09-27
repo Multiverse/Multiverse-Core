@@ -1,0 +1,15 @@
+name: 'PR: Artifact Comment'
+
+on:
+  workflow_run:
+    workflows: ['PR: Test']
+    types: [completed]
+
+jobs:
+  comment-artifact:
+    permissions:
+      actions: read
+      pull-requests: write
+    uses: ./.github/workflows/generic.artifact_comment.yml
+    with:
+      plugin_name: multiverse-core
