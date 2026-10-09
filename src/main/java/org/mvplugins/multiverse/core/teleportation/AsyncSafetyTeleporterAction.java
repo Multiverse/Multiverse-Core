@@ -264,7 +264,8 @@ public final class AsyncSafetyTeleporterAction {
                 Logging.finer("Teleported async %s to %s", teleportee.getName(), location);
                 return Attempt.success(null);
             }
-            Logging.warning("Failed to async teleport %s to %s", teleportee.getName(), location);
+            Logging.warning("Failed to async teleport %s to %s. This is usually caused by another " +
+                    "plugin canceling the teleport event and not a bug with Multiverse.", teleportee.getName(), location);
             return Attempt.failure(TeleportFailureReason.TELEPORT_FAILED);
         });
     }
