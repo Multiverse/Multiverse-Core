@@ -9,6 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.SpawnCategory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mvplugins.multiverse.core.config.CoreConfig;
 import org.mvplugins.multiverse.core.config.handle.MemoryConfigurationHandle;
 import org.mvplugins.multiverse.core.config.handle.StringPropertyHandle;
@@ -16,12 +17,18 @@ import org.mvplugins.multiverse.core.config.node.ConfigNode;
 import org.mvplugins.multiverse.core.config.node.ListConfigNode;
 import org.mvplugins.multiverse.core.config.node.Node;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
+import org.mvplugins.multiverse.core.config.node.functions.NodeStringParser;
 import org.mvplugins.multiverse.core.config.node.serializer.NodeSerializer;
+import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.MultiverseWorld;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 public final class SpawnCategoryConfig {
 
@@ -177,6 +184,7 @@ public final class SpawnCategoryConfig {
         final ConfigNode<Integer> tickRate = node(ConfigNode.builder("tick-rate", Integer.class)
                 .defaultValue(-2)
                 .suggester(input -> List.of("@unset", "@bukkit", "10", "100", "400", "1000"))
+                .stringParser(SpawnValueStringParser.INSTANCE)
                 .serializer(SpawnValueSerializer.INSTANCE)
                 .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
                 .onChange((sender, oldValue, newValue) -> {
@@ -193,6 +201,7 @@ public final class SpawnCategoryConfig {
         final ConfigNode<Integer> spawnLimit = node(ConfigNode.builder("spawn-limit", Integer.class)
                 .defaultValue(-2)
                 .suggester(input -> List.of("@unset", "@bukkit", "10", "100", "400", "1000"))
+                .stringParser(SpawnValueStringParser.INSTANCE)
                 .serializer(SpawnValueSerializer.INSTANCE)
                 .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
                 .onChange((sender, oldValue, newValue) -> {
@@ -213,6 +222,27 @@ public final class SpawnCategoryConfig {
                         .toList())
                 .onLoadAndChange((oldValue, newValue) -> applyConfigToWorld())
                 .build());
+    }
+
+    private static class SpawnValueStringParser implements NodeStringParser<Integer> {
+        private static final SpawnValueStringParser INSTANCE = new SpawnValueStringParser();
+
+        @Override
+        public @NotNull Try<Integer> parse(@Nullable String input, @NotNull Class<Integer> type) {
+            String str = String.valueOf(input).trim();
+            if (str.equalsIgnoreCase("@unset")) {
+                return Try.success(-2);
+            }
+            if (str.equalsIgnoreCase("@bukkit")) {
+                return Try.success(-1);
+            }
+            try {
+                return Try.success(Integer.parseInt(str));
+            } catch (NumberFormatException e) {
+                return Try.failure(new MultiverseException(Message.of(MVCorei18n.CONFIG_STRING_PARSER_INVALIDINTEGER,
+                        replace("{input}").with(input))));
+            }
+        }
     }
 
     private static class SpawnValueSerializer implements NodeSerializer<Integer> {
