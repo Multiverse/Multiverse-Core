@@ -55,6 +55,7 @@ public final class LoadedMultiverseWorld extends MultiverseWorld {
         worldConfig.load();
         worldConfig.setEnvironment(world.getEnvironment());
         worldConfig.setSeed(world.getSeed());
+        worldConfig.setLegacyWorldName(world.getName());
     }
 
     private void setupSpawnLocation(World world) {

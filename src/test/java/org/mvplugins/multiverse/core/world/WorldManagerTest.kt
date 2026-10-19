@@ -50,6 +50,38 @@ class WorldManagerTest : TestWithMockBukkit() {
     }
 
     @Test
+    fun `Legacy world name changes update loaded and unloaded lookups`() {
+        val worldKey = world.key.toString()
+        assertTrue(world.worldConfig.setLegacyWorldName("renamed_world").isSuccess)
+
+        assertFalse(worldManager.getWorld("world").isDefined)
+        assertSame(world, worldManager.getLoadedWorld("RENAMED_WORLD").get())
+        assertSame(world, worldManager.getLoadedWorld(worldKey).get())
+
+        assertTrue(worldManager.unloadWorld(UnloadWorldOptions.world(world)).isSuccess)
+        assertFalse(worldManager.getWorld("world").isDefined)
+        assertFalse(worldManager.getLoadedWorld("renamed_world").isDefined)
+        assertEquals(world.key, worldManager.getUnloadedWorld("RENAMED_WORLD").get().key)
+        assertEquals(world.key, worldManager.getUnloadedWorld(worldKey).get().key)
+    }
+
+    @Test
+    fun `Setting up loaded world config refreshes legacy world name lookups`() {
+        assertTrue(world.worldConfig.setLegacyWorldName("stale_name").isSuccess)
+        assertTrue(world.worldConfig.save().isSuccess)
+
+        world.setWorldConfig(world.worldConfig)
+
+        assertEquals("world", world.name)
+        assertSame(world, worldManager.getLoadedWorld("world").get())
+        assertFalse(worldManager.getWorld("stale_name").isDefined)
+
+        assertTrue(worldManager.unloadWorld(UnloadWorldOptions.world(world)).isSuccess)
+        assertTrue(worldManager.getUnloadedWorld("world").isDefined)
+        assertFalse(worldManager.getWorld("stale_name").isDefined)
+    }
+
+    @Test
     fun `Create world with custom options`() {
         assertTrue(worldManager.createWorld(
             CreateWorldOptions.worldName("Section/my-nether_world")
