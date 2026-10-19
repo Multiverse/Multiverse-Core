@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Difficulty;
@@ -26,6 +27,9 @@ import org.mvplugins.multiverse.core.config.node.ConfigNode;
 import org.mvplugins.multiverse.core.config.node.ListConfigNode;
 import org.mvplugins.multiverse.core.config.node.NodeGroup;
 import org.mvplugins.multiverse.core.economy.MVEconomist;
+import org.mvplugins.multiverse.core.exceptions.MultiverseException;
+import org.mvplugins.multiverse.core.locale.MVCorei18n;
+import org.mvplugins.multiverse.core.locale.message.Message;
 import org.mvplugins.multiverse.core.utils.MaterialConverter;
 import org.mvplugins.multiverse.core.utils.text.ChatTextFormatter;
 import org.mvplugins.multiverse.core.world.helpers.AliasNameConflictChecker;
@@ -34,6 +38,8 @@ import org.mvplugins.multiverse.core.world.key.WorldKeyOrName;
 import org.mvplugins.multiverse.core.world.location.NullSpawnLocation;
 import org.mvplugins.multiverse.core.world.location.SpawnLocation;
 import org.mvplugins.multiverse.core.world.entity.EntitySpawnConfig;
+
+import static org.mvplugins.multiverse.core.locale.message.MessageReplacement.replace;
 
 /**
  * Represents nodes in a world configuration.
@@ -169,11 +175,22 @@ final class WorldConfigNodes {
     final ConfigNode<Material> entryFeeCurrency = node(ConfigNode.builder("entry-fee.currency", Material.class)
             .defaultValue(MVEconomist.VAULT_ECONOMY_MATERIAL)
             .name("entryfee-currency")
+            .stringParser((value, clazz) -> {
+                if (value != null && value.equalsIgnoreCase(MVEconomist.VAULT_ECONOMY_CODE)) {
+                    return Try.success(MVEconomist.VAULT_ECONOMY_MATERIAL);
+                }
+                return Try.of(() -> MaterialConverter.stringToMaterial(value))
+                        .filter(Objects::nonNull)
+                        .orElse(Try.failure(new MultiverseException(Message.of(
+                                MVCorei18n.CONFIG_STRING_PARSER_INVALIDMATERIAL,
+                                replace("{input}").with(value)))));
+            })
             .serializer(new NodeSerializer<>() {
                 @Override
                 public Material deserialize(Object object, Class<Material> type) {
                     return Option.of(object)
                             .map(String::valueOf)
+                            .filter(s -> !s.isBlank())
                             .map(materialStr -> {
                                 if (materialStr.equalsIgnoreCase(MVEconomist.VAULT_ECONOMY_CODE)) {
                                     return MVEconomist.VAULT_ECONOMY_MATERIAL;
