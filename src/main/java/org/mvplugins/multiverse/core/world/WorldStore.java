@@ -120,6 +120,29 @@ final class WorldStore {
         unloadedList.add(unloadedMap.get(world.getKey().toString()));
     }
 
+    void changeLegacyWorldName(@Nullable String oldName, @Nullable String newName, @NotNull NamespacedKey worldKey) {
+        if (Objects.equals(oldName, newName)) {
+            return;
+        }
+        String key = worldKey.toString();
+        updateLegacyWorldName(loadedMap, oldName, newName, key);
+        updateLegacyWorldName(unloadedMap, oldName, newName, key);
+    }
+
+    private <T extends MultiverseWorld> void updateLegacyWorldName(
+            Map<String, T> map, @Nullable String oldName, @Nullable String newName, String key) {
+        T world = map.get(key);
+        if (world == null) {
+            return;
+        }
+        if (oldName != null && !key.equalsIgnoreCase(oldName)) {
+            map.remove(oldName, world);
+        }
+        if (newName != null) {
+            map.put(newName, world);
+        }
+    }
+
     void changeAlias(@Nullable String oldAlias, @Nullable String newAlias, @NotNull NamespacedKey worldKey) {
         if (Objects.equals(oldAlias, newAlias)) {
             // nothing changed, ignore

@@ -323,6 +323,8 @@ final class WorldConfigNodes {
             .hidden());
 
     final ConfigNode<String> legacyWorldName = node(ConfigNode.builder("read-only.legacy-world-name", String.class)
+            .onLoadAndChange((oldValue, newValue) -> worldManager.getWorldStore().changeLegacyWorldName(
+                    oldValue, newValue, keyOrName.usableKey()))
             .hidden());
 
     final ConfigNode<Long> seed = node(ConfigNode.builder("read-only.seed", Long.class)
