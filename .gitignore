@@ -46,3 +46,6 @@ debug.txt
 
 # Gradle
 .gradle
+
+# Kotlin generated files
+/.kotlin/
