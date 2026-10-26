@@ -54,6 +54,25 @@ class ConfigTest : TestWithMockBukkit() {
         assertEquals(128, config.customPortalSearchRadius)
         assertEquals(true, config.isAutoPurgeEntities)
         assertEquals(false, config.isShowingDonateMessage)
+        assertEquals(false, config.useRespawnRadius)
+    }
+
+    @Test
+    fun `Respawn radius is disabled when migrating an existing config`() {
+        val existingConfig = getResourceAsText("/configs/fresh_config.yml")
+            ?.replace("  use-respawn-radius: true\n", "")
+            ?.replace("version: 5.3", "version: 5.2")
+        assertNotNull(existingConfig)
+        configFile.writeText(existingConfig)
+        assertTrue(config.load().isSuccess)
+        assertTrue(config.save().isSuccess)
+
+        assertEquals(false, config.useRespawnRadius)
+    }
+
+    @Test
+    fun `Respawn radius is enabled for a fresh config`() {
+        assertEquals(true, config.useRespawnRadius)
     }
 
     @Test

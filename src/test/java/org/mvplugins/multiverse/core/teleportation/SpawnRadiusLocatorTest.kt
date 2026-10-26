@@ -1,8 +1,8 @@
-package org.mvplugins.multiverse.core.listeners
+package org.mvplugins.multiverse.core.teleportation
 
 import org.bukkit.GameMode
+import org.bukkit.World
 import org.mvplugins.multiverse.core.TestWithMockBukkit
-import org.mvplugins.multiverse.core.teleportation.BlockSafety
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld
 import org.mvplugins.multiverse.core.world.WorldManager
 import org.mvplugins.multiverse.core.world.options.CreateWorldOptions
@@ -12,17 +12,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class MVPlayerListenerTest : TestWithMockBukkit() {
+class SpawnRadiusLocatorTest : TestWithMockBukkit() {
 
-    private lateinit var listener: MVPlayerListener
+    private lateinit var spawnRadiusLocator: SpawnRadiusLocator
     private lateinit var worldManager: WorldManager
     private lateinit var blockSafety: BlockSafety
 
     @BeforeTest
-    fun setUpRespawnTest() {
-        listener = serviceLocator.getAllActiveServices(CoreListener::class.java)
-            .filterIsInstance<MVPlayerListener>()
-            .first()
+    fun setUpSpawnRadiusTest() {
+        spawnRadiusLocator = requireNotNull(serviceLocator.getActiveService(SpawnRadiusLocator::class.java))
         worldManager = requireNotNull(serviceLocator.getActiveService(WorldManager::class.java))
         blockSafety = requireNotNull(serviceLocator.getActiveService(BlockSafety::class.java))
     }
@@ -32,7 +30,7 @@ class MVPlayerListenerTest : TestWithMockBukkit() {
         val mvWorld = createWorld("respawn_radius_zero", 0)
         val spawnLocation = mvWorld.spawnLocation
 
-        assertEquals(spawnLocation, listener.getSpawnLocationWithRespawnRadius(mvWorld, spawnLocation))
+        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode))
     }
 
     @Test
@@ -41,7 +39,15 @@ class MVPlayerListenerTest : TestWithMockBukkit() {
         assertTrue(mvWorld.setGameMode(GameMode.ADVENTURE).isSuccess)
         val spawnLocation = mvWorld.spawnLocation
 
-        assertEquals(spawnLocation, listener.getSpawnLocationWithRespawnRadius(mvWorld, spawnLocation))
+        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode))
+    }
+
+    @Test
+    fun `Respawn radius is not applied in worlds without sky light`() {
+        val mvWorld = createWorld("respawn_radius_nether", 5, World.Environment.NETHER)
+        val spawnLocation = mvWorld.spawnLocation
+
+        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode))
     }
 
     @Test
@@ -50,7 +56,7 @@ class MVPlayerListenerTest : TestWithMockBukkit() {
         val mvWorld = createWorld("respawn_radius_five", radius)
         val spawnLocation = mvWorld.spawnLocation
 
-        val results = (1..20).map { listener.getSpawnLocationWithRespawnRadius(mvWorld, spawnLocation) }
+        val results = (1..20).map { spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode) }
 
         results.forEach { result ->
             assertEquals(spawnLocation.world, assertNotNull(result.world))
@@ -70,14 +76,18 @@ class MVPlayerListenerTest : TestWithMockBukkit() {
         worldBorder.size = 7.0
 
         repeat(20) {
-            val result = listener.getSpawnLocationWithRespawnRadius(mvWorld, spawnLocation)
+            val result = spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode)
             assertTrue(worldBorder.isInside(result))
         }
     }
 
     @Suppress("DEPRECATION")
-    private fun createWorld(name: String, respawnRadius: Int): LoadedMultiverseWorld {
-        assertTrue(worldManager.createWorld(CreateWorldOptions.worldName(name)).isSuccess)
+    private fun createWorld(
+        name: String,
+        respawnRadius: Int,
+        environment: World.Environment = World.Environment.NORMAL,
+    ): LoadedMultiverseWorld {
+        assertTrue(worldManager.createWorld(CreateWorldOptions.worldName(name).environment(environment)).isSuccess)
         val world = requireNotNull(worldManager.getLoadedWorld(name).getOrNull())
         assertTrue(world.bukkitWorld.get().setGameRuleValue("respawn_radius", respawnRadius.toString()))
         return world

@@ -363,6 +363,18 @@ final class CoreConfigNodes {
             .name("enforce-respawn-at-world-spawn")
             .build());
 
+    final ConfigNode<Boolean> useRespawnRadius = node(ConfigNode.builder("spawn.use-respawn-radius", Boolean.class)
+            .comment("")
+            .comment("When this option is enabled and players respawn at the world's spawn location,")
+            .comment("they will be spread to a random safe location around it based on the `respawn_radius` game rule")
+            .comment("(`spawnRadius` on older versions), mimicking the vanilla behavior.")
+            .comment("Same as vanilla, this does not apply if the respawn radius is 0 or the world's game mode is adventure.")
+            .comment("----")
+            .comment("Set this to false if you want players to always respawn exactly at the world's spawn location.")
+            .defaultValue(true)
+            .name("use-respawn-radius")
+            .build());
+
     private final ConfigHeaderNode portalHeader = node(ConfigHeaderNode.builder("portal")
             .comment("")
             .comment("")

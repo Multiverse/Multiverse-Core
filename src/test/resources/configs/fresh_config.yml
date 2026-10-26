@@ -29,6 +29,7 @@ spawn:
   default-respawn-in-overworld: true
   default-respawn-within-same-world: true
   enforce-respawn-at-world-spawn: true
+  use-respawn-radius: true
 
 portal:
   use-custom-portal-search: false
@@ -67,4 +68,4 @@ misc:
   silent-start: false
   show-donation-message: true
 
-version: 5.2
+version: 5.3
