@@ -43,6 +43,7 @@ import org.mvplugins.multiverse.core.locale.PluginLocales;
 import org.mvplugins.multiverse.core.permissions.CorePermissionsChecker;
 import org.mvplugins.multiverse.core.teleportation.AsyncSafetyTeleporter;
 import org.mvplugins.multiverse.core.teleportation.BlockSafety;
+import org.mvplugins.multiverse.core.teleportation.SpawnRadiusLocator;
 import org.mvplugins.multiverse.core.teleportation.TeleportQueue;
 import org.mvplugins.multiverse.core.utils.result.ResultChain;
 import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
@@ -72,6 +73,7 @@ final class MVPlayerListener implements CoreListener {
     private final DimensionFinder dimensionFinder;
     private final CorePermissionsChecker corePermissionsChecker;
     private final AsyncSafetyTeleporter asyncSafetyTeleporter;
+    private final SpawnRadiusLocator spawnRadiusLocator;
 
     @Inject
     MVPlayerListener(
@@ -88,7 +90,8 @@ final class MVPlayerListener implements CoreListener {
             EnforcementHandler enforcementHandler,
             DimensionFinder dimensionFinder,
             CorePermissionsChecker corePermissionsChecker,
-            AsyncSafetyTeleporter asyncSafetyTeleporter) {
+            AsyncSafetyTeleporter asyncSafetyTeleporter,
+            SpawnRadiusLocator spawnRadiusLocator) {
         this.plugin = plugin;
         this.config = config;
         this.worldManagerProvider = worldManagerProvider;
@@ -103,6 +106,7 @@ final class MVPlayerListener implements CoreListener {
         this.dimensionFinder = dimensionFinder;
         this.corePermissionsChecker = corePermissionsChecker;
         this.asyncSafetyTeleporter = asyncSafetyTeleporter;
+        this.spawnRadiusLocator = spawnRadiusLocator;
     }
 
     private WorldManager getWorldManager() {
@@ -188,6 +192,9 @@ final class MVPlayerListener implements CoreListener {
         if (!config.getEnforceRespawnAtWorldSpawn() && Objects.equals(defaultRespawnLocation.getWorld(), mvWorld.getBukkitWorld().getOrNull())) {
             Logging.fine("Respawn location is within same world as respawn-world, not overriding.");
             return Option.none();
+        }
+        if (config.getApplyRespawnRadius()) {
+            return Option.of(spawnRadiusLocator.getLocationWithinSpawnRadius(mvWorld));
         }
         return Option.of(mvWorld.getSpawnLocation());
     }

@@ -83,6 +83,9 @@ public final class CoreConfig {
                         .addVersionMigrator(VersionMigrator.builder(5.2)
                                 .addAction(MoveMigratorAction.of("spawn.default-respawn-to-world-spawn", "world.enforce-respawn-at-world-spawn"))
                                 .build())
+                        .addVersionMigrator(VersionMigrator.builder(5.3)
+                                .addAction(SetMigratorAction.of("spawn.apply-respawn-radius", false))
+                                .build())
                         .build())
                 .build();
         this.stringPropertyHandle = new StringPropertyHandle(configHandle);
@@ -441,6 +444,16 @@ public final class CoreConfig {
      */
     public boolean getEnforceRespawnAtWorldSpawn() {
         return configHandle.get(configNodes.enforceRespawnAtWorldSpawn);
+    }
+
+    @ApiStatus.AvailableSince("5.9")
+    public Try<Void> setApplyRespawnRadius(boolean applyRespawnRadius) {
+        return configHandle.set(configNodes.applyRespawnRadius, applyRespawnRadius);
+    }
+
+    @ApiStatus.AvailableSince("5.9")
+    public boolean getApplyRespawnRadius() {
+        return configHandle.get(configNodes.applyRespawnRadius);
     }
 
     /**
