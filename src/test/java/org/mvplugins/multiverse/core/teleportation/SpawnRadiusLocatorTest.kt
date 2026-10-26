@@ -30,7 +30,7 @@ class SpawnRadiusLocatorTest : TestWithMockBukkit() {
         val mvWorld = createWorld("respawn_radius_zero", 0)
         val spawnLocation = mvWorld.spawnLocation
 
-        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode))
+        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(mvWorld))
     }
 
     @Test
@@ -39,7 +39,7 @@ class SpawnRadiusLocatorTest : TestWithMockBukkit() {
         assertTrue(mvWorld.setGameMode(GameMode.ADVENTURE).isSuccess)
         val spawnLocation = mvWorld.spawnLocation
 
-        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode))
+        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(mvWorld))
     }
 
     @Test
@@ -47,7 +47,7 @@ class SpawnRadiusLocatorTest : TestWithMockBukkit() {
         val mvWorld = createWorld("respawn_radius_nether", 5, World.Environment.NETHER)
         val spawnLocation = mvWorld.spawnLocation
 
-        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode))
+        assertEquals(spawnLocation, spawnRadiusLocator.getLocationWithinSpawnRadius(mvWorld))
     }
 
     @Test
@@ -56,13 +56,29 @@ class SpawnRadiusLocatorTest : TestWithMockBukkit() {
         val mvWorld = createWorld("respawn_radius_five", radius)
         val spawnLocation = mvWorld.spawnLocation
 
-        val results = (1..20).map { spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode) }
+        val results = (1..20).map { spawnRadiusLocator.getLocationWithinSpawnRadius(mvWorld) }
 
         results.forEach { result ->
             assertEquals(spawnLocation.world, assertNotNull(result.world))
             assertTrue(result.blockX - spawnLocation.blockX in -radius..radius)
             assertTrue(result.blockZ - spawnLocation.blockZ in -radius..radius)
             assertTrue(blockSafety.canSpawnAtLocationSafely(result))
+        }
+        assertTrue(results.any { it.blockX != spawnLocation.blockX || it.blockZ != spawnLocation.blockZ })
+    }
+
+    @Test
+    fun `Spreading from a location does not check the game mode`() {
+        val radius = 5
+        val mvWorld = createWorld("respawn_radius_location", radius)
+        assertTrue(mvWorld.setGameMode(GameMode.ADVENTURE).isSuccess)
+        val spawnLocation = mvWorld.spawnLocation
+
+        val results = (1..20).map { spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation) }
+
+        results.forEach { result ->
+            assertTrue(result.blockX - spawnLocation.blockX in -radius..radius)
+            assertTrue(result.blockZ - spawnLocation.blockZ in -radius..radius)
         }
         assertTrue(results.any { it.blockX != spawnLocation.blockX || it.blockZ != spawnLocation.blockZ })
     }
@@ -76,7 +92,7 @@ class SpawnRadiusLocatorTest : TestWithMockBukkit() {
         worldBorder.size = 7.0
 
         repeat(20) {
-            val result = spawnRadiusLocator.getLocationWithinSpawnRadius(spawnLocation, mvWorld.gameMode)
+            val result = spawnRadiusLocator.getLocationWithinSpawnRadius(mvWorld)
             assertTrue(worldBorder.isInside(result))
         }
     }

@@ -29,7 +29,7 @@ spawn:
   default-respawn-in-overworld: true
   default-respawn-within-same-world: true
   enforce-respawn-at-world-spawn: true
-  use-respawn-radius: true
+  apply-respawn-radius: true
 
 portal:
   use-custom-portal-search: false

@@ -27,7 +27,7 @@ class RespawnRadiusTest : TestWithMockBukkit() {
 
     @Test
     fun `Player respawns exactly at world spawn when respawn radius is disabled`() {
-        assertTrue(config.setUseRespawnRadius(false).isSuccess)
+        assertTrue(config.setApplyRespawnRadius(false).isSuccess)
 
         repeat(10) {
             assertEquals(mvWorld.spawnLocation, respawnPlayer().respawnLocation)
@@ -36,7 +36,7 @@ class RespawnRadiusTest : TestWithMockBukkit() {
 
     @Test
     fun `Player respawns around world spawn when respawn radius is enabled`() {
-        assertTrue(config.setUseRespawnRadius(true).isSuccess)
+        assertTrue(config.setApplyRespawnRadius(true).isSuccess)
         val spawnLocation = mvWorld.spawnLocation
 
         val results = (1..20).map { respawnPlayer().respawnLocation }

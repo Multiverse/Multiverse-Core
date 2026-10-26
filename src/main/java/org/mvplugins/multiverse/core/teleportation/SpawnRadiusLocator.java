@@ -15,6 +15,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jvnet.hk2.annotations.Service;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 
 /**
  * Finds a location around a world's spawn based on the respawn radius game rule, similar to how vanilla spreads
@@ -46,24 +47,46 @@ public final class SpawnRadiusLocator {
     }
 
     /**
-     * Gets a random safe location within the respawn radius game rule of the given spawn location. Same as vanilla,
-     * no spreading is done if the radius is 0, the game mode is adventure or the world has no sky light (e.g. the
-     * nether and the end).
+     * Gets a random safe location within the respawn radius game rule around the given world's spawn location. Same
+     * as vanilla, no spreading is done if the radius is 0, the world's game mode is adventure or the world has no sky
+     * light (e.g. the nether and the end).
      *
-     * @param spawnLocation The spawn location to spread around.
-     * @param gameMode      The game mode of the world.
+     * @param world The world to get the location around its spawn for.
      * @return A safe location within the respawn radius of the spawn, or the spawn location itself if none is found.
      */
     @ApiStatus.AvailableSince("5.9")
-    public @NotNull Location getLocationWithinSpawnRadius(@NotNull Location spawnLocation, @NotNull GameMode gameMode) {
+    public @NotNull Location getLocationWithinSpawnRadius(@NotNull LoadedMultiverseWorld world) {
+        Location spawnLocation = world.getSpawnLocation();
+        World bukkitWorld = spawnLocation.getWorld();
+        if (bukkitWorld == null) {
+            return spawnLocation;
+        }
+        if (world.getGameMode() == GameMode.ADVENTURE || !bukkitWorld.hasSkyLight()) {
+            Logging.finer("Not spreading spawn location for world '%s' with game mode %s and sky light %s.",
+                    world.getName(), world.getGameMode(), bukkitWorld.hasSkyLight());
+            return spawnLocation;
+        }
+        return getLocationWithinSpawnRadius(spawnLocation);
+    }
+
+    /**
+     * Gets a random safe location within the respawn radius game rule of the given spawn location. Unlike
+     * {@link #getLocationWithinSpawnRadius(LoadedMultiverseWorld)}, the game mode and sky light of the world are not
+     * checked, so the location is spread whenever the radius is greater than 0.
+     *
+     * @param spawnLocation The spawn location to spread around.
+     * @return A safe location within the respawn radius of the spawn, or the spawn location itself if none is found.
+     */
+    @ApiStatus.AvailableSince("5.9")
+    public @NotNull Location getLocationWithinSpawnRadius(@NotNull Location spawnLocation) {
         World world = spawnLocation.getWorld();
         if (world == null) {
             return spawnLocation;
         }
         int respawnRadius = getRespawnRadius(world);
-        if (respawnRadius <= 0 || gameMode == GameMode.ADVENTURE || !world.hasSkyLight()) {
-            Logging.finer("Not spreading spawn location for world '%s' with respawn radius %d, game mode %s"
-                    + " and sky light %s.", world.getName(), respawnRadius, gameMode, world.hasSkyLight());
+        if (respawnRadius <= 0) {
+            Logging.finer("Not spreading spawn location for world '%s' with respawn radius %d.",
+                    world.getName(), respawnRadius);
             return spawnLocation;
         }
         int spawnX = spawnLocation.getBlockX();

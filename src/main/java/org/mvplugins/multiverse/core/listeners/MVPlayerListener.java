@@ -193,8 +193,8 @@ final class MVPlayerListener implements CoreListener {
             Logging.fine("Respawn location is within same world as respawn-world, not overriding.");
             return Option.none();
         }
-        if (config.getUseRespawnRadius()) {
-            return Option.of(spawnRadiusLocator.getLocationWithinSpawnRadius(mvWorld.getSpawnLocation(), mvWorld.getGameMode()));
+        if (config.getApplyRespawnRadius()) {
+            return Option.of(spawnRadiusLocator.getLocationWithinSpawnRadius(mvWorld));
         }
         return Option.of(mvWorld.getSpawnLocation());
     }
