@@ -100,7 +100,18 @@ public final class SpawnCategoryMapper {
      * @return The spawn category that the given entity type is in, or null if it cannot be determined
      */
     static @NotNull Option<SpawnCategory> getSpawnCategory(@Nullable EntityType entityType) {
-        return Option.of(entityTypeToSpawnCategoryMap.get(entityType));
+        return Option.of(getSpawnCategoryOrNull(entityType));
+    }
+
+    /**
+     * Gets the spawn category that the given entity type is in, without wrapping it in an {@link Option}.
+     * Meant for hot paths such as entity spawn events.
+     *
+     * @param entityType The entity type
+     * @return The spawn category that the given entity type is in, or null if it cannot be determined
+     */
+    static @Nullable SpawnCategory getSpawnCategoryOrNull(@Nullable EntityType entityType) {
+        return entityTypeToSpawnCategoryMap.get(entityType);
     }
 
     /**

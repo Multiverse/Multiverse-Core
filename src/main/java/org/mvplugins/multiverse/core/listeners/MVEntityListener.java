@@ -10,7 +10,9 @@ package org.mvplugins.multiverse.core.listeners;
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import com.dumptruckman.minecraft.util.Logging;
 import jakarta.inject.Inject;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -29,6 +31,7 @@ import org.mvplugins.multiverse.core.dynamiclistener.EventRunnable;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventClass;
 import org.mvplugins.multiverse.core.dynamiclistener.annotations.EventMethod;
 import org.mvplugins.multiverse.core.utils.compatibility.EntityCompatibility;
+import org.mvplugins.multiverse.core.world.LoadedMultiverseWorld;
 import org.mvplugins.multiverse.core.world.WorldManager;
 
 import java.util.Arrays;
@@ -102,14 +105,11 @@ final class MVEntityListener implements CoreListener {
                     return;
                 }
 
-                worldManager.getLoadedWorld(event.getSpawnLocation().getWorld())
-                        .peek(world -> {
-                            if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getType())) {
-                                Logging.finest("Cancelling Pre Creature Spawn Event for: " + event.getType());
-                                event.setCancelled(true);
-                                event.setShouldAbortSpawn(true);
-                            }
-                        });
+                if (!shouldAllowSpawn(event.getSpawnLocation().getWorld(), event.getType())) {
+                    Logging.finest("Cancelling Pre Creature Spawn Event for: " + event.getType());
+                    event.setCancelled(true);
+                    event.setShouldAbortSpawn(true);
+                }
             }
         };
     }
@@ -130,13 +130,10 @@ final class MVEntityListener implements CoreListener {
             return;
         }
 
-        worldManager.getLoadedWorld(event.getEntity().getWorld())
-                .peek(world -> {
-                    if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getEntityType())) {
-                        Logging.finest("Cancelling Creature Spawn Event for: " + event.getEntity());
-                        event.setCancelled(true);
-                    }
-                });
+        if (!shouldAllowSpawn(event.getEntity().getWorld(), event.getEntityType())) {
+            Logging.finest("Cancelling Creature Spawn Event for: " + event.getEntity());
+            event.setCancelled(true);
+        }
     }
 
     /**
@@ -149,13 +146,20 @@ final class MVEntityListener implements CoreListener {
             return;
         }
 
-        worldManager.getLoadedWorld(event.getEntity().getWorld())
-                .peek(world -> {
-                    if (!world.getEntitySpawnConfig().shouldAllowSpawn(event.getEntityType())) {
-                        Logging.finest("Cancelling Entity Spawn Event for: " + event.getEntity());
-                        event.setCancelled(true);
-                    }
-                });
+        if (!shouldAllowSpawn(event.getEntity().getWorld(), event.getEntityType())) {
+            Logging.finest("Cancelling Entity Spawn Event for: " + event.getEntity());
+            event.setCancelled(true);
+        }
+    }
+
+    /**
+     * Checks the world's spawn config. Spawn events fire thousands of times per second, so this avoids the
+     * Option and lambda allocations of {@link WorldManager#getLoadedWorld(World)}.
+     * Worlds not managed by Multiverse always allow the spawn.
+     */
+    private boolean shouldAllowSpawn(@Nullable World bukkitWorld, @NotNull EntityType entityType) {
+        LoadedMultiverseWorld world = worldManager.getLoadedWorldOrNull(bukkitWorld);
+        return world == null || world.getEntitySpawnConfig().shouldAllowSpawn(entityType);
     }
 
     @EventMethod

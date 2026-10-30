@@ -28,6 +28,11 @@ public final class EntitySpawnConfig {
     }
 
     public @NotNull SpawnCategoryConfig getSpawnCategoryConfig(@NotNull SpawnCategory spawnCategory) {
+        // Plain get first, so the common case does not allocate the capturing lambda below.
+        SpawnCategoryConfig spawnCategoryConfig = spawnCategoriesConfig.get(spawnCategory);
+        if (spawnCategoryConfig != null) {
+            return spawnCategoryConfig;
+        }
         return spawnCategoriesConfig.computeIfAbsent(spawnCategory,
                 computeSpawnCategory -> new SpawnCategoryConfig(
                         config,
@@ -40,9 +45,12 @@ public final class EntitySpawnConfig {
     public boolean shouldAllowSpawn(@NotNull EntityType entityType) {
         // Ensure it defaults to true if SpawnCategoryMapper fails to find a spawn category for the entity type,
         // to avoid accidentally breaking mob spawns.
-        return SpawnCategoryMapper.getSpawnCategory(entityType)
-                .map(spawnCategory -> getSpawnCategoryConfig(spawnCategory).shouldAllowSpawn(entityType))
-                .getOrElse(true);
+        // This runs for every spawn event, so it avoids Option and lambda allocations on purpose.
+        SpawnCategory spawnCategory = SpawnCategoryMapper.getSpawnCategoryOrNull(entityType);
+        if (spawnCategory == null) {
+            return true;
+        }
+        return getSpawnCategoryConfig(spawnCategory).shouldAllowSpawn(entityType);
     }
 
     public boolean shouldAllowSpawn(@NotNull Entity entity) {

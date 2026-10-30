@@ -1178,6 +1178,18 @@ public final class WorldManager {
     }
 
     /**
+     * Same as {@link #getLoadedWorld(World)}, but returns null instead of allocating an {@link Option}.
+     * Meant for hot paths such as entity spawn events.
+     *
+     * @param world The bukkit world that should be loaded.
+     * @return The multiverse world, or null if it is not a loaded multiverse world.
+     */
+    @ApiStatus.Internal
+    public @Nullable LoadedMultiverseWorld getLoadedWorldOrNull(@Nullable World world) {
+        return world == null ? null : worldStore.getLoadedWorldOrNull(world.getName());
+    }
+
+    /**
      * Get a multiverse world that is loaded.
      *
      * @param world The world that should be loaded.

@@ -218,8 +218,13 @@ final class WorldStore {
 
     @NotNull
     Option<LoadedMultiverseWorld> getLoadedWorld(@Nullable String worldKeyString) {
-        return Option.of(loadedMap.get(worldKeyString))
-                .filter(MultiverseWorld::isLoaded);
+        return Option.of(getLoadedWorldOrNull(worldKeyString));
+    }
+
+    @Nullable
+    LoadedMultiverseWorld getLoadedWorldOrNull(@Nullable String worldKeyString) {
+        LoadedMultiverseWorld world = loadedMap.get(worldKeyString);
+        return world != null && world.isLoaded() ? world : null;
     }
 
     boolean isLoadedWorld(@Nullable WorldKeyOrName keyOrName) {
