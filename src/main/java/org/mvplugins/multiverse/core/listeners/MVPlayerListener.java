@@ -7,7 +7,9 @@
 
 package org.mvplugins.multiverse.core.listeners;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.WeakHashMap;
 
 import com.dumptruckman.minecraft.util.Logging;
 import io.vavr.control.Option;
@@ -72,6 +74,7 @@ final class MVPlayerListener implements CoreListener {
     private final DimensionFinder dimensionFinder;
     private final CorePermissionsChecker corePermissionsChecker;
     private final AsyncSafetyTeleporter asyncSafetyTeleporter;
+    private final Map<PlayerTeleportEvent, EntryFeePayment> pendingEntryFees = new WeakHashMap<>();
 
     @Inject
     MVPlayerListener(
@@ -333,7 +336,8 @@ final class MVPlayerListener implements CoreListener {
         ResultChain entryResult = worldEntryCheckerProvider.forSender(finalTeleporter).canEnterWorld(fromWorld, toWorld)
                 .onSuccessReason(EntryFeeResult.Success.class, reason -> {
                     if (reason == EntryFeeResult.Success.ENOUGH_MONEY) {
-                        economist.payEntryFee((Player) finalTeleporter, toWorld);
+                        pendingEntryFees.put(event, new EntryFeePayment((Player) finalTeleporter,
+                                toLocation.getWorld(), toWorld.getPrice(), toWorld.getCurrency()));
                     }
                 })
                 .onFailure(results -> {
@@ -342,6 +346,17 @@ final class MVPlayerListener implements CoreListener {
                 });
 
         Logging.fine("Teleport result: %s", entryResult);
+    }
+
+    @EventMethod
+    @DefaultEventPriority(EventPriority.MONITOR)
+    void collectEntryFee(PlayerTeleportEvent event) {
+        // Remove cancelled payments too, without retaining the player or world after the event.
+        EntryFeePayment payment = pendingEntryFees.remove(event);
+        if (payment != null && !event.isCancelled() && event.getTo() != null
+                && payment.destination().equals(event.getTo().getWorld())) {
+            economist.payEntryFee(payment.payer(), payment.price(), payment.currency());
+        }
     }
 
     private void stateSuccess(String playerName, String worldName) {
@@ -447,5 +462,8 @@ final class MVPlayerListener implements CoreListener {
         Logging.finer("Handling gamemode and flight for player %s in world '%s'", player.getName(), world.getName());
         enforcementHandler.handleFlightEnforcement(player);
         enforcementHandler.handleGameModeEnforcement(player);
+    }
+
+    private record EntryFeePayment(Player payer, World destination, double price, Material currency) {
     }
 }
