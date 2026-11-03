@@ -22,6 +22,7 @@ import org.mvplugins.multiverse.core.utils.ReflectHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,16 +56,20 @@ public final class DynamicListenerRegistration {
         Set<Method> listenerMethods = new HashSet<>();
         listenerMethods.addAll(List.of(listener.getClass().getMethods()));
         listenerMethods.addAll(List.of(listener.getClass().getDeclaredMethods()));
-        listenerMethods.forEach(method -> Try.run(() ->{
-            if (method.isAnnotationPresent(EventMethod.class)) {
-                registerAsEventMethod(listener, plugin, method);
-            } else if (method.isAnnotationPresent(EventClass.class)) {
-                registerAsEventClass(listener, plugin, method);
-            }
-        }).onFailure(e -> {
-            Logging.severe("Failed to register event method %s in %s", method.getName(), listener.getClass().getName());
-            e.printStackTrace();
-        }));
+        // Keep fixed MONITOR handlers after validation if configured priorities become equal.
+        listenerMethods.stream()
+                .sorted(Comparator.comparing(this::getDefaultEventPriority))
+                .forEach(method -> Try.run(() -> {
+                    if (method.isAnnotationPresent(EventMethod.class)) {
+                        registerAsEventMethod(listener, plugin, method);
+                    } else if (method.isAnnotationPresent(EventClass.class)) {
+                        registerAsEventClass(listener, plugin, method);
+                    }
+                }).onFailure(e -> {
+                    Logging.severe("Failed to register event method %s in %s",
+                            method.getName(), listener.getClass().getName());
+                    e.printStackTrace();
+                }));
     }
 
     private void registerAsEventMethod(DynamicListener listener, Plugin plugin, Method method) {
